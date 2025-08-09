@@ -1,43 +1,126 @@
-# Dependencies
-node_modules/
-venv/
-__pycache__/
-*.pyc
+# CLO Management System - Enhanced .gitignore
 
-# Environment variables
+# ==============================================================================
+# SENSITIVE FINANCIAL DATA - NEVER COMMIT THESE
+# ==============================================================================
+
+# Excel files with real data
+*.xlsm
+*.xlsx  
+*.xls
+*.xlsb
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Environment variables with API keys/passwords
 .env
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
 
-# IDE
+# Configuration files with sensitive data
+config/local.py
+config/production.py
+secrets.json
+credentials.json
+
+# Data directories
+data/real/*
+data/production/*
+data/client/*
+exports/
+imports/
+
+# Logs that might contain sensitive info
+logs/
+*.log
+
+# ==============================================================================
+# STANDARD DEVELOPMENT FILES
+# ==============================================================================
+
+# Dependencies
+node_modules/
+venv/
+env/
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+pip-log.txt
+pip-delete-this-directory.txt
+
+# IDE and Editor files
 .vscode/settings.json
+.vscode/launch.json
 .idea/
+*.swp
+*.swo
+*~
 
-# OS
+# OS generated files
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
 Thumbs.db
-
-# Database
-*.db
-*.sqlite
 
 # Testing
 .coverage
 .pytest_cache/
+.tox/
+.nox/
 coverage/
+*.cover
+.hypothesis/
+.cache
 
 # Build outputs
 build/
 dist/
 *.egg-info/
-
-# Excel files (until extracted)
-*.xlsm
-*.xlsx
-*.xls
+.eggs/
+.wheel/
 
 # Temporary files
 tmp/
 temp/
+*.tmp
+*.temp
+
+# Docker
+.dockerignore
+docker-compose.override.yml
+
+# ==============================================================================
+# ALLOW SAMPLE/DEMO DATA
+# ==============================================================================
+
+# These are OK to commit
+!data/sample/
+!data/test/
+!data/demo/
+
+# ==============================================================================
+# FINANCIAL COMPLIANCE NOTES
+# ==============================================================================
+
+# This .gitignore is configured for financial data security:
+# 1. All Excel files are excluded by default
+# 2. Database files are excluded
+# 3. Environment files with credentials are excluded
+# 4. Data directories are excluded
+# 
+# Only commit:
+# - Source code
+# - Configuration templates
+# - Documentation
+# - Sample/demo data (anonymized)
