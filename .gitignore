@@ -1,0 +1,43 @@
+# Dependencies
+node_modules/
+venv/
+__pycache__/
+*.pyc
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDE
+.vscode/settings.json
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Database
+*.db
+*.sqlite
+
+# Testing
+.coverage
+.pytest_cache/
+coverage/
+
+# Build outputs
+build/
+dist/
+*.egg-info/
+
+# Excel files (until extracted)
+*.xlsm
+*.xlsx
+*.xls
+
+# Temporary files
+tmp/
+temp/
