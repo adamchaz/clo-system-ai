@@ -14,7 +14,7 @@ import json
 import math
 from sqlalchemy.orm import Session
 
-from app.models.incentive_fee import (
+from ..models.incentive_fee import (
     IncentiveFeeStructure,
     SubordinatedPayment, 
     IncentiveFeeCalculation,

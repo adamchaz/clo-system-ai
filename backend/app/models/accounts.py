@@ -14,7 +14,7 @@ from enum import Enum
 from typing import Dict, List, Optional
 from sqlalchemy.orm import Session
 
-from app.core.database import Base
+from ..core.database import Base
 
 
 class CashType(str, Enum):

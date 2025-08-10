@@ -15,7 +15,7 @@ from typing import Dict, List, Optional, Any, Tuple
 from sqlalchemy.orm import Session
 import logging
 
-from app.core.database import Base
+from ..core.database import Base
 
 
 logger = logging.getLogger(__name__)

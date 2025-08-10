@@ -1,0 +1,34 @@
+{
+  "success": true,
+  "statistics": {
+    "start_time": "2025-08-10 22:03:17.979656",
+    "end_time": "2025-08-10 22:03:27.016550",
+    "extracted_count": 384,
+    "transformed_count": 384,
+    "loaded_count": 384,
+    "validation_errors": 0
+  },
+  "load_results": {
+    "successful": 384,
+    "failed": 0,
+    "total_processed": 384
+  },
+  "validation_results": {
+    "asset_count": {
+      "database_count": 384,
+      "expected_count": 384,
+      "passed": true
+    },
+    "sample_data": {
+      "sample_size": 5,
+      "passed": true
+    }
+  },
+  "errors": {
+    "extraction_errors": [],
+    "transformation_errors": [],
+    "loading_errors": [],
+    "validation_errors": []
+  },
+  "report": "================================================================================\nALL ASSETS MIGRATION EXECUTION REPORT\n================================================================================\n\nMigration Summary:\n  Start Time: 2025-08-10 22:03:17.979656\n  End Time: 2025-08-10 22:03:27.016550\n  Duration: 0.2 minutes\n  Excel File: TradeHypoPrelimv32.xlsm\n\nProcessing Statistics:\n  Assets Extracted: 384\n  Assets Transformed: 384\n  Assets Loaded: 384\n  Success Rate: 100.0%\n\nError Summary:\n  Total Errors: 0\n\nMigration Status:\n  SUCCESS - All assets migrated successfully\n================================================================================"
+}

@@ -511,7 +511,7 @@ class Asset(Base):
         
         return base_spread
     
-    def _generate_cash_flows(self, pricing_date: date) -> List[Tuple[date, Decimal]]:
+    def _generate_cash_flows(self, pricing_date: date) -> List[tuple[date, Decimal]]:
         """Generate expected cash flows for present value calculation"""
         cash_flows = []
         
@@ -588,7 +588,7 @@ class Asset(Base):
         
         return cash_flows
     
-    def _calculate_fair_value_with_spread(self, cash_flows: List[Tuple[date, Decimal]], 
+    def _calculate_fair_value_with_spread(self, cash_flows: List[tuple[date, Decimal]], 
                                         discount_curve, credit_spread_bps: int, 
                                         pricing_date: date) -> Decimal:
         """Calculate fair value with credit spread adjustment"""

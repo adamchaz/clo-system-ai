@@ -1,0 +1,68 @@
+{
+  "success": true,
+  "statistics": {
+    "start_time": "2025-08-10 22:38:18.341008",
+    "end_time": "2025-08-10 22:38:58.959697",
+    "matrix_size": 488,
+    "extracted_pairs": 238144,
+    "valid_correlations": 238144,
+    "loaded_count": 238144,
+    "diagonal_pairs": 488,
+    "symmetric_pairs": 0
+  },
+  "load_results": {
+    "successful": 238144,
+    "failed": 0,
+    "total_processed": 238144
+  },
+  "validation_results": {
+    "total_pairs": 238144,
+    "diagonal_ones": 488,
+    "symmetric_pairs": 99,
+    "valid_range_pairs": 238144,
+    "invalid_correlations": [],
+    "missing_diagonal": [],
+    "asymmetric_pairs": []
+  },
+  "db_validation": {
+    "total_correlations": 238144,
+    "unique_asset1_ids": 488,
+    "unique_asset2_ids": 488,
+    "diagonal_correlations": 488,
+    "min_correlation": 0.3,
+    "max_correlation": 1.0,
+    "sample_correlations": [
+      {
+        "asset1": "BRSNP9UX8",
+        "asset2": "BRSNP9UX8",
+        "correlation": 1.0
+      },
+      {
+        "asset1": "BRSNP9UX8",
+        "asset2": "BRSKTDN35",
+        "correlation": 0.3
+      },
+      {
+        "asset1": "BRSNP9UX8",
+        "asset2": "BRSND5V18",
+        "correlation": 0.3
+      },
+      {
+        "asset1": "BRSNP9UX8",
+        "asset2": "BRSPR86F9",
+        "correlation": 0.3
+      },
+      {
+        "asset1": "BRSNP9UX8",
+        "asset2": "BRSG8LKZ1",
+        "correlation": 0.3
+      }
+    ]
+  },
+  "errors": {
+    "extraction_errors": [],
+    "transformation_errors": [],
+    "loading_errors": []
+  },
+  "report": "================================================================================\nASSET CORRELATION MATRIX MIGRATION REPORT\n================================================================================\n\nMatrix Information:\n  Matrix Size: 488x488\n  Excel Sheet: Asset Correlation\n  Total Cells: 238,144\n\nMigration Summary:\n  Start Time: 2025-08-10 22:38:18.341008\n  End Time: 2025-08-10 22:38:58.959697\n  Duration: 0.7 minutes\n\nProcessing Statistics:\n  Extracted Pairs: 238,144\n  Valid Correlations: 238,144\n  Loaded to Database: 238,144\n  Diagonal Pairs: 488\n  Success Rate: 100.0%\n\nError Summary:\n  Total Errors: 0\n\nMigration Status:\n  SUCCESS - Correlation matrix migrated successfully\n================================================================================"
+}

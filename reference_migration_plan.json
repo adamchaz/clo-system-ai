@@ -1,0 +1,101 @@
+{
+  "total_sections": 9,
+  "total_data_rows": 7740,
+  "database_tables": 7,
+  "migration_phases": [
+    {
+      "table_name": "business_holidays",
+      "sections": [
+        {
+          "section": "Holidays",
+          "rows": 0,
+          "range": "6-5"
+        }
+      ],
+      "total_rows": 0,
+      "priority": 1
+    },
+    {
+      "table_name": "historical_rates",
+      "sections": [
+        {
+          "section": "Actual LIBOR Rates",
+          "rows": 0,
+          "range": "4-3"
+        }
+      ],
+      "total_rows": 0,
+      "priority": 2
+    },
+    {
+      "table_name": "yield_curves",
+      "sections": [
+        {
+          "section": "Yield Curve",
+          "rows": 0,
+          "range": "9-8"
+        }
+      ],
+      "total_rows": 0,
+      "priority": 3
+    },
+    {
+      "table_name": "deal_parameters",
+      "sections": [
+        {
+          "section": "Deals",
+          "rows": 0,
+          "range": "11-10"
+        }
+      ],
+      "total_rows": 0,
+      "priority": 4
+    },
+    {
+      "table_name": "rating_transition_matrices",
+      "sections": [
+        {
+          "section": "S&P 1 year Transition Matrix",
+          "rows": 0,
+          "range": "7-6"
+        },
+        {
+          "section": "S&P Rating Migration Correlation",
+          "rows": 7740,
+          "range": "12-7751"
+        }
+      ],
+      "total_rows": 7740,
+      "priority": 5
+    },
+    {
+      "table_name": "amortization_schedules",
+      "sections": [
+        {
+          "section": "Sink Schedule",
+          "rows": 0,
+          "range": "8-7"
+        }
+      ],
+      "total_rows": 0,
+      "priority": 6
+    },
+    {
+      "table_name": "reference_cashflows",
+      "sections": [
+        {
+          "section": "Cashflow Vectors",
+          "rows": 0,
+          "range": "5-4"
+        },
+        {
+          "section": "Collateral Cashflows",
+          "rows": 0,
+          "range": "10-9"
+        }
+      ],
+      "total_rows": 0,
+      "priority": 7
+    }
+  ]
+}
