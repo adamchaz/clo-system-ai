@@ -226,6 +226,78 @@ CREATE TABLE deal_assets (
 );
 
 -- =============================================================================
+-- LIABILITY TABLES (Converted from VBA Liability.cls)
+-- =============================================================================
+
+-- CLO Liabilities/Tranches with comprehensive payment modeling
+CREATE TABLE liabilities (
+    liability_id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    deal_id VARCHAR(50) NOT NULL REFERENCES clo_deals(deal_id),
+    tranche_name VARCHAR(50) NOT NULL,
+    
+    -- Core Properties
+    original_balance DECIMAL(18,2) NOT NULL,
+    current_balance DECIMAL(18,2) NOT NULL,
+    deferred_balance DECIMAL(18,2) DEFAULT 0, -- PIK balance
+    
+    -- Payment Terms
+    is_pikable BOOLEAN DEFAULT FALSE,
+    is_equity_tranche BOOLEAN DEFAULT FALSE,
+    libor_spread DECIMAL(10,6), -- Spread over LIBOR/SOFR
+    coupon_type VARCHAR(10) DEFAULT 'FLOATING', -- FIXED, FLOATING
+    day_count_convention VARCHAR(10) DEFAULT 'ACT/360', -- ACT/360, ACT/365, 30/360, ACT/ACT
+    
+    -- Risk Measures - User Inputs
+    input_price DECIMAL(8,6), -- Price as % of par
+    input_discount_margin DECIMAL(8,6), -- Discount margin
+    analysis_date DATE,
+    
+    -- Calculated Risk Measures
+    calculated_yield DECIMAL(8,6),
+    calculated_dm DECIMAL(8,6),
+    calculated_price DECIMAL(8,6),
+    weighted_average_life DECIMAL(6,4),
+    macaulay_duration DECIMAL(6,4),
+    modified_duration DECIMAL(6,4),
+    
+    -- Metadata
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    
+    CONSTRAINT unique_liability UNIQUE (deal_id, tranche_name)
+);
+
+-- Individual period cash flows for liability tranches
+CREATE TABLE liability_cash_flows (
+    id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    liability_id INTEGER NOT NULL REFERENCES liabilities(liability_id) ON DELETE CASCADE,
+    period_number INTEGER NOT NULL,
+    payment_date DATE NOT NULL,
+    
+    -- Period Balances
+    beginning_balance DECIMAL(18,2) DEFAULT 0,
+    ending_balance DECIMAL(18,2) DEFAULT 0,
+    deferred_beginning_balance DECIMAL(18,2) DEFAULT 0, -- PIK balance
+    deferred_ending_balance DECIMAL(18,2) DEFAULT 0,
+    
+    -- Interest Calculations
+    coupon_rate DECIMAL(10,6), -- Period coupon rate
+    interest_accrued DECIMAL(18,2) DEFAULT 0,
+    interest_paid DECIMAL(18,2) DEFAULT 0,
+    deferred_interest_accrued DECIMAL(18,2) DEFAULT 0, -- PIK interest
+    deferred_interest_paid DECIMAL(18,2) DEFAULT 0,
+    
+    -- Principal Payments
+    principal_paid DECIMAL(18,2) DEFAULT 0,
+    deferred_principal_paid DECIMAL(18,2) DEFAULT 0, -- PIK principal
+    
+    -- Metadata
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    
+    CONSTRAINT unique_liability_cash_flow UNIQUE (liability_id, period_number)
+);
+
+-- =============================================================================
 -- COMPLIANCE AND TESTING
 -- =============================================================================
 
@@ -409,6 +481,15 @@ CREATE INDEX idx_asset_history_property ON asset_history(property_name, history_
 -- Deal indexes
 CREATE INDEX idx_deal_assets_deal ON deal_assets(deal_id);
 CREATE INDEX idx_deal_assets_status ON deal_assets(position_status);
+
+-- Liability indexes
+CREATE INDEX idx_liabilities_deal ON liabilities(deal_id);
+CREATE INDEX idx_liabilities_tranche ON liabilities(deal_id, tranche_name);
+CREATE INDEX idx_liabilities_equity ON liabilities(is_equity_tranche);
+CREATE INDEX idx_liabilities_pikable ON liabilities(is_pikable);
+CREATE INDEX idx_liability_cash_flows_liability ON liability_cash_flows(liability_id);
+CREATE INDEX idx_liability_cash_flows_period ON liability_cash_flows(liability_id, period_number);
+CREATE INDEX idx_liability_cash_flows_payment_date ON liability_cash_flows(payment_date);
 
 -- Compliance indexes
 CREATE INDEX idx_compliance_results_deal_date ON compliance_test_results(deal_id, test_date);
@@ -648,6 +729,8 @@ CREATE TABLE waterfall_structures (
 COMMENT ON TABLE assets IS 'Core asset table converted from VBA Asset.cls - stores individual financial instruments';
 COMMENT ON TABLE asset_cash_flows IS 'Asset cash flow projections converted from SimpleCashflow.cls';
 COMMENT ON TABLE clo_deals IS 'CLO deal master data with key dates and parameters';
+COMMENT ON TABLE liabilities IS 'CLO liability/tranche table converted from VBA Liability.cls - comprehensive payment modeling';
+COMMENT ON TABLE liability_cash_flows IS 'Period-by-period cash flows for liability tranches with PIK support';
 COMMENT ON TABLE compliance_tests IS 'Portfolio compliance tests with thresholds and formulas';
 COMMENT ON TABLE compliance_test_results IS 'Historical compliance test results by deal and date';
 
