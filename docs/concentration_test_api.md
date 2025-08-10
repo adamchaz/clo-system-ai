@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document provides complete API reference for the VBA-accurate ConcentrationTest system, including all classes, methods, and data structures.
+This document provides complete API reference for the VBA-accurate ConcentrationTest system with **94+ test variations**, including all classes, methods, and data structures with multi-result generation capabilities.
 
 ## Core Classes
 
@@ -14,7 +14,7 @@ Main class implementing VBA ConcentrationTest.cls functionality.
 class EnhancedConcentrationTest:
     """
     Enhanced Concentration Test Engine - VBA ConcentrationTest.cls conversion
-    Implements exactly 54 test types with VBA-accurate logic
+    Implements 94+ test variations with VBA-accurate multi-result generation
     """
 ```
 

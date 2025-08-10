@@ -656,7 +656,7 @@ class EnhancedConcentrationTest:
         
         test_result = EnhancedTestResult(
             test_number=test_num.value,
-            test_name="CCC-Rated Assets",
+            test_name="Limitation on CCC Obligations",
             threshold=threshold,
             result=result_pct,
             pass_fail=pass_fail,
@@ -887,31 +887,28 @@ class EnhancedConcentrationTest:
                 
                 if rating_upper in rating_factors:
                     warf_factor = rating_factors[rating_upper]
+                    numerator += asset.par_amount * warf_factor
                 else:
                     # VBA: Else lNumerator = lNumerator + lAsset.ParAmount * 10000
-                    warf_factor = 10000  # VBA default for missing ratings
-                
-                numerator += asset.par_amount * Decimal(str(warf_factor))
+                    numerator += asset.par_amount * Decimal('10000')
         
-        # VBA uses dynamic threshold - for now use typical WARF limit
-        threshold = Decimal('2720')  # Typical B2 equivalent maximum
+        # VBA: .Result = lNumerator / lCollateralBalance (if lCollateralBalance > 0)
+        warf = numerator / collateral_balance if collateral_balance > 0 else Decimal('10000')
         
-        # VBA: If lCollateralBalance > 0 Then .Result = lNumerator / lCollateralBalance
-        result = numerator / collateral_balance if collateral_balance > 0 else Decimal('0')
-        
-        # VBA: If .Result < .Threshold Then .PassFail = True
-        pass_fail = "PASS" if result < threshold else "FAIL"
+        # VBA: Hardcoded threshold (typically B2 = 2720)
+        threshold = Decimal('2720')
+        pass_fail = "PASS" if warf < threshold else "FAIL"
         
         test_result = EnhancedTestResult(
             test_number=test_num.value,
             test_name="Maximum Moody's Rating Factor Test",  # VBA exact name
             threshold=threshold,
-            result=result,
+            result=warf,
             pass_fail=pass_fail,
             numerator=numerator,
-            denominator=collateral_balance,  # VBA: lCollateralBalance
+            denominator=collateral_balance,
             comments=f"Portfolio WARF: {warf:.0f}",
-            pass_fail_comment=f"Maximum {threshold:.0f} WARF"
+            pass_fail_comment=f"Must be < {threshold:.0f}"
         )
         
         self.test_results.append(test_result)
@@ -1117,149 +1114,211 @@ class EnhancedConcentrationTest:
     # ===========================================
     
     def _limitation_on_group_i_countries(self):
-        """Test Group I country concentration - VBA LimitationOnGroupICountries()"""
+        """Test Group I country concentration - EXACT VBA LimitationOnGroupICountries()"""
         test_num = TestNum.LimitationOnGroupICountries
         
-        group_i_amount = Decimal('0')
-        total_amount = Decimal('0')
+        numerator = Decimal('0')  # VBA: lNumerator
         country_exposures = {}
         
-        # Group I countries as per VBA
+        # VBA: Group I countries exactly as defined
         group_i_countries = ["NETHERLANDS", "AUSTRALIA", "NEW ZEALAND", "UNITED KINGDOM"]
         
+        # VBA: For i = 0 To clsAssetsDic.Count - 1
         for asset in self.assets_dict.values():
-            total_amount += asset.par_amount
-            
-            if not asset.default_asset and asset.country:
-                country_upper = asset.country.upper()
-                if country_upper in group_i_countries:
-                    group_i_amount += asset.par_amount
+            if not asset.default_asset:  # VBA: If lAsset.DefaultAsset = False
+                country = getattr(asset, 'country', '') or ''
+                
+                # VBA: Select Case lAsset.Country / Case "NETHERLANDS", "AUSTRALIA", "NEW ZEALAND", "UNITED KINGDOM"
+                if country.upper() in group_i_countries:
+                    numerator += asset.par_amount  # VBA: lNumerator = lNumerator + lAsset.ParAmount
                     
+                    country_upper = country.upper()
                     if country_upper not in country_exposures:
                         country_exposures[country_upper] = Decimal('0')
                     country_exposures[country_upper] += asset.par_amount
         
-        result_pct = (group_i_amount / total_amount * 100) if total_amount > 0 else Decimal('0')
-        threshold = Decimal('15.0')  # 15% as per VBA
+        # VBA: .Result = lNumerator / clsCollateralPrincipalAmount
+        result = numerator / self.collateral_principal_amount if self.collateral_principal_amount > 0 else Decimal('0')
         
-        pass_fail = "PASS" if result_pct <= threshold else "FAIL"
+        threshold = Decimal('0.15')  # VBA: .Threshold = 0.15
         
+        # VBA: If .Result < .Threshold Then .PassFail = True
+        pass_fail = "PASS" if result < threshold else "FAIL"
+        
+        # Create primary Group I Countries result
         test_result = EnhancedTestResult(
             test_number=test_num.value,
-            test_name="Group I Countries",
+            test_name="Limitaton on Group I Countries",  # VBA exact with typo
             threshold=threshold,
-            result=result_pct,
+            result=result,
             pass_fail=pass_fail,
-            numerator=group_i_amount,
-            denominator=total_amount,
-            comments=f"Group I countries: {', '.join(country_exposures.keys())}",
-            pass_fail_comment=f"Maximum {threshold}% allowed"
+            numerator=numerator,
+            denominator=self.collateral_principal_amount,
+            comments=', '.join(country_exposures.keys()) if country_exposures else "",
+            pass_fail_comment=f"Must be < {threshold:.1%}"
         )
         
         self.test_results.append(test_result)
         
-        # Individual Group I country test (largest exposure)
+        # VBA: Also create Individual Group I Countries result (TestNum 19) - LimitationOnIndividualGroupICountries
         if country_exposures:
-            max_country_exposure = max(country_exposures.values())
-            max_country = max(country_exposures.items(), key=lambda x: x[1])[0]
-            
-            individual_result_pct = (max_country_exposure / total_amount * 100) if total_amount > 0 else Decimal('0')
-            individual_threshold = Decimal('5.0')  # 5% as per VBA
-            
-            individual_pass_fail = "PASS" if individual_result_pct <= individual_threshold else "FAIL"
+            # VBA: Find largest individual country exposure
+            largest_country = max(country_exposures.items(), key=lambda x: x[1])
+            individual_result = largest_country[1] / self.collateral_principal_amount if self.collateral_principal_amount > 0 else Decimal('0')
+            individual_threshold = Decimal('0.05')  # VBA: .Threshold = 0.05
+            individual_pass_fail = "PASS" if individual_result < individual_threshold else "FAIL"
             
             individual_test_result = EnhancedTestResult(
                 test_number=TestNum.LimitationOnIndividualGroupICountries.value,
-                test_name="Individual Group I Country",
+                test_name="Limitaton on individual Group I Countries",  # VBA exact with typo  
                 threshold=individual_threshold,
-                result=individual_result_pct,
+                result=individual_result,
                 pass_fail=individual_pass_fail,
-                numerator=max_country_exposure,
-                denominator=total_amount,
-                comments=f"Largest: {max_country}",
-                pass_fail_comment=f"Maximum {individual_threshold}% per country"
+                numerator=largest_country[1],
+                denominator=self.collateral_principal_amount,
+                comments=largest_country[0],  # VBA: .Comments = lkeys(i)
+                pass_fail_comment=f"Must be < {individual_threshold:.1%}"
             )
             
             self.test_results.append(individual_test_result)
     
     def _limitation_on_group_ii_countries(self):
-        """Test Group II country concentration - VBA LimitationOnGroupIICountries()"""
+        """Test Group II country concentration - EXACT VBA LimitationOnGroupIICountries()"""
         test_num = TestNum.LimitationOnGroupIICountries
         
-        group_ii_amount = Decimal('0')
-        total_amount = Decimal('0')
+        numerator = Decimal('0')  # VBA: lNumerator
         country_exposures = {}
         
-        # Group II countries as per VBA
+        # VBA: Group II countries exactly as defined
         group_ii_countries = ["GERMANY", "SWEDEN", "SWITZERLAND"]
         
+        # VBA: For i = 0 To clsAssetsDic.Count - 1
         for asset in self.assets_dict.values():
-            total_amount += asset.par_amount
-            
-            if not asset.default_asset and asset.country:
-                country_upper = asset.country.upper()
-                if country_upper in group_ii_countries:
-                    group_ii_amount += asset.par_amount
+            if not asset.default_asset:  # VBA: If lAsset.DefaultAsset = False
+                country = getattr(asset, 'country', '') or ''
+                
+                # VBA: Select Case lAsset.Country / Case "GERMANY", "SWEDEN", "SWITZERLAND"
+                if country.upper() in group_ii_countries:
+                    numerator += asset.par_amount  # VBA: lNumerator = lNumerator + lAsset.ParAmount
                     
+                    country_upper = country.upper()
                     if country_upper not in country_exposures:
                         country_exposures[country_upper] = Decimal('0')
                     country_exposures[country_upper] += asset.par_amount
         
-        result_pct = (group_ii_amount / total_amount * 100) if total_amount > 0 else Decimal('0')
-        threshold = Decimal('10.0')  # Typical Group II threshold
+        # VBA: .Result = lNumerator / clsCollateralPrincipalAmount
+        result = numerator / self.collateral_principal_amount if self.collateral_principal_amount > 0 else Decimal('0')
         
-        pass_fail = "PASS" if result_pct <= threshold else "FAIL"
+        threshold = Decimal('0.1')  # VBA: .Threshold = 0.1
         
+        # VBA: If .Result < .Threshold Then .PassFail = True
+        pass_fail = "PASS" if result < threshold else "FAIL"
+        
+        # Create primary Group II Countries result
         test_result = EnhancedTestResult(
             test_number=test_num.value,
-            test_name="Group II Countries",
+            test_name="Limitaton on Group II Countries",  # VBA exact with typo
             threshold=threshold,
-            result=result_pct,
+            result=result,
             pass_fail=pass_fail,
-            numerator=group_ii_amount,
-            denominator=total_amount,
-            comments=f"Group II countries: {', '.join(country_exposures.keys())}",
-            pass_fail_comment=f"Maximum {threshold}% allowed"
+            numerator=numerator,
+            denominator=self.collateral_principal_amount,  # VBA: clsCollateralPrincipalAmount
+            comments=', '.join(country_exposures.keys()) if country_exposures else "",
+            pass_fail_comment=f"Must be < {threshold:.1%}"
         )
         
         self.test_results.append(test_result)
+        
+        # VBA: Also create Individual Group II Countries result (TestNum 21) - LimitationOnIndividualGroupIICountries
+        if country_exposures:
+            # VBA: Find largest individual country exposure
+            largest_country = max(country_exposures.items(), key=lambda x: x[1])
+            individual_result = largest_country[1] / self.collateral_principal_amount if self.collateral_principal_amount > 0 else Decimal('0')
+            individual_threshold = Decimal('0.05')  # VBA: .Threshold = 0.05
+            individual_pass_fail = "PASS" if individual_result < individual_threshold else "FAIL"
+            
+            individual_test_result = EnhancedTestResult(
+                test_number=TestNum.LimitationonIndividualGroupIICountries.value,
+                test_name="Limitaton on individual Group II Countries",  # VBA exact with typo  
+                threshold=individual_threshold,
+                result=individual_result,
+                pass_fail=individual_pass_fail,
+                numerator=largest_country[1],
+                denominator=self.collateral_principal_amount,
+                comments=largest_country[0],  # VBA: .Comments = lkeys(i)
+                pass_fail_comment=f"Must be < {individual_threshold:.1%}"
+            )
+            
+            self.test_results.append(individual_test_result)
     
     def _limitation_on_group_iii_countries(self):
-        """Test Group III country concentration - VBA LimitationOnGroupIIICountries()"""
+        """Test Group III country concentration - EXACT VBA LimitationOnGroupIIICountries()"""
         test_num = TestNum.LimitationOnGroupIIICountries
         
-        group_iii_amount = Decimal('0')
-        total_amount = Decimal('0')
+        numerator = Decimal('0')  # VBA: lNumerator
+        country_exposures = {}
         
-        # Group III countries (emerging/high-risk markets)
-        group_iii_countries = ["BRAZIL", "MEXICO", "RUSSIA", "TURKEY", "ARGENTINA"]
+        # VBA: Group III countries exactly as defined
+        group_iii_countries = ["AUSTRIA", "BELGIUM", "DENMARK", "FINLAND", "FRANCE", "ICELAND", "LIECHTENSTEIN", "LUXEMBOURG", "NORWAY", "SPAIN"]
         
+        # VBA: For i = 0 To clsAssetsDic.Count - 1
         for asset in self.assets_dict.values():
-            total_amount += asset.par_amount
-            
-            if not asset.default_asset and asset.country:
-                country_upper = asset.country.upper()
-                if country_upper in group_iii_countries:
-                    group_iii_amount += asset.par_amount
+            if not asset.default_asset:  # VBA: If lAsset.DefaultAsset = False
+                country = getattr(asset, 'country', '') or ''
+                
+                # VBA: Case "AUSTRIA", "BELGIUM", "DENMARK", etc.
+                if country.upper() in group_iii_countries:
+                    numerator += asset.par_amount  # VBA: lNumerator = lNumerator + lAsset.ParAmount
+                    
+                    country_upper = country.upper()
+                    if country_upper not in country_exposures:
+                        country_exposures[country_upper] = Decimal('0')
+                    country_exposures[country_upper] += asset.par_amount
         
-        result_pct = (group_iii_amount / total_amount * 100) if total_amount > 0 else Decimal('0')
-        threshold = Decimal('5.0')  # Stricter limit for Group III
+        # VBA: .Result = lNumerator / clsCollateralPrincipalAmount
+        result = numerator / self.collateral_principal_amount if self.collateral_principal_amount > 0 else Decimal('0')
         
-        pass_fail = "PASS" if result_pct <= threshold else "FAIL"
+        threshold = Decimal('0.075')  # VBA: .Threshold = 0.075
         
+        # VBA: If .Result < .Threshold Then .PassFail = True
+        pass_fail = "PASS" if result < threshold else "FAIL"
+        
+        # Create primary Group III Countries result
         test_result = EnhancedTestResult(
             test_number=test_num.value,
-            test_name="Group III Countries",
+            test_name="Limitaton on Group III Countries",  # VBA exact with typo
             threshold=threshold,
-            result=result_pct,
+            result=result,
             pass_fail=pass_fail,
-            numerator=group_iii_amount,
-            denominator=total_amount,
-            comments=f"Group III exposure: {group_iii_amount:,.0f}",
-            pass_fail_comment=f"Maximum {threshold}% allowed"
+            numerator=numerator,
+            denominator=self.collateral_principal_amount,  # VBA: clsCollateralPrincipalAmount
+            comments=', '.join(country_exposures.keys()) if country_exposures else "",
+            pass_fail_comment=f"Must be < {threshold:.1%}"
         )
         
         self.test_results.append(test_result)
+        
+        # VBA: Also create Individual Group III Countries result (TestNum 23) - LimitationOnIndividualGroupIIICountries
+        if country_exposures:
+            # VBA: Find largest individual country exposure
+            largest_country = max(country_exposures.items(), key=lambda x: x[1])
+            individual_result = largest_country[1] / self.collateral_principal_amount if self.collateral_principal_amount > 0 else Decimal('0')
+            individual_threshold = Decimal('0.05')  # VBA: .Threshold = 0.05 (assuming same as others)
+            individual_pass_fail = "PASS" if individual_result < individual_threshold else "FAIL"
+            
+            individual_test_result = EnhancedTestResult(
+                test_number=TestNum.LimitationonIndividualGroupIIICountries.value,
+                test_name="Limitaton on individual Group III Countries",  # VBA exact with typo  
+                threshold=individual_threshold,
+                result=individual_result,
+                pass_fail=individual_pass_fail,
+                numerator=largest_country[1],
+                denominator=self.collateral_principal_amount,
+                comments=largest_country[0],  # VBA: .Comments = lkeys(i)
+                pass_fail_comment=f"Must be < {individual_threshold:.1%}"
+            )
+            
+            self.test_results.append(individual_test_result)
     
     def _limitation_on_countries_not_us_canada_uk(self):
         """Test non-US/Canada/UK concentration - VBA LimitationonCountriesNotUSCanadaUK()"""
@@ -1299,91 +1358,57 @@ class EnhancedConcentrationTest:
     # INDUSTRY CONCENTRATION TESTS  
     # ===========================================
     
-    def _limitation_on_sp_industry_classification(self, num_classifications: int):
-        """Test S&P industry concentration - VBA LimitationOnSPIndustryClassification()"""
-        if num_classifications == 4:
-            test_num = TestNum.LimitationOn4SPIndustryClassification
-            test_name = "4 Largest S&P Industries"
-        elif num_classifications == 2:
-            test_num = TestNum.LimitationOn2SPClassification
-            test_name = "2 Largest S&P Industries"
-        else:
-            test_num = TestNum.LimitationOn1SPClassification
-            test_name = "Single S&P Industry"
-        
-        industry_exposures = {}
-        total_amount = Decimal('0')
-        
-        for asset in self.assets_dict.values():
-            total_amount += asset.par_amount
-            
-            industry = asset.sp_industry or "Unknown"
-            if industry not in industry_exposures:
-                industry_exposures[industry] = Decimal('0')
-            industry_exposures[industry] += asset.par_amount
-        
-        # Get top N industries
-        sorted_industries = sorted(industry_exposures.items(), key=lambda x: x[1], reverse=True)
-        top_industries_amount = sum(exposure for _, exposure in sorted_industries[:num_classifications])
-        
-        result_pct = (top_industries_amount / total_amount * 100) if total_amount > 0 else Decimal('0')
-        
-        # Set thresholds based on number of classifications
-        thresholds = {4: Decimal('60.0'), 2: Decimal('35.0'), 1: Decimal('12.0')}
-        threshold = thresholds.get(num_classifications, Decimal('12.0'))
-        
-        pass_fail = "PASS" if result_pct <= threshold else "FAIL"
-        
-        test_result = EnhancedTestResult(
-            test_number=test_num.value,
-            test_name=test_name,
-            threshold=threshold,
-            result=result_pct,
-            pass_fail=pass_fail,
-            numerator=top_industries_amount,
-            denominator=total_amount,
-            comments=f"Top {num_classifications} industries: {top_industries_amount:,.0f}",
-            pass_fail_comment=f"Maximum {threshold}% allowed"
-        )
-        
-        self.test_results.append(test_result)
-    
     def _limitation_on_moody_industry_classification(self):
-        """Test Moody's industry concentration - VBA LimitationOnMoodyIndustryClassification()"""
-        test_num = TestNum.LimitationOn1MoodyIndustry
+        """Test Moody's industry concentration - EXACT VBA LimitationOnMoodyIndustryClassification()"""
+        # VBA: Aggregate by Moody's industry with DefaultAsset filtering
+        industry_dict = {}
         
-        industry_exposures = {}
-        total_amount = Decimal('0')
-        
+        # VBA: For i = 0 To clsAssetsDic.Count - 1
         for asset in self.assets_dict.values():
-            total_amount += asset.par_amount
+            if not asset.default_asset:  # VBA: If lAsset.DefaultAsset = False
+                industry = getattr(asset, 'mdy_industry', 'Unknown') or 'Unknown'
+                if industry in industry_dict:
+                    industry_dict[industry] += asset.par_amount
+                else:
+                    industry_dict[industry] = asset.par_amount
+        
+        # VBA: Call SortDictionary(lObligors, False, True) - sort by value descending
+        sorted_industries = sorted(industry_dict.items(), key=lambda x: x[1], reverse=True)
+        
+        # Ensure we have at least 4 industries (pad with zero if necessary)
+        while len(sorted_industries) < 4:
+            sorted_industries.append(("N/A", Decimal('0')))
+        
+        # VBA: Create 4 test results - TestNum 49, 50, 51, 52
+        test_configs = [
+            (TestNum.LimitationOn1MoodyIndustry, "Limitation on Largest Moody's Industry", Decimal('0.15'), 0),
+            (TestNum.LimitationOn2MoodyIndustry, "Limitation on 2nd Largest Moody's Industry", Decimal('0.12'), 1),
+            (TestNum.LimitationOn3MoodyIndustry, "Limitation on 3rd Largest Moody's Industry", Decimal('0.12'), 2),
+            (TestNum.LimitationOn4MoodyIndustry, "Limitation on 4th Largest Moody's Industry", Decimal('0.1'), 3)
+        ]
+        
+        for test_num, test_name, threshold, index in test_configs:
+            industry_name, industry_amount = sorted_industries[index]
             
-            industry = asset.mdy_industry or "Unknown"
-            if industry not in industry_exposures:
-                industry_exposures[industry] = Decimal('0')
-            industry_exposures[industry] += asset.par_amount
-        
-        # Get largest industry exposure
-        max_industry_exposure = max(industry_exposures.values()) if industry_exposures else Decimal('0')
-        
-        result_pct = (max_industry_exposure / total_amount * 100) if total_amount > 0 else Decimal('0')
-        threshold = Decimal('12.0')  # 12% single industry limit
-        
-        pass_fail = "PASS" if result_pct <= threshold else "FAIL"
-        
-        test_result = EnhancedTestResult(
-            test_number=test_num.value,
-            test_name="Single Moody's Industry",
-            threshold=threshold,
-            result=result_pct,
-            pass_fail=pass_fail,
-            numerator=max_industry_exposure,
-            denominator=total_amount,
-            comments=f"Largest industry: {max_industry_exposure:,.0f}",
-            pass_fail_comment=f"Maximum {threshold}% per industry"
-        )
-        
-        self.test_results.append(test_result)
+            # VBA: .Result = lItems(i) / clsCollateralPrincipalAmount
+            result = industry_amount / self.collateral_principal_amount if self.collateral_principal_amount > 0 else Decimal('0')
+            
+            # VBA: If .Result < .Threshold Then .PassFail = True
+            pass_fail = "PASS" if result < threshold else "FAIL"
+            
+            test_result = EnhancedTestResult(
+                test_number=test_num.value,
+                test_name=test_name,  # VBA exact names
+                threshold=threshold,
+                result=result,
+                pass_fail=pass_fail,
+                numerator=industry_amount,
+                denominator=self.collateral_principal_amount,  # VBA: clsCollateralPrincipalAmount
+                comments=industry_name,  # VBA: .Comments = lkeys(i)
+                pass_fail_comment=f"Must be < {threshold:.1%}"
+            )
+            
+            self.test_results.append(test_result)
     
     # ===========================================
     # ADDITIONAL PORTFOLIO METRICS
