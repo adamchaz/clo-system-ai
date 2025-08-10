@@ -16,6 +16,7 @@ from .liability import Liability, LiabilityCalculator
 from .asset import Asset
 from .waterfall_types import WaterfallStep
 from .dynamic_waterfall import DynamicWaterfallStrategy
+from .accounts import AccountsCalculator, AccountsService, CashType as AccountsCashType
 
 
 class AccountType(str, Enum):
@@ -73,19 +74,54 @@ class ReinvestmentInfo:
 
 
 class Account:
-    """Account for managing different cash types"""
+    """
+    Account for managing different cash types
+    Enhanced with optional database persistence via AccountsCalculator
+    """
     
-    def __init__(self, account_type: AccountType):
+    def __init__(self, account_type: AccountType, deal_id: str = None, period_date: date = None, 
+                 session: Session = None, enable_persistence: bool = False):
         self.account_type = account_type
         self.interest_balance = Decimal('0')
         self.principal_balance = Decimal('0')
+        
+        # Enhanced database persistence support
+        self.enable_persistence = enable_persistence
+        self._accounts_calculator = None
+        
+        if enable_persistence and deal_id and period_date and session:
+            self._accounts_calculator = AccountsCalculator(deal_id, period_date, session)
+            # Load existing balances if available
+            self.interest_balance = self._accounts_calculator.interest_proceeds
+            self.principal_balance = self._accounts_calculator.principal_proceeds
     
     def add(self, cash_type: CashType, amount: Decimal) -> None:
-        """Add cash to account"""
+        """Add cash to account with optional database persistence"""
         if cash_type == CashType.INTEREST:
             self.interest_balance += amount
+            if self._accounts_calculator:
+                self._accounts_calculator.add(AccountsCashType.INTEREST, amount)
         elif cash_type == CashType.PRINCIPAL:
             self.principal_balance += amount
+            if self._accounts_calculator:
+                self._accounts_calculator.add(AccountsCashType.PRINCIPAL, amount)
+    
+    def create_transaction_record(self, cash_type: CashType, amount: Decimal, 
+                                 reference_id: str = None, description: str = None,
+                                 counterparty: str = None):
+        """Create detailed transaction record (requires database persistence)"""
+        if self._accounts_calculator:
+            accounts_cash_type = AccountsCashType.INTEREST if cash_type == CashType.INTEREST else AccountsCashType.PRINCIPAL
+            return self._accounts_calculator.create_transaction(
+                accounts_cash_type, amount, reference_id, description, counterparty
+            )
+        return None
+    
+    def save(self):
+        """Save account state to database (if persistence enabled)"""
+        if self._accounts_calculator:
+            return self._accounts_calculator.save()
+        return None
     
     @property
     def interest_proceeds(self) -> Decimal:
@@ -109,10 +145,11 @@ class CLODealEngine:
     Converted from VBA CLODeal.cls - coordinates entire deal lifecycle
     """
     
-    def __init__(self, deal: CLODeal, session: Session):
+    def __init__(self, deal: CLODeal, session: Session, enable_account_persistence: bool = False):
         self.deal = deal
         self.session = session
         self.deal_name = deal.deal_name
+        self.enable_account_persistence = enable_account_persistence
         
         # Core components (loaded via setup methods)
         self.liabilities: Dict[str, Liability] = {}
@@ -122,6 +159,11 @@ class CLODealEngine:
         self.oc_triggers: Dict[str, Any] = {}  # OC trigger objects
         self.ic_triggers: Dict[str, Any] = {}  # IC trigger objects
         self.waterfall_strategy: Optional[DynamicWaterfallStrategy] = None
+        
+        # Enhanced account management with database persistence
+        self.accounts_service: Optional[AccountsService] = None
+        if enable_account_persistence:
+            self.accounts_service = AccountsService(session)
         
         # Deal configuration
         self.deal_dates: Optional[DealDates] = None
@@ -158,15 +200,49 @@ class CLODealEngine:
         """Setup reinvestment strategy"""
         self.reinvestment_info = reinvestment_info
     
-    def setup_accounts(self, initial_balances: Dict[AccountType, Tuple[Decimal, Decimal]] = None) -> None:
-        """Setup CLO accounts with optional initial balances"""
+    def setup_accounts(self, initial_balances: Dict[AccountType, Tuple[Decimal, Decimal]] = None, 
+                      period_date: date = None) -> None:
+        """Setup CLO accounts with optional initial balances and database persistence"""
         for account_type in AccountType:
-            account = Account(account_type)
+            # Create account with optional database persistence
+            account = Account(
+                account_type,
+                deal_id=self.deal.deal_id if self.enable_account_persistence else None,
+                period_date=period_date if self.enable_account_persistence else None,
+                session=self.session if self.enable_account_persistence else None,
+                enable_persistence=self.enable_account_persistence
+            )
+            
             if initial_balances and account_type in initial_balances:
                 interest_bal, principal_bal = initial_balances[account_type]
                 account.add(CashType.INTEREST, interest_bal)
                 account.add(CashType.PRINCIPAL, principal_bal)
+            
             self.accounts[account_type] = account
+        
+        # Initialize standard account types in database if persistence is enabled
+        if self.enable_account_persistence and self.accounts_service:
+            self.accounts_service.initialize_account_types()
+    
+    def save_all_accounts(self) -> Dict[AccountType, Any]:
+        """Save all accounts to database (if persistence enabled)"""
+        results = {}
+        for account_type, account in self.accounts.items():
+            if account.enable_persistence:
+                results[account_type] = account.save()
+        return results
+    
+    def get_account_summaries(self, period_date: date) -> Dict[str, Dict]:
+        """Get account summaries for reporting"""
+        summaries = {}
+        for account_type, account in self.accounts.items():
+            summaries[account_type.value] = {
+                'account_type': account_type.value,
+                'interest_proceeds': float(account.interest_proceeds),
+                'principal_proceeds': float(account.principal_proceeds), 
+                'total_proceeds': float(account.total_proceeds)
+            }
+        return summaries
     
     def setup_liabilities(self, liabilities: Dict[str, Liability]) -> None:
         """Setup liability dictionary and calculators"""
@@ -395,6 +471,23 @@ class CLODealEngine:
         self.accounts[AccountType.COLLECTION].add(CashType.INTEREST, interest_collections)
         self.accounts[AccountType.COLLECTION].add(CashType.PRINCIPAL, principal_collections)
         
+        # Create detailed transaction records if persistence is enabled
+        if self.enable_account_persistence and interest_collections > 0:
+            self.accounts[AccountType.COLLECTION].create_transaction_record(
+                CashType.INTEREST, interest_collections,
+                reference_id=f"PERIOD_{period}_COLLECTIONS",
+                description=f"Interest collections for period {period}",
+                counterparty="Collateral Portfolio"
+            )
+        
+        if self.enable_account_persistence and principal_collections > 0:
+            self.accounts[AccountType.COLLECTION].create_transaction_record(
+                CashType.PRINCIPAL, principal_collections,
+                reference_id=f"PERIOD_{period}_COLLECTIONS", 
+                description=f"Principal collections for period {period}",
+                counterparty="Collateral Portfolio"
+            )
+        
         # Handle purchase finance accrued interest
         self._handle_purchase_finance_accrued_interest()
         
@@ -455,6 +548,10 @@ class CLODealEngine:
         if liquidate:
             liquidation_proceeds = self._liquidate_portfolio()
             self.principal_proceeds[period] += liquidation_proceeds
+        
+        # Save account states to database if persistence is enabled
+        if self.enable_account_persistence:
+            self.save_all_accounts()
     
     def calculate_reinvestment_amount(self, period: int, liquidate: bool = False) -> Decimal:
         """

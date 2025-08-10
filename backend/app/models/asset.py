@@ -147,12 +147,18 @@ class Asset(Base):
     pik_amount = Column(Numeric(18,2), doc="Current PIK amount")
     unfunded_amount = Column(Numeric(18,2), doc="Unfunded commitment")
     
-    # Credit Ratings
+    # Credit Ratings (Enhanced with rating system integration)
     mdy_rating = Column(String(10), doc="Moody's current rating")
     mdy_dp_rating = Column(String(10), doc="Moody's Deal Pricing rating")
     mdy_dp_rating_warf = Column(String(10), doc="Moody's WARF rating")
     mdy_recovery_rate = Column(Numeric(5,4), doc="Moody's recovery rate")
     sp_rating = Column(String(10), doc="S&P current rating")
+    
+    # Derived Ratings (calculated by RatingDerivationEngine)
+    derived_mdy_rating = Column(String(10), doc="Derived Moody's rating from cross-agency")
+    derived_sp_rating = Column(String(10), doc="Derived S&P rating from cross-agency")
+    rating_derivation_date = Column(Date, doc="Date when ratings were last derived")
+    rating_source_hierarchy = Column(Text, doc="JSON of rating source priority used")
     
     # Additional Ratings
     mdy_facility_rating = Column(String(10), doc="Moody's facility rating")
@@ -204,6 +210,177 @@ class Asset(Base):
     
     def __repr__(self):
         return f"<Asset({self.blkrock_id}: {self.issuer_name} - ${self.par_amount:,.0f})>"
+    
+    # Rating System Integration Methods
+    def update_derived_ratings(self, rating_service=None):
+        """
+        Update derived ratings using RatingDerivationEngine
+        Integrates with the VBA RatingDerivations.cls functionality
+        """
+        if not rating_service:
+            from ..models.rating_system import RatingService
+            from sqlalchemy.orm import Session
+            from ..core.database import get_db
+            session = next(get_db())
+            rating_service = RatingService(session)
+        
+        try:
+            # Calculate all derived ratings
+            results = rating_service.update_asset_ratings(self)
+            
+            # Update the asset with derived ratings
+            self.derived_mdy_rating = results.get('mdy_rating')
+            self.derived_sp_rating = results.get('sp_rating')
+            self.mdy_dp_rating = results.get('mdy_dp_rating')
+            self.mdy_dp_rating_warf = results.get('mdy_dp_rating_warf')
+            self.mdy_recovery_rate = results.get('mdy_recovery_rate')
+            self.rating_derivation_date = date.today()
+            
+            # Store rating source hierarchy for audit trail
+            import json
+            hierarchy = self._get_rating_source_hierarchy()
+            self.rating_source_hierarchy = json.dumps(hierarchy)
+            
+            return results
+            
+        except Exception as e:
+            # Log error but don't fail the update
+            print(f"Warning: Failed to update derived ratings for {self.blkrock_id}: {e}")
+            return {}
+    
+    def _get_rating_source_hierarchy(self) -> Dict[str, str]:
+        """Get the rating source hierarchy used for derivation"""
+        hierarchy = {}
+        
+        # Moody's hierarchy
+        if self.mdy_facility_rating and self.mdy_facility_rating != "NR":
+            hierarchy['mdy_primary'] = 'facility'
+        elif self.mdy_issuer_rating and self.mdy_issuer_rating != "NR":
+            hierarchy['mdy_primary'] = 'issuer'
+        elif self.mdy_snr_unsec_rating and self.mdy_snr_unsec_rating != "NR":
+            hierarchy['mdy_primary'] = 'snr_unsec'
+        elif self.mdy_snr_sec_rating and self.mdy_snr_sec_rating != "NR":
+            hierarchy['mdy_primary'] = 'snr_sec'
+        else:
+            hierarchy['mdy_primary'] = 'derived_from_sp'
+        
+        # S&P hierarchy
+        if self.sp_issuer_rating and self.sp_issuer_rating != "NR":
+            hierarchy['sp_primary'] = 'issuer'
+        elif self.sp_snr_sec_rating and self.sp_snr_sec_rating != "NR":
+            hierarchy['sp_primary'] = 'snr_sec'
+        elif self.sp_subordinate and self.sp_subordinate != "NR":
+            hierarchy['sp_primary'] = 'subordinate'
+        else:
+            hierarchy['sp_primary'] = 'derived_from_mdy'
+        
+        return hierarchy
+    
+    def get_effective_mdy_rating(self) -> str:
+        """Get the most appropriate Moody's rating for calculations"""
+        # Priority: derived > current > facility > issuer > default
+        if self.derived_mdy_rating:
+            return self.derived_mdy_rating
+        elif self.mdy_rating and self.mdy_rating != "NR":
+            return self.mdy_rating
+        elif self.mdy_facility_rating and self.mdy_facility_rating != "NR":
+            return self.mdy_facility_rating
+        elif self.mdy_issuer_rating and self.mdy_issuer_rating != "NR":
+            return self.mdy_issuer_rating
+        else:
+            return "Caa3"  # Default rating
+    
+    def get_effective_sp_rating(self) -> str:
+        """Get the most appropriate S&P rating for calculations"""
+        # Priority: derived > current > issuer > facility > default
+        if self.derived_sp_rating:
+            return self.derived_sp_rating
+        elif self.sp_rating and self.sp_rating != "NR":
+            return self.sp_rating
+        elif self.sp_issuer_rating and self.sp_issuer_rating != "NR":
+            return self.sp_issuer_rating
+        elif self.sp_facility_rating and self.sp_facility_rating != "NR":
+            return self.sp_facility_rating
+        else:
+            return "CCC-"  # Default rating
+    
+    def get_effective_recovery_rate(self) -> Decimal:
+        """Get the most appropriate recovery rate"""
+        if self.mdy_recovery_rate:
+            return Decimal(str(self.mdy_recovery_rate))
+        else:
+            # Default recovery rate based on asset category
+            if self.flags.get('dip', False):
+                return Decimal('0.5000')  # DIP assets
+            elif self.seniority == "SENIOR SECURED":
+                return Decimal('0.4500')  # Senior secured default
+            else:
+                return Decimal('0.3000')  # Other assets default
+    
+    def track_rating_migration(self, new_ratings: Dict[str, str], rating_service=None):
+        """
+        Track rating migration and create migration record
+        Integrates with RatingMigrationItem functionality
+        """
+        if not rating_service:
+            from ..models.rating_system import RatingService
+            from sqlalchemy.orm import Session
+            from ..core.database import get_db
+            session = next(get_db())
+            rating_service = RatingService(session)
+        
+        # Get previous ratings
+        previous_ratings = {
+            'sp': self.get_effective_sp_rating(),
+            'mdy': self.get_effective_mdy_rating(),
+            'fitch': self.fitch_rating or ""
+        }
+        
+        # Create migration record
+        migration = rating_service.create_rating_migration(
+            asset_id=self.blkrock_id,
+            migration_date=date.today(),
+            previous_ratings=previous_ratings,
+            new_ratings=new_ratings,
+            par_amount=self.par_amount or Decimal('0'),
+            portfolio_weight=Decimal('0.01')  # Would be calculated from portfolio context
+        )
+        
+        return migration
+    
+    def get_rating_analytics(self) -> Dict[str, Any]:
+        """Get comprehensive rating analytics for the asset"""
+        return {
+            'asset_id': self.blkrock_id,
+            'issuer': self.issuer_name,
+            'current_ratings': {
+                'mdy_rating': self.mdy_rating,
+                'sp_rating': self.sp_rating,
+                'fitch_rating': getattr(self, 'fitch_rating', None)
+            },
+            'derived_ratings': {
+                'derived_mdy': self.derived_mdy_rating,
+                'derived_sp': self.derived_sp_rating,
+                'mdy_dp': self.mdy_dp_rating,
+                'mdy_dp_warf': self.mdy_dp_rating_warf
+            },
+            'effective_ratings': {
+                'effective_mdy': self.get_effective_mdy_rating(),
+                'effective_sp': self.get_effective_sp_rating()
+            },
+            'recovery_rate': float(self.get_effective_recovery_rate()),
+            'derivation_info': {
+                'derivation_date': self.rating_derivation_date,
+                'source_hierarchy': self.rating_source_hierarchy
+            },
+            'asset_characteristics': {
+                'bond_loan': self.bond_loan,
+                'seniority': self.seniority,
+                'dip': self.flags.get('dip', False) if self.flags else False,
+                'default_asset': self.flags.get('default_asset', False) if self.flags else False,
+                'struct_finance': self.flags.get('struct_finance', False) if self.flags else False
+            }
+        }
     
     @property
     def is_defaulted(self) -> bool:
