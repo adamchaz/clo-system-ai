@@ -160,6 +160,13 @@ class Asset(Base):
     rating_derivation_date = Column(Date, doc="Date when ratings were last derived")
     rating_source_hierarchy = Column(Text, doc="JSON of rating source priority used")
     
+    # Yield Curve and Pricing Integration
+    discount_curve_id = Column(Integer, doc="Yield curve ID for discounting")
+    discount_curve_name = Column(String(100), doc="Yield curve name for pricing")
+    fair_value = Column(Numeric(18,2), doc="Fair value calculated using yield curve")
+    fair_value_date = Column(Date, doc="Date when fair value was calculated")
+    pricing_spread_bps = Column(Integer, doc="Credit spread over base curve (basis points)")
+    
     # Additional Ratings
     mdy_facility_rating = Column(String(10), doc="Moody's facility rating")
     mdy_facility_outlook = Column(String(10), doc="Moody's facility outlook")
@@ -379,6 +386,254 @@ class Asset(Base):
                 'dip': self.flags.get('dip', False) if self.flags else False,
                 'default_asset': self.flags.get('default_asset', False) if self.flags else False,
                 'struct_finance': self.flags.get('struct_finance', False) if self.flags else False
+            }
+        }
+    
+    # Yield Curve Integration Methods
+    def update_fair_value(self, yield_curve_service=None, curve_name: str = None, 
+                         credit_spread_bps: int = None, pricing_date: date = None):
+        """
+        Update fair value using yield curve discounting
+        Integrates with YieldCurve system for market-based pricing
+        """
+        if not yield_curve_service:
+            from ..models.yield_curve import YieldCurveService
+            from sqlalchemy.orm import Session
+            from ..core.database import get_db
+            session = next(get_db())
+            yield_curve_service = YieldCurveService(session)
+        
+        if not pricing_date:
+            pricing_date = date.today()
+        
+        # Default curve selection based on asset characteristics
+        if not curve_name:
+            curve_name = self._select_default_discount_curve()
+        
+        # Default credit spread based on rating
+        if credit_spread_bps is None:
+            credit_spread_bps = self._estimate_credit_spread()
+        
+        try:
+            # Generate expected cash flows
+            cash_flows = self._generate_cash_flows(pricing_date)
+            
+            if not cash_flows:
+                return None
+            
+            # Load discount curve
+            discount_curve = yield_curve_service.load_yield_curve(curve_name, pricing_date)
+            if not discount_curve:
+                print(f"Warning: Discount curve {curve_name} not found for {self.blkrock_id}")
+                return None
+            
+            # Calculate present value with credit spread adjustment
+            fair_value = self._calculate_fair_value_with_spread(
+                cash_flows, discount_curve, credit_spread_bps, pricing_date
+            )
+            
+            # Update asset with calculated values
+            self.fair_value = fair_value
+            self.fair_value_date = pricing_date
+            self.discount_curve_name = curve_name
+            self.pricing_spread_bps = credit_spread_bps
+            
+            return {
+                'fair_value': float(fair_value),
+                'discount_curve': curve_name,
+                'credit_spread_bps': credit_spread_bps,
+                'pricing_date': pricing_date,
+                'cash_flow_count': len(cash_flows)
+            }
+            
+        except Exception as e:
+            print(f"Warning: Failed to update fair value for {self.blkrock_id}: {e}")
+            return None
+    
+    def _select_default_discount_curve(self) -> str:
+        """Select appropriate discount curve based on asset characteristics"""
+        # Treasury curve for government securities
+        if self.sector and 'GOVERNMENT' in self.sector.upper():
+            return 'USD_TREASURY'
+        
+        # Credit curves based on rating
+        effective_rating = self.get_effective_sp_rating() or self.get_effective_mdy_rating()
+        
+        if effective_rating:
+            # Convert to S&P equivalent for curve selection
+            if effective_rating.startswith(('AAA', 'AA', 'A')):
+                return 'USD_CREDIT_AAA'
+            elif effective_rating.startswith(('BBB', 'Baa')):
+                return 'USD_CREDIT_BBB'
+            else:
+                return 'USD_CREDIT_BBB'  # Default for speculative grade
+        
+        # Default to SOFR for floating rate assets
+        if self.coupon_type == 'FLOATING':
+            return 'USD_SOFR'
+        
+        # Default treasury curve
+        return 'USD_TREASURY'
+    
+    def _estimate_credit_spread(self) -> int:
+        """Estimate credit spread based on asset characteristics"""
+        # Base spread on rating
+        effective_rating = self.get_effective_sp_rating() or self.get_effective_mdy_rating()
+        
+        base_spread = 0
+        if effective_rating:
+            if effective_rating.startswith(('AAA', 'Aaa')):
+                base_spread = 50  # 50 bps
+            elif effective_rating.startswith(('AA', 'Aa')):
+                base_spread = 75  # 75 bps
+            elif effective_rating.startswith(('A', 'A')):
+                base_spread = 100  # 100 bps
+            elif effective_rating.startswith(('BBB', 'Baa')):
+                base_spread = 150  # 150 bps
+            elif effective_rating.startswith(('BB', 'Ba')):
+                base_spread = 300  # 300 bps
+            elif effective_rating.startswith(('B', 'B')):
+                base_spread = 500  # 500 bps
+            else:
+                base_spread = 800  # 800 bps for CCC and below
+        else:
+            base_spread = 400  # Default spread
+        
+        # Adjust for seniority
+        if self.seniority == 'SENIOR SECURED':
+            base_spread = int(base_spread * 0.8)  # 20% reduction
+        elif self.seniority == 'SUBORDINATE':
+            base_spread = int(base_spread * 1.5)  # 50% increase
+        
+        # Adjust for DIP status
+        if self.flags and self.flags.get('dip', False):
+            base_spread = int(base_spread * 0.7)  # DIP assets get lower spread
+        
+        return base_spread
+    
+    def _generate_cash_flows(self, pricing_date: date) -> List[Tuple[date, Decimal]]:
+        """Generate expected cash flows for present value calculation"""
+        cash_flows = []
+        
+        if not self.maturity or self.maturity <= pricing_date:
+            return cash_flows
+        
+        current_date = pricing_date
+        par_amount = self.par_amount or Decimal('0')
+        coupon_rate = self.coupon or Decimal('0')
+        
+        # Simple cash flow model - can be enhanced with more sophisticated models
+        if self.bond_loan == 'BOND':
+            # Bond: periodic interest + principal at maturity
+            payment_frequency = 2  # Semi-annual for bonds
+            payment_months = 12 // payment_frequency
+            
+            while current_date < self.maturity:
+                next_payment = current_date
+                if current_date == pricing_date:
+                    # Find next payment date
+                    if payment_months == 6:  # Semi-annual
+                        next_payment = date(current_date.year, 6 if current_date.month <= 6 else 12, 15)
+                        if next_payment <= current_date:
+                            next_payment = date(current_date.year + 1, 6, 15)
+                else:
+                    next_payment = date(current_date.year, current_date.month + payment_months, current_date.day)
+                    if current_date.month + payment_months > 12:
+                        next_payment = date(current_date.year + 1, 
+                                          (current_date.month + payment_months) - 12, 
+                                          current_date.day)
+                
+                if next_payment > self.maturity:
+                    break
+                
+                # Interest payment
+                interest_payment = par_amount * (coupon_rate / payment_frequency)
+                if interest_payment > 0:
+                    cash_flows.append((next_payment, interest_payment))
+                
+                current_date = next_payment
+            
+            # Principal repayment at maturity
+            if par_amount > 0:
+                cash_flows.append((self.maturity, par_amount))
+        
+        else:
+            # Loan: assume monthly amortization or bullet payment
+            if self.bond_loan == 'LOAN':
+                # Simple model: quarterly interest + bullet principal
+                payment_months = 3  # Quarterly
+                
+                while current_date < self.maturity:
+                    next_payment = date(current_date.year, 
+                                      current_date.month + payment_months, 
+                                      current_date.day)
+                    if current_date.month + payment_months > 12:
+                        next_payment = date(current_date.year + 1,
+                                          (current_date.month + payment_months) - 12,
+                                          current_date.day)
+                    
+                    if next_payment > self.maturity:
+                        break
+                    
+                    # Interest payment
+                    interest_payment = par_amount * (coupon_rate / 4)  # Quarterly
+                    if interest_payment > 0:
+                        cash_flows.append((next_payment, interest_payment))
+                    
+                    current_date = next_payment
+                
+                # Principal repayment at maturity
+                if par_amount > 0:
+                    cash_flows.append((self.maturity, par_amount))
+        
+        return cash_flows
+    
+    def _calculate_fair_value_with_spread(self, cash_flows: List[Tuple[date, Decimal]], 
+                                        discount_curve, credit_spread_bps: int, 
+                                        pricing_date: date) -> Decimal:
+        """Calculate fair value with credit spread adjustment"""
+        pv = Decimal('0')
+        spread_decimal = Decimal(str(credit_spread_bps / 10000))  # Convert bps to decimal
+        
+        for cf_date, cf_amount in cash_flows:
+            if cf_date <= pricing_date:
+                continue
+            
+            # Get base discount rate
+            base_rate = discount_curve.zero_rate(pricing_date, cf_date)
+            
+            # Add credit spread
+            total_rate = base_rate + float(spread_decimal)
+            
+            # Calculate years to cash flow
+            years_to_cf = (cf_date - pricing_date).days / 365.25
+            
+            # Present value calculation
+            discount_factor = Decimal(str((1 + total_rate) ** -years_to_cf))
+            pv += cf_amount * discount_factor
+        
+        return pv.quantize(Decimal('0.01'))
+    
+    def get_fair_value_analytics(self) -> Dict[str, Any]:
+        """Get comprehensive fair value analytics"""
+        return {
+            'asset_id': self.blkrock_id,
+            'current_fair_value': float(self.fair_value) if self.fair_value else None,
+            'par_amount': float(self.par_amount) if self.par_amount else None,
+            'fair_value_ratio': (float(self.fair_value) / float(self.par_amount) 
+                               if self.fair_value and self.par_amount and self.par_amount > 0 
+                               else None),
+            'pricing_info': {
+                'discount_curve': self.discount_curve_name,
+                'credit_spread_bps': self.pricing_spread_bps,
+                'pricing_date': self.fair_value_date
+            },
+            'asset_characteristics': {
+                'maturity': self.maturity,
+                'coupon': float(self.coupon) if self.coupon else None,
+                'coupon_type': self.coupon_type,
+                'seniority': self.seniority,
+                'rating': self.get_effective_sp_rating() or self.get_effective_mdy_rating()
             }
         }
     

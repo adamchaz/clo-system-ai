@@ -17,6 +17,9 @@ from .asset import Asset
 from .waterfall_types import WaterfallStep
 from .dynamic_waterfall import DynamicWaterfallStrategy
 from .accounts import AccountsCalculator, AccountsService, CashType as AccountsCashType
+from .reinvestment import Reinvest, ReinvestmentService, ReinvestInfo as ReinvestmentModelInfo, PaymentDates as ReinvestmentPaymentDates
+from .incentive_fee import IncentiveFeeStructure
+from ..services.incentive_fee import IncentiveFee, IncentiveFeeService
 
 
 class AccountType(str, Enum):
@@ -165,6 +168,17 @@ class CLODealEngine:
         if enable_account_persistence:
             self.accounts_service = AccountsService(session)
         
+        # Enhanced reinvestment management
+        self.reinvestment_service: Optional[ReinvestmentService] = None
+        self.reinvestment_periods: Dict[int, Reinvest] = {}  # period -> Reinvest instance
+        self.enable_reinvestment = False
+        
+        # Enhanced incentive fee management
+        self.incentive_fee_service: Optional[IncentiveFeeService] = None
+        self.incentive_fee: Optional[IncentiveFee] = None
+        self.enable_incentive_fee = False
+        self.incentive_fee_structure_id: Optional[int] = None
+        
         # Deal configuration
         self.deal_dates: Optional[DealDates] = None
         self.reinvestment_info: Optional[ReinvestmentInfo] = None
@@ -183,7 +197,7 @@ class CLODealEngine:
         # Portfolio components
         self.collateral_pool = None  # Portfolio of assets
         self.reinvestment_pool = None  # Reinvested assets
-        self.incentive_fee = None  # Incentive fee calculator
+        # Note: incentive_fee is now managed via enhanced incentive fee system above
         
         # State tracking
         self.current_period = 0
@@ -223,6 +237,127 @@ class CLODealEngine:
         # Initialize standard account types in database if persistence is enabled
         if self.enable_account_persistence and self.accounts_service:
             self.accounts_service.initialize_account_types()
+    
+    def setup_reinvestment(self, enable_reinvestment: bool = True,
+                          reinvestment_parameters: Dict[str, Any] = None) -> None:
+        """Setup reinvestment functionality with parameters"""
+        self.enable_reinvestment = enable_reinvestment
+        
+        if enable_reinvestment:
+            self.reinvestment_service = ReinvestmentService(self.session)
+            
+            # Default reinvestment parameters if not provided
+            if not reinvestment_parameters:
+                reinvestment_parameters = {
+                    'maturity_months': 60,
+                    'reinvest_price': 1.0,
+                    'spread': 0.05,
+                    'floor': 0.01,
+                    'liquidation_price': 0.70,
+                    'lag_months': 6,
+                    'prepayment_rate': 0.15,
+                    'default_rate': 0.03,
+                    'severity_rate': 0.40
+                }
+            
+            self.reinvestment_parameters = reinvestment_parameters
+    
+    def create_reinvestment_period(self, period: int, reinvestment_amount: float,
+                                  reinvestment_info: ReinvestmentModelInfo = None) -> Optional[Reinvest]:
+        """Create reinvestment period for specified period"""
+        if not self.enable_reinvestment or not self.reinvestment_service:
+            return None
+        
+        if not self.deal_dates:
+            raise RuntimeError("Deal dates must be configured before creating reinvestment periods")
+        
+        # Create payment dates for reinvestment
+        payment_dates = self._create_reinvestment_payment_dates(period)
+        
+        # Use provided reinvest info or create from parameters
+        if not reinvestment_info:
+            params = self.reinvestment_parameters
+            reinvestment_info = ReinvestmentModelInfo(
+                maturity=params.get('maturity_months', 60),
+                reinvest_price=params.get('reinvest_price', 1.0),
+                spread=params.get('spread', 0.05),
+                floor=params.get('floor', 0.01),
+                liquidation=params.get('liquidation_price', 0.70),
+                lag=params.get('lag_months', 6),
+                prepayment=params.get('prepayment_rate', 0.15),
+                default=params.get('default_rate', 0.03),
+                severity=params.get('severity_rate', 0.40)
+            )
+        
+        # Determine period dates
+        period_start = self._get_period_date(period)
+        period_end = self._get_period_date(period + reinvestment_info.Maturity // self.deal_dates.months_between_payments)
+        
+        # Create yield curve reference if available
+        yield_curve = getattr(self, 'yield_curve', None)
+        
+        # Create reinvestment period
+        reinvest = self.reinvestment_service.create_reinvestment_period(
+            deal_id=self.deal.deal_id,
+            period_start=period_start,
+            period_end=period_end,
+            reinvest_info=reinvestment_info,
+            payment_dates=payment_dates,
+            months_between_payments=self.deal_dates.months_between_payments,
+            yield_curve=yield_curve
+        )
+        
+        # Add reinvestment amount
+        reinvest.add_reinvestment(reinvestment_amount)
+        
+        # Store reinvestment period
+        self.reinvestment_periods[period] = reinvest
+        
+        return reinvest
+    
+    def _create_reinvestment_payment_dates(self, start_period: int) -> List[ReinvestmentPaymentDates]:
+        """Create payment dates for reinvestment starting from specified period"""
+        payment_dates = []
+        
+        # Add index 0 as None (VBA uses 1-based indexing)
+        payment_dates.append(None)
+        
+        # Create payment dates based on deal schedule
+        current_period = start_period
+        for i in range(1, 50):  # Up to 50 periods for reinvestment
+            period_date = self._get_period_date(current_period + i)
+            if not period_date:
+                break
+            
+            coll_beg_date = self._get_period_date(current_period + i - 1)
+            coll_end_date = period_date - relativedelta(days=1) if period_date else None
+            
+            if period_date and coll_beg_date and coll_end_date:
+                payment_dates.append(ReinvestmentPaymentDates(period_date, coll_beg_date, coll_end_date))
+            
+            # Stop if we reach deal maturity
+            if period_date and self.deal_dates.maturity_date and period_date >= self.deal_dates.maturity_date:
+                break
+        
+        return payment_dates
+    
+    def _get_period_date(self, period: int) -> Optional[date]:
+        """Get payment date for specified period"""
+        if not self.deal_dates:
+            return None
+        
+        try:
+            # Calculate period date based on first payment date and period
+            period_date = (self.deal_dates.first_payment_date + 
+                          relativedelta(months=(period - 1) * self.deal_dates.months_between_payments))
+            
+            # Don't go beyond maturity
+            if period_date > self.deal_dates.maturity_date:
+                return None
+            
+            return period_date
+        except:
+            return None
     
     def save_all_accounts(self) -> Dict[AccountType, Any]:
         """Save all accounts to database (if persistence enabled)"""
@@ -396,7 +531,7 @@ class CLODealEngine:
                 self.oc_triggers,
                 self.ic_triggers,
                 self.fees,
-                self.incentive_fee
+                self.incentive_fee  # This will be None if not enabled, or the IncentiveFee instance
             )
         
         liquidate_flag = False
@@ -545,13 +680,196 @@ class CLODealEngine:
             )
         
         # Handle liquidation
+        # Handle liquidation including reinvestment portfolios
         if liquidate:
             liquidation_proceeds = self._liquidate_portfolio()
             self.principal_proceeds[period] += liquidation_proceeds
+            
+            # Liquidate any active reinvestment periods
+            reinvestment_liquidation_proceeds = self._liquidate_reinvestment_portfolios()
+            self.principal_proceeds[period] += reinvestment_liquidation_proceeds
+        
+        # Process reinvestment periods
+        self._process_reinvestment_periods(period)
         
         # Save account states to database if persistence is enabled
         if self.enable_account_persistence:
             self.save_all_accounts()
+    
+    def _process_reinvestment_periods(self, period: int) -> None:
+        """Process active reinvestment periods for the current period"""
+        if not self.enable_reinvestment:
+            return
+        
+        reinvestment_proceeds = {"INTEREST": 0.0, "PRINCIPAL": 0.0}
+        
+        # Process existing reinvestment periods
+        for reinvest_period, reinvest in self.reinvestment_periods.items():
+            if reinvest_period <= period:
+                # Get proceeds from this reinvestment period
+                interest_proceeds = reinvest.get_proceeds("INTEREST")
+                principal_proceeds = reinvest.get_proceeds("PRINCIPAL")
+                
+                reinvestment_proceeds["INTEREST"] += interest_proceeds
+                reinvestment_proceeds["PRINCIPAL"] += principal_proceeds
+                
+                # Roll forward the reinvestment period
+                reinvest.roll_forward()
+        
+        # Add reinvestment proceeds to deal accounts
+        if reinvestment_proceeds["INTEREST"] > 0:
+            self.accounts[AccountType.COLLECTION].add(CashType.INTEREST, Decimal(str(reinvestment_proceeds["INTEREST"])))
+            
+            if self.enable_account_persistence:
+                self.accounts[AccountType.COLLECTION].create_transaction_record(
+                    CashType.INTEREST, Decimal(str(reinvestment_proceeds["INTEREST"])),
+                    reference_id=f"REINVEST_PERIOD_{period}",
+                    description=f"Reinvestment interest proceeds for period {period}",
+                    counterparty="Reinvestment Portfolio"
+                )
+        
+        if reinvestment_proceeds["PRINCIPAL"] > 0:
+            self.accounts[AccountType.COLLECTION].add(CashType.PRINCIPAL, Decimal(str(reinvestment_proceeds["PRINCIPAL"])))
+            
+            if self.enable_account_persistence:
+                self.accounts[AccountType.COLLECTION].create_transaction_record(
+                    CashType.PRINCIPAL, Decimal(str(reinvestment_proceeds["PRINCIPAL"])),
+                    reference_id=f"REINVEST_PERIOD_{period}",
+                    description=f"Reinvestment principal proceeds for period {period}",
+                    counterparty="Reinvestment Portfolio"
+                )
+        
+        # Check for new reinvestment opportunities
+        available_principal = self._calculate_available_reinvestment_principal(period)
+        if available_principal > 0:
+            self._handle_reinvestment_opportunities(period, available_principal)
+    
+    def _calculate_available_reinvestment_principal(self, period: int) -> float:
+        """Calculate principal available for reinvestment"""
+        if not self.enable_reinvestment or not self.reinvestment_info:
+            return 0.0
+        
+        # Get principal collections for the period
+        principal_collections = float(self.principal_proceeds.get(period, Decimal('0')))
+        
+        # Apply reinvestment strategy
+        if self._is_reinvestment_period(period):
+            # During reinvestment period
+            reinvest_type = self.reinvestment_info.pre_reinvestment_type
+            reinvest_pct = float(self.reinvestment_info.pre_reinvestment_pct)
+        else:
+            # After reinvestment period
+            reinvest_type = self.reinvestment_info.post_reinvestment_type
+            reinvest_pct = float(self.reinvestment_info.post_reinvestment_pct)
+        
+        if reinvest_type == "NONE":
+            return 0.0
+        elif reinvest_type == "ALL PRINCIPAL":
+            return principal_collections * reinvest_pct
+        elif reinvest_type == "UNSCHEDULED PRINCIPAL":
+            # Calculate unscheduled principal (prepayments)
+            unscheduled_principal = self._calculate_unscheduled_principal(period)
+            return unscheduled_principal * reinvest_pct
+        
+        return 0.0
+    
+    def _handle_reinvestment_opportunities(self, period: int, available_amount: float) -> None:
+        """Handle reinvestment of available principal"""
+        if available_amount <= 0:
+            return
+        
+        # Create reinvestment period if amount is significant
+        minimum_reinvestment = 100000.0  # $100k minimum
+        if available_amount >= minimum_reinvestment:
+            reinvest = self.create_reinvestment_period(period, available_amount)
+            
+            if reinvest and self.enable_account_persistence:
+                # Record reinvestment transaction
+                self.accounts[AccountType.COLLECTION].create_transaction_record(
+                    CashType.PRINCIPAL, -Decimal(str(available_amount)),
+                    reference_id=f"REINVEST_CREATE_{period}",
+                    description=f"Principal reinvestment in period {period}",
+                    counterparty="Reinvestment Portfolio"
+                )
+    
+    def _liquidate_reinvestment_portfolios(self) -> Decimal:
+        """Liquidate all active reinvestment portfolios"""
+        total_proceeds = Decimal('0')
+        
+        if not self.enable_reinvestment:
+            return total_proceeds
+        
+        for reinvest_period, reinvest in self.reinvestment_periods.items():
+            # Use default liquidation price from reinvestment parameters
+            liquidation_price = self.reinvestment_parameters.get('liquidation_price', 0.70)
+            proceeds = reinvest.liquidate(liquidation_price)
+            total_proceeds += Decimal(str(proceeds))
+        
+        return total_proceeds
+    
+    def _is_reinvestment_period(self, period: int) -> bool:
+        """Check if we're still in the reinvestment period"""
+        if not self.deal_dates:
+            return False
+        
+        period_date = self._get_period_date(period)
+        if not period_date:
+            return False
+        
+        return period_date <= self.deal_dates.reinvestment_end_date
+    
+    def _calculate_unscheduled_principal(self, period: int) -> float:
+        """Calculate unscheduled principal (prepayments) for the period"""
+        total_unscheduled = 0.0
+        
+        # Sum unscheduled principal from all assets
+        for asset in self.assets_dict.values():
+            if hasattr(asset, 'unscheduled_principal_amount'):
+                unscheduled = getattr(asset, 'unscheduled_principal_amount', 0.0)
+                if isinstance(unscheduled, (int, float)):
+                    total_unscheduled += unscheduled
+                elif isinstance(unscheduled, Decimal):
+                    total_unscheduled += float(unscheduled)
+        
+        return total_unscheduled
+    
+    def get_reinvestment_summary(self) -> Dict[str, Any]:
+        """Get comprehensive reinvestment summary"""
+        summary = {
+            'reinvestment_enabled': self.enable_reinvestment,
+            'active_periods': len(self.reinvestment_periods),
+            'total_reinvested_amount': 0.0,
+            'total_current_balance': 0.0,
+            'periods': []
+        }
+        
+        if not self.enable_reinvestment:
+            return summary
+        
+        for period, reinvest in self.reinvestment_periods.items():
+            # Get reinvestment cash flows
+            cash_flows = reinvest.get_collat_cf()
+            
+            period_summary = {
+                'period': period,
+                'reinvest_id': getattr(reinvest, 'reinvest_id', None),
+                'last_period': reinvest.last_period,
+                'current_balances': {
+                    'performing': float(reinvest.prin_ball_ex_defaults()),
+                    'defaults': float(reinvest.prin_ball_defaults()),
+                    'mv_defaults': float(reinvest.mv_defaults())
+                }
+            }
+            
+            # Calculate totals
+            if len(cash_flows) > 1:  # Skip header row
+                total_reinvested = sum(row[0] for row in cash_flows[1:] if len(row) > 0 and isinstance(row[0], (int, float)))
+                summary['total_reinvested_amount'] += total_reinvested
+            
+            summary['total_current_balance'] += period_summary['current_balances']['performing']
+            summary['periods'].append(period_summary)
+        
+        return summary
     
     def calculate_reinvestment_amount(self, period: int, liquidate: bool = False) -> Decimal:
         """
@@ -794,5 +1112,267 @@ class CLODealEngine:
         for calculator in self.liability_calculators.values():
             calculator.roll_forward(self.current_period)
         
+        # Roll forward incentive fee
+        if self.enable_incentive_fee and self.incentive_fee:
+            # Incentive fee rollforward is handled within waterfall execution
+            pass
+        
         # Roll forward fees, triggers, etc.
         # TODO: Implement when components are available
+    
+    # ========================================
+    # INCENTIVE FEE MANAGEMENT METHODS
+    # ========================================
+    
+    def setup_incentive_fee(
+        self,
+        enable: bool = True,
+        hurdle_rate: float = 0.08,
+        incentive_fee_rate: float = 0.20,
+        fee_structure_name: str = "Manager Incentive Fee",
+        subordinated_payments: Optional[Dict[date, float]] = None
+    ) -> None:
+        """
+        Setup incentive fee system for the CLO deal
+        
+        Args:
+            enable: Enable/disable incentive fee calculations
+            hurdle_rate: IRR hurdle rate (e.g., 0.08 for 8%)
+            incentive_fee_rate: Fee rate above hurdle (e.g., 0.20 for 20%)
+            fee_structure_name: Name for the fee structure
+            subordinated_payments: Historical subordinated payments {date: amount}
+        """
+        self.enable_incentive_fee = enable
+        
+        if not enable:
+            self.incentive_fee_service = None
+            self.incentive_fee = None
+            self.incentive_fee_structure_id = None
+            return
+        
+        # Initialize incentive fee service
+        self.incentive_fee_service = IncentiveFeeService(self.session)
+        
+        # Create or load fee structure
+        self.incentive_fee = IncentiveFee(self.session)
+        
+        # Setup subordinated payments (use empty dict if none provided)
+        if subordinated_payments is None:
+            subordinated_payments = {}
+        
+        # Setup incentive fee with VBA equivalent parameters
+        self.incentive_fee.setup(
+            i_fee_threshold=hurdle_rate,
+            i_incentive_fee=incentive_fee_rate,
+            i_payto_sub_notholder=subordinated_payments
+        )
+        
+        # Perform deal setup when we have deal dates
+        if self.deal_dates:
+            self._setup_incentive_fee_deal_parameters(fee_structure_name)
+        
+        self.logger.info(f"Incentive fee system initialized: {hurdle_rate:.1%} hurdle, {incentive_fee_rate:.1%} fee")
+    
+    def _setup_incentive_fee_deal_parameters(self, fee_structure_name: str) -> None:
+        """Setup incentive fee deal parameters when deal dates are available"""
+        if not self.enable_incentive_fee or not self.incentive_fee:
+            return
+        
+        if not self.deal_dates:
+            raise RuntimeError("Deal dates must be configured before setting up incentive fee")
+        
+        # Calculate estimated number of payments
+        num_payments = len(self.payment_dates) if self.payment_dates else self._estimate_payment_periods()
+        
+        # VBA DealSetup equivalent
+        self.incentive_fee.deal_setup(
+            i_num_of_payments=num_payments,
+            i_close_date=self.deal_dates.closing_date,
+            i_analysis_date=self.deal_dates.analysis_date
+        )
+        
+        # Save to database for persistence
+        self.incentive_fee_structure_id = self.incentive_fee.save_to_database(
+            self.deal.deal_id,
+            fee_structure_name
+        )
+    
+    def _estimate_payment_periods(self) -> int:
+        """Estimate number of payment periods based on deal dates"""
+        if not self.deal_dates:
+            return 60  # Default to 60 periods (15 years quarterly)
+        
+        # Calculate periods from closing to maturity
+        months_total = (
+            (self.deal_dates.maturity_date - self.deal_dates.closing_date).days / 365.25 * 12
+        )
+        periods = int(months_total / self.deal_dates.months_between_payments) + 1
+        
+        return max(periods, 1)
+    
+    def load_incentive_fee_structure(self, fee_structure_id: int) -> None:
+        """
+        Load existing incentive fee structure from database
+        
+        Args:
+            fee_structure_id: Database ID of existing fee structure
+        """
+        self.enable_incentive_fee = True
+        self.incentive_fee_service = IncentiveFeeService(self.session)
+        self.incentive_fee_structure_id = fee_structure_id
+        
+        # Load from database
+        self.incentive_fee = IncentiveFee.load_from_database(self.session, fee_structure_id)
+        
+        self.logger.info(f"Loaded incentive fee structure {fee_structure_id}")
+    
+    def process_incentive_fee_for_period(self, period: int) -> None:
+        """
+        Process incentive fee calculations for a specific period
+        
+        This method should be called during the waterfall execution to handle
+        subordinated payments and fee calculations.
+        
+        Args:
+            period: Current calculation period
+        """
+        if not self.enable_incentive_fee or not self.incentive_fee:
+            return
+        
+        # Get period date
+        period_date = self._get_period_date(period)
+        if not period_date:
+            return
+        
+        # VBA Calc() equivalent
+        self.incentive_fee.calc(period_date)
+        
+        # This is where subordinated payments would be recorded
+        # The actual payment amount comes from the waterfall execution
+        # For now, we setup the calculation framework
+        
+        self.logger.debug(f"Processed incentive fee calculation for period {period}")
+    
+    def record_subordinated_payment(self, period: int, payment_amount: float) -> float:
+        """
+        Record subordinated noteholder payment and calculate incentive fee
+        
+        Args:
+            period: Current period
+            payment_amount: Payment amount to subordinated noteholders
+            
+        Returns:
+            Net payment amount after incentive fee deduction
+        """
+        if not self.enable_incentive_fee or not self.incentive_fee:
+            return payment_amount
+        
+        # VBA PaymentToSubNotholder() equivalent
+        self.incentive_fee.payment_to_sub_notholder(payment_amount)
+        
+        # Calculate and deduct incentive fee if applicable
+        # VBA PayIncentiveFee() equivalent
+        net_payment = self.incentive_fee.pay_incentive_fee(payment_amount)
+        
+        # Log fee calculation
+        if net_payment < payment_amount:
+            fee_amount = payment_amount - net_payment
+            self.logger.info(f"Period {period}: Incentive fee ${fee_amount:,.2f} on ${payment_amount:,.2f} payment")
+        
+        return net_payment
+    
+    def finalize_incentive_fee_period(self, period: int) -> None:
+        """
+        Finalize incentive fee calculations for the period
+        
+        This should be called at the end of period processing to roll forward
+        the incentive fee calculations and update IRR.
+        
+        Args:
+            period: Current period being finalized
+        """
+        if not self.enable_incentive_fee or not self.incentive_fee:
+            return
+        
+        # VBA Rollfoward() equivalent (preserving VBA typo)
+        self.incentive_fee.rollfoward()
+        
+        # Save updated state to database
+        if self.incentive_fee_structure_id:
+            self.incentive_fee.save_to_database(
+                self.deal.deal_id,
+                f"Period {period} Update"
+            )
+        
+        self.logger.debug(f"Finalized incentive fee for period {period}")
+    
+    def get_incentive_fee_summary(self) -> Dict[str, Any]:
+        """
+        Get comprehensive summary of incentive fee calculations
+        
+        Returns:
+            Dictionary with incentive fee summary data
+        """
+        if not self.enable_incentive_fee or not self.incentive_fee:
+            return {
+                'incentive_fee_enabled': False,
+                'total_fees_paid': 0.0,
+                'threshold_reached': False,
+                'current_period': 0,
+                'fee_structure_id': None
+            }
+        
+        # Get VBA output data
+        output_data = self.incentive_fee.output()
+        
+        summary = {
+            'incentive_fee_enabled': True,
+            'fee_structure_id': self.incentive_fee_structure_id,
+            'hurdle_rate': self.incentive_fee.cls_fee_hurdle_rate,
+            'incentive_fee_rate': self.incentive_fee.cls_incent_fee,
+            'threshold_reached': self.incentive_fee.cls_threshold_reach,
+            'current_period': self.incentive_fee.cls_period,
+            'total_fees_paid': self.incentive_fee.fee_paid(),
+            'cumulative_discounted_payments': self.incentive_fee.cls_cum_dicounted_sub_payments,
+            'closing_date': self.incentive_fee.cls_closing_date.isoformat() if self.incentive_fee.cls_closing_date else None,
+            'output_data': output_data,
+            'subordinated_payments_count': len(self.incentive_fee.cls_sub_payments_dict),
+            'period_calculations': []
+        }
+        
+        # Add period-by-period details
+        for i in range(1, self.incentive_fee.cls_period):
+            if i < len(self.incentive_fee.cls_threshold):
+                period_data = {
+                    'period': i,
+                    'threshold': self.incentive_fee.cls_threshold[i],
+                    'fee_paid': self.incentive_fee.cls_fee_paid[i] if i < len(self.incentive_fee.cls_fee_paid) else 0.0,
+                    'irr': self.incentive_fee.cls_irr[i] if i < len(self.incentive_fee.cls_irr) else 0.0
+                }
+                summary['period_calculations'].append(period_data)
+        
+        return summary
+    
+    def get_current_incentive_fee_threshold(self) -> float:
+        """
+        Get current incentive fee threshold amount
+        
+        Returns:
+            Current threshold amount that subordinated payments must exceed
+        """
+        if not self.enable_incentive_fee or not self.incentive_fee:
+            return 0.0
+        
+        return self.incentive_fee.incentive_fee_threshold()
+    
+    def is_incentive_fee_threshold_reached(self) -> bool:
+        """
+        Check if incentive fee threshold has been reached
+        
+        Returns:
+            True if threshold reached, False otherwise
+        """
+        if not self.enable_incentive_fee or not self.incentive_fee:
+            return False
+        
+        return self.incentive_fee.cls_threshold_reach
