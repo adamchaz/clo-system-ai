@@ -1,0 +1,5906 @@
+{
+  "file_structure": {
+    "total_files": 63,
+    "worksheets": [
+      "xl/worksheets/sheet1.xml",
+      "xl/worksheets/sheet2.xml",
+      "xl/worksheets/sheet3.xml",
+      "xl/worksheets/sheet4.xml",
+      "xl/worksheets/sheet5.xml",
+      "xl/worksheets/sheet6.xml",
+      "xl/worksheets/sheet7.xml",
+      "xl/worksheets/sheet8.xml",
+      "xl/worksheets/sheet9.xml",
+      "xl/worksheets/sheet10.xml",
+      "xl/worksheets/sheet11.xml",
+      "xl/worksheets/sheet12.xml",
+      "xl/worksheets/sheet13.xml",
+      "xl/worksheets/sheet14.xml",
+      "xl/worksheets/sheet15.xml",
+      "xl/worksheets/sheet16.xml",
+      "xl/worksheets/sheet17.xml",
+      "xl/worksheets/sheet18.xml",
+      "xl/worksheets/sheet19.xml",
+      "xl/worksheets/sheet20.xml",
+      "xl/worksheets/_rels/sheet14.xml.rels",
+      "xl/worksheets/_rels/sheet15.xml.rels",
+      "xl/worksheets/_rels/sheet16.xml.rels",
+      "xl/worksheets/_rels/sheet9.xml.rels",
+      "xl/worksheets/_rels/sheet2.xml.rels",
+      "xl/worksheets/_rels/sheet1.xml.rels",
+      "xl/worksheets/_rels/sheet3.xml.rels",
+      "xl/worksheets/_rels/sheet4.xml.rels",
+      "xl/worksheets/_rels/sheet5.xml.rels",
+      "xl/worksheets/_rels/sheet6.xml.rels",
+      "xl/worksheets/_rels/sheet7.xml.rels",
+      "xl/worksheets/_rels/sheet8.xml.rels",
+      "xl/worksheets/_rels/sheet10.xml.rels",
+      "xl/worksheets/_rels/sheet11.xml.rels",
+      "xl/worksheets/_rels/sheet12.xml.rels"
+    ],
+    "vba_files": [
+      "xl/vbaProject.bin"
+    ],
+    "external_links": [],
+    "connections": [],
+    "pivot_tables": [],
+    "charts": [],
+    "drawings": [
+      "xl/drawings/drawing1.xml"
+    ],
+    "custom_xml": []
+  },
+  "worksheets": {
+    "Sheet1": {
+      "name": "Sheet1",
+      "file": "xl/worksheets/sheet1.xml",
+      "dimensions": {
+        "rows": 44,
+        "cols": 27
+      },
+      "formulas": {
+        "count": 1,
+        "samples": [
+          {
+            "cell": "I39",
+            "formula": "SUM(I31:I38)"
+          }
+        ],
+        "functions_used": {
+          "SUM": 1
+        }
+      },
+      "data": {
+        "cell_count": 719,
+        "sample_values": [
+          {
+            "cell": "B2",
+            "value": "1822"
+          },
+          {
+            "cell": "B7",
+            "value": "1844"
+          },
+          {
+            "cell": "D7",
+            "value": "1839"
+          },
+          {
+            "cell": "J7",
+            "value": "1425"
+          },
+          {
+            "cell": "B8",
+            "value": "1270"
+          },
+          {
+            "cell": "C8",
+            "value": "42452"
+          },
+          {
+            "cell": "D8",
+            "value": "1824"
+          },
+          {
+            "cell": "E8",
+            "value": "750000"
+          },
+          {
+            "cell": "J8",
+            "value": "1830"
+          },
+          {
+            "cell": "N8",
+            "value": "1"
+          },
+          {
+            "cell": "B9",
+            "value": "1402"
+          },
+          {
+            "cell": "C9",
+            "value": "1855"
+          },
+          {
+            "cell": "D9",
+            "value": "1848"
+          },
+          {
+            "cell": "E9",
+            "value": "1"
+          },
+          {
+            "cell": "J9",
+            "value": "1837"
+          },
+          {
+            "cell": "B10",
+            "value": "1825"
+          },
+          {
+            "cell": "C10",
+            "value": "431157604.91528994"
+          },
+          {
+            "cell": "D10",
+            "value": "1826"
+          },
+          {
+            "cell": "E10",
+            "value": "1423"
+          },
+          {
+            "cell": "J10",
+            "value": "1405"
+          },
+          {
+            "cell": "K10",
+            "value": "1234"
+          },
+          {
+            "cell": "L10",
+            "value": "1422"
+          },
+          {
+            "cell": "M10",
+            "value": "1406"
+          },
+          {
+            "cell": "N10",
+            "value": "1160"
+          },
+          {
+            "cell": "B11",
+            "value": "1827"
+          },
+          {
+            "cell": "C11",
+            "value": "68842395.084710062"
+          },
+          {
+            "cell": "D11",
+            "value": "1772"
+          },
+          {
+            "cell": "E11",
+            "value": "15000000"
+          },
+          {
+            "cell": "J11",
+            "value": "1855"
+          },
+          {
+            "cell": "K11",
+            "value": "421"
+          },
+          {
+            "cell": "L11",
+            "value": "1423"
+          },
+          {
+            "cell": "M11",
+            "value": "1000000"
+          },
+          {
+            "cell": "B12",
+            "value": "1828"
+          },
+          {
+            "cell": "C12",
+            "value": "107224.41000000003"
+          },
+          {
+            "cell": "D12",
+            "value": "1773"
+          },
+          {
+            "cell": "E12",
+            "value": "75000000"
+          },
+          {
+            "cell": "J12",
+            "value": "1855"
+          },
+          {
+            "cell": "K12",
+            "value": "816"
+          },
+          {
+            "cell": "L12",
+            "value": "1423"
+          },
+          {
+            "cell": "M12",
+            "value": "1500000"
+          },
+          {
+            "cell": "B13",
+            "value": "1823"
+          },
+          {
+            "cell": "D13",
+            "value": "1849"
+          },
+          {
+            "cell": "J13",
+            "value": "1855"
+          },
+          {
+            "cell": "K13",
+            "value": "816"
+          },
+          {
+            "cell": "L13",
+            "value": "1423"
+          },
+          {
+            "cell": "M13",
+            "value": "500000"
+          },
+          {
+            "cell": "B14",
+            "value": "1854"
+          },
+          {
+            "cell": "C14",
+            "value": "1"
+          },
+          {
+            "cell": "D14",
+            "value": "1716"
+          },
+          {
+            "cell": "E14",
+            "value": "1694"
+          }
+        ]
+      },
+      "business_indicators": {
+        "clo_keywords": {},
+        "data_patterns": [],
+        "sheet_purpose": "General Worksheet"
+      }
+    },
+    "Sheet2": {
+      "name": "Sheet2",
+      "file": "xl/worksheets/sheet2.xml",
+      "dimensions": {
+        "rows": 316,
+        "cols": 53
+      },
+      "formulas": {
+        "count": 790,
+        "samples": [
+          {
+            "cell": "C3",
+            "formula": "DealAnalysisDate"
+          },
+          {
+            "cell": "S3",
+            "formula": "K4"
+          },
+          {
+            "cell": "C4",
+            "formula": "MIN(IF(PMT_Dates>C3,PMT_Dates))"
+          },
+          {
+            "cell": "K4",
+            "formula": "IF(C4=AE6,K3,VLOOKUP(VLOOKUP(C4,$AF$4:$AI$185,2,FALSE)&\"3 MONTH LIBOR\",LIBOR_Rates,4,FALSE)/100)"
+          },
+          {
+            "cell": "Z4",
+            "formula": "Close_Date"
+          },
+          {
+            "cell": "AF4",
+            "formula": "AE6"
+          },
+          {
+            "cell": "AG4",
+            "formula": "Close_Date"
+          },
+          {
+            "cell": "AH4",
+            "formula": "Close_Date"
+          },
+          {
+            "cell": "AI4",
+            "formula": "IF(LEN(AF4)=0,\"\",WORKDAY(AF4,-$AE$13,Holidays))"
+          },
+          {
+            "cell": "C5",
+            "formula": "VLOOKUP(C4,$AF$4:$AI$185,3,FALSE)"
+          },
+          {
+            "cell": "Z5",
+            "formula": "AF4"
+          },
+          {
+            "cell": "AF5",
+            "formula": "WORKDAY(DATE(YEAR(EDATE(AF4,$AE$11)),MONTH(EDATE(AF4,$AE$11)),$AE$10)-1,1,Holidays)"
+          },
+          {
+            "cell": "AG5",
+            "formula": "IF(LEN(AF5)=0,\"\",WORKDAY(AF4,-$AE$12,Holidays))"
+          },
+          {
+            "cell": "AH5",
+            "formula": "IF(LEN(AF5)=0,\"\",AI4)"
+          },
+          {
+            "cell": "C6",
+            "formula": "VLOOKUP(C4,$AF$4:$AI$185,4,FALSE)"
+          },
+          {
+            "cell": "Z6",
+            "formula": "AF5"
+          },
+          {
+            "cell": "AH6",
+            "formula": "IF(LEN(AF6)=0,\"\",AI5)"
+          },
+          {
+            "cell": "C7",
+            "formula": "MAX(IF(PMT_Dates<C3,PMT_Dates,AE4))"
+          },
+          {
+            "cell": "AC7",
+            "formula": "K4"
+          },
+          {
+            "cell": "S8",
+            "formula": "SUM(AK7:AP7)"
+          }
+        ],
+        "functions_used": {
+          "MIN": 1,
+          "IF": 13,
+          "VLOOKUP": 5,
+          "LEN": 10,
+          "WORKDAY": 9,
+          "DATE": 3,
+          "YEAR": 3,
+          "EDATE": 6,
+          "MONTH": 3,
+          "MAX": 1,
+          "SUM": 2
+        }
+      },
+      "data": {
+        "cell_count": 3472,
+        "sample_values": [
+          {
+            "cell": "B1",
+            "value": "1201"
+          },
+          {
+            "cell": "D1",
+            "value": "1201"
+          },
+          {
+            "cell": "F1",
+            "value": "1201"
+          },
+          {
+            "cell": "J1",
+            "value": "1201"
+          },
+          {
+            "cell": "L1",
+            "value": "1201"
+          },
+          {
+            "cell": "R1",
+            "value": "1201"
+          },
+          {
+            "cell": "T1",
+            "value": "1201"
+          },
+          {
+            "cell": "X1",
+            "value": "1201"
+          },
+          {
+            "cell": "Z1",
+            "value": "1201"
+          },
+          {
+            "cell": "AB1",
+            "value": "1201"
+          },
+          {
+            "cell": "AD1",
+            "value": "1201"
+          },
+          {
+            "cell": "AF1",
+            "value": "1201"
+          },
+          {
+            "cell": "AJ1",
+            "value": "1201"
+          },
+          {
+            "cell": "AR1",
+            "value": "1201"
+          },
+          {
+            "cell": "A2",
+            "value": "1172"
+          },
+          {
+            "cell": "B2",
+            "value": "1206"
+          },
+          {
+            "cell": "D2",
+            "value": "1350"
+          },
+          {
+            "cell": "F2",
+            "value": "1223"
+          },
+          {
+            "cell": "J2",
+            "value": "610"
+          },
+          {
+            "cell": "L2",
+            "value": "1420"
+          },
+          {
+            "cell": "R2",
+            "value": "1214"
+          },
+          {
+            "cell": "T2",
+            "value": "1210"
+          },
+          {
+            "cell": "X2",
+            "value": "1426"
+          },
+          {
+            "cell": "Z2",
+            "value": "1254"
+          },
+          {
+            "cell": "AB2",
+            "value": "1258"
+          },
+          {
+            "cell": "AD2",
+            "value": "1173"
+          },
+          {
+            "cell": "AF2",
+            "value": "1184"
+          },
+          {
+            "cell": "AJ2",
+            "value": "1180"
+          },
+          {
+            "cell": "AR2",
+            "value": "1252"
+          },
+          {
+            "cell": "AZ2",
+            "value": "1643"
+          },
+          {
+            "cell": "A3",
+            "value": "1426"
+          },
+          {
+            "cell": "B3",
+            "value": "1202"
+          },
+          {
+            "cell": "C3",
+            "value": "42452"
+          },
+          {
+            "cell": "D3",
+            "value": "0"
+          },
+          {
+            "cell": "E3",
+            "value": "452"
+          },
+          {
+            "cell": "F3",
+            "value": "1087"
+          },
+          {
+            "cell": "G3",
+            "value": "1078"
+          },
+          {
+            "cell": "H3",
+            "value": "1079"
+          },
+          {
+            "cell": "I3",
+            "value": "1080"
+          },
+          {
+            "cell": "J3",
+            "value": "1215"
+          },
+          {
+            "cell": "K3",
+            "value": "3.1665999999999999E-3"
+          },
+          {
+            "cell": "L3",
+            "value": "1095"
+          },
+          {
+            "cell": "M3",
+            "value": "1076"
+          },
+          {
+            "cell": "N3",
+            "value": "1229"
+          },
+          {
+            "cell": "O3",
+            "value": "598"
+          },
+          {
+            "cell": "P3",
+            "value": "1150"
+          },
+          {
+            "cell": "Q3",
+            "value": "1151"
+          },
+          {
+            "cell": "R3",
+            "value": "1264"
+          },
+          {
+            "cell": "S3",
+            "value": "6.3385000000000004E-3"
+          },
+          {
+            "cell": "T3",
+            "value": "1076"
+          }
+        ]
+      },
+      "business_indicators": {
+        "clo_keywords": {},
+        "data_patterns": [],
+        "sheet_purpose": "General Worksheet"
+      }
+    },
+    "Sheet3": {
+      "name": "Sheet3",
+      "file": "xl/worksheets/sheet3.xml",
+      "dimensions": {
+        "rows": 440,
+        "cols": 52
+      },
+      "formulas": {
+        "count": 789,
+        "samples": [
+          {
+            "cell": "C3",
+            "formula": "DealAnalysisDate"
+          },
+          {
+            "cell": "S3",
+            "formula": "K4"
+          },
+          {
+            "cell": "C4",
+            "formula": "MIN(IF(PMT_Dates>=C3,PMT_Dates))"
+          },
+          {
+            "cell": "K4",
+            "formula": "IF(C4=AE6,K3,VLOOKUP(VLOOKUP(C4,$AF$4:$AI$185,2,FALSE)&\"3 MONTH LIBOR\",LIBOR_Rates,4,FALSE)/100)"
+          },
+          {
+            "cell": "Z4",
+            "formula": "Close_Date"
+          },
+          {
+            "cell": "AF4",
+            "formula": "AE6"
+          },
+          {
+            "cell": "AG4",
+            "formula": "Close_Date"
+          },
+          {
+            "cell": "AH4",
+            "formula": "Close_Date"
+          },
+          {
+            "cell": "AI4",
+            "formula": "IF(LEN(AF4)=0,\"\",WORKDAY(AF4,-$AE$13,Holidays))"
+          },
+          {
+            "cell": "C5",
+            "formula": "MAX(IF(CollBegDate<C3,CollBegDate))"
+          },
+          {
+            "cell": "Z5",
+            "formula": "AF4"
+          },
+          {
+            "cell": "AF5",
+            "formula": "WORKDAY(DATE(YEAR(EDATE(AF4,$AE$11)),MONTH(EDATE(AF4,$AE$11)),$AE$10)-1,1,Holidays)"
+          },
+          {
+            "cell": "AG5",
+            "formula": "IF(LEN(AF5)=0,\"\",WORKDAY(AF4,-$AE$12,Holidays))"
+          },
+          {
+            "cell": "AH5",
+            "formula": "IF(LEN(AF5)=0,\"\",AI4)"
+          },
+          {
+            "cell": "C6",
+            "formula": "MIN(IF(CollEndDate>C3,CollEndDate))"
+          },
+          {
+            "cell": "Z6",
+            "formula": "AF5"
+          },
+          {
+            "cell": "AH6",
+            "formula": "IF(LEN(AF6)=0,\"\",AI5)"
+          },
+          {
+            "cell": "C7",
+            "formula": "MAX(IF(PMT_Dates<C3,PMT_Dates,AE4))"
+          },
+          {
+            "cell": "AC7",
+            "formula": "K4"
+          },
+          {
+            "cell": "S8",
+            "formula": "SUM(AK7:AQ7)"
+          }
+        ],
+        "functions_used": {
+          "MIN": 2,
+          "IF": 15,
+          "VLOOKUP": 2,
+          "LEN": 10,
+          "WORKDAY": 9,
+          "MAX": 2,
+          "DATE": 3,
+          "YEAR": 3,
+          "EDATE": 6,
+          "MONTH": 3,
+          "SUM": 2
+        }
+      },
+      "data": {
+        "cell_count": 3592,
+        "sample_values": [
+          {
+            "cell": "B1",
+            "value": "1201"
+          },
+          {
+            "cell": "D1",
+            "value": "1201"
+          },
+          {
+            "cell": "F1",
+            "value": "1201"
+          },
+          {
+            "cell": "J1",
+            "value": "1201"
+          },
+          {
+            "cell": "L1",
+            "value": "1201"
+          },
+          {
+            "cell": "R1",
+            "value": "1201"
+          },
+          {
+            "cell": "T1",
+            "value": "1201"
+          },
+          {
+            "cell": "X1",
+            "value": "1201"
+          },
+          {
+            "cell": "Z1",
+            "value": "1201"
+          },
+          {
+            "cell": "AB1",
+            "value": "1201"
+          },
+          {
+            "cell": "AD1",
+            "value": "1201"
+          },
+          {
+            "cell": "AS1",
+            "value": "1201"
+          },
+          {
+            "cell": "A2",
+            "value": "1172"
+          },
+          {
+            "cell": "B2",
+            "value": "1206"
+          },
+          {
+            "cell": "D2",
+            "value": "1350"
+          },
+          {
+            "cell": "F2",
+            "value": "1223"
+          },
+          {
+            "cell": "J2",
+            "value": "610"
+          },
+          {
+            "cell": "L2",
+            "value": "1420"
+          },
+          {
+            "cell": "R2",
+            "value": "1214"
+          },
+          {
+            "cell": "T2",
+            "value": "1210"
+          },
+          {
+            "cell": "X2",
+            "value": "1426"
+          },
+          {
+            "cell": "Z2",
+            "value": "1254"
+          },
+          {
+            "cell": "AB2",
+            "value": "1258"
+          },
+          {
+            "cell": "AD2",
+            "value": "1173"
+          },
+          {
+            "cell": "AF2",
+            "value": "1184"
+          },
+          {
+            "cell": "AJ2",
+            "value": "1180"
+          },
+          {
+            "cell": "AS2",
+            "value": "1252"
+          },
+          {
+            "cell": "A3",
+            "value": "1223"
+          },
+          {
+            "cell": "B3",
+            "value": "1202"
+          },
+          {
+            "cell": "C3",
+            "value": "42452"
+          },
+          {
+            "cell": "D3",
+            "value": "0"
+          },
+          {
+            "cell": "E3",
+            "value": "452"
+          },
+          {
+            "cell": "F3",
+            "value": "1087"
+          },
+          {
+            "cell": "G3",
+            "value": "1078"
+          },
+          {
+            "cell": "H3",
+            "value": "1079"
+          },
+          {
+            "cell": "I3",
+            "value": "1080"
+          },
+          {
+            "cell": "J3",
+            "value": "1215"
+          },
+          {
+            "cell": "K3",
+            "value": "2.496E-3"
+          },
+          {
+            "cell": "L3",
+            "value": "1095"
+          },
+          {
+            "cell": "M3",
+            "value": "1076"
+          },
+          {
+            "cell": "N3",
+            "value": "1229"
+          },
+          {
+            "cell": "O3",
+            "value": "598"
+          },
+          {
+            "cell": "P3",
+            "value": "1150"
+          },
+          {
+            "cell": "Q3",
+            "value": "1151"
+          },
+          {
+            "cell": "R3",
+            "value": "1264"
+          },
+          {
+            "cell": "S3",
+            "value": "6.2199999999999998E-3"
+          },
+          {
+            "cell": "T3",
+            "value": "1076"
+          },
+          {
+            "cell": "U3",
+            "value": "1843"
+          },
+          {
+            "cell": "V3",
+            "value": "1095"
+          },
+          {
+            "cell": "W3",
+            "value": "1096"
+          }
+        ]
+      },
+      "business_indicators": {
+        "clo_keywords": {},
+        "data_patterns": [],
+        "sheet_purpose": "General Worksheet"
+      }
+    },
+    "Sheet4": {
+      "name": "Sheet4",
+      "file": "xl/worksheets/sheet4.xml",
+      "dimensions": {
+        "rows": 315,
+        "cols": 51
+      },
+      "formulas": {
+        "count": 788,
+        "samples": [
+          {
+            "cell": "C3",
+            "formula": "DealAnalysisDate"
+          },
+          {
+            "cell": "S3",
+            "formula": "K4"
+          },
+          {
+            "cell": "C4",
+            "formula": "MIN(IF(PMT_Dates>=C3,PMT_Dates))"
+          },
+          {
+            "cell": "K4",
+            "formula": "IF(C4=AE6,K3,VLOOKUP(VLOOKUP(C4,$AF$4:$AI$185,2,FALSE)&\"3 MONTH LIBOR\",LIBOR_Rates,4,FALSE)/100)"
+          },
+          {
+            "cell": "Z4",
+            "formula": "Close_Date"
+          },
+          {
+            "cell": "AF4",
+            "formula": "AE6"
+          },
+          {
+            "cell": "AG4",
+            "formula": "Close_Date"
+          },
+          {
+            "cell": "AH4",
+            "formula": "Close_Date"
+          },
+          {
+            "cell": "AI4",
+            "formula": "IF(LEN(AF4)=0,\"\",WORKDAY(AF4,-$AE$13,Holidays))"
+          },
+          {
+            "cell": "C5",
+            "formula": "VLOOKUP(C4,$AF$4:$AI$185,3,FALSE)"
+          },
+          {
+            "cell": "Z5",
+            "formula": "AF4"
+          },
+          {
+            "cell": "AF5",
+            "formula": "WORKDAY(DATE(YEAR(EDATE(AF4,$AE$11)),MONTH(EDATE(AF4,$AE$11)),$AE$10)-1,1,Holidays)"
+          },
+          {
+            "cell": "AG5",
+            "formula": "IF(LEN(AF5)=0,\"\",WORKDAY(AF4,-$AE$12,Holidays))"
+          },
+          {
+            "cell": "AH5",
+            "formula": "IF(LEN(AF5)=0,\"\",AI4)"
+          },
+          {
+            "cell": "C6",
+            "formula": "VLOOKUP(C4,$AF$4:$AI$185,4,FALSE)"
+          },
+          {
+            "cell": "Z6",
+            "formula": "AF5"
+          },
+          {
+            "cell": "AH6",
+            "formula": "IF(LEN(AF6)=0,\"\",AI5)"
+          },
+          {
+            "cell": "C7",
+            "formula": "MAX(IF(PMT_Dates<C3,PMT_Dates,AE4))"
+          },
+          {
+            "cell": "AC7",
+            "formula": "K4"
+          },
+          {
+            "cell": "S8",
+            "formula": "SUM(AK7:AP7)"
+          }
+        ],
+        "functions_used": {
+          "MIN": 1,
+          "IF": 13,
+          "VLOOKUP": 4,
+          "LEN": 10,
+          "WORKDAY": 9,
+          "DATE": 3,
+          "YEAR": 3,
+          "EDATE": 6,
+          "MONTH": 3,
+          "MAX": 1,
+          "SUM": 2
+        }
+      },
+      "data": {
+        "cell_count": 3459,
+        "sample_values": [
+          {
+            "cell": "B1",
+            "value": "1201"
+          },
+          {
+            "cell": "D1",
+            "value": "1201"
+          },
+          {
+            "cell": "F1",
+            "value": "1201"
+          },
+          {
+            "cell": "J1",
+            "value": "1201"
+          },
+          {
+            "cell": "L1",
+            "value": "1201"
+          },
+          {
+            "cell": "R1",
+            "value": "1201"
+          },
+          {
+            "cell": "T1",
+            "value": "1201"
+          },
+          {
+            "cell": "X1",
+            "value": "1201"
+          },
+          {
+            "cell": "Z1",
+            "value": "1201"
+          },
+          {
+            "cell": "AB1",
+            "value": "1201"
+          },
+          {
+            "cell": "AD1",
+            "value": "1201"
+          },
+          {
+            "cell": "AF1",
+            "value": "1201"
+          },
+          {
+            "cell": "AJ1",
+            "value": "1201"
+          },
+          {
+            "cell": "AR1",
+            "value": "1201"
+          },
+          {
+            "cell": "A2",
+            "value": "1172"
+          },
+          {
+            "cell": "B2",
+            "value": "1206"
+          },
+          {
+            "cell": "D2",
+            "value": "1350"
+          },
+          {
+            "cell": "F2",
+            "value": "1223"
+          },
+          {
+            "cell": "J2",
+            "value": "610"
+          },
+          {
+            "cell": "L2",
+            "value": "1420"
+          },
+          {
+            "cell": "R2",
+            "value": "1214"
+          },
+          {
+            "cell": "T2",
+            "value": "1210"
+          },
+          {
+            "cell": "X2",
+            "value": "1426"
+          },
+          {
+            "cell": "Z2",
+            "value": "1254"
+          },
+          {
+            "cell": "AB2",
+            "value": "1258"
+          },
+          {
+            "cell": "AD2",
+            "value": "1173"
+          },
+          {
+            "cell": "AF2",
+            "value": "1184"
+          },
+          {
+            "cell": "AJ2",
+            "value": "1180"
+          },
+          {
+            "cell": "AR2",
+            "value": "1252"
+          },
+          {
+            "cell": "A3",
+            "value": "1426"
+          },
+          {
+            "cell": "B3",
+            "value": "1202"
+          },
+          {
+            "cell": "C3",
+            "value": "42452"
+          },
+          {
+            "cell": "D3",
+            "value": "0"
+          },
+          {
+            "cell": "E3",
+            "value": "452"
+          },
+          {
+            "cell": "F3",
+            "value": "1087"
+          },
+          {
+            "cell": "G3",
+            "value": "1078"
+          },
+          {
+            "cell": "H3",
+            "value": "1079"
+          },
+          {
+            "cell": "I3",
+            "value": "1080"
+          },
+          {
+            "cell": "J3",
+            "value": "1215"
+          },
+          {
+            "cell": "K3",
+            "value": "3.1665999999999999E-3"
+          },
+          {
+            "cell": "L3",
+            "value": "1095"
+          },
+          {
+            "cell": "M3",
+            "value": "1076"
+          },
+          {
+            "cell": "N3",
+            "value": "1229"
+          },
+          {
+            "cell": "O3",
+            "value": "598"
+          },
+          {
+            "cell": "P3",
+            "value": "1150"
+          },
+          {
+            "cell": "Q3",
+            "value": "1151"
+          },
+          {
+            "cell": "R3",
+            "value": "1264"
+          },
+          {
+            "cell": "S3",
+            "value": "6.2199999999999998E-3"
+          },
+          {
+            "cell": "T3",
+            "value": "1076"
+          },
+          {
+            "cell": "U3",
+            "value": "1843"
+          }
+        ]
+      },
+      "business_indicators": {
+        "clo_keywords": {},
+        "data_patterns": [],
+        "sheet_purpose": "General Worksheet"
+      }
+    },
+    "Sheet5": {
+      "name": "Sheet5",
+      "file": "xl/worksheets/sheet5.xml",
+      "dimensions": {
+        "rows": 298,
+        "cols": 51
+      },
+      "formulas": {
+        "count": 788,
+        "samples": [
+          {
+            "cell": "C3",
+            "formula": "DealAnalysisDate"
+          },
+          {
+            "cell": "S3",
+            "formula": "K4"
+          },
+          {
+            "cell": "C4",
+            "formula": "MIN(IF(PMT_Dates>=C3,PMT_Dates))"
+          },
+          {
+            "cell": "K4",
+            "formula": "IF(C4=AE6,K3,VLOOKUP(VLOOKUP(C4,$AF$4:$AI$185,2,FALSE)&\"3 MONTH LIBOR\",LIBOR_Rates,4,FALSE)/100)"
+          },
+          {
+            "cell": "Z4",
+            "formula": "Close_Date"
+          },
+          {
+            "cell": "AF4",
+            "formula": "AE6"
+          },
+          {
+            "cell": "AG4",
+            "formula": "Close_Date"
+          },
+          {
+            "cell": "AH4",
+            "formula": "Close_Date"
+          },
+          {
+            "cell": "AI4",
+            "formula": "IF(LEN(AF4)=0,\"\",WORKDAY(AF4,-$AE$13,Holidays))"
+          },
+          {
+            "cell": "C5",
+            "formula": "VLOOKUP(C4,$AF$4:$AI$185,3,FALSE)"
+          },
+          {
+            "cell": "Z5",
+            "formula": "AF4"
+          },
+          {
+            "cell": "AF5",
+            "formula": "WORKDAY(DATE(YEAR(EDATE(AF4,$AE$11)),MONTH(EDATE(AF4,$AE$11)),$AE$10)-1,1,Holidays)"
+          },
+          {
+            "cell": "AG5",
+            "formula": "IF(LEN(AF5)=0,\"\",WORKDAY(AF4,-$AE$12,Holidays))"
+          },
+          {
+            "cell": "AH5",
+            "formula": "IF(LEN(AF5)=0,\"\",AI4)"
+          },
+          {
+            "cell": "C6",
+            "formula": "VLOOKUP(C4,$AF$4:$AI$185,4,FALSE)"
+          },
+          {
+            "cell": "Z6",
+            "formula": "AF5"
+          },
+          {
+            "cell": "AH6",
+            "formula": "IF(LEN(AF6)=0,\"\",AI5)"
+          },
+          {
+            "cell": "C7",
+            "formula": "MAX(IF(PMT_Dates<C3,PMT_Dates,AE4))"
+          },
+          {
+            "cell": "AC7",
+            "formula": "K4"
+          },
+          {
+            "cell": "S8",
+            "formula": "SUM(AK7:AP7)"
+          }
+        ],
+        "functions_used": {
+          "MIN": 1,
+          "IF": 13,
+          "VLOOKUP": 4,
+          "LEN": 10,
+          "WORKDAY": 9,
+          "DATE": 3,
+          "YEAR": 3,
+          "EDATE": 6,
+          "MONTH": 3,
+          "MAX": 1,
+          "SUM": 2
+        }
+      },
+      "data": {
+        "cell_count": 3414,
+        "sample_values": [
+          {
+            "cell": "B1",
+            "value": "1201"
+          },
+          {
+            "cell": "D1",
+            "value": "1201"
+          },
+          {
+            "cell": "F1",
+            "value": "1201"
+          },
+          {
+            "cell": "J1",
+            "value": "1201"
+          },
+          {
+            "cell": "L1",
+            "value": "1201"
+          },
+          {
+            "cell": "R1",
+            "value": "1201"
+          },
+          {
+            "cell": "T1",
+            "value": "1201"
+          },
+          {
+            "cell": "X1",
+            "value": "1201"
+          },
+          {
+            "cell": "Z1",
+            "value": "1201"
+          },
+          {
+            "cell": "AB1",
+            "value": "1201"
+          },
+          {
+            "cell": "AD1",
+            "value": "1201"
+          },
+          {
+            "cell": "AF1",
+            "value": "1201"
+          },
+          {
+            "cell": "AJ1",
+            "value": "1201"
+          },
+          {
+            "cell": "AR1",
+            "value": "1201"
+          },
+          {
+            "cell": "A2",
+            "value": "1172"
+          },
+          {
+            "cell": "B2",
+            "value": "1206"
+          },
+          {
+            "cell": "D2",
+            "value": "1350"
+          },
+          {
+            "cell": "F2",
+            "value": "1223"
+          },
+          {
+            "cell": "J2",
+            "value": "610"
+          },
+          {
+            "cell": "L2",
+            "value": "1420"
+          },
+          {
+            "cell": "R2",
+            "value": "1214"
+          },
+          {
+            "cell": "T2",
+            "value": "1210"
+          },
+          {
+            "cell": "X2",
+            "value": "1426"
+          },
+          {
+            "cell": "Z2",
+            "value": "1254"
+          },
+          {
+            "cell": "AB2",
+            "value": "1258"
+          },
+          {
+            "cell": "AD2",
+            "value": "1173"
+          },
+          {
+            "cell": "AF2",
+            "value": "1184"
+          },
+          {
+            "cell": "AJ2",
+            "value": "1180"
+          },
+          {
+            "cell": "AR2",
+            "value": "1252"
+          },
+          {
+            "cell": "A3",
+            "value": "1426"
+          },
+          {
+            "cell": "B3",
+            "value": "1202"
+          },
+          {
+            "cell": "C3",
+            "value": "42452"
+          },
+          {
+            "cell": "D3",
+            "value": "0"
+          },
+          {
+            "cell": "E3",
+            "value": "452"
+          },
+          {
+            "cell": "F3",
+            "value": "1087"
+          },
+          {
+            "cell": "G3",
+            "value": "1078"
+          },
+          {
+            "cell": "H3",
+            "value": "1079"
+          },
+          {
+            "cell": "I3",
+            "value": "1080"
+          },
+          {
+            "cell": "J3",
+            "value": "1215"
+          },
+          {
+            "cell": "K3",
+            "value": "3.1665999999999999E-3"
+          },
+          {
+            "cell": "L3",
+            "value": "1095"
+          },
+          {
+            "cell": "M3",
+            "value": "1076"
+          },
+          {
+            "cell": "N3",
+            "value": "1229"
+          },
+          {
+            "cell": "O3",
+            "value": "598"
+          },
+          {
+            "cell": "P3",
+            "value": "1150"
+          },
+          {
+            "cell": "Q3",
+            "value": "1151"
+          },
+          {
+            "cell": "R3",
+            "value": "1264"
+          },
+          {
+            "cell": "S3",
+            "value": "6.1860000000000005E-3"
+          },
+          {
+            "cell": "T3",
+            "value": "1076"
+          },
+          {
+            "cell": "U3",
+            "value": "1843"
+          }
+        ]
+      },
+      "business_indicators": {
+        "clo_keywords": {},
+        "data_patterns": [],
+        "sheet_purpose": "General Worksheet"
+      }
+    },
+    "Sheet6": {
+      "name": "Sheet6",
+      "file": "xl/worksheets/sheet6.xml",
+      "dimensions": {
+        "rows": 440,
+        "cols": 50
+      },
+      "formulas": {
+        "count": 789,
+        "samples": [
+          {
+            "cell": "C3",
+            "formula": "DealAnalysisDate"
+          },
+          {
+            "cell": "S3",
+            "formula": "K4"
+          },
+          {
+            "cell": "C4",
+            "formula": "MIN(IF(PMT_Dates>=C3,PMT_Dates))"
+          },
+          {
+            "cell": "K4",
+            "formula": "IF(C4=AE6,K3,VLOOKUP(VLOOKUP(C4,$AF$4:$AI$185,2,FALSE)&\"3 MONTH LIBOR\",LIBOR_Rates,4,FALSE)/100)"
+          },
+          {
+            "cell": "Z4",
+            "formula": "Close_Date"
+          },
+          {
+            "cell": "AF4",
+            "formula": "AE6"
+          },
+          {
+            "cell": "AG4",
+            "formula": "Close_Date"
+          },
+          {
+            "cell": "AH4",
+            "formula": "Close_Date"
+          },
+          {
+            "cell": "AI4",
+            "formula": "IF(LEN(AF4)=0,\"\",WORKDAY(AF4,-$AE$13,Holidays))"
+          },
+          {
+            "cell": "C5",
+            "formula": "MAX(IF(CollBegDate<C3,CollBegDate))"
+          },
+          {
+            "cell": "Z5",
+            "formula": "AF4"
+          },
+          {
+            "cell": "AF5",
+            "formula": "WORKDAY(DATE(YEAR(EDATE(AF4,$AE$11)),MONTH(EDATE(AF4,$AE$11)),$AE$10)-1,1,Holidays)"
+          },
+          {
+            "cell": "AG5",
+            "formula": "IF(LEN(AF5)=0,\"\",WORKDAY(AF4,-$AE$12,Holidays))"
+          },
+          {
+            "cell": "AH5",
+            "formula": "IF(LEN(AF5)=0,\"\",AI4)"
+          },
+          {
+            "cell": "C6",
+            "formula": "MIN(IF(CollEndDate>C3,CollEndDate))"
+          },
+          {
+            "cell": "Z6",
+            "formula": "AF5"
+          },
+          {
+            "cell": "AH6",
+            "formula": "IF(LEN(AF6)=0,\"\",AI5)"
+          },
+          {
+            "cell": "C7",
+            "formula": "MAX(IF(PMT_Dates<C3,PMT_Dates,AE4))"
+          },
+          {
+            "cell": "AC7",
+            "formula": "K4"
+          },
+          {
+            "cell": "S8",
+            "formula": "SUM(AK7:AO7)"
+          }
+        ],
+        "functions_used": {
+          "MIN": 2,
+          "IF": 15,
+          "VLOOKUP": 2,
+          "LEN": 10,
+          "WORKDAY": 9,
+          "MAX": 2,
+          "DATE": 3,
+          "YEAR": 3,
+          "EDATE": 6,
+          "MONTH": 3,
+          "SUM": 2
+        }
+      },
+      "data": {
+        "cell_count": 3487,
+        "sample_values": [
+          {
+            "cell": "B1",
+            "value": "1201"
+          },
+          {
+            "cell": "D1",
+            "value": "1201"
+          },
+          {
+            "cell": "F1",
+            "value": "1201"
+          },
+          {
+            "cell": "J1",
+            "value": "1201"
+          },
+          {
+            "cell": "L1",
+            "value": "1201"
+          },
+          {
+            "cell": "R1",
+            "value": "1201"
+          },
+          {
+            "cell": "T1",
+            "value": "1201"
+          },
+          {
+            "cell": "X1",
+            "value": "1201"
+          },
+          {
+            "cell": "Z1",
+            "value": "1201"
+          },
+          {
+            "cell": "AB1",
+            "value": "1201"
+          },
+          {
+            "cell": "AD1",
+            "value": "1201"
+          },
+          {
+            "cell": "AQ1",
+            "value": "1201"
+          },
+          {
+            "cell": "A2",
+            "value": "1172"
+          },
+          {
+            "cell": "B2",
+            "value": "1206"
+          },
+          {
+            "cell": "D2",
+            "value": "1350"
+          },
+          {
+            "cell": "F2",
+            "value": "1223"
+          },
+          {
+            "cell": "J2",
+            "value": "610"
+          },
+          {
+            "cell": "L2",
+            "value": "1420"
+          },
+          {
+            "cell": "R2",
+            "value": "1214"
+          },
+          {
+            "cell": "T2",
+            "value": "1210"
+          },
+          {
+            "cell": "X2",
+            "value": "1426"
+          },
+          {
+            "cell": "Z2",
+            "value": "1254"
+          },
+          {
+            "cell": "AB2",
+            "value": "1258"
+          },
+          {
+            "cell": "AD2",
+            "value": "1173"
+          },
+          {
+            "cell": "AF2",
+            "value": "1184"
+          },
+          {
+            "cell": "AJ2",
+            "value": "1180"
+          },
+          {
+            "cell": "AQ2",
+            "value": "1252"
+          },
+          {
+            "cell": "A3",
+            "value": "1223"
+          },
+          {
+            "cell": "B3",
+            "value": "1202"
+          },
+          {
+            "cell": "C3",
+            "value": "42452"
+          },
+          {
+            "cell": "D3",
+            "value": "0"
+          },
+          {
+            "cell": "E3",
+            "value": "452"
+          },
+          {
+            "cell": "F3",
+            "value": "1087"
+          },
+          {
+            "cell": "G3",
+            "value": "1078"
+          },
+          {
+            "cell": "H3",
+            "value": "1079"
+          },
+          {
+            "cell": "I3",
+            "value": "1080"
+          },
+          {
+            "cell": "J3",
+            "value": "1215"
+          },
+          {
+            "cell": "K3",
+            "value": "2.496E-3"
+          },
+          {
+            "cell": "L3",
+            "value": "1095"
+          },
+          {
+            "cell": "M3",
+            "value": "1076"
+          },
+          {
+            "cell": "N3",
+            "value": "1229"
+          },
+          {
+            "cell": "O3",
+            "value": "598"
+          },
+          {
+            "cell": "P3",
+            "value": "1150"
+          },
+          {
+            "cell": "Q3",
+            "value": "1151"
+          },
+          {
+            "cell": "R3",
+            "value": "1264"
+          },
+          {
+            "cell": "S3",
+            "value": "6.2109999999999995E-3"
+          },
+          {
+            "cell": "T3",
+            "value": "1076"
+          },
+          {
+            "cell": "U3",
+            "value": "1842"
+          },
+          {
+            "cell": "V3",
+            "value": "1095"
+          },
+          {
+            "cell": "W3",
+            "value": "1096"
+          }
+        ]
+      },
+      "business_indicators": {
+        "clo_keywords": {},
+        "data_patterns": [],
+        "sheet_purpose": "General Worksheet"
+      }
+    },
+    "Sheet7": {
+      "name": "Sheet7",
+      "file": "xl/worksheets/sheet7.xml",
+      "dimensions": {
+        "rows": 282,
+        "cols": 51
+      },
+      "formulas": {
+        "count": 787,
+        "samples": [
+          {
+            "cell": "C3",
+            "formula": "DealAnalysisDate"
+          },
+          {
+            "cell": "S3",
+            "formula": "K4"
+          },
+          {
+            "cell": "C4",
+            "formula": "MIN(IF(PMT_Dates>=C3,PMT_Dates))"
+          },
+          {
+            "cell": "K4",
+            "formula": "IF(C4=AE6,K3,VLOOKUP(VLOOKUP(C4,$AF$4:$AI$185,2,FALSE)&\"3 MONTH LIBOR\",LIBOR_Rates,4,FALSE)/100)"
+          },
+          {
+            "cell": "Z4",
+            "formula": "Close_Date"
+          },
+          {
+            "cell": "AF4",
+            "formula": "AE6"
+          },
+          {
+            "cell": "AG4",
+            "formula": "Close_Date"
+          },
+          {
+            "cell": "AH4",
+            "formula": "Close_Date"
+          },
+          {
+            "cell": "AI4",
+            "formula": "IF(LEN(AF4)=0,\"\",WORKDAY(AF4,-$AE$13,Holidays))"
+          },
+          {
+            "cell": "C5",
+            "formula": "VLOOKUP(C4,$AF$4:$AI$185,3,FALSE)"
+          },
+          {
+            "cell": "Z5",
+            "formula": "AF4"
+          },
+          {
+            "cell": "AF5",
+            "formula": "WORKDAY(DATE(YEAR(EDATE(AF4,$AE$11)),MONTH(EDATE(AF4,$AE$11)),$AE$10)-1,1,Holidays)"
+          },
+          {
+            "cell": "AG5",
+            "formula": "IF(LEN(AF5)=0,\"\",WORKDAY(AF4,-$AE$12,Holidays))"
+          },
+          {
+            "cell": "AH5",
+            "formula": "IF(LEN(AF5)=0,\"\",AI4)"
+          },
+          {
+            "cell": "C6",
+            "formula": "VLOOKUP(C4,$AF$4:$AI$185,4,FALSE)"
+          },
+          {
+            "cell": "Z6",
+            "formula": "AF5"
+          },
+          {
+            "cell": "AH6",
+            "formula": "IF(LEN(AF6)=0,\"\",AI5)"
+          },
+          {
+            "cell": "C7",
+            "formula": "MAX(IF(PMT_Dates<C3,PMT_Dates,AE4))"
+          },
+          {
+            "cell": "AC7",
+            "formula": "K4"
+          },
+          {
+            "cell": "AC10",
+            "formula": "AnalysisDate"
+          }
+        ],
+        "functions_used": {
+          "MIN": 1,
+          "IF": 20,
+          "VLOOKUP": 4,
+          "LEN": 17,
+          "WORKDAY": 18,
+          "DATE": 6,
+          "YEAR": 6,
+          "EDATE": 12,
+          "MONTH": 6,
+          "MAX": 1,
+          "SUM": 1
+        }
+      },
+      "data": {
+        "cell_count": 3380,
+        "sample_values": [
+          {
+            "cell": "B1",
+            "value": "1201"
+          },
+          {
+            "cell": "D1",
+            "value": "1201"
+          },
+          {
+            "cell": "F1",
+            "value": "1201"
+          },
+          {
+            "cell": "J1",
+            "value": "1201"
+          },
+          {
+            "cell": "L1",
+            "value": "1201"
+          },
+          {
+            "cell": "R1",
+            "value": "1201"
+          },
+          {
+            "cell": "T1",
+            "value": "1201"
+          },
+          {
+            "cell": "X1",
+            "value": "1201"
+          },
+          {
+            "cell": "Z1",
+            "value": "1201"
+          },
+          {
+            "cell": "AB1",
+            "value": "1201"
+          },
+          {
+            "cell": "AD1",
+            "value": "1201"
+          },
+          {
+            "cell": "AF1",
+            "value": "1201"
+          },
+          {
+            "cell": "AJ1",
+            "value": "1201"
+          },
+          {
+            "cell": "AR1",
+            "value": "1201"
+          },
+          {
+            "cell": "A2",
+            "value": "1172"
+          },
+          {
+            "cell": "B2",
+            "value": "1206"
+          },
+          {
+            "cell": "D2",
+            "value": "1350"
+          },
+          {
+            "cell": "F2",
+            "value": "1223"
+          },
+          {
+            "cell": "J2",
+            "value": "610"
+          },
+          {
+            "cell": "L2",
+            "value": "1420"
+          },
+          {
+            "cell": "R2",
+            "value": "1214"
+          },
+          {
+            "cell": "T2",
+            "value": "1210"
+          },
+          {
+            "cell": "X2",
+            "value": "1426"
+          },
+          {
+            "cell": "Z2",
+            "value": "1254"
+          },
+          {
+            "cell": "AB2",
+            "value": "1258"
+          },
+          {
+            "cell": "AD2",
+            "value": "1173"
+          },
+          {
+            "cell": "AF2",
+            "value": "1184"
+          },
+          {
+            "cell": "AJ2",
+            "value": "1180"
+          },
+          {
+            "cell": "AR2",
+            "value": "1252"
+          },
+          {
+            "cell": "A3",
+            "value": "1426"
+          },
+          {
+            "cell": "B3",
+            "value": "1202"
+          },
+          {
+            "cell": "C3",
+            "value": "42452"
+          },
+          {
+            "cell": "D3",
+            "value": "0"
+          },
+          {
+            "cell": "E3",
+            "value": "452"
+          },
+          {
+            "cell": "F3",
+            "value": "1087"
+          },
+          {
+            "cell": "G3",
+            "value": "1078"
+          },
+          {
+            "cell": "H3",
+            "value": "1079"
+          },
+          {
+            "cell": "I3",
+            "value": "1080"
+          },
+          {
+            "cell": "J3",
+            "value": "1215"
+          },
+          {
+            "cell": "K3",
+            "value": "3.1665999999999999E-3"
+          },
+          {
+            "cell": "L3",
+            "value": "1095"
+          },
+          {
+            "cell": "M3",
+            "value": "1076"
+          },
+          {
+            "cell": "N3",
+            "value": "1229"
+          },
+          {
+            "cell": "O3",
+            "value": "598"
+          },
+          {
+            "cell": "P3",
+            "value": "1150"
+          },
+          {
+            "cell": "Q3",
+            "value": "1151"
+          },
+          {
+            "cell": "R3",
+            "value": "1264"
+          },
+          {
+            "cell": "S3",
+            "value": "6.2199999999999998E-3"
+          },
+          {
+            "cell": "T3",
+            "value": "1076"
+          },
+          {
+            "cell": "U3",
+            "value": "1842"
+          }
+        ]
+      },
+      "business_indicators": {
+        "clo_keywords": {},
+        "data_patterns": [],
+        "sheet_purpose": "General Worksheet"
+      }
+    },
+    "Sheet8": {
+      "name": "Sheet8",
+      "file": "xl/worksheets/sheet8.xml",
+      "dimensions": {
+        "rows": 272,
+        "cols": 51
+      },
+      "formulas": {
+        "count": 790,
+        "samples": [
+          {
+            "cell": "C3",
+            "formula": "DealAnalysisDate"
+          },
+          {
+            "cell": "S3",
+            "formula": "K4"
+          },
+          {
+            "cell": "C4",
+            "formula": "MIN(IF(PMT_Dates>=C3,PMT_Dates))"
+          },
+          {
+            "cell": "K4",
+            "formula": "IF(C4=AE6,K3,VLOOKUP(VLOOKUP(C4,$AF$4:$AI$185,2,FALSE)&\"3 MONTH LIBOR\",LIBOR_Rates,4,FALSE)/100)"
+          },
+          {
+            "cell": "Z4",
+            "formula": "Close_Date"
+          },
+          {
+            "cell": "AF4",
+            "formula": "AE6"
+          },
+          {
+            "cell": "AG4",
+            "formula": "Close_Date"
+          },
+          {
+            "cell": "AH4",
+            "formula": "Close_Date"
+          },
+          {
+            "cell": "AI4",
+            "formula": "IF(LEN(AF4)=0,\"\",WORKDAY(AF4,-$AE$13,Holidays))"
+          },
+          {
+            "cell": "C5",
+            "formula": "VLOOKUP(C4,$AF$4:$AI$185,3,FALSE)"
+          },
+          {
+            "cell": "Z5",
+            "formula": "AF4"
+          },
+          {
+            "cell": "AF5",
+            "formula": "WORKDAY(DATE(YEAR(EDATE(AF4,$AE$11)),MONTH(EDATE(AF4,$AE$11)),$AE$10)-1,1,Holidays)"
+          },
+          {
+            "cell": "AG5",
+            "formula": "IF(LEN(AF5)=0,\"\",WORKDAY(AF4,-$AE$12,Holidays))"
+          },
+          {
+            "cell": "AH5",
+            "formula": "IF(LEN(AF5)=0,\"\",AI4)"
+          },
+          {
+            "cell": "C6",
+            "formula": "VLOOKUP(C4,$AF$4:$AI$185,4,FALSE)"
+          },
+          {
+            "cell": "Z6",
+            "formula": "AF5"
+          },
+          {
+            "cell": "AH6",
+            "formula": "IF(LEN(AF6)=0,\"\",AI5)"
+          },
+          {
+            "cell": "C7",
+            "formula": "MAX(IF(PMT_Dates<C3,PMT_Dates,AE4))"
+          },
+          {
+            "cell": "AC7",
+            "formula": "K4"
+          },
+          {
+            "cell": "S8",
+            "formula": "SUM(AK7:AP7)"
+          }
+        ],
+        "functions_used": {
+          "MIN": 1,
+          "IF": 15,
+          "VLOOKUP": 4,
+          "LEN": 10,
+          "WORKDAY": 9,
+          "DATE": 3,
+          "YEAR": 3,
+          "EDATE": 6,
+          "MONTH": 3,
+          "MAX": 1,
+          "SUM": 2
+        }
+      },
+      "data": {
+        "cell_count": 3099,
+        "sample_values": [
+          {
+            "cell": "B1",
+            "value": "1201"
+          },
+          {
+            "cell": "D1",
+            "value": "1201"
+          },
+          {
+            "cell": "F1",
+            "value": "1201"
+          },
+          {
+            "cell": "J1",
+            "value": "1201"
+          },
+          {
+            "cell": "L1",
+            "value": "1201"
+          },
+          {
+            "cell": "R1",
+            "value": "1201"
+          },
+          {
+            "cell": "T1",
+            "value": "1201"
+          },
+          {
+            "cell": "X1",
+            "value": "1201"
+          },
+          {
+            "cell": "Z1",
+            "value": "1201"
+          },
+          {
+            "cell": "AB1",
+            "value": "1201"
+          },
+          {
+            "cell": "AD1",
+            "value": "1201"
+          },
+          {
+            "cell": "AF1",
+            "value": "1201"
+          },
+          {
+            "cell": "AJ1",
+            "value": "1201"
+          },
+          {
+            "cell": "AR1",
+            "value": "1201"
+          },
+          {
+            "cell": "A2",
+            "value": "1172"
+          },
+          {
+            "cell": "B2",
+            "value": "1206"
+          },
+          {
+            "cell": "D2",
+            "value": "1350"
+          },
+          {
+            "cell": "F2",
+            "value": "1223"
+          },
+          {
+            "cell": "J2",
+            "value": "610"
+          },
+          {
+            "cell": "L2",
+            "value": "1420"
+          },
+          {
+            "cell": "R2",
+            "value": "1214"
+          },
+          {
+            "cell": "T2",
+            "value": "1210"
+          },
+          {
+            "cell": "X2",
+            "value": "1426"
+          },
+          {
+            "cell": "Z2",
+            "value": "1254"
+          },
+          {
+            "cell": "AB2",
+            "value": "1258"
+          },
+          {
+            "cell": "AD2",
+            "value": "1173"
+          },
+          {
+            "cell": "AF2",
+            "value": "1184"
+          },
+          {
+            "cell": "AJ2",
+            "value": "1180"
+          },
+          {
+            "cell": "AR2",
+            "value": "1252"
+          },
+          {
+            "cell": "A3",
+            "value": "1426"
+          },
+          {
+            "cell": "B3",
+            "value": "1202"
+          },
+          {
+            "cell": "C3",
+            "value": "42452"
+          },
+          {
+            "cell": "D3",
+            "value": "0"
+          },
+          {
+            "cell": "E3",
+            "value": "452"
+          },
+          {
+            "cell": "F3",
+            "value": "1087"
+          },
+          {
+            "cell": "G3",
+            "value": "1078"
+          },
+          {
+            "cell": "H3",
+            "value": "1079"
+          },
+          {
+            "cell": "I3",
+            "value": "1080"
+          },
+          {
+            "cell": "J3",
+            "value": "1215"
+          },
+          {
+            "cell": "K3",
+            "value": "3.2239999999999999E-3"
+          },
+          {
+            "cell": "L3",
+            "value": "1095"
+          },
+          {
+            "cell": "M3",
+            "value": "1076"
+          },
+          {
+            "cell": "N3",
+            "value": "1229"
+          },
+          {
+            "cell": "O3",
+            "value": "598"
+          },
+          {
+            "cell": "P3",
+            "value": "1150"
+          },
+          {
+            "cell": "Q3",
+            "value": "1151"
+          },
+          {
+            "cell": "R3",
+            "value": "1264"
+          },
+          {
+            "cell": "S3",
+            "value": "6.2109999999999995E-3"
+          },
+          {
+            "cell": "T3",
+            "value": "1076"
+          },
+          {
+            "cell": "U3",
+            "value": "1831"
+          }
+        ]
+      },
+      "business_indicators": {
+        "clo_keywords": {},
+        "data_patterns": [],
+        "sheet_purpose": "General Worksheet"
+      }
+    },
+    "Sheet9": {
+      "name": "Sheet9",
+      "file": "xl/worksheets/sheet9.xml",
+      "dimensions": {
+        "rows": 440,
+        "cols": 51
+      },
+      "formulas": {
+        "count": 789,
+        "samples": [
+          {
+            "cell": "C3",
+            "formula": "DealAnalysisDate"
+          },
+          {
+            "cell": "S3",
+            "formula": "K4"
+          },
+          {
+            "cell": "C4",
+            "formula": "MIN(IF(PMT_Dates>=C3,PMT_Dates))"
+          },
+          {
+            "cell": "K4",
+            "formula": "IF(C4=AE6,K3,VLOOKUP(VLOOKUP(C4,$AF$4:$AI$185,2,FALSE)&\"3 MONTH LIBOR\",LIBOR_Rates,4,FALSE)/100)"
+          },
+          {
+            "cell": "Z4",
+            "formula": "Close_Date"
+          },
+          {
+            "cell": "AF4",
+            "formula": "AE6"
+          },
+          {
+            "cell": "AG4",
+            "formula": "Close_Date"
+          },
+          {
+            "cell": "AH4",
+            "formula": "Close_Date"
+          },
+          {
+            "cell": "AI4",
+            "formula": "IF(LEN(AF4)=0,\"\",WORKDAY(AF4,-$AE$13,Holidays))"
+          },
+          {
+            "cell": "C5",
+            "formula": "MAX(IF(CollBegDate<C3,CollBegDate))"
+          },
+          {
+            "cell": "Z5",
+            "formula": "AF4"
+          },
+          {
+            "cell": "AF5",
+            "formula": "WORKDAY(DATE(YEAR(EDATE(AF4,$AE$11)),MONTH(EDATE(AF4,$AE$11)),$AE$10)-1,1,Holidays)"
+          },
+          {
+            "cell": "AG5",
+            "formula": "IF(LEN(AF5)=0,\"\",WORKDAY(AF4,-$AE$12,Holidays))"
+          },
+          {
+            "cell": "AH5",
+            "formula": "IF(LEN(AF5)=0,\"\",AI4)"
+          },
+          {
+            "cell": "C6",
+            "formula": "MIN(IF(CollEndDate>C3,CollEndDate))"
+          },
+          {
+            "cell": "Z6",
+            "formula": "AF5"
+          },
+          {
+            "cell": "AH6",
+            "formula": "IF(LEN(AF6)=0,\"\",AI5)"
+          },
+          {
+            "cell": "C7",
+            "formula": "MAX(IF(PMT_Dates<C3,PMT_Dates,AE4))"
+          },
+          {
+            "cell": "AC7",
+            "formula": "K4"
+          },
+          {
+            "cell": "S8",
+            "formula": "SUM(AK7:AP7)"
+          }
+        ],
+        "functions_used": {
+          "MIN": 2,
+          "IF": 15,
+          "VLOOKUP": 2,
+          "LEN": 10,
+          "WORKDAY": 9,
+          "MAX": 2,
+          "DATE": 3,
+          "YEAR": 3,
+          "EDATE": 6,
+          "MONTH": 3,
+          "SUM": 2
+        }
+      },
+      "data": {
+        "cell_count": 3485,
+        "sample_values": [
+          {
+            "cell": "B1",
+            "value": "1201"
+          },
+          {
+            "cell": "D1",
+            "value": "1201"
+          },
+          {
+            "cell": "F1",
+            "value": "1201"
+          },
+          {
+            "cell": "J1",
+            "value": "1201"
+          },
+          {
+            "cell": "L1",
+            "value": "1201"
+          },
+          {
+            "cell": "R1",
+            "value": "1201"
+          },
+          {
+            "cell": "T1",
+            "value": "1201"
+          },
+          {
+            "cell": "X1",
+            "value": "1201"
+          },
+          {
+            "cell": "Z1",
+            "value": "1201"
+          },
+          {
+            "cell": "AB1",
+            "value": "1201"
+          },
+          {
+            "cell": "AD1",
+            "value": "1201"
+          },
+          {
+            "cell": "AR1",
+            "value": "1201"
+          },
+          {
+            "cell": "A2",
+            "value": "1172"
+          },
+          {
+            "cell": "B2",
+            "value": "1206"
+          },
+          {
+            "cell": "D2",
+            "value": "1350"
+          },
+          {
+            "cell": "F2",
+            "value": "1223"
+          },
+          {
+            "cell": "J2",
+            "value": "610"
+          },
+          {
+            "cell": "L2",
+            "value": "1420"
+          },
+          {
+            "cell": "R2",
+            "value": "1214"
+          },
+          {
+            "cell": "T2",
+            "value": "1210"
+          },
+          {
+            "cell": "X2",
+            "value": "1426"
+          },
+          {
+            "cell": "Z2",
+            "value": "1254"
+          },
+          {
+            "cell": "AB2",
+            "value": "1258"
+          },
+          {
+            "cell": "AD2",
+            "value": "1173"
+          },
+          {
+            "cell": "AF2",
+            "value": "1184"
+          },
+          {
+            "cell": "AJ2",
+            "value": "1180"
+          },
+          {
+            "cell": "AR2",
+            "value": "1252"
+          },
+          {
+            "cell": "A3",
+            "value": "1223"
+          },
+          {
+            "cell": "B3",
+            "value": "1202"
+          },
+          {
+            "cell": "C3",
+            "value": "42452"
+          },
+          {
+            "cell": "D3",
+            "value": "0"
+          },
+          {
+            "cell": "E3",
+            "value": "452"
+          },
+          {
+            "cell": "F3",
+            "value": "1087"
+          },
+          {
+            "cell": "G3",
+            "value": "1078"
+          },
+          {
+            "cell": "H3",
+            "value": "1079"
+          },
+          {
+            "cell": "I3",
+            "value": "1080"
+          },
+          {
+            "cell": "J3",
+            "value": "1215"
+          },
+          {
+            "cell": "K3",
+            "value": "5.4180000000000001E-3"
+          },
+          {
+            "cell": "L3",
+            "value": "1095"
+          },
+          {
+            "cell": "M3",
+            "value": "1076"
+          },
+          {
+            "cell": "N3",
+            "value": "1229"
+          },
+          {
+            "cell": "O3",
+            "value": "598"
+          },
+          {
+            "cell": "P3",
+            "value": "1150"
+          },
+          {
+            "cell": "Q3",
+            "value": "1151"
+          },
+          {
+            "cell": "R3",
+            "value": "1264"
+          },
+          {
+            "cell": "S3",
+            "value": "5.4180000000000001E-3"
+          },
+          {
+            "cell": "T3",
+            "value": "1076"
+          },
+          {
+            "cell": "U3",
+            "value": "1841"
+          },
+          {
+            "cell": "V3",
+            "value": "1095"
+          },
+          {
+            "cell": "W3",
+            "value": "1096"
+          }
+        ]
+      },
+      "business_indicators": {
+        "clo_keywords": {},
+        "data_patterns": [],
+        "sheet_purpose": "General Worksheet"
+      }
+    },
+    "Sheet10": {
+      "name": "Sheet10",
+      "file": "xl/worksheets/sheet10.xml",
+      "dimensions": {
+        "rows": 264,
+        "cols": 51
+      },
+      "formulas": {
+        "count": 789,
+        "samples": [
+          {
+            "cell": "C3",
+            "formula": "DealAnalysisDate"
+          },
+          {
+            "cell": "S3",
+            "formula": "K4"
+          },
+          {
+            "cell": "C4",
+            "formula": "MIN(IF(PMT_Dates>=C3,PMT_Dates))"
+          },
+          {
+            "cell": "K4",
+            "formula": "IF(C4=AE6,K3,VLOOKUP(VLOOKUP(C4,$AF$4:$AI$185,2,FALSE)&\"3 MONTH LIBOR\",LIBOR_Rates,4,FALSE)/100)"
+          },
+          {
+            "cell": "Z4",
+            "formula": "Close_Date"
+          },
+          {
+            "cell": "AF4",
+            "formula": "AE6"
+          },
+          {
+            "cell": "AG4",
+            "formula": "Close_Date"
+          },
+          {
+            "cell": "AH4",
+            "formula": "Close_Date"
+          },
+          {
+            "cell": "AI4",
+            "formula": "IF(LEN(AF4)=0,\"\",WORKDAY(AF4,-$AE$13,Holidays))"
+          },
+          {
+            "cell": "C5",
+            "formula": "VLOOKUP(C4,$AF$4:$AI$185,3,FALSE)"
+          },
+          {
+            "cell": "Z5",
+            "formula": "AF4"
+          },
+          {
+            "cell": "AF5",
+            "formula": "WORKDAY(DATE(YEAR(EDATE(AF4,$AE$11)),MONTH(EDATE(AF4,$AE$11)),$AE$10)-1,1,Holidays)"
+          },
+          {
+            "cell": "AG5",
+            "formula": "IF(LEN(AF5)=0,\"\",WORKDAY(AF4,-$AE$12,Holidays))"
+          },
+          {
+            "cell": "AH5",
+            "formula": "IF(LEN(AF5)=0,\"\",AI4)"
+          },
+          {
+            "cell": "C6",
+            "formula": "VLOOKUP(C4,$AF$4:$AI$185,4,FALSE)"
+          },
+          {
+            "cell": "Z6",
+            "formula": "AF5"
+          },
+          {
+            "cell": "AH6",
+            "formula": "IF(LEN(AF6)=0,\"\",AI5)"
+          },
+          {
+            "cell": "C7",
+            "formula": "MAX(IF(PMT_Dates<C3,PMT_Dates,AE4))"
+          },
+          {
+            "cell": "AC7",
+            "formula": "K4"
+          },
+          {
+            "cell": "S9",
+            "formula": "IF(S5>=3.1%,0.065%,0.05%)"
+          }
+        ],
+        "functions_used": {
+          "MIN": 1,
+          "IF": 14,
+          "VLOOKUP": 4,
+          "LEN": 10,
+          "WORKDAY": 9,
+          "DATE": 3,
+          "YEAR": 5,
+          "EDATE": 6,
+          "MONTH": 5,
+          "MAX": 1,
+          "SUM": 1,
+          "ROUNDDOWN": 1
+        }
+      },
+      "data": {
+        "cell_count": 3323,
+        "sample_values": [
+          {
+            "cell": "B1",
+            "value": "1201"
+          },
+          {
+            "cell": "D1",
+            "value": "1201"
+          },
+          {
+            "cell": "F1",
+            "value": "1201"
+          },
+          {
+            "cell": "J1",
+            "value": "1201"
+          },
+          {
+            "cell": "L1",
+            "value": "1201"
+          },
+          {
+            "cell": "R1",
+            "value": "1201"
+          },
+          {
+            "cell": "T1",
+            "value": "1201"
+          },
+          {
+            "cell": "X1",
+            "value": "1201"
+          },
+          {
+            "cell": "Z1",
+            "value": "1201"
+          },
+          {
+            "cell": "AB1",
+            "value": "1201"
+          },
+          {
+            "cell": "AD1",
+            "value": "1201"
+          },
+          {
+            "cell": "AF1",
+            "value": "1201"
+          },
+          {
+            "cell": "AJ1",
+            "value": "1201"
+          },
+          {
+            "cell": "AR1",
+            "value": "1201"
+          },
+          {
+            "cell": "A2",
+            "value": "1172"
+          },
+          {
+            "cell": "B2",
+            "value": "1206"
+          },
+          {
+            "cell": "D2",
+            "value": "1350"
+          },
+          {
+            "cell": "F2",
+            "value": "1223"
+          },
+          {
+            "cell": "J2",
+            "value": "610"
+          },
+          {
+            "cell": "L2",
+            "value": "1420"
+          },
+          {
+            "cell": "R2",
+            "value": "1214"
+          },
+          {
+            "cell": "T2",
+            "value": "1210"
+          },
+          {
+            "cell": "X2",
+            "value": "1426"
+          },
+          {
+            "cell": "Z2",
+            "value": "1254"
+          },
+          {
+            "cell": "AB2",
+            "value": "1258"
+          },
+          {
+            "cell": "AD2",
+            "value": "1173"
+          },
+          {
+            "cell": "AF2",
+            "value": "1184"
+          },
+          {
+            "cell": "AJ2",
+            "value": "1180"
+          },
+          {
+            "cell": "AR2",
+            "value": "1252"
+          },
+          {
+            "cell": "A3",
+            "value": "1426"
+          },
+          {
+            "cell": "B3",
+            "value": "1202"
+          },
+          {
+            "cell": "C3",
+            "value": "42452"
+          },
+          {
+            "cell": "D3",
+            "value": "0"
+          },
+          {
+            "cell": "E3",
+            "value": "452"
+          },
+          {
+            "cell": "F3",
+            "value": "1915"
+          },
+          {
+            "cell": "G3",
+            "value": "1078"
+          },
+          {
+            "cell": "H3",
+            "value": "1079"
+          },
+          {
+            "cell": "I3",
+            "value": "1080"
+          },
+          {
+            "cell": "J3",
+            "value": "1215"
+          },
+          {
+            "cell": "K3",
+            "value": "6.1079000000000003E-3"
+          },
+          {
+            "cell": "L3",
+            "value": "1095"
+          },
+          {
+            "cell": "M3",
+            "value": "1076"
+          },
+          {
+            "cell": "N3",
+            "value": "1229"
+          },
+          {
+            "cell": "O3",
+            "value": "598"
+          },
+          {
+            "cell": "P3",
+            "value": "1150"
+          },
+          {
+            "cell": "Q3",
+            "value": "1151"
+          },
+          {
+            "cell": "R3",
+            "value": "1264"
+          },
+          {
+            "cell": "S3",
+            "value": "6.1079000000000003E-3"
+          },
+          {
+            "cell": "T3",
+            "value": "1076"
+          },
+          {
+            "cell": "U3",
+            "value": "1840"
+          }
+        ]
+      },
+      "business_indicators": {
+        "clo_keywords": {},
+        "data_patterns": [],
+        "sheet_purpose": "General Worksheet"
+      }
+    },
+    "Sheet11": {
+      "name": "Sheet11",
+      "file": "xl/worksheets/sheet11.xml",
+      "dimensions": {
+        "rows": 440,
+        "cols": 52
+      },
+      "formulas": {
+        "count": 789,
+        "samples": [
+          {
+            "cell": "C3",
+            "formula": "DealAnalysisDate"
+          },
+          {
+            "cell": "S3",
+            "formula": "K4"
+          },
+          {
+            "cell": "C4",
+            "formula": "MIN(IF(PMT_Dates>=C3,PMT_Dates))"
+          },
+          {
+            "cell": "K4",
+            "formula": "IF(C4=AE6,K3,VLOOKUP(VLOOKUP(C4,$AF$4:$AI$185,2,FALSE)&\"3 MONTH LIBOR\",LIBOR_Rates,4,FALSE)/100)"
+          },
+          {
+            "cell": "Z4",
+            "formula": "Close_Date"
+          },
+          {
+            "cell": "AF4",
+            "formula": "AE6"
+          },
+          {
+            "cell": "AG4",
+            "formula": "Close_Date"
+          },
+          {
+            "cell": "AH4",
+            "formula": "Close_Date"
+          },
+          {
+            "cell": "AI4",
+            "formula": "IF(LEN(AF4)=0,\"\",WORKDAY(AF4,-$AE$13,Holidays))"
+          },
+          {
+            "cell": "C5",
+            "formula": "MAX(IF(CollBegDate<C3,CollBegDate))"
+          },
+          {
+            "cell": "Z5",
+            "formula": "AF4"
+          },
+          {
+            "cell": "AF5",
+            "formula": "WORKDAY(DATE(YEAR(EDATE(AF4,$AE$11)),MONTH(EDATE(AF4,$AE$11)),$AE$10)-1,1,Holidays)"
+          },
+          {
+            "cell": "AG5",
+            "formula": "IF(LEN(AF5)=0,\"\",WORKDAY(AF4,-$AE$12,Holidays))"
+          },
+          {
+            "cell": "AH5",
+            "formula": "IF(LEN(AF5)=0,\"\",AI4)"
+          },
+          {
+            "cell": "C6",
+            "formula": "MIN(IF(CollEndDate>C3,CollEndDate))"
+          },
+          {
+            "cell": "Z6",
+            "formula": "AF5"
+          },
+          {
+            "cell": "AH6",
+            "formula": "IF(LEN(AF6)=0,\"\",AI5)"
+          },
+          {
+            "cell": "C7",
+            "formula": "MAX(IF(PMT_Dates<C3,PMT_Dates,AE4))"
+          },
+          {
+            "cell": "AC7",
+            "formula": "K4"
+          },
+          {
+            "cell": "S8",
+            "formula": "SUM(AK7:AQ7)"
+          }
+        ],
+        "functions_used": {
+          "MIN": 2,
+          "IF": 15,
+          "VLOOKUP": 2,
+          "LEN": 10,
+          "WORKDAY": 9,
+          "MAX": 2,
+          "DATE": 3,
+          "YEAR": 3,
+          "EDATE": 6,
+          "MONTH": 3,
+          "SUM": 2
+        }
+      },
+      "data": {
+        "cell_count": 3499,
+        "sample_values": [
+          {
+            "cell": "B1",
+            "value": "1201"
+          },
+          {
+            "cell": "D1",
+            "value": "1201"
+          },
+          {
+            "cell": "F1",
+            "value": "1201"
+          },
+          {
+            "cell": "J1",
+            "value": "1201"
+          },
+          {
+            "cell": "L1",
+            "value": "1201"
+          },
+          {
+            "cell": "R1",
+            "value": "1201"
+          },
+          {
+            "cell": "T1",
+            "value": "1201"
+          },
+          {
+            "cell": "X1",
+            "value": "1201"
+          },
+          {
+            "cell": "Z1",
+            "value": "1201"
+          },
+          {
+            "cell": "AB1",
+            "value": "1201"
+          },
+          {
+            "cell": "AD1",
+            "value": "1201"
+          },
+          {
+            "cell": "A2",
+            "value": "1172"
+          },
+          {
+            "cell": "B2",
+            "value": "1206"
+          },
+          {
+            "cell": "D2",
+            "value": "1350"
+          },
+          {
+            "cell": "F2",
+            "value": "1223"
+          },
+          {
+            "cell": "J2",
+            "value": "610"
+          },
+          {
+            "cell": "L2",
+            "value": "1420"
+          },
+          {
+            "cell": "R2",
+            "value": "1214"
+          },
+          {
+            "cell": "T2",
+            "value": "1210"
+          },
+          {
+            "cell": "X2",
+            "value": "1426"
+          },
+          {
+            "cell": "Z2",
+            "value": "1254"
+          },
+          {
+            "cell": "AB2",
+            "value": "1258"
+          },
+          {
+            "cell": "AD2",
+            "value": "1173"
+          },
+          {
+            "cell": "AF2",
+            "value": "1184"
+          },
+          {
+            "cell": "AJ2",
+            "value": "1180"
+          },
+          {
+            "cell": "AS2",
+            "value": "1252"
+          },
+          {
+            "cell": "A3",
+            "value": "1223"
+          },
+          {
+            "cell": "B3",
+            "value": "1202"
+          },
+          {
+            "cell": "C3",
+            "value": "42452"
+          },
+          {
+            "cell": "D3",
+            "value": "0"
+          },
+          {
+            "cell": "E3",
+            "value": "452"
+          },
+          {
+            "cell": "F3",
+            "value": "1087"
+          },
+          {
+            "cell": "G3",
+            "value": "1078"
+          },
+          {
+            "cell": "H3",
+            "value": "1079"
+          },
+          {
+            "cell": "I3",
+            "value": "1080"
+          },
+          {
+            "cell": "J3",
+            "value": "1215"
+          },
+          {
+            "cell": "K3",
+            "value": "5.4180000000000001E-3"
+          },
+          {
+            "cell": "L3",
+            "value": "1095"
+          },
+          {
+            "cell": "M3",
+            "value": "1076"
+          },
+          {
+            "cell": "N3",
+            "value": "1229"
+          },
+          {
+            "cell": "O3",
+            "value": "598"
+          },
+          {
+            "cell": "P3",
+            "value": "1150"
+          },
+          {
+            "cell": "Q3",
+            "value": "1151"
+          },
+          {
+            "cell": "R3",
+            "value": "1264"
+          },
+          {
+            "cell": "S3",
+            "value": "5.4180000000000001E-3"
+          },
+          {
+            "cell": "T3",
+            "value": "1076"
+          },
+          {
+            "cell": "U3",
+            "value": "1841"
+          },
+          {
+            "cell": "V3",
+            "value": "1095"
+          },
+          {
+            "cell": "W3",
+            "value": "1096"
+          },
+          {
+            "cell": "X3",
+            "value": "1259"
+          }
+        ]
+      },
+      "business_indicators": {
+        "clo_keywords": {},
+        "data_patterns": [],
+        "sheet_purpose": "General Worksheet"
+      }
+    },
+    "Sheet12": {
+      "name": "Sheet12",
+      "file": "xl/worksheets/sheet12.xml",
+      "dimensions": {
+        "rows": 1004,
+        "cols": 71
+      },
+      "formulas": {
+        "count": 0,
+        "samples": [],
+        "functions_used": {}
+      },
+      "data": {
+        "cell_count": 71083,
+        "sample_values": [
+          {
+            "cell": "A1",
+            "value": "0"
+          },
+          {
+            "cell": "B1",
+            "value": "1"
+          },
+          {
+            "cell": "C1",
+            "value": "2"
+          },
+          {
+            "cell": "D1",
+            "value": "453"
+          },
+          {
+            "cell": "E1",
+            "value": "3"
+          },
+          {
+            "cell": "F1",
+            "value": "4"
+          },
+          {
+            "cell": "G1",
+            "value": "452"
+          },
+          {
+            "cell": "H1",
+            "value": "18"
+          },
+          {
+            "cell": "I1",
+            "value": "5"
+          },
+          {
+            "cell": "J1",
+            "value": "6"
+          },
+          {
+            "cell": "K1",
+            "value": "19"
+          },
+          {
+            "cell": "L1",
+            "value": "7"
+          },
+          {
+            "cell": "M1",
+            "value": "578"
+          },
+          {
+            "cell": "N1",
+            "value": "582"
+          },
+          {
+            "cell": "O1",
+            "value": "8"
+          },
+          {
+            "cell": "P1",
+            "value": "579"
+          },
+          {
+            "cell": "Q1",
+            "value": "9"
+          },
+          {
+            "cell": "R1",
+            "value": "10"
+          },
+          {
+            "cell": "S1",
+            "value": "29"
+          },
+          {
+            "cell": "T1",
+            "value": "1630"
+          },
+          {
+            "cell": "U1",
+            "value": "1631"
+          },
+          {
+            "cell": "V1",
+            "value": "11"
+          },
+          {
+            "cell": "W1",
+            "value": "32"
+          },
+          {
+            "cell": "X1",
+            "value": "12"
+          },
+          {
+            "cell": "Y1",
+            "value": "580"
+          },
+          {
+            "cell": "Z1",
+            "value": "581"
+          },
+          {
+            "cell": "AA1",
+            "value": "13"
+          },
+          {
+            "cell": "AB1",
+            "value": "14"
+          },
+          {
+            "cell": "AC1",
+            "value": "20"
+          },
+          {
+            "cell": "AD1",
+            "value": "15"
+          },
+          {
+            "cell": "AE1",
+            "value": "16"
+          },
+          {
+            "cell": "AF1",
+            "value": "17"
+          },
+          {
+            "cell": "AG1",
+            "value": "21"
+          },
+          {
+            "cell": "AH1",
+            "value": "31"
+          },
+          {
+            "cell": "AI1",
+            "value": "952"
+          },
+          {
+            "cell": "AJ1",
+            "value": "22"
+          },
+          {
+            "cell": "AK1",
+            "value": "23"
+          },
+          {
+            "cell": "AL1",
+            "value": "24"
+          },
+          {
+            "cell": "AM1",
+            "value": "25"
+          },
+          {
+            "cell": "AN1",
+            "value": "26"
+          },
+          {
+            "cell": "AO1",
+            "value": "27"
+          },
+          {
+            "cell": "AP1",
+            "value": "30"
+          },
+          {
+            "cell": "AQ1",
+            "value": "1865"
+          },
+          {
+            "cell": "AR1",
+            "value": "1866"
+          },
+          {
+            "cell": "AS1",
+            "value": "1867"
+          },
+          {
+            "cell": "AT1",
+            "value": "1852"
+          },
+          {
+            "cell": "AU1",
+            "value": "1102"
+          },
+          {
+            "cell": "AV1",
+            "value": "1108"
+          },
+          {
+            "cell": "AW1",
+            "value": "1101"
+          },
+          {
+            "cell": "AX1",
+            "value": "1109"
+          }
+        ]
+      },
+      "business_indicators": {
+        "clo_keywords": {},
+        "data_patterns": [],
+        "sheet_purpose": "General Worksheet"
+      }
+    },
+    "Sheet13": {
+      "name": "Sheet13",
+      "file": "xl/worksheets/sheet13.xml",
+      "dimensions": {
+        "rows": 489,
+        "cols": 489
+      },
+      "formulas": {
+        "count": 0,
+        "samples": [],
+        "functions_used": {}
+      },
+      "data": {
+        "cell_count": 239120,
+        "sample_values": [
+          {
+            "cell": "B1",
+            "value": "260"
+          },
+          {
+            "cell": "C1",
+            "value": "611"
+          },
+          {
+            "cell": "D1",
+            "value": "612"
+          },
+          {
+            "cell": "E1",
+            "value": "261"
+          },
+          {
+            "cell": "F1",
+            "value": "613"
+          },
+          {
+            "cell": "G1",
+            "value": "262"
+          },
+          {
+            "cell": "H1",
+            "value": "1288"
+          },
+          {
+            "cell": "I1",
+            "value": "614"
+          },
+          {
+            "cell": "J1",
+            "value": "615"
+          },
+          {
+            "cell": "K1",
+            "value": "263"
+          },
+          {
+            "cell": "L1",
+            "value": "616"
+          },
+          {
+            "cell": "M1",
+            "value": "264"
+          },
+          {
+            "cell": "N1",
+            "value": "617"
+          },
+          {
+            "cell": "O1",
+            "value": "618"
+          },
+          {
+            "cell": "P1",
+            "value": "619"
+          },
+          {
+            "cell": "Q1",
+            "value": "620"
+          },
+          {
+            "cell": "R1",
+            "value": "621"
+          },
+          {
+            "cell": "S1",
+            "value": "1289"
+          },
+          {
+            "cell": "T1",
+            "value": "265"
+          },
+          {
+            "cell": "U1",
+            "value": "622"
+          },
+          {
+            "cell": "V1",
+            "value": "623"
+          },
+          {
+            "cell": "W1",
+            "value": "624"
+          },
+          {
+            "cell": "X1",
+            "value": "625"
+          },
+          {
+            "cell": "Y1",
+            "value": "626"
+          },
+          {
+            "cell": "Z1",
+            "value": "266"
+          },
+          {
+            "cell": "AA1",
+            "value": "267"
+          },
+          {
+            "cell": "AB1",
+            "value": "268"
+          },
+          {
+            "cell": "AC1",
+            "value": "627"
+          },
+          {
+            "cell": "AD1",
+            "value": "628"
+          },
+          {
+            "cell": "AE1",
+            "value": "629"
+          },
+          {
+            "cell": "AF1",
+            "value": "269"
+          },
+          {
+            "cell": "AG1",
+            "value": "270"
+          },
+          {
+            "cell": "AH1",
+            "value": "271"
+          },
+          {
+            "cell": "AI1",
+            "value": "630"
+          },
+          {
+            "cell": "AJ1",
+            "value": "631"
+          },
+          {
+            "cell": "AK1",
+            "value": "632"
+          },
+          {
+            "cell": "AL1",
+            "value": "633"
+          },
+          {
+            "cell": "AM1",
+            "value": "634"
+          },
+          {
+            "cell": "AN1",
+            "value": "272"
+          },
+          {
+            "cell": "AO1",
+            "value": "1351"
+          },
+          {
+            "cell": "AP1",
+            "value": "273"
+          },
+          {
+            "cell": "AQ1",
+            "value": "274"
+          },
+          {
+            "cell": "AR1",
+            "value": "275"
+          },
+          {
+            "cell": "AS1",
+            "value": "276"
+          },
+          {
+            "cell": "AT1",
+            "value": "635"
+          },
+          {
+            "cell": "AU1",
+            "value": "636"
+          },
+          {
+            "cell": "AV1",
+            "value": "637"
+          },
+          {
+            "cell": "AW1",
+            "value": "638"
+          },
+          {
+            "cell": "AX1",
+            "value": "639"
+          },
+          {
+            "cell": "AY1",
+            "value": "640"
+          }
+        ]
+      },
+      "business_indicators": {
+        "clo_keywords": {},
+        "data_patterns": [],
+        "sheet_purpose": "General Worksheet"
+      }
+    },
+    "Sheet14": {
+      "name": "Sheet14",
+      "file": "xl/worksheets/sheet14.xml",
+      "dimensions": {
+        "rows": 9088,
+        "cols": 50
+      },
+      "formulas": {
+        "count": 9733,
+        "samples": [
+          {
+            "cell": "D4",
+            "formula": "CONCATENATE(E4,F4)"
+          },
+          {
+            "cell": "D5",
+            "formula": "CONCATENATE(E5,F5)"
+          },
+          {
+            "cell": "V24",
+            "formula": "V4"
+          },
+          {
+            "cell": "W24",
+            "formula": "V24+W4"
+          },
+          {
+            "cell": "X24",
+            "formula": "W24+X4"
+          },
+          {
+            "cell": "V25",
+            "formula": "V5"
+          },
+          {
+            "cell": "X25",
+            "formula": "W25+X5"
+          },
+          {
+            "cell": "Z38",
+            "formula": "Y38+Z18"
+          },
+          {
+            "cell": "X40",
+            "formula": "W40+X20"
+          },
+          {
+            "cell": "V43",
+            "formula": "_xlfn.NORM.S.INV(V24)"
+          },
+          {
+            "cell": "W43",
+            "formula": "_xlfn.NORM.S.INV(W24)"
+          },
+          {
+            "cell": "V44",
+            "formula": "_xlfn.NORM.S.INV(V25)"
+          },
+          {
+            "cell": "V45",
+            "formula": "_xlfn.NORM.S.INV(V26)"
+          },
+          {
+            "cell": "V46",
+            "formula": "_xlfn.NORM.S.INV(V27)"
+          },
+          {
+            "cell": "W46",
+            "formula": "_xlfn.NORM.S.INV(W27)"
+          },
+          {
+            "cell": "V47",
+            "formula": "_xlfn.NORM.S.INV(V28)"
+          },
+          {
+            "cell": "V48",
+            "formula": "_xlfn.NORM.S.INV(V29)"
+          },
+          {
+            "cell": "V49",
+            "formula": "_xlfn.NORM.S.INV(V30)"
+          },
+          {
+            "cell": "V50",
+            "formula": "_xlfn.NORM.S.INV(V31)"
+          },
+          {
+            "cell": "V51",
+            "formula": "_xlfn.NORM.S.INV(V32)"
+          }
+        ],
+        "functions_used": {
+          "CONCATENATE": 143,
+          "INV": 23
+        }
+      },
+      "data": {
+        "cell_count": 88303,
+        "sample_values": [
+          {
+            "cell": "B1",
+            "value": "1172"
+          },
+          {
+            "cell": "D1",
+            "value": "1172"
+          },
+          {
+            "cell": "I1",
+            "value": "1172"
+          },
+          {
+            "cell": "R1",
+            "value": "1172"
+          },
+          {
+            "cell": "U1",
+            "value": "1172"
+          },
+          {
+            "cell": "AN1",
+            "value": "1172"
+          },
+          {
+            "cell": "AP1",
+            "value": "1172"
+          },
+          {
+            "cell": "AU1",
+            "value": "1172"
+          },
+          {
+            "cell": "AV1",
+            "value": "1172"
+          },
+          {
+            "cell": "A2",
+            "value": "1172"
+          },
+          {
+            "cell": "B2",
+            "value": "1088"
+          },
+          {
+            "cell": "D2",
+            "value": "1240"
+          },
+          {
+            "cell": "I2",
+            "value": "1347"
+          },
+          {
+            "cell": "R2",
+            "value": "1349"
+          },
+          {
+            "cell": "U2",
+            "value": "1398"
+          },
+          {
+            "cell": "AN2",
+            "value": "1241"
+          },
+          {
+            "cell": "AP2",
+            "value": "1232"
+          },
+          {
+            "cell": "AU2",
+            "value": "1401"
+          },
+          {
+            "cell": "AV2",
+            "value": "1655"
+          },
+          {
+            "cell": "A3",
+            "value": "1240"
+          },
+          {
+            "cell": "B3",
+            "value": "33"
+          },
+          {
+            "cell": "C3",
+            "value": "1143"
+          },
+          {
+            "cell": "D3",
+            "value": "1140"
+          },
+          {
+            "cell": "E3",
+            "value": "33"
+          },
+          {
+            "cell": "F3",
+            "value": "1217"
+          },
+          {
+            "cell": "G3",
+            "value": "1218"
+          },
+          {
+            "cell": "H3",
+            "value": "1219"
+          },
+          {
+            "cell": "I3",
+            "value": "1239"
+          },
+          {
+            "cell": "J3",
+            "value": "1340"
+          },
+          {
+            "cell": "K3",
+            "value": "1341"
+          },
+          {
+            "cell": "L3",
+            "value": "1342"
+          },
+          {
+            "cell": "M3",
+            "value": "1348"
+          },
+          {
+            "cell": "N3",
+            "value": "1346"
+          },
+          {
+            "cell": "O3",
+            "value": "1343"
+          },
+          {
+            "cell": "P3",
+            "value": "1344"
+          },
+          {
+            "cell": "Q3",
+            "value": "1345"
+          },
+          {
+            "cell": "R3",
+            "value": "1140"
+          },
+          {
+            "cell": "S3",
+            "value": "33"
+          },
+          {
+            "cell": "T3",
+            "value": "1141"
+          },
+          {
+            "cell": "U3",
+            "value": "1391"
+          },
+          {
+            "cell": "V3",
+            "value": "1128"
+          },
+          {
+            "cell": "W3",
+            "value": "1392"
+          },
+          {
+            "cell": "X3",
+            "value": "1393"
+          },
+          {
+            "cell": "Y3",
+            "value": "1394"
+          },
+          {
+            "cell": "Z3",
+            "value": "1131"
+          },
+          {
+            "cell": "AA3",
+            "value": "1395"
+          },
+          {
+            "cell": "AB3",
+            "value": "1396"
+          },
+          {
+            "cell": "AC3",
+            "value": "1129"
+          },
+          {
+            "cell": "AD3",
+            "value": "1124"
+          },
+          {
+            "cell": "AE3",
+            "value": "1122"
+          }
+        ]
+      },
+      "business_indicators": {
+        "clo_keywords": {},
+        "data_patterns": [],
+        "sheet_purpose": "General Worksheet"
+      }
+    },
+    "Reference Table": {
+      "name": "Reference Table",
+      "file": "xl/worksheets/sheet15.xml",
+      "dimensions": {
+        "rows": 39,
+        "cols": 22
+      },
+      "formulas": {
+        "count": 0,
+        "samples": [],
+        "functions_used": {}
+      },
+      "data": {
+        "cell_count": 445,
+        "sample_values": [
+          {
+            "cell": "A1",
+            "value": "1832"
+          },
+          {
+            "cell": "A2",
+            "value": "1172"
+          },
+          {
+            "cell": "B2",
+            "value": "1433"
+          },
+          {
+            "cell": "D2",
+            "value": "1434"
+          },
+          {
+            "cell": "F2",
+            "value": "1425"
+          },
+          {
+            "cell": "K2",
+            "value": "1770"
+          },
+          {
+            "cell": "Q2",
+            "value": "1771"
+          },
+          {
+            "cell": "A3",
+            "value": "1433"
+          },
+          {
+            "cell": "B3",
+            "value": "1270"
+          },
+          {
+            "cell": "C3",
+            "value": "42438"
+          },
+          {
+            "cell": "D3",
+            "value": "1099"
+          },
+          {
+            "cell": "E3",
+            "value": "75"
+          },
+          {
+            "cell": "F3",
+            "value": "1405"
+          },
+          {
+            "cell": "G3",
+            "value": "1234"
+          },
+          {
+            "cell": "H3",
+            "value": "1422"
+          },
+          {
+            "cell": "I3",
+            "value": "1406"
+          },
+          {
+            "cell": "J3",
+            "value": "1160"
+          },
+          {
+            "cell": "K3",
+            "value": "1689"
+          },
+          {
+            "cell": "L3",
+            "value": "1694"
+          },
+          {
+            "cell": "M3",
+            "value": "1656"
+          },
+          {
+            "cell": "N3",
+            "value": "1689"
+          },
+          {
+            "cell": "O3",
+            "value": "1260"
+          },
+          {
+            "cell": "P3",
+            "value": "1694"
+          },
+          {
+            "cell": "Q3",
+            "value": "1689"
+          },
+          {
+            "cell": "R3",
+            "value": "1694"
+          },
+          {
+            "cell": "S3",
+            "value": "1656"
+          },
+          {
+            "cell": "T3",
+            "value": "1689"
+          },
+          {
+            "cell": "U3",
+            "value": "1260"
+          },
+          {
+            "cell": "V3",
+            "value": "1694"
+          },
+          {
+            "cell": "A4",
+            "value": "1424"
+          },
+          {
+            "cell": "B4",
+            "value": "1402"
+          },
+          {
+            "cell": "C4",
+            "value": "1598"
+          },
+          {
+            "cell": "D4",
+            "value": "1100"
+          },
+          {
+            "cell": "E4",
+            "value": "500000"
+          },
+          {
+            "cell": "F4",
+            "value": "1598"
+          },
+          {
+            "cell": "G4",
+            "value": "418"
+          },
+          {
+            "cell": "H4",
+            "value": "1781"
+          },
+          {
+            "cell": "I4",
+            "value": "1000000"
+          },
+          {
+            "cell": "J4",
+            "value": "100"
+          },
+          {
+            "cell": "L4",
+            "value": "1697"
+          },
+          {
+            "cell": "M4",
+            "value": "1728"
+          },
+          {
+            "cell": "N4",
+            "value": "1710"
+          },
+          {
+            "cell": "O4",
+            "value": "46"
+          },
+          {
+            "cell": "R4",
+            "value": "1697"
+          },
+          {
+            "cell": "S4",
+            "value": "1728"
+          },
+          {
+            "cell": "T4",
+            "value": "1712"
+          },
+          {
+            "cell": "U4",
+            "value": "1121"
+          },
+          {
+            "cell": "A5",
+            "value": "1425"
+          },
+          {
+            "cell": "B5",
+            "value": "1654"
+          },
+          {
+            "cell": "C5",
+            "value": "0"
+          }
+        ]
+      },
+      "business_indicators": {
+        "clo_keywords": {},
+        "data_patterns": [],
+        "sheet_purpose": "Reference Data & Lookups"
+      }
+    },
+    "Sheet16": {
+      "name": "Sheet16",
+      "file": "xl/worksheets/sheet16.xml",
+      "dimensions": {
+        "rows": 42,
+        "cols": 13
+      },
+      "formulas": {
+        "count": 0,
+        "samples": [],
+        "functions_used": {}
+      },
+      "data": {
+        "cell_count": 233,
+        "sample_values": [
+          {
+            "cell": "A1",
+            "value": "1728"
+          },
+          {
+            "cell": "B1",
+            "value": "28"
+          },
+          {
+            "cell": "C1",
+            "value": "29"
+          },
+          {
+            "cell": "D1",
+            "value": "1695"
+          },
+          {
+            "cell": "E1",
+            "value": "1696"
+          },
+          {
+            "cell": "F1",
+            "value": "1702"
+          },
+          {
+            "cell": "G1",
+            "value": "1719"
+          },
+          {
+            "cell": "H1",
+            "value": "1720"
+          },
+          {
+            "cell": "I1",
+            "value": "1716"
+          },
+          {
+            "cell": "J1",
+            "value": "1718"
+          },
+          {
+            "cell": "K1",
+            "value": "1749"
+          },
+          {
+            "cell": "L1",
+            "value": "1750"
+          },
+          {
+            "cell": "M1",
+            "value": "1807"
+          },
+          {
+            "cell": "A2",
+            "value": "1128"
+          },
+          {
+            "cell": "B2",
+            "value": "1729"
+          },
+          {
+            "cell": "C2",
+            "value": "86"
+          },
+          {
+            "cell": "D2",
+            "value": "86"
+          },
+          {
+            "cell": "E2",
+            "value": "1697"
+          },
+          {
+            "cell": "F2",
+            "value": "1703"
+          },
+          {
+            "cell": "G2",
+            "value": "1708"
+          },
+          {
+            "cell": "H2",
+            "value": "1708"
+          },
+          {
+            "cell": "I2",
+            "value": "1714"
+          },
+          {
+            "cell": "J2",
+            "value": "28"
+          },
+          {
+            "cell": "K2",
+            "value": "1"
+          },
+          {
+            "cell": "L2",
+            "value": "39"
+          },
+          {
+            "cell": "M2",
+            "value": "1423"
+          },
+          {
+            "cell": "A3",
+            "value": "1392"
+          },
+          {
+            "cell": "B3",
+            "value": "1730"
+          },
+          {
+            "cell": "C3",
+            "value": "970"
+          },
+          {
+            "cell": "D3",
+            "value": "45"
+          },
+          {
+            "cell": "E3",
+            "value": "1698"
+          },
+          {
+            "cell": "F3",
+            "value": "1704"
+          },
+          {
+            "cell": "G3",
+            "value": "1709"
+          },
+          {
+            "cell": "H3",
+            "value": "1713"
+          },
+          {
+            "cell": "I3",
+            "value": "1715"
+          },
+          {
+            "cell": "J3",
+            "value": "1852"
+          },
+          {
+            "cell": "K3",
+            "value": "0"
+          },
+          {
+            "cell": "L3",
+            "value": "69"
+          },
+          {
+            "cell": "M3",
+            "value": "1801"
+          },
+          {
+            "cell": "A4",
+            "value": "1393"
+          },
+          {
+            "cell": "B4",
+            "value": "1731"
+          },
+          {
+            "cell": "C4",
+            "value": "45"
+          },
+          {
+            "cell": "D4",
+            "value": "53"
+          },
+          {
+            "cell": "E4",
+            "value": "1699"
+          },
+          {
+            "cell": "F4",
+            "value": "1705"
+          },
+          {
+            "cell": "G4",
+            "value": "1710"
+          },
+          {
+            "cell": "I4",
+            "value": "1717"
+          },
+          {
+            "cell": "J4",
+            "value": "1851"
+          },
+          {
+            "cell": "L4",
+            "value": "73"
+          },
+          {
+            "cell": "M4",
+            "value": "1781"
+          }
+        ]
+      },
+      "business_indicators": {
+        "clo_keywords": {},
+        "data_patterns": [],
+        "sheet_purpose": "General Worksheet"
+      }
+    },
+    "Sheet17": {
+      "name": "Sheet17",
+      "file": "xl/worksheets/sheet17.xml",
+      "dimensions": {
+        "rows": 235,
+        "cols": 13
+      },
+      "formulas": {
+        "count": 0,
+        "samples": [],
+        "functions_used": {}
+      },
+      "data": {
+        "cell_count": 2820,
+        "sample_values": [
+          {
+            "cell": "B1",
+            "value": "1897"
+          },
+          {
+            "cell": "C1",
+            "value": "1"
+          },
+          {
+            "cell": "D1",
+            "value": "1898"
+          },
+          {
+            "cell": "E1",
+            "value": "27"
+          },
+          {
+            "cell": "F1",
+            "value": "28"
+          },
+          {
+            "cell": "G1",
+            "value": "1899"
+          },
+          {
+            "cell": "H1",
+            "value": "582"
+          },
+          {
+            "cell": "I1",
+            "value": "1900"
+          },
+          {
+            "cell": "J1",
+            "value": "1901"
+          },
+          {
+            "cell": "K1",
+            "value": "26"
+          },
+          {
+            "cell": "L1",
+            "value": "1902"
+          },
+          {
+            "cell": "M1",
+            "value": "1802"
+          },
+          {
+            "cell": "B2",
+            "value": "1755"
+          },
+          {
+            "cell": "C2",
+            "value": "1761"
+          },
+          {
+            "cell": "D2",
+            "value": "1080000"
+          },
+          {
+            "cell": "E2",
+            "value": "100.386"
+          },
+          {
+            "cell": "F2",
+            "value": "1905"
+          },
+          {
+            "cell": "G2",
+            "value": "1118"
+          },
+          {
+            "cell": "H2",
+            "value": "3.7499999999999999E-2"
+          },
+          {
+            "cell": "I2",
+            "value": "0.03"
+          },
+          {
+            "cell": "J2",
+            "value": "7.4999999999999997E-3"
+          },
+          {
+            "cell": "K2",
+            "value": "6.57"
+          },
+          {
+            "cell": "L2",
+            "value": "0.5"
+          },
+          {
+            "cell": "M2",
+            "value": "1904"
+          },
+          {
+            "cell": "B3",
+            "value": "1448"
+          },
+          {
+            "cell": "C3",
+            "value": "1482"
+          },
+          {
+            "cell": "D3",
+            "value": "2244360.9"
+          },
+          {
+            "cell": "E3",
+            "value": "97.667000000000002"
+          },
+          {
+            "cell": "F3",
+            "value": "46"
+          },
+          {
+            "cell": "G3",
+            "value": "1115"
+          },
+          {
+            "cell": "H3",
+            "value": "5.7500000000000002E-2"
+          },
+          {
+            "cell": "I3",
+            "value": "4.7500000000000001E-2"
+          },
+          {
+            "cell": "J3",
+            "value": "0.01"
+          },
+          {
+            "cell": "K3",
+            "value": "6.04"
+          },
+          {
+            "cell": "L3",
+            "value": "0.5"
+          },
+          {
+            "cell": "M3",
+            "value": "1904"
+          },
+          {
+            "cell": "B4",
+            "value": "654"
+          },
+          {
+            "cell": "C4",
+            "value": "90"
+          },
+          {
+            "cell": "D4",
+            "value": "725000"
+          },
+          {
+            "cell": "E4",
+            "value": "91.5"
+          },
+          {
+            "cell": "F4",
+            "value": "1911"
+          },
+          {
+            "cell": "G4",
+            "value": "1125"
+          },
+          {
+            "cell": "H4",
+            "value": "8.5000000000000006E-2"
+          },
+          {
+            "cell": "I4",
+            "value": "7.4999999999999997E-2"
+          },
+          {
+            "cell": "J4",
+            "value": "0.01"
+          },
+          {
+            "cell": "K4",
+            "value": "4.01"
+          },
+          {
+            "cell": "L4",
+            "value": "0.15"
+          },
+          {
+            "cell": "M4",
+            "value": "1904"
+          },
+          {
+            "cell": "B5",
+            "value": "1478"
+          },
+          {
+            "cell": "C5",
+            "value": "1479"
+          }
+        ]
+      },
+      "business_indicators": {
+        "clo_keywords": {},
+        "data_patterns": [],
+        "sheet_purpose": "General Worksheet"
+      }
+    },
+    "Sheet18": {
+      "name": "Sheet18",
+      "file": "xl/worksheets/sheet18.xml",
+      "dimensions": {
+        "rows": 367,
+        "cols": 13
+      },
+      "formulas": {
+        "count": 0,
+        "samples": [],
+        "functions_used": {}
+      },
+      "data": {
+        "cell_count": 4404,
+        "sample_values": [
+          {
+            "cell": "B1",
+            "value": "1925"
+          },
+          {
+            "cell": "B2",
+            "value": "1920"
+          },
+          {
+            "cell": "C2",
+            "value": "1897"
+          },
+          {
+            "cell": "D2",
+            "value": "1"
+          },
+          {
+            "cell": "E2",
+            "value": "1898"
+          },
+          {
+            "cell": "F2",
+            "value": "27"
+          },
+          {
+            "cell": "G2",
+            "value": "28"
+          },
+          {
+            "cell": "H2",
+            "value": "1899"
+          },
+          {
+            "cell": "I2",
+            "value": "582"
+          },
+          {
+            "cell": "J2",
+            "value": "1900"
+          },
+          {
+            "cell": "K2",
+            "value": "1901"
+          },
+          {
+            "cell": "L2",
+            "value": "26"
+          },
+          {
+            "cell": "M2",
+            "value": "1924"
+          },
+          {
+            "cell": "B3",
+            "value": "1.09033848811421"
+          },
+          {
+            "cell": "C3",
+            "value": "276"
+          },
+          {
+            "cell": "D3",
+            "value": "78"
+          },
+          {
+            "cell": "E3",
+            "value": "750000"
+          },
+          {
+            "cell": "F3",
+            "value": "0.96"
+          },
+          {
+            "cell": "G3",
+            "value": "1912"
+          },
+          {
+            "cell": "H3",
+            "value": "1120"
+          },
+          {
+            "cell": "I3",
+            "value": "9.5000000000000001E-2"
+          },
+          {
+            "cell": "J3",
+            "value": "8.5000000000000006E-2"
+          },
+          {
+            "cell": "K3",
+            "value": "0.01"
+          },
+          {
+            "cell": "L3",
+            "value": "4.46"
+          },
+          {
+            "cell": "M3",
+            "value": "0.15"
+          },
+          {
+            "cell": "B4",
+            "value": "1.09016292365544"
+          },
+          {
+            "cell": "C4",
+            "value": "347"
+          },
+          {
+            "cell": "D4",
+            "value": "168"
+          },
+          {
+            "cell": "E4",
+            "value": "750000"
+          },
+          {
+            "cell": "F4",
+            "value": "0.94813000000000003"
+          },
+          {
+            "cell": "G4",
+            "value": "1911"
+          },
+          {
+            "cell": "H4",
+            "value": "1121"
+          },
+          {
+            "cell": "I4",
+            "value": "9.7500000000000003E-2"
+          },
+          {
+            "cell": "J4",
+            "value": "8.5000000000000006E-2"
+          },
+          {
+            "cell": "K4",
+            "value": "1.2500000000000001E-2"
+          },
+          {
+            "cell": "L4",
+            "value": "4.9000000000000004"
+          },
+          {
+            "cell": "M4",
+            "value": "0.15"
+          },
+          {
+            "cell": "B5",
+            "value": "1.0901534240572801"
+          },
+          {
+            "cell": "C5",
+            "value": "756"
+          },
+          {
+            "cell": "D5",
+            "value": "175"
+          },
+          {
+            "cell": "E5",
+            "value": "750000"
+          },
+          {
+            "cell": "F5",
+            "value": "0.99333000000000005"
+          },
+          {
+            "cell": "G5",
+            "value": "1911"
+          },
+          {
+            "cell": "H5",
+            "value": "1125"
+          },
+          {
+            "cell": "I5",
+            "value": "9.7500000000000003E-2"
+          },
+          {
+            "cell": "J5",
+            "value": "8.5000000000000006E-2"
+          },
+          {
+            "cell": "K5",
+            "value": "1.2500000000000001E-2"
+          },
+          {
+            "cell": "L5",
+            "value": "4.1100000000000003"
+          },
+          {
+            "cell": "M5",
+            "value": "0.15"
+          },
+          {
+            "cell": "B6",
+            "value": "1.0900824512896701"
+          }
+        ]
+      },
+      "business_indicators": {
+        "clo_keywords": {},
+        "data_patterns": [],
+        "sheet_purpose": "General Worksheet"
+      }
+    },
+    "Sheet19": {
+      "name": "Sheet19",
+      "file": "xl/worksheets/sheet19.xml",
+      "dimensions": {
+        "rows": 40,
+        "cols": 42
+      },
+      "formulas": {
+        "count": 0,
+        "samples": [],
+        "functions_used": {}
+      },
+      "data": {
+        "cell_count": 801,
+        "sample_values": [
+          {
+            "cell": "B1",
+            "value": "1896"
+          },
+          {
+            "cell": "N1",
+            "value": "1914"
+          },
+          {
+            "cell": "R1",
+            "value": "1909"
+          },
+          {
+            "cell": "AE1",
+            "value": "1913"
+          },
+          {
+            "cell": "C2",
+            "value": "1868"
+          },
+          {
+            "cell": "D2",
+            "value": "1076"
+          },
+          {
+            "cell": "E2",
+            "value": "598"
+          },
+          {
+            "cell": "F2",
+            "value": "1891"
+          },
+          {
+            "cell": "G2",
+            "value": "1892"
+          },
+          {
+            "cell": "I2",
+            "value": "1893"
+          },
+          {
+            "cell": "J2",
+            "value": "1894"
+          },
+          {
+            "cell": "L2",
+            "value": "1869"
+          },
+          {
+            "cell": "O2",
+            "value": "1889"
+          },
+          {
+            "cell": "P2",
+            "value": "1890"
+          },
+          {
+            "cell": "R2",
+            "value": "1897"
+          },
+          {
+            "cell": "S2",
+            "value": "1"
+          },
+          {
+            "cell": "T2",
+            "value": "1898"
+          },
+          {
+            "cell": "U2",
+            "value": "27"
+          },
+          {
+            "cell": "V2",
+            "value": "28"
+          },
+          {
+            "cell": "W2",
+            "value": "1899"
+          },
+          {
+            "cell": "X2",
+            "value": "582"
+          },
+          {
+            "cell": "Y2",
+            "value": "1900"
+          },
+          {
+            "cell": "Z2",
+            "value": "1901"
+          },
+          {
+            "cell": "AA2",
+            "value": "26"
+          },
+          {
+            "cell": "AB2",
+            "value": "1902"
+          },
+          {
+            "cell": "AC2",
+            "value": "1802"
+          },
+          {
+            "cell": "AE2",
+            "value": "1897"
+          },
+          {
+            "cell": "AF2",
+            "value": "1"
+          },
+          {
+            "cell": "AG2",
+            "value": "1898"
+          },
+          {
+            "cell": "AH2",
+            "value": "27"
+          },
+          {
+            "cell": "AI2",
+            "value": "28"
+          },
+          {
+            "cell": "AJ2",
+            "value": "1899"
+          },
+          {
+            "cell": "AK2",
+            "value": "582"
+          },
+          {
+            "cell": "AL2",
+            "value": "1900"
+          },
+          {
+            "cell": "AM2",
+            "value": "1901"
+          },
+          {
+            "cell": "AN2",
+            "value": "26"
+          },
+          {
+            "cell": "AO2",
+            "value": "1902"
+          },
+          {
+            "cell": "AP2",
+            "value": "1802"
+          },
+          {
+            "cell": "C3",
+            "value": "1"
+          },
+          {
+            "cell": "D3",
+            "value": "583"
+          },
+          {
+            "cell": "E3",
+            "value": "0.9"
+          },
+          {
+            "cell": "F3",
+            "value": "0.97160000000000002"
+          },
+          {
+            "cell": "G3",
+            "value": "1"
+          },
+          {
+            "cell": "I3",
+            "value": "0.85409999999999997"
+          },
+          {
+            "cell": "J3",
+            "value": "1"
+          },
+          {
+            "cell": "L3",
+            "value": "-0.11749999999999999"
+          },
+          {
+            "cell": "N3",
+            "value": "452"
+          },
+          {
+            "cell": "O3",
+            "value": "75000000"
+          },
+          {
+            "cell": "P3",
+            "value": "15000000"
+          },
+          {
+            "cell": "R3",
+            "value": "276"
+          }
+        ]
+      },
+      "business_indicators": {
+        "clo_keywords": {},
+        "data_patterns": [],
+        "sheet_purpose": "General Worksheet"
+      }
+    },
+    "Sheet20": {
+      "name": "Sheet20",
+      "file": "xl/worksheets/sheet20.xml",
+      "dimensions": {
+        "rows": 40,
+        "cols": 15
+      },
+      "formulas": {
+        "count": 0,
+        "samples": [],
+        "functions_used": {}
+      },
+      "data": {
+        "cell_count": 393,
+        "sample_values": [
+          {
+            "cell": "B1",
+            "value": "1921"
+          },
+          {
+            "cell": "M1",
+            "value": "1923"
+          },
+          {
+            "cell": "B2",
+            "value": "1868"
+          },
+          {
+            "cell": "C2",
+            "value": "1076"
+          },
+          {
+            "cell": "D2",
+            "value": "598"
+          },
+          {
+            "cell": "E2",
+            "value": "1831"
+          },
+          {
+            "cell": "F2",
+            "value": "1916"
+          },
+          {
+            "cell": "H2",
+            "value": "1917"
+          },
+          {
+            "cell": "I2",
+            "value": "1918"
+          },
+          {
+            "cell": "J2",
+            "value": "1869"
+          },
+          {
+            "cell": "K2",
+            "value": "1919"
+          },
+          {
+            "cell": "N2",
+            "value": "1889"
+          },
+          {
+            "cell": "O2",
+            "value": "1890"
+          },
+          {
+            "cell": "B3",
+            "value": "1"
+          },
+          {
+            "cell": "C3",
+            "value": "583"
+          },
+          {
+            "cell": "D3",
+            "value": "0.9"
+          },
+          {
+            "cell": "E3",
+            "value": "0.97163999999999995"
+          },
+          {
+            "cell": "F3",
+            "value": "1"
+          },
+          {
+            "cell": "H3",
+            "value": "0.97165999999999997"
+          },
+          {
+            "cell": "I3",
+            "value": "1"
+          },
+          {
+            "cell": "J3",
+            "value": "2.0000000000000002E-5"
+          },
+          {
+            "cell": "M3",
+            "value": "452"
+          },
+          {
+            "cell": "N3",
+            "value": "8250000"
+          },
+          {
+            "cell": "O3",
+            "value": "1419"
+          },
+          {
+            "cell": "B4",
+            "value": "2"
+          },
+          {
+            "cell": "C4",
+            "value": "599"
+          },
+          {
+            "cell": "D4",
+            "value": "0.1"
+          },
+          {
+            "cell": "E4",
+            "value": "2.836E-2"
+          },
+          {
+            "cell": "F4",
+            "value": "1"
+          },
+          {
+            "cell": "H4",
+            "value": "2.8340000000000001E-2"
+          },
+          {
+            "cell": "I4",
+            "value": "1"
+          },
+          {
+            "cell": "J4",
+            "value": "-2.0000000000000002E-5"
+          },
+          {
+            "cell": "M4",
+            "value": "1090"
+          },
+          {
+            "cell": "N4",
+            "value": "5.4089999999999999E-2"
+          },
+          {
+            "cell": "O4",
+            "value": "1419"
+          },
+          {
+            "cell": "B5",
+            "value": "3"
+          },
+          {
+            "cell": "C5",
+            "value": "1870"
+          },
+          {
+            "cell": "D5",
+            "value": "0.02"
+          },
+          {
+            "cell": "E5",
+            "value": "1.2E-2"
+          },
+          {
+            "cell": "F5",
+            "value": "1"
+          },
+          {
+            "cell": "H5",
+            "value": "1.1990000000000001E-2"
+          },
+          {
+            "cell": "I5",
+            "value": "1"
+          },
+          {
+            "cell": "J5",
+            "value": "-1.0000000000000001E-5"
+          },
+          {
+            "cell": "M5",
+            "value": "1884"
+          },
+          {
+            "cell": "N5",
+            "value": "5.9279999999999999E-2"
+          },
+          {
+            "cell": "O5",
+            "value": "1419"
+          },
+          {
+            "cell": "B6",
+            "value": "4"
+          },
+          {
+            "cell": "C6",
+            "value": "1871"
+          },
+          {
+            "cell": "D6",
+            "value": "2.5000000000000001E-2"
+          },
+          {
+            "cell": "E6",
+            "value": "1.796E-2"
+          }
+        ]
+      },
+      "business_indicators": {
+        "clo_keywords": {},
+        "data_patterns": [],
+        "sheet_purpose": "General Worksheet"
+      }
+    },
+    "Sheet21": {
+      "name": "Sheet21",
+      "file": "xl/worksheets/_rels/sheet14.xml.rels",
+      "dimensions": {
+        "rows": 0,
+        "cols": 0
+      },
+      "formulas": {
+        "count": 0,
+        "samples": [],
+        "functions_used": {}
+      },
+      "data": {
+        "cell_count": 0,
+        "sample_values": []
+      },
+      "business_indicators": {
+        "clo_keywords": {},
+        "data_patterns": [],
+        "sheet_purpose": "General Worksheet"
+      }
+    },
+    "Sheet22": {
+      "name": "Sheet22",
+      "file": "xl/worksheets/_rels/sheet15.xml.rels",
+      "dimensions": {
+        "rows": 0,
+        "cols": 0
+      },
+      "formulas": {
+        "count": 0,
+        "samples": [],
+        "functions_used": {}
+      },
+      "data": {
+        "cell_count": 0,
+        "sample_values": []
+      },
+      "business_indicators": {
+        "clo_keywords": {},
+        "data_patterns": [],
+        "sheet_purpose": "General Worksheet"
+      }
+    },
+    "Sheet23": {
+      "name": "Sheet23",
+      "file": "xl/worksheets/_rels/sheet16.xml.rels",
+      "dimensions": {
+        "rows": 0,
+        "cols": 0
+      },
+      "formulas": {
+        "count": 0,
+        "samples": [],
+        "functions_used": {}
+      },
+      "data": {
+        "cell_count": 0,
+        "sample_values": []
+      },
+      "business_indicators": {
+        "clo_keywords": {},
+        "data_patterns": [],
+        "sheet_purpose": "General Worksheet"
+      }
+    },
+    "Sheet24": {
+      "name": "Sheet24",
+      "file": "xl/worksheets/_rels/sheet9.xml.rels",
+      "dimensions": {
+        "rows": 0,
+        "cols": 0
+      },
+      "formulas": {
+        "count": 0,
+        "samples": [],
+        "functions_used": {}
+      },
+      "data": {
+        "cell_count": 0,
+        "sample_values": []
+      },
+      "business_indicators": {
+        "clo_keywords": {},
+        "data_patterns": [],
+        "sheet_purpose": "General Worksheet"
+      }
+    },
+    "Sheet25": {
+      "name": "Sheet25",
+      "file": "xl/worksheets/_rels/sheet2.xml.rels",
+      "dimensions": {
+        "rows": 0,
+        "cols": 0
+      },
+      "formulas": {
+        "count": 0,
+        "samples": [],
+        "functions_used": {}
+      },
+      "data": {
+        "cell_count": 0,
+        "sample_values": []
+      },
+      "business_indicators": {
+        "clo_keywords": {},
+        "data_patterns": [],
+        "sheet_purpose": "General Worksheet"
+      }
+    },
+    "Sheet26": {
+      "name": "Sheet26",
+      "file": "xl/worksheets/_rels/sheet1.xml.rels",
+      "dimensions": {
+        "rows": 0,
+        "cols": 0
+      },
+      "formulas": {
+        "count": 0,
+        "samples": [],
+        "functions_used": {}
+      },
+      "data": {
+        "cell_count": 0,
+        "sample_values": []
+      },
+      "business_indicators": {
+        "clo_keywords": {},
+        "data_patterns": [],
+        "sheet_purpose": "General Worksheet"
+      }
+    },
+    "Sheet27": {
+      "name": "Sheet27",
+      "file": "xl/worksheets/_rels/sheet3.xml.rels",
+      "dimensions": {
+        "rows": 0,
+        "cols": 0
+      },
+      "formulas": {
+        "count": 0,
+        "samples": [],
+        "functions_used": {}
+      },
+      "data": {
+        "cell_count": 0,
+        "sample_values": []
+      },
+      "business_indicators": {
+        "clo_keywords": {},
+        "data_patterns": [],
+        "sheet_purpose": "General Worksheet"
+      }
+    },
+    "Sheet28": {
+      "name": "Sheet28",
+      "file": "xl/worksheets/_rels/sheet4.xml.rels",
+      "dimensions": {
+        "rows": 0,
+        "cols": 0
+      },
+      "formulas": {
+        "count": 0,
+        "samples": [],
+        "functions_used": {}
+      },
+      "data": {
+        "cell_count": 0,
+        "sample_values": []
+      },
+      "business_indicators": {
+        "clo_keywords": {},
+        "data_patterns": [],
+        "sheet_purpose": "General Worksheet"
+      }
+    },
+    "Sheet29": {
+      "name": "Sheet29",
+      "file": "xl/worksheets/_rels/sheet5.xml.rels",
+      "dimensions": {
+        "rows": 0,
+        "cols": 0
+      },
+      "formulas": {
+        "count": 0,
+        "samples": [],
+        "functions_used": {}
+      },
+      "data": {
+        "cell_count": 0,
+        "sample_values": []
+      },
+      "business_indicators": {
+        "clo_keywords": {},
+        "data_patterns": [],
+        "sheet_purpose": "General Worksheet"
+      }
+    },
+    "Sheet30": {
+      "name": "Sheet30",
+      "file": "xl/worksheets/_rels/sheet6.xml.rels",
+      "dimensions": {
+        "rows": 0,
+        "cols": 0
+      },
+      "formulas": {
+        "count": 0,
+        "samples": [],
+        "functions_used": {}
+      },
+      "data": {
+        "cell_count": 0,
+        "sample_values": []
+      },
+      "business_indicators": {
+        "clo_keywords": {},
+        "data_patterns": [],
+        "sheet_purpose": "General Worksheet"
+      }
+    },
+    "Sheet31": {
+      "name": "Sheet31",
+      "file": "xl/worksheets/_rels/sheet7.xml.rels",
+      "dimensions": {
+        "rows": 0,
+        "cols": 0
+      },
+      "formulas": {
+        "count": 0,
+        "samples": [],
+        "functions_used": {}
+      },
+      "data": {
+        "cell_count": 0,
+        "sample_values": []
+      },
+      "business_indicators": {
+        "clo_keywords": {},
+        "data_patterns": [],
+        "sheet_purpose": "General Worksheet"
+      }
+    },
+    "Sheet32": {
+      "name": "Sheet32",
+      "file": "xl/worksheets/_rels/sheet8.xml.rels",
+      "dimensions": {
+        "rows": 0,
+        "cols": 0
+      },
+      "formulas": {
+        "count": 0,
+        "samples": [],
+        "functions_used": {}
+      },
+      "data": {
+        "cell_count": 0,
+        "sample_values": []
+      },
+      "business_indicators": {
+        "clo_keywords": {},
+        "data_patterns": [],
+        "sheet_purpose": "General Worksheet"
+      }
+    },
+    "Sheet33": {
+      "name": "Sheet33",
+      "file": "xl/worksheets/_rels/sheet10.xml.rels",
+      "dimensions": {
+        "rows": 0,
+        "cols": 0
+      },
+      "formulas": {
+        "count": 0,
+        "samples": [],
+        "functions_used": {}
+      },
+      "data": {
+        "cell_count": 0,
+        "sample_values": []
+      },
+      "business_indicators": {
+        "clo_keywords": {},
+        "data_patterns": [],
+        "sheet_purpose": "General Worksheet"
+      }
+    },
+    "Sheet34": {
+      "name": "Sheet34",
+      "file": "xl/worksheets/_rels/sheet11.xml.rels",
+      "dimensions": {
+        "rows": 0,
+        "cols": 0
+      },
+      "formulas": {
+        "count": 0,
+        "samples": [],
+        "functions_used": {}
+      },
+      "data": {
+        "cell_count": 0,
+        "sample_values": []
+      },
+      "business_indicators": {
+        "clo_keywords": {},
+        "data_patterns": [],
+        "sheet_purpose": "General Worksheet"
+      }
+    },
+    "Sheet35": {
+      "name": "Sheet35",
+      "file": "xl/worksheets/_rels/sheet12.xml.rels",
+      "dimensions": {
+        "rows": 0,
+        "cols": 0
+      },
+      "formulas": {
+        "count": 0,
+        "samples": [],
+        "functions_used": {}
+      },
+      "data": {
+        "cell_count": 0,
+        "sample_values": []
+      },
+      "business_indicators": {
+        "clo_keywords": {},
+        "data_patterns": [],
+        "sheet_purpose": "General Worksheet"
+      }
+    }
+  },
+  "vba_analysis": {
+    "has_vba": true,
+    "vba_files": [
+      "xl/vbaProject.bin"
+    ],
+    "estimated_complexity": "Medium",
+    "business_functions": [
+      "Custom subroutines and functions",
+      "Excel application automation",
+      "CLO logic: portfolio",
+      "CLO logic: correlation",
+      "CLO logic: simulation",
+      "CLO logic: default",
+      "CLO logic: recovery",
+      "CLO logic: rating",
+      "CLO logic: compliance"
+    ]
+  },
+  "business_logic": {
+    "system_type": "CLO Portfolio Management & Analysis System",
+    "core_functions": [],
+    "data_flow": {},
+    "business_processes": [],
+    "complexity_assessment": {
+      "overall_complexity": "High",
+      "formula_density": 503.48571428571427,
+      "sheet_interconnectivity": "High",
+      "vba_complexity": "Medium",
+      "data_volume": "Large"
+    }
+  },
+  "data_relationships": {
+    "sheet_dependencies": {},
+    "data_sources": [
+      "Reference Table"
+    ],
+    "calculation_engines": [],
+    "output_generators": []
+  }
+}

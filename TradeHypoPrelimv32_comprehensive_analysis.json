@@ -1,0 +1,157 @@
+{
+  "file_structure": {
+    "filename": "TradeHypoPrelimv32.xlsm",
+    "size_mb": 3.11,
+    "type": "Excel Macro-Enabled Workbook (.xlsm)",
+    "contains_macros": true,
+    "total_files": 63,
+    "worksheet_files": 35,
+    "vba_files": 1,
+    "external_connection_files": 0,
+    "has_custom_ui": false,
+    "has_external_links": false
+  },
+  "worksheets": {
+    "Run Model": {
+      "name": "Run Model",
+      "dimensions": "27 cols x 44 rows",
+      "inferred_purpose": "Model Control Sheet - Controls model execution and parameters",
+      "formulas": [
+        {
+          "cell": "I39",
+          "formula": "=SUM(I31:I38)",
+          "result": "=SUM(I31:I38)"
+        }
+      ],
+      "data_validations": [
+        {
+          "range": "C9 J11:J39",
+          "type": "list",
+          "formula1": "Deals",
+          "formula2": null
+        },
+        {
+          "range": "F10:I10",
+          "type": "list",
+          "formula1": "\"Buy,Sale,All\"",
+          "formula2": null
+        },
+        {
+          "range": "C14:C15 C19 E9:I9",
+          "type": "list",
+          "formula1": "\"TRUE,FALSE\"",
+          "formula2": null
+        },
+        {
+          "range": "C18",
+          "type": "list",
+          "formula1": "\"Annually,Semi-Annually,Quarterly\"",
+          "formula2": null
+        },
+        {
+          "range": "C17",
+          "type": "whole",
+          "formula1": "1",
+          "formula2": "500"
+        },
+        {
+          "range": "C16",
+          "type": "list",
+          "formula1": "\"User Defined,System Defined\"",
+          "formula2": null
+        },
+        {
+          "range": "F15:F20 F23:F28",
+          "type": "list",
+          "formula1": "FilterFields",
+          "formula2": null
+        },
+        {
+          "range": "N8",
+          "type": "list",
+          "formula1": "\"True,False\"",
+          "formula2": null
+        },
+        {
+          "range": "E10 L11:L39",
+          "type": "list",
+          "formula1": "\"Buy,Sale\"",
+          "formula2": null
+        }
+      ],
+      "named_ranges": [],
+      "key_cells": [
+        {
+          "cell": "B27",
+          "value": "Run Model",
+          "type": "control_parameter"
+        },
+        {
+          "cell": "D31",
+          "value": "Minimum Weighted Average Moody\u2019s Recovery Rate Test",
+          "type": "control_parameter"
+        }
+      ],
+      "data_types": {},
+      "conditional_formatting": [],
+      "protection_status": {
+        "sheet_protected": true,
+        "password_protected": false
+      }
+    }
+  },
+  "vba_analysis": {
+    "has_vba": true,
+    "vba_files": [
+      "xl/vbaProject.bin"
+    ],
+    "estimated_modules": 0,
+    "potential_functionality": [
+      "Subroutines and Functions",
+      "CLO Logic: portfolio",
+      "CLO Logic: asset",
+      "CLO Logic: rating",
+      "CLO Logic: default",
+      "CLO Logic: recovery",
+      "CLO Logic: correlation",
+      "CLO Logic: simulation",
+      "CLO Logic: compliance"
+    ]
+  },
+  "business_logic": {
+    "clo_components": [],
+    "calculation_types": [],
+    "workflow_stages": [
+      "0. Model Control Stage: 1 sheets",
+      "1. Data Input Stage: 0 sheets",
+      "2. Calculation/Processing Stage: 1 sheets",
+      "3. Output/Reporting Stage: 0 sheets"
+    ],
+    "compliance_tests": [],
+    "risk_management": []
+  },
+  "data_flows": {
+    "inter_sheet_references": {},
+    "data_sources": [],
+    "data_sinks": [],
+    "calculation_chain": []
+  },
+  "formulas": {
+    "total_formulas": 1,
+    "complex_formulas": [],
+    "function_usage": {
+      "SUM": 1
+    },
+    "array_formulas": [],
+    "lookup_formulas": []
+  },
+  "external_dependencies": {
+    "external_files": [],
+    "add_ins": [],
+    "database_connections": [],
+    "web_queries": [],
+    "special_features": [
+      "Drawings/Shapes"
+    ]
+  }
+}
