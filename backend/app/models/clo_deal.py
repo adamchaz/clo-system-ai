@@ -49,6 +49,10 @@ class CLODeal(Base):
     tranches = relationship("CLOTranche", back_populates="deal", cascade="all, delete-orphan")
     assets = relationship("DealAsset", back_populates="deal", cascade="all, delete-orphan")
     liabilities = relationship("Liability", back_populates="deal", cascade="all, delete-orphan")
+    oc_triggers = relationship("OCTrigger", back_populates="deal", cascade="all, delete-orphan")
+    ic_triggers = relationship("ICTrigger", back_populates="deal", cascade="all, delete-orphan")
+    fees = relationship("Fee", back_populates="deal", cascade="all, delete-orphan")
+    collateral_pools = relationship("CollateralPool", back_populates="deal", cascade="all, delete-orphan")
     
     def __repr__(self):
         return f"<CLODeal({self.deal_id}: {self.deal_name})>"

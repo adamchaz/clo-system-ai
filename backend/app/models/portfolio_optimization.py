@@ -16,7 +16,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import Column, String, Integer, Numeric, Date, Boolean, DateTime, ForeignKey, Text, JSON
 
 from ..core.database import Base
-from .asset import Asset, AssetFilter
+from .asset import Asset
 from .clo_deal import CLODeal
 from .clo_deal_engine import CLODealEngine, AccountType, CashType
 

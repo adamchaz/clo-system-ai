@@ -6,7 +6,12 @@
       "Bash(git push:*)",
       "Bash(docker:*)",
       "Bash(pip install:*)",
-      "Bash(touch:*)"
+      "Bash(touch:*)",
+      "Bash(find:*)",
+      "Bash(grep:*)",
+      "Bash(git checkout:*)",
+      "Bash(rm:*)",
+      "Bash(rg:*)"
     ],
     "deny": []
   }
