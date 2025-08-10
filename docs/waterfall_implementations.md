@@ -348,6 +348,32 @@ collections = asset_service.get_period_collections(deal_id, start_date, end_date
 execution = waterfall_calculator.execute_waterfall(collections.total)
 ```
 
+### CLO Deal Engine Integration
+```python
+# Deal engine orchestrates waterfall execution
+engine = CLODealEngine(deal, session)
+engine.setup_waterfall_strategy(waterfall_strategy)
+
+# Period-by-period execution
+engine.execute_deal_calculation()
+
+# Waterfall automatically called for each period
+for period in range(1, len(engine.payment_dates) + 1):
+    engine._execute_interest_waterfall(period)
+    engine._execute_principal_waterfall(period, max_reinvestment)
+```
+
+### Liability Integration
+```python
+# Liability calculations feed into waterfall
+for name, calculator in engine.liability_calculators.items():
+    calculator.calculate_period(period, libor_rate, last_pay, next_pay)
+
+# Interest due amounts used in waterfall sequence
+liability_interest = calculator.get_interest_due(period)
+waterfall_strategy.process_interest_payment(liability_interest)
+```
+
 ### Compliance Tests → Triggers
 ```python
 # Test results influence payment triggers
@@ -459,4 +485,46 @@ metrics = MagPerformanceMetrics(
 - **Integration testing** with dynamic waterfall system
 - **Factory pattern validation** for configuration management
 
-This architecture provides flexibility to handle various CLO structures while maintaining consistency and auditability across all waterfall implementations, including sophisticated Magnetar structures with performance-based modifications.
+## CLO Deal Engine Architecture
+
+### Master Orchestration
+The CLO Deal Engine serves as the master orchestrator for all waterfall operations:
+
+```python
+class CLODealEngine:
+    """Master orchestration engine coordinating entire deal lifecycle"""
+    
+    def execute_deal_calculation(self):
+        """Main calculation workflow with waterfall integration"""
+        for period in range(1, len(self.payment_dates) + 1):
+            # Calculate period cash flows
+            self.calculate_period(period, liquidate_flag)
+            
+            # Execute waterfall payments
+            if self._is_event_of_default():
+                self._execute_eod_waterfall(period)
+            else:
+                self._execute_interest_waterfall(period)
+                max_reinvestment = self.calculate_reinvestment_amount(period)
+                self._execute_principal_waterfall(period, max_reinvestment)
+```
+
+### Component Coordination
+```python
+# Engine coordinates all CLO components
+engine.setup_liabilities(liability_dict)           # Interest calculations
+engine.setup_accounts()                            # Cash management
+engine.setup_waterfall_strategy(waterfall_strategy) # Payment logic
+engine.setup_reinvestment_info(reinvestment_info)  # Reinvestment rules
+
+# Seamless integration across all systems
+engine.execute_deal_calculation()
+```
+
+### Testing Integration
+With 76+ comprehensive tests covering:
+- **Deal Engine Tests** (20+ tests) - Master orchestration functionality
+- **Liability Tests** (10+ tests) - Interest calculations and risk measures  
+- **Magnetar Tests** (46 tests) - All performance-based waterfall features
+
+This architecture provides flexibility to handle various CLO structures while maintaining consistency and auditability across all waterfall implementations, including sophisticated Magnetar structures with performance-based modifications, all coordinated through the comprehensive CLO Deal Engine system.
