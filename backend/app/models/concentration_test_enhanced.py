@@ -634,39 +634,6 @@ class EnhancedConcentrationTest:
         
         self.test_results.append(test_result)
     
-    def _limitation_on_ccc_loans(self):
-        """Test CCC-rated loan concentration - VBA LimitationOnCCCLoans()"""
-        test_num = TestNum.LimitationonCCCObligations
-        
-        ccc_amount = Decimal('0')
-        total_amount = Decimal('0')
-        
-        for asset in self.assets_dict.values():
-            total_amount += asset.par_amount
-            
-            # Check for CCC ratings (S&P)
-            if (asset.sp_rating and 
-                any(rating in asset.sp_rating for rating in ['CCC+', 'CCC', 'CCC-', 'CC', 'C'])):
-                ccc_amount += asset.par_amount
-        
-        result_pct = (ccc_amount / total_amount * 100) if total_amount > 0 else Decimal('0')
-        threshold = self.test_thresholds[test_num.value].threshold_value
-        
-        pass_fail = "PASS" if result_pct <= threshold else "FAIL"
-        
-        test_result = EnhancedTestResult(
-            test_number=test_num.value,
-            test_name="Limitation on CCC Obligations",
-            threshold=threshold,
-            result=result_pct,
-            pass_fail=pass_fail,
-            numerator=ccc_amount,
-            denominator=total_amount,
-            comments=f"CCC-rated assets: {ccc_amount:,.0f}",
-            pass_fail_comment=f"Maximum {threshold}% allowed"
-        )
-        
-        self.test_results.append(test_result)
     
     # ===========================================
     # ASSET TYPE RESTRICTION TESTS
@@ -1076,7 +1043,10 @@ class EnhancedConcentrationTest:
     
     def _calc_collateral_principal_amount(self, principal_proceeds: Decimal):
         """Calculate collateral principal amount - VBA CalcCollateralPrincipalAmount()"""
-        self.collateral_principal_amount = sum(asset.par_amount for asset in self.assets_dict.values())
+        self.collateral_principal_amount = sum(
+            asset.par_amount for asset in self.assets_dict.values()
+            if not asset.default_asset  # VBA: Only non-default assets
+        )
         self.collateral_principal_amount += principal_proceeds
     
     def _initialize_default_thresholds(self):
@@ -2556,23 +2526,26 @@ class EnhancedConcentrationTest:
         objective_value = Decimal('0')
         
         for result in self.test_results:
-            if result.pass_fail == "FAIL" and result.test_number in self.objective_weights:
-                weight = self.objective_weights[result.test_number]
+            if result.pass_fail == "FAIL":
+                # Use weight if available, otherwise use default weight of 1.0
+                weight = self.objective_weights.get(result.test_number, Decimal('1.0'))
                 violation = result.result - result.threshold
-                objective_value += weight * violation
+                if violation > 0:  # Only positive violations contribute
+                    objective_value += weight * violation
         
         return objective_value
     
-    def get_objective_dict(self) -> Dict[str, Decimal]:
+    def get_objective_dict(self) -> Dict[int, Decimal]:
         """Get objective function dictionary - VBA GetObjectiveDict() conversion"""
         objective_dict = {}
         
         for result in self.test_results:
-            test_key = f"Test_{result.test_number}"
+            test_number = result.test_number
             if result.pass_fail == "FAIL":
-                objective_dict[test_key] = result.result - result.threshold
+                violation = result.result - result.threshold
+                objective_dict[test_number] = violation if violation > 0 else Decimal('0')
             else:
-                objective_dict[test_key] = Decimal('0')
+                objective_dict[test_number] = Decimal('0')
         
         return objective_dict
     
