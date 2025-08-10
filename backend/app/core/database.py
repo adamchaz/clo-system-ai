@@ -3,7 +3,7 @@ CLO System Database Configuration
 Handles SQLAlchemy database connections and session management
 """
 
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 import redis
@@ -59,9 +59,10 @@ class DatabaseManager:
         """Test database connection"""
         try:
             with engine.connect() as connection:
-                connection.execute("SELECT 1")
+                connection.execute(text("SELECT 1"))
             return True
-        except Exception:
+        except Exception as e:
+            print(f"Database connection error: {e}")
             return False
     
     @staticmethod
