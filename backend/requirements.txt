@@ -1,4 +1,5 @@
-# CLO Management System - Backend Requirements (Updated)
+# CLO Management System - Backend Requirements
+# Converting sophisticated Excel/VBA CLO system to modern Python
 
 # Core Framework
 fastapi>=0.115.0
@@ -9,26 +10,27 @@ sqlalchemy>=2.0.30
 alembic>=1.13.0
 psycopg2-binary>=2.9.9
 
-# Data Processing & Excel  
+# Data Processing & Excel Integration
 pandas>=2.2.3,<3.0.0
-numpy>=1.26.0,<2.0.0    # Stay on 1.x to avoid breaking changes
+numpy>=1.26.0,<2.0.0    # Stay on 1.x for QuantLib compatibility
 openpyxl>=3.1.5
 xlwings>=0.32.0
 
-# Financial Calculations
+# Financial Mathematics (Critical for VBA conversion)
+QuantLib-Python>=1.18    # Advanced financial calculations
 scipy>=1.13.0
 numpy-financial>=1.0.0
 scikit-learn>=1.4.0
-cvxpy>=1.5.0
+cvxpy>=1.5.0            # Portfolio optimization
 
-# Background Processing
+# Background Processing & Caching
 celery>=5.4.0
 redis>=5.1.0
 
 # Performance Optimization
 numba>=0.60.0
 
-# Utilities & Configuration
+# Configuration & Utilities
 python-dateutil>=2.9.0
 python-dotenv>=1.0.1
 pydantic>=2.9.0
@@ -39,13 +41,13 @@ python-jose[cryptography]>=3.3.0
 passlib[bcrypt]>=1.7.4
 python-multipart>=0.0.12
 
-# Testing
+# Testing Framework
 pytest>=8.0.0
 pytest-asyncio>=0.24.0
 pytest-cov>=6.0.0
 httpx>=0.28.0
 
-# Azure Integration (latest)
+# Cloud Integration
 azure-storage-blob>=12.24.0
 azure-keyvault-secrets>=4.8.0
 azure-identity>=1.19.0
@@ -55,3 +57,6 @@ black>=24.0.0
 isort>=5.13.0
 flake8>=7.0.0
 mypy>=1.13.0
+
+# Additional CLO-specific requirements
+python-dateutil>=2.9.0  # Date arithmetic for CLO schedules

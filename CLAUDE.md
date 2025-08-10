@@ -59,6 +59,21 @@ scripts\start-dev.bat   # Start full development environment
 scripts\stop-dev.bat    # Stop development environment
 ```
 
+### Environment Testing
+```bash
+# Test complete development environment
+cd backend
+python test_environment.py
+
+# Test specific components  
+python test_db_connection.py      # Database connections
+python quantlib_essentials_test.py # QuantLib functionality
+```
+
+### Database Connection
+- **PostgreSQL**: `postgresql://postgres:adamchaz@127.0.0.1:5433/clo_dev`
+- **Redis**: `redis://127.0.0.1:6379`
+
 ## Project Structure
 
 - `backend/` - Python FastAPI application
