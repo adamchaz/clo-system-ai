@@ -24,7 +24,14 @@
       "Bash(timeout 20 npm start)",
       "Bash(mv:*)",
       "Bash(npx tsc:*)",
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "Bash(timeout 15 npm start)",
+      "Bash(timeout 15 PORT=3001 npm start)",
+      "Bash(set PORT=3001)",
+      "Bash(git commit:*)",
+      "Bash(timeout 300 npm run build)",
+      "Bash(timeout 180 npm run build)",
+      "Bash(npx eslint:*)"
     ],
     "deny": []
   }
