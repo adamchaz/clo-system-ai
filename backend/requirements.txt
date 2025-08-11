@@ -60,3 +60,5 @@ mypy>=1.13.0
 
 # Additional CLO-specific requirements
 python-dateutil>=2.9.0  # Date arithmetic for CLO schedules
+holidays>=0.78          # Holiday calendar for business day calculations
+decimal                  # High precision decimal arithmetic (built-in)
