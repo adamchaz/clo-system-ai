@@ -21,7 +21,10 @@
       "Bash(PORT=3001 timeout 10 npm start)",
       "Bash(npm install:*)",
       "Bash(timeout 10 npm start)",
-      "Bash(timeout 20 npm start)"
+      "Bash(timeout 20 npm start)",
+      "Bash(mv:*)",
+      "Bash(npx tsc:*)",
+      "Bash(node:*)"
     ],
     "deny": []
   }
