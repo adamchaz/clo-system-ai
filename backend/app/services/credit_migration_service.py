@@ -17,9 +17,9 @@ import pandas as pd
 from sqlalchemy.orm import Session
 
 from ..models.credit_migration import CreditMigration
-from ..models.base import get_db_session
+from ..core.database_config import get_db_session
 from ..models.asset import Asset
-from ..models.portfolio import Portfolio
+from ..models.clo_deal import CLODeal
 from ..utils.math_utils import MathUtils
 from ..core.exceptions import CLOBusinessError, CLOValidationError
 
@@ -294,10 +294,10 @@ class CreditMigrationService:
             logger.error(f"Scenario analysis failed: {str(e)}")
             raise CLOBusinessError(f"Scenario analysis failed: {str(e)}") from e
     
-    def _get_portfolio(self, portfolio_id: str) -> Portfolio:
+    def _get_portfolio(self, portfolio_id: str) -> CLODeal:
         """Get portfolio from database"""
-        portfolio = self.db.query(Portfolio).filter(
-            Portfolio.id == portfolio_id
+        portfolio = self.db.query(CLODeal).filter(
+            CLODeal.deal_id == portfolio_id
         ).first()
         
         if not portfolio:
@@ -305,13 +305,13 @@ class CreditMigrationService:
         
         return portfolio
     
-    def _create_collateral_pool(self, portfolio: Portfolio) -> Any:
+    def _create_collateral_pool(self, portfolio: CLODeal) -> Any:
         """Create mock collateral pool from portfolio assets"""
         # This would create a proper collateral pool object
         # For now, return a mock that matches our test interface
         
         class CollateralPool:
-            def __init__(self, portfolio: Portfolio):
+            def __init__(self, portfolio: CLODeal):
                 self.portfolio = portfolio
                 self.assets = {
                     asset.id: asset for asset in portfolio.assets
@@ -489,7 +489,7 @@ class CreditMigrationService:
         peak_period = 0
         cumulative_impact = 0.0
         
-        for i, (period_key in enumerate(base_stats.keys())):
+        for i, period_key in enumerate(base_stats.keys()):
             base_defaults = base_stats[period_key].get("num_defaults", {}).get("mean", 0)
             stress_defaults = stress_stats[period_key].get("num_defaults", {}).get("mean", 0)
             

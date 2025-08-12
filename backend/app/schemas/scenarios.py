@@ -181,7 +181,7 @@ class MAGScenarioSummary(BaseModel):
 
 class ScenarioExportRequest(BaseModel):
     """Schema for scenario export requests"""
-    export_format: str = Field(..., regex="^(json|excel|csv|pdf)$")
+    export_format: str = Field(..., pattern="^(json|excel|csv|pdf)$")
     include_analysis_history: bool = Field(default=False)
     include_parameter_descriptions: bool = Field(default=True)
     date_range: Optional[Dict[str, date]] = None

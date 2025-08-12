@@ -14,7 +14,8 @@ from .endpoints import (
     auth,
     monitoring,
     rebalancing,
-    credit_migration
+    credit_migration,
+    reports
 )
 
 api_router = APIRouter()
@@ -72,4 +73,10 @@ api_router.include_router(
     credit_migration.router, 
     prefix="/credit-migration", 
     tags=["Credit Migration"]
+)
+
+api_router.include_router(
+    reports.router, 
+    prefix="/reports", 
+    tags=["Reports"]
 )

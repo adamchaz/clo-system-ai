@@ -31,6 +31,10 @@ from .concentration_test_enhanced import (
     EnhancedConcentrationTest, TestNum, TestThreshold, EnhancedTestResult,
     GeographicGroup, IndustryClassification
 )
+from .reports import (
+    Report, ReportTemplate, ReportSchedule, 
+    ReportType, ReportStatus, ReportFormat
+)
 
 __all__ = [
     # Asset Models
@@ -121,5 +125,13 @@ __all__ = [
     'TestThreshold',
     'EnhancedTestResult',
     'GeographicGroup',
-    'IndustryClassification'
+    'IndustryClassification',
+    
+    # Reports System
+    'Report',
+    'ReportTemplate',
+    'ReportSchedule',
+    'ReportType',
+    'ReportStatus',
+    'ReportFormat'
 ]

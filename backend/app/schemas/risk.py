@@ -156,13 +156,13 @@ class StressTestResponse(BaseModel):
 
 class RiskReportRequest(BaseModel):
     """Schema for risk report generation requests"""
-    report_type: str = Field(..., regex="^(summary|detailed|regulatory|custom)$")
+    report_type: str = Field(..., pattern="^(summary|detailed|regulatory|custom)$")
     include_sections: List[str] = Field(
         default=["metrics", "concentration", "stress_test", "recommendations"],
         description="Sections to include in the report"
     )
     custom_parameters: Optional[Dict[str, Any]] = None
-    format: str = Field(default="json", regex="^(json|pdf|excel)$")
+    format: str = Field(default="json", pattern="^(json|pdf|excel)$")
 
 class RiskReportResponse(BaseModel):
     """Schema for risk report responses"""

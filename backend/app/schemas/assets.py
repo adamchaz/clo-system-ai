@@ -103,7 +103,7 @@ class AssetCashFlowResponse(BaseModel):
 class BulkAssetOperationRequest(BaseModel):
     """Schema for bulk asset operations"""
     asset_ids: List[str] = Field(..., min_items=1, max_items=1000)
-    operation: str = Field(..., regex="^(activate|deactivate|delete|update)$")
+    operation: str = Field(..., pattern="^(activate|deactivate|delete|update)$")
     parameters: Optional[Dict[str, Any]] = None
     
 class BulkAssetOperationResponse(BaseModel):
