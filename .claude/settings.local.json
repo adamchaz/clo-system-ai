@@ -31,7 +31,12 @@
       "Bash(git commit:*)",
       "Bash(timeout 300 npm run build)",
       "Bash(timeout 180 npm run build)",
-      "Bash(npx eslint:*)"
+      "Bash(npx eslint:*)",
+      "Bash(for f in *.tsx)",
+      "Bash(do echo \"=== $f line 745 ===\")",
+      "Bash(sed:*)",
+      "Bash(done)",
+      "Bash(timeout 30 npm start)"
     ],
     "deny": []
   }
