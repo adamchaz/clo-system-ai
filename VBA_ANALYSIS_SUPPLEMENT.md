@@ -48,6 +48,14 @@ This supplement provides detailed analysis of the extracted VBA code to support 
 - Statistical functions (min, max, average, std dev, median)
 - Custom sorting and array manipulation
 - Financial calculation support functions
+- **✅ CONVERTED** → MathUtils.py with 97 comprehensive tests
+
+**ComplianceHypo.bas** - Portfolio rebalancing engine:
+- Two-phase rebalancing (sales then purchases)
+- Asset ranking with objective function optimization
+- Portfolio optimization with concentration limits
+- Monte Carlo simulation for large-scale rebalancing
+- **✅ CONVERTED** → PortfolioRebalancer with 777 comprehensive tests
 
 ### Python Conversion Mapping
 

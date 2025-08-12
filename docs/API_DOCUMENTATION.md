@@ -19,7 +19,8 @@ The CLO Management System API provides comprehensive endpoints for managing coll
 4. **Waterfall** (`/waterfall`) - Payment calculations and cash flow projections
 5. **Risk Analytics** (`/risk`) - VaR calculations and risk metrics
 6. **Scenarios** (`/scenarios`) - MAG scenario analysis and custom scenarios
-7. **Monitoring** (`/monitoring`) - System health and performance metrics
+7. **Rebalancing** (`/rebalancing`) - Portfolio optimization and asset rebalancing **✅ NEW**
+8. **Monitoring** (`/monitoring`) - System health and performance metrics
 
 ### **Authentication & Authorization**
 
@@ -1026,6 +1027,241 @@ Compare multiple scenarios for a deal.
     "best_scenario": "Mag 7",
     "worst_scenario": "Custom_Stress",
     "recommendation": "Mag 7 scenario shows most favorable outcomes"
+  }
+}
+```
+
+---
+
+## 🔄 **PORTFOLIO REBALANCING API** (`/api/v1/rebalancing`)
+
+### **POST /rebalancing/run**
+Execute comprehensive portfolio rebalancing optimization with two-phase algorithm.
+
+**Request Body:**
+```json
+{
+  "portfolio_id": "PORTFOLIO_001",
+  "transaction_type": "BUY",
+  "max_num_assets": 50,
+  "incremental_loan_size": 1000000.0,
+  "sale_par_amount": 5000000.0,
+  "buy_par_amount": 10000000.0,
+  "buy_filter": "sp_rating >= 'BBB' AND spread >= 0.04",
+  "sale_filter": "sp_rating <= 'BB' OR analyst_opinion = 'SELL'",
+  "max_concentration_per_asset": 0.05,
+  "libor_rate": 0.025
+}
+```
+
+**Response (200):**
+```json
+{
+  "success": true,
+  "message": "Portfolio rebalancing completed successfully",
+  "data": {
+    "operation_id": "REBAL_PORTFOLIO_001_20241201_143022",
+    "portfolio_id": "PORTFOLIO_001",
+    "execution_summary": {
+      "objective_improvement": 2.45,
+      "total_trades": 15,
+      "total_sale_amount": 5000000.0,
+      "total_buy_amount": 8500000.0,
+      "execution_time": 45.2,
+      "warnings": []
+    },
+    "results": {
+      "objective_improvement": {
+        "before": 47.5,
+        "after_sale": 48.2,
+        "after_buy": 49.95,
+        "total_improvement": 2.45
+      },
+      "trades": {
+        "sales": [
+          {
+            "asset_id": "ASSET_001",
+            "asset_name": "Sample Corp Term Loan",
+            "transaction_type": "SELL",
+            "par_amount": 2500000.0,
+            "price": 99.2,
+            "objective_score": 0.35,
+            "rationale": "Sold to improve portfolio objective function"
+          }
+        ],
+        "purchases": [
+          {
+            "asset_id": "ASSET_150",
+            "asset_name": "High Quality Corp Bond",
+            "transaction_type": "BUY",
+            "par_amount": 3000000.0,
+            "price": 101.5,
+            "objective_score": 0.85,
+            "rationale": "Purchased to improve portfolio objective function"
+          }
+        ]
+      },
+      "compliance_metrics": {
+        "before": {"oc_ratio": 1.12, "ic_ratio": 1.18},
+        "after_buy": {"oc_ratio": 1.16, "ic_ratio": 1.22}
+      }
+    }
+  }
+}
+```
+
+### **POST /rebalancing/rank-assets**
+Rank assets for buy or sell decisions based on objective function analysis.
+
+**Request Body:**
+```json
+{
+  "portfolio_id": "PORTFOLIO_001",
+  "transaction_type": "BUY",
+  "filter_expression": "sp_rating >= 'A' AND maturity_date <= '2030-12-31'",
+  "max_assets": 25,
+  "incremental_loan_size": 2000000.0
+}
+```
+
+**Response (200):**
+```json
+{
+  "success": true,
+  "message": "Asset ranking analysis completed successfully",
+  "data": {
+    "portfolio_id": "PORTFOLIO_001",
+    "transaction_type": "BUY",
+    "filter_expression": "sp_rating >= 'A' AND maturity_date <= '2030-12-31'",
+    "total_candidates": 87,
+    "rankings": [
+      {
+        "rank": 1,
+        "asset_id": "ASSET_203",
+        "asset_name": "Premium Tech Corp Bond",
+        "objective_score": 0.92,
+        "par_amount": 5000000.0,
+        "current_price": 102.3,
+        "spread": 0.045,
+        "rating": "A",
+        "maturity": "2029-06-15",
+        "industry": "Technology"
+      }
+    ],
+    "summary": {
+      "top_score": 0.92,
+      "bottom_score": 0.55,
+      "avg_score": 0.74
+    }
+  }
+}
+```
+
+### **POST /rebalancing/export**
+Export rebalancing results in Excel, CSV, or JSON format.
+
+**Request Body:**
+```json
+{
+  "operation_id": "REBAL_PORTFOLIO_001_20241201_143022",
+  "format_type": "excel",
+  "include_detailed_analysis": true
+}
+```
+
+**Response (200):** Returns file download for Excel format or structured data for CSV/JSON.
+
+### **POST /rebalancing/cancel/{operation_id}**
+Cancel an ongoing rebalancing operation gracefully.
+
+**Response (200):**
+```json
+{
+  "success": true,
+  "message": "Cancellation request processed",
+  "data": {
+    "operation_id": "REBAL_PORTFOLIO_001_20241201_143022",
+    "cancelled": true,
+    "message": "Rebalancing operation cancelled successfully"
+  }
+}
+```
+
+### **GET /rebalancing/results/{operation_id}**
+Retrieve stored rebalancing results by operation ID.
+
+**Query Parameters:**
+- `include_detailed` (boolean): Include detailed trade analysis
+
+**Response (200):**
+```json
+{
+  "success": true,
+  "message": "Results retrieved successfully",
+  "data": {
+    "operation_id": "REBAL_PORTFOLIO_001_20241201_143022",
+    "status": "completed",
+    "results": "... (same structure as /run response)"
+  }
+}
+```
+
+### **GET /rebalancing/operations**
+List historical rebalancing operations with filtering and pagination.
+
+**Query Parameters:**
+- `portfolio_id` (string, optional): Filter by portfolio ID
+- `status` (string, optional): Filter by operation status
+- `limit` (integer): Maximum results (default: 50, max: 200)  
+- `offset` (integer): Results offset for pagination
+
+**Response (200):**
+```json
+{
+  "success": true,
+  "message": "Operations list retrieved",
+  "data": {
+    "operations": [
+      {
+        "operation_id": "REBAL_PORTFOLIO_001_20241201_143022",
+        "portfolio_id": "PORTFOLIO_001", 
+        "status": "completed",
+        "created_at": "2024-12-01T14:30:22Z",
+        "completed_at": "2024-12-01T14:31:07Z",
+        "total_trades": 15,
+        "objective_improvement": 2.45
+      }
+    ],
+    "total_count": 127,
+    "limit": 50,
+    "offset": 0
+  }
+}
+```
+
+### **GET /rebalancing/health**
+Health check endpoint for rebalancing service capabilities.
+
+**Response (200):**
+```json
+{
+  "status": "healthy",
+  "service": "portfolio-rebalancing",
+  "version": "1.0.0",
+  "capabilities": {
+    "portfolio_optimization": true,
+    "asset_ranking": true,
+    "objective_function_scoring": true,
+    "compliance_checking": true,
+    "progress_tracking": true,
+    "export_functionality": true,
+    "operation_cancellation": true
+  },
+  "algorithms": {
+    "two_phase_rebalancing": true,
+    "incremental_optimization": true,
+    "objective_function_maximization": true,
+    "concentration_limit_enforcement": true
   }
 }
 ```

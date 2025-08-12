@@ -40,6 +40,7 @@ The CLO Management System follows a modern, microservices-oriented architecture 
                     │   - Portfolio Management│
                     │   - Risk Analytics      │
                     │   - Waterfall Calc      │
+                    │   - Rebalancing ✅ NEW  │
                     └─────────────────────────┘
                                 │
                 ┌───────────────┴───────────────┐
@@ -136,6 +137,7 @@ services/
 ├── waterfall_service.py    # Waterfall calculations
 ├── risk_service.py         # Risk analytics
 ├── scenario_service.py     # Scenario analysis
+├── rebalancing_service.py  # Portfolio rebalancing & optimization ✅ NEW
 ├── data_integration.py     # Data integration layer
 └── monitoring_service.py   # System monitoring
 ```
@@ -165,6 +167,13 @@ services/
 - Monte Carlo simulations
 - Correlation analysis
 - Concentration risk metrics
+
+**Rebalancing Service** (`rebalancing_service.py`) **✅ NEW**
+- Two-phase portfolio optimization (sales then purchases)
+- Asset ranking with objective function scoring
+- Compliance-aware trading with concentration limits
+- Real-time progress tracking and cancellation support
+- Multiple export formats (Excel, CSV, JSON)
 
 ### 4. Data Integration Layer
 

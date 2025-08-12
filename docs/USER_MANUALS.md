@@ -93,6 +93,7 @@ As a Portfolio Manager, you manage CLO portfolios, execute waterfall calculation
 - Waterfall calculation oversight
 - Risk assessment and reporting
 - Scenario analysis and stress testing
+- Portfolio rebalancing and optimization **✅ NEW**
 
 ### Core Functions
 
@@ -114,6 +115,13 @@ As a Portfolio Manager, you manage CLO portfolios, execute waterfall calculation
 - **Stress Testing**: Execute stress scenarios and analyze results
 - **Compliance Monitoring**: Ensure portfolio compliance with deal documents
 
+#### Portfolio Rebalancing **✅ NEW**
+- **Asset Ranking**: Analyze and rank assets for buy/sell decisions using objective function
+- **Two-Phase Optimization**: Execute sales followed by strategic purchases
+- **Compliance-Aware Trading**: Ensure all trades maintain portfolio compliance limits
+- **Progress Tracking**: Monitor long-running rebalancing operations with real-time updates
+- **Export Analysis**: Generate detailed rebalancing reports in Excel, CSV, or JSON formats
+
 ### Workflow Examples
 
 #### Daily Portfolio Review
@@ -129,6 +137,14 @@ As a Portfolio Manager, you manage CLO portfolios, execute waterfall calculation
 3. Review payment distributions
 4. Validate results against expectations
 5. Export reports for distribution
+
+#### Portfolio Rebalancing Process **✅ NEW**
+1. Analyze current portfolio objective function score
+2. Run asset ranking analysis to identify improvement opportunities
+3. Configure rebalancing parameters (sale/buy amounts, filters, concentration limits)
+4. Execute two-phase rebalancing (sales first, then purchases)
+5. Monitor progress and review trade recommendations
+6. Export detailed rebalancing analysis and trade reports
 
 ### API Endpoints (Manager Access)
 
@@ -153,6 +169,16 @@ GET /api/v1/risk/portfolio/{id}/var             # Portfolio VaR
 GET /api/v1/risk/portfolio/{id}/concentration   # Concentration analysis
 GET /api/v1/risk/correlations                   # Correlation matrix
 POST /api/v1/risk/stress-test/{portfolio_id}    # Stress testing
+```
+
+#### Portfolio Rebalancing **✅ NEW**
+```
+POST /api/v1/rebalancing/run                    # Execute portfolio rebalancing
+POST /api/v1/rebalancing/rank-assets            # Asset ranking analysis
+POST /api/v1/rebalancing/export                 # Export rebalancing results
+POST /api/v1/rebalancing/cancel/{operation_id}  # Cancel rebalancing operation
+GET /api/v1/rebalancing/results/{operation_id}  # Get rebalancing results
+GET /api/v1/rebalancing/operations              # List rebalancing history
 ```
 
 ---

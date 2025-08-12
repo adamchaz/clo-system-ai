@@ -36,7 +36,8 @@
       "Bash(do echo \"=== $f line 745 ===\")",
       "Bash(sed:*)",
       "Bash(done)",
-      "Bash(timeout 30 npm start)"
+      "Bash(timeout 30 npm start)",
+      "Bash(npm ls:*)"
     ],
     "deny": []
   }
