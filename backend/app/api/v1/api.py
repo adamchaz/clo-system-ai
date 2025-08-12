@@ -12,7 +12,9 @@ from .endpoints import (
     risk_analytics,
     scenarios,
     auth,
-    monitoring
+    monitoring,
+    rebalancing,
+    credit_migration
 )
 
 api_router = APIRouter()
@@ -58,4 +60,16 @@ api_router.include_router(
     monitoring.router, 
     prefix="/monitoring", 
     tags=["System Monitoring"]
+)
+
+api_router.include_router(
+    rebalancing.router, 
+    prefix="/rebalancing", 
+    tags=["Portfolio Rebalancing"]
+)
+
+api_router.include_router(
+    credit_migration.router, 
+    prefix="/credit-migration", 
+    tags=["Credit Migration"]
 )

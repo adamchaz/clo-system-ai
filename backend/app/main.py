@@ -89,7 +89,9 @@ async def root():
                 "risk": "/api/v1/risk",
                 "scenarios": "/api/v1/scenarios",
                 "auth": "/api/v1/auth",
-                "monitoring": "/api/v1/monitoring"
+                "monitoring": "/api/v1/monitoring",
+                "rebalancing": "/api/v1/rebalancing",
+                "credit_migration": "/api/v1/credit-migration"
             },
             "documentation": "/docs",
             "openapi": "/openapi.json"
