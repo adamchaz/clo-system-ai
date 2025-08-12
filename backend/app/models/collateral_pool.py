@@ -89,7 +89,7 @@ class CollateralPoolAsset(Base):
     
     id = Column(Integer, primary_key=True, autoincrement=True)
     pool_id = Column(Integer, ForeignKey('collateral_pools.pool_id'), nullable=False)
-    asset_id = Column(Integer, ForeignKey('assets.asset_id'), nullable=False)
+    asset_id = Column(String(50), ForeignKey('assets.blkrock_id'), nullable=False)
     
     # Position Information
     par_amount = Column(Numeric(18,2), nullable=False)  # Current position size
@@ -215,7 +215,7 @@ class AssetCashFlowForDeal(Base):
     
     id = Column(Integer, primary_key=True, autoincrement=True)
     pool_id = Column(Integer, ForeignKey('collateral_pools_for_clo.pool_id'), nullable=False)
-    asset_id = Column(Integer, ForeignKey('assets.asset_id'), nullable=False)
+    asset_id = Column(String(50), ForeignKey('assets.blkrock_id'), nullable=False)
     blkrock_id = Column(String(50), nullable=False)  # For VBA compatibility
     
     # Period-by-Period Cash Flows (JSON Array)

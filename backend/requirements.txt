@@ -34,6 +34,7 @@ numba>=0.60.0
 python-dateutil>=2.9.0
 python-dotenv>=1.0.1
 pydantic>=2.9.0
+pydantic-settings>=2.0.0
 typing-extensions>=4.12.0
 
 # Security & Authentication
@@ -61,7 +62,7 @@ mypy>=1.13.0
 # Additional CLO-specific requirements
 python-dateutil>=2.9.0  # Date arithmetic for CLO schedules
 holidays>=0.78          # Holiday calendar for business day calculations
-decimal                  # High precision decimal arithmetic (built-in)
+# decimal is built-in module, no need to install
 
 # Credit Risk & Monte Carlo Simulation
 matplotlib>=3.8.0       # Plotting and visualization for results

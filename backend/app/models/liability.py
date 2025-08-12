@@ -176,8 +176,10 @@ class LiabilityCalculator:
         
         # Calculate PIK interest if applicable
         if self.liability.is_pikable:
+            # Ensure deferred_beginning_balance is not None
+            deferred_balance = cash_flow.deferred_beginning_balance or Decimal('0')
             cash_flow.deferred_interest_accrued = (
-                cash_flow.deferred_beginning_balance * day_fraction * coupon_rate
+                deferred_balance * day_fraction * coupon_rate
             )
         
         # Track calculation progress

@@ -37,7 +37,12 @@
       "Bash(sed:*)",
       "Bash(done)",
       "Bash(timeout 30 npm start)",
-      "Bash(npm ls:*)"
+      "Bash(npm ls:*)",
+      "Bash(venvScriptsactivate.bat)",
+      "Bash(call venvScriptsactivate.bat)",
+      "Bash(source:*)",
+      "Bash(venv/Scripts/activate:*)",
+      "Bash(venvScripts:*)"
     ],
     "deny": []
   }

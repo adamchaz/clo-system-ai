@@ -514,7 +514,7 @@ class TestYieldCurveEdgeCasesIntegration:
         assert result is None
         assert asset.fair_value is None
     
-    def test_zero_coupon_asset_pricing(self, integrated_db, sample_yield_curves, integrated_db):
+    def test_zero_coupon_asset_pricing(self, integrated_db, sample_yield_curves):
         """Test pricing of zero-coupon assets"""
         curves, yield_curve_service = sample_yield_curves
         

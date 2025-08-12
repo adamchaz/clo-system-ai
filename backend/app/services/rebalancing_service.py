@@ -22,8 +22,8 @@ from ..models.rebalancing import (
     TransactionType,
     create_rebalance_inputs_from_config
 )
-from ..models.base import get_db_session
-from ..models.portfolio import Portfolio
+from ..core.database_config import get_db_session
+from ..models.collateral_pool import CollateralPool as Portfolio
 from ..models.asset import Asset
 from ..core.exceptions import CLOBusinessError, CLOValidationError
 

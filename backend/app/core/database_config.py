@@ -87,9 +87,9 @@ class DatabaseConfig:
             self.redis_client = redis.Redis.from_url(self.redis_url)
             # Test connection
             self.redis_client.ping()
-            print("✅ Redis connection established")
+            print("[OK] Redis connection established")
         except Exception as e:
-            print(f"⚠️ Redis connection failed: {e}")
+            print(f"[WARNING] Redis connection failed: {e}")
             self.redis_client = None
     
     @contextmanager

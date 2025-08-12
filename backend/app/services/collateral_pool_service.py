@@ -17,7 +17,6 @@ from ..models.collateral_pool import (
 from ..models.concentration_test import ConcentrationTest, RatingDerivations, TestSettings
 from ..models.asset import Asset
 from ..models.clo_deal_engine import Account, AccountType, CashType
-from ..models.cash_flow import SimpleCashFlow
 
 
 class HypoInputs:

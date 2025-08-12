@@ -783,3 +783,11 @@ class IncentiveFeeService:
             'period_irr': incentive_fee.irr[incentive_fee.period - 1],
             'total_fees_paid': incentive_fee.fee_paid_total()
         }
+
+
+# Backward compatibility aliases
+IncentiveFeeStructure = IncentiveFeeStructureModel
+SubordinatedPayment = SubordinatedPaymentModel  
+IncentiveFeeCalculation = IncentiveFeeCalculationModel
+FeePaymentTransaction = FeePaymentTransactionModel
+IRRCalculationHistory = IRRCalculationHistoryModel

@@ -10,14 +10,14 @@ from sqlalchemy.orm import sessionmaker
 from unittest.mock import Mock, MagicMock, patch
 from typing import Dict, List
 
-from ..app.models.portfolio_optimization import (
+from app.models.portfolio_optimization import (
     PortfolioOptimizationEngine, PortfolioOptimizationService,
     OptimizationInputs, ObjectiveWeights, ComplianceTestResult,
     OptimizationType, ObjectiveWeightType
 )
-from ..app.models.clo_deal import CLODeal
-from ..app.models.asset import Asset
-from ..app.models.clo_deal_engine import CLODealEngine, AccountType, CashType
+from app.models.clo_deal import CLODeal
+from app.models.asset import Asset
+from app.models.clo_deal_engine import CLODealEngine, AccountType, CashType
 
 
 @pytest.fixture

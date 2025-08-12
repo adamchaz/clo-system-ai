@@ -8,16 +8,16 @@ from decimal import Decimal
 from datetime import date, datetime
 from unittest.mock import Mock, patch
 
-from ..app.models.collateral_pool import (
+from app.models.collateral_pool import (
     CollateralPool, CollateralPoolAsset, CollateralPoolAccount,
     CollateralPoolForCLO, AssetCashFlowForDeal,
     CollateralPoolCalculator, CollateralPoolForCLOCalculator,
     TransactionType, AnalysisType
 )
-from ..app.models.concentration_test import ConcentrationTest, RatingDerivations, TestSettings
-from ..app.models.asset import Asset
-from ..app.models.clo_deal_engine import Account, AccountType, CashType
-from ..app.services.collateral_pool_service import CollateralPoolService, HypoInputs
+from app.models.concentration_test import ConcentrationTest, RatingDerivations, TestSettings
+from app.models.asset import Asset
+from app.models.clo_deal_engine import Account, AccountType, CashType
+from app.services.collateral_pool_service import CollateralPoolService, HypoInputs
 
 
 class TestCollateralPoolModels:

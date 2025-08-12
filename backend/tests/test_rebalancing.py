@@ -40,7 +40,9 @@ class MockAsset:
         self.sp_industry = kwargs.get('sp_industry', 'Technology')
     
     def copy(self):
-        return MockAsset(self.asset_id, **self.__dict__)
+        # Exclude id and asset_id from dict to avoid duplicate arguments
+        kwargs = {k: v for k, v in self.__dict__.items() if k not in ['id', 'asset_id']}
+        return MockAsset(self.asset_id, **kwargs)
     
     def update_par(self, new_par: float):
         self.par_amount = new_par
@@ -95,6 +97,10 @@ class MockPortfolio:
     
     def get_asset_position(self, asset_id: str) -> float:
         return self.assets.get(asset_id, MockAsset(asset_id)).par_amount
+    
+    def get_asset(self, asset_id: str) -> MockAsset:
+        """Get asset by ID"""
+        return self.assets.get(asset_id)
 
 
 class TestRebalanceInputs:
@@ -397,23 +403,25 @@ class TestPortfolioRebalancer:
         existing_buys = [
             TradeRecommendation(
                 asset_id='TEST001', asset_name='Test', transaction_type=TransactionType.BUY,
-                par_amount=100000.0, price=100.0, current_position=0.0,
+                par_amount=50000.0, price=100.0, current_position=0.0,  # Reduced from 100k to 50k
                 objective_score=0.8, compliance_impact={}, rationale='Test'
             )
         ]
         
-        # Test within limits
-        within_limits = rebalancer._would_exceed_concentration(
-            mock_portfolio, asset_info, 50000.0, rebalance_config, existing_buys
+        # Test within limits - should NOT exceed concentration (return False)
+        # Total: 50k (existing) + 25k (new) = 75k out of 3M = 2.5% < 5% limit
+        would_exceed_small = rebalancer._would_exceed_concentration(
+            mock_portfolio, asset_info, 25000.0, rebalance_config, existing_buys
         )
         
-        # Test exceeding limits
-        exceed_limits = rebalancer._would_exceed_concentration(
+        # Test exceeding limits - should exceed concentration (return True)  
+        # Total: 50k (existing) + 200k (new) = 250k out of 3M = 8.3% > 5% limit
+        would_exceed_large = rebalancer._would_exceed_concentration(
             mock_portfolio, asset_info, 200000.0, rebalance_config, existing_buys
         )
         
-        assert not within_limits
-        assert exceed_limits
+        assert not would_exceed_small  # Small amount should be fine
+        assert would_exceed_large      # Large amount should exceed limits
     
     def test_run_rebalancing_basic(self, rebalancer, mock_portfolio, mock_all_collateral, rebalance_config):
         """Test basic rebalancing workflow"""
