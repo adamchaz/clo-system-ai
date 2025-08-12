@@ -15,7 +15,11 @@ from .endpoints import (
     monitoring,
     rebalancing,
     credit_migration,
-    reports
+    reports,
+    documents,
+    portfolio_analytics,
+    user_management,
+    websocket
 )
 
 api_router = APIRouter()
@@ -79,4 +83,28 @@ api_router.include_router(
     reports.router, 
     prefix="/reports", 
     tags=["Reports"]
+)
+
+api_router.include_router(
+    documents.router, 
+    prefix="/documents", 
+    tags=["Document Management"]
+)
+
+api_router.include_router(
+    portfolio_analytics.router, 
+    prefix="/portfolio-analytics", 
+    tags=["Portfolio Analytics"]
+)
+
+api_router.include_router(
+    user_management.router, 
+    prefix="/users", 
+    tags=["User Management"]
+)
+
+api_router.include_router(
+    websocket.router, 
+    prefix="/websocket", 
+    tags=["Real-time Communication"]
 )

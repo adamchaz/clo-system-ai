@@ -35,6 +35,13 @@ from .reports import (
     Report, ReportTemplate, ReportSchedule, 
     ReportType, ReportStatus, ReportFormat
 )
+from .documents import (
+    Document, DocumentAccess, DocumentShare, DocumentFolder, DocumentFolderItem,
+    DocumentType, DocumentStatus, AccessLevel
+)
+from .auth import (
+    User, UserRole
+)
 
 __all__ = [
     # Asset Models
@@ -133,5 +140,19 @@ __all__ = [
     'ReportSchedule',
     'ReportType',
     'ReportStatus',
-    'ReportFormat'
+    'ReportFormat',
+    
+    # Document Management
+    'Document',
+    'DocumentAccess',
+    'DocumentShare',
+    'DocumentFolder',
+    'DocumentFolderItem',
+    'DocumentType',
+    'DocumentStatus',
+    'AccessLevel',
+    
+    # Authentication & Authorization
+    'User',
+    'UserRole'
 ]
