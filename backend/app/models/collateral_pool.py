@@ -77,6 +77,31 @@ class CollateralPool(Base):
     pool_accounts = relationship("CollateralPoolAccount", back_populates="pool", cascade="all, delete-orphan")
     concentration_results = relationship("ConcentrationTestResult", back_populates="pool", cascade="all, delete-orphan")
     
+    def __init__(self, **kwargs):
+        """Initialize CollateralPool with proper defaults"""
+        super().__init__(**kwargs)
+        # Set defaults that aren't automatically applied
+        if self.use_rating_migration is None:
+            self.use_rating_migration = False
+        if self.current_period is None:
+            self.current_period = 1
+        if self.rerun_tests_required is None:
+            self.rerun_tests_required = True
+        if self.total_par_amount is None:
+            self.total_par_amount = 0
+        if self.total_assets is None:
+            self.total_assets = 0
+        if self.total_market_value is None:
+            self.total_market_value = 0
+        if self.average_par_amount is None:
+            self.average_par_amount = 0
+        if self.current_objective_value is None:
+            self.current_objective_value = 0
+        if self.previous_objective_value is None:
+            self.previous_objective_value = 0
+        if self.last_calculated_period is None:
+            self.last_calculated_period = 0
+    
     def __repr__(self):
         return f"<CollateralPool({self.deal_id}:{self.pool_name}, Assets={self.total_assets})>"
 
@@ -108,6 +133,12 @@ class CollateralPoolAsset(Base):
     # Relationships
     pool = relationship("CollateralPool", back_populates="pool_assets")
     asset = relationship("Asset")
+    
+    def __init__(self, **kwargs):
+        """Initialize CollateralPoolAsset with proper defaults"""
+        super().__init__(**kwargs)
+        if self.is_defaulted is None:
+            self.is_defaulted = False
     
     def __repr__(self):
         return f"<PoolAsset(Pool={self.pool_id}, Asset={self.asset_id}, Par={self.par_amount})>"
@@ -202,6 +233,16 @@ class CollateralPoolForCLO(Base):
     deal = relationship("CLODeal")
     parent_pool = relationship("CollateralPool", foreign_keys=[parent_pool_id])
     asset_cash_flows = relationship("AssetCashFlowForDeal", back_populates="pool", cascade="all, delete-orphan")
+    
+    def __init__(self, **kwargs):
+        """Initialize CollateralPoolForCLO with proper defaults"""
+        super().__init__(**kwargs)
+        if self.current_period is None:
+            self.current_period = 1
+        if self.last_calculated_period is None:
+            self.last_calculated_period = 0
+        if self.use_rating_migration is None:
+            self.use_rating_migration = False
     
     def __repr__(self):
         return f"<CollateralPoolForCLO({self.deal_id}, Period={self.current_period})>"

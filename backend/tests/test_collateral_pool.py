@@ -114,9 +114,14 @@ class TestCollateralPoolCalculator:
         self.asset1.sp_industry = "Technology"
         self.asset1.default_asset = False
         self.asset1.maturity = date(2028, 6, 15)
-        self.asset1.copy.return_value = self.asset1
+        # Configure mock methods
+        self.asset1.copy = Mock(return_value=self.asset1)
         self.asset1.add_par = Mock()
         self.asset1.apply_filter = Mock(return_value=True)
+        self.asset1.add_moody_rating = Mock()
+        self.asset1.add_sp_rating = Mock()
+        self.asset1.mdy_rating = "B2"  # Add missing rating attribute
+        self.asset1.cov_lite = False  # Add covenant lite attribute
         
         self.asset2 = Mock(spec=Asset)
         self.asset2.blkrock_id = "ASSET002"
@@ -127,14 +132,19 @@ class TestCollateralPoolCalculator:
         self.asset2.sp_industry = "Healthcare"
         self.asset2.default_asset = False
         self.asset2.maturity = date(2027, 12, 31)
-        self.asset2.copy.return_value = self.asset2
+        # Configure mock methods
+        self.asset2.copy = Mock(return_value=self.asset2)
         self.asset2.add_par = Mock()
         self.asset2.apply_filter = Mock(return_value=True)
+        self.asset2.add_moody_rating = Mock()
+        self.asset2.add_sp_rating = Mock()
+        self.asset2.mdy_rating = "Ba3"  # Add missing rating attribute
+        self.asset2.cov_lite = False  # Add covenant lite attribute
         
         # Setup test accounts
-        self.collection_account = Account()
-        self.collection_account.principal = Decimal('10000000')
-        self.collection_account.interest = Decimal('500000')
+        self.collection_account = Account(AccountType.COLLECTION)
+        self.collection_account.principal_balance = Decimal('10000000')
+        self.collection_account.interest_balance = Decimal('500000')
         
         self.calculator.accounts_dict[AccountType.COLLECTION] = self.collection_account
     
@@ -251,8 +261,12 @@ class TestCollateralPoolCalculator:
         purchase_asset.blkrock_id = "PURCHASE001"
         purchase_asset.par_amount = Decimal('1000000')
         purchase_asset.market_value = Decimal('99.0')
-        purchase_asset.copy.return_value = purchase_asset
+        purchase_asset.copy = Mock(return_value=purchase_asset)
         purchase_asset.add_par = Mock()
+        purchase_asset.add_moody_rating = Mock()
+        purchase_asset.add_sp_rating = Mock()
+        purchase_asset.mdy_rating = "B1"
+        purchase_asset.sp_rating = "B+"
         
         self.calculator.purchase_asset(purchase_asset)
         
@@ -273,7 +287,12 @@ class TestCollateralPoolCalculator:
         large_asset.blkrock_id = "LARGE001"
         large_asset.par_amount = Decimal('20000000')  # $20M par
         large_asset.market_value = Decimal('100.0')   # At par
-        large_asset.copy.return_value = large_asset
+        large_asset.copy = Mock(return_value=large_asset)
+        large_asset.add_par = Mock()
+        large_asset.add_moody_rating = Mock()
+        large_asset.add_sp_rating = Mock()
+        large_asset.mdy_rating = "B1"
+        large_asset.sp_rating = "B+"
         large_asset.add_par = Mock()
         
         self.calculator.purchase_asset(large_asset)

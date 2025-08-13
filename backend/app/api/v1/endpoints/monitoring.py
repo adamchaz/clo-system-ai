@@ -1,14 +1,16 @@
 """
-System Monitoring API Endpoints
-Handles system health, performance metrics, and operational monitoring
+Production Monitoring API Endpoints  
+Handles system health, performance metrics, readiness/liveness checks, and operational monitoring
 """
 
 from typing import List, Optional, Dict, Any
 from datetime import datetime, timedelta
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from sqlalchemy.orm import Session
 
 from ....core.database_config import db_config
+from ....core.monitoring import health_checker, StructuredLogger
+from ....core.security import rate_limit_moderate, rate_limit_lenient
 from ....services.monitoring_service import MonitoringService
 from ....schemas.monitoring import (
     SystemHealthResponse,
@@ -19,6 +21,9 @@ from ....schemas.monitoring import (
 )
 from ..endpoints.auth import get_current_active_user
 from ....schemas.auth import User
+
+# Initialize structured logger
+logger = StructuredLogger("monitoring_api")
 
 router = APIRouter()
 
@@ -72,6 +77,107 @@ async def get_database_health():
         
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Database health check failed: {str(e)}")
+
+
+# ==== PRODUCTION HEALTH ENDPOINTS ====
+
+@router.get("/health/live")
+@rate_limit_lenient()
+async def liveness_check(request: Request):
+    """
+    Liveness probe - checks if application is alive
+    Used by Kubernetes/container orchestrators
+    """
+    try:
+        result = health_checker.check_liveness()
+        logger.info("Liveness check performed", client_ip=request.client.host, **result)
+        return result
+    except Exception as e:
+        logger.error("Liveness check failed", error=str(e))
+        raise HTTPException(status_code=503, detail="Service unavailable")
+
+
+@router.get("/health/ready") 
+@rate_limit_lenient()
+async def readiness_check(request: Request):
+    """
+    Readiness probe - checks if application is ready to serve requests
+    Used by Kubernetes/container orchestrators and load balancers
+    """
+    try:
+        result = health_checker.check_readiness()
+        
+        if result["ready"]:
+            logger.info("Readiness check passed", client_ip=request.client.host, **result)
+            return result
+        else:
+            logger.warning("Readiness check failed", client_ip=request.client.host, **result)
+            raise HTTPException(status_code=503, detail="Service not ready")
+            
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error("Readiness check error", error=str(e))
+        raise HTTPException(status_code=503, detail="Service unavailable")
+
+
+@router.get("/health/detailed")
+@rate_limit_moderate()
+async def detailed_health_check(
+    request: Request,
+    current_user: User = Depends(get_current_active_user)
+):
+    """
+    Comprehensive health check with system metrics
+    Requires authentication - for operational monitoring
+    """
+    try:
+        result = health_checker.check_health(detailed=True)
+        
+        logger.info("Detailed health check performed", 
+                   user_id=current_user.get("user_id"),
+                   client_ip=request.client.host,
+                   status=result.get("status"))
+        
+        return result
+        
+    except Exception as e:
+        logger.error("Detailed health check failed", 
+                    user_id=current_user.get("user_id"), 
+                    error=str(e))
+        raise HTTPException(status_code=500, detail="Health check failed")
+
+
+@router.get("/metrics/system")
+@rate_limit_moderate()
+async def get_system_metrics(
+    request: Request,
+    current_user: User = Depends(get_current_active_user)
+):
+    """
+    Get detailed system performance metrics
+    Requires authentication - for system administrators
+    """
+    try:
+        from ....core.monitoring import SystemMonitor
+        
+        metrics = {
+            "system": SystemMonitor.get_system_stats(),
+            "databases": SystemMonitor.get_database_health(), 
+            "application": SystemMonitor.get_application_metrics()
+        }
+        
+        logger.info("System metrics requested",
+                   user_id=current_user.get("user_id"),
+                   client_ip=request.client.host)
+        
+        return metrics
+        
+    except Exception as e:
+        logger.error("System metrics failed",
+                    user_id=current_user.get("user_id"),
+                    error=str(e))
+        raise HTTPException(status_code=500, detail="Failed to collect system metrics")
 
 @router.get("/metrics/performance", response_model=PerformanceMetricsResponse)
 async def get_performance_metrics(

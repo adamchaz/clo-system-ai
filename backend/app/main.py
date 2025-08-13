@@ -9,15 +9,12 @@ import logging
 
 from .core.config import settings
 from .core.database import DatabaseManager
+from .core.security import configure_production_security
+from .core.monitoring import configure_monitoring
 from .api.v1.api import api_router
 
-# Configure logging
-logging.basicConfig(
-    level=getattr(logging, settings.log_level),
-    format=settings.log_format
-)
-
-logger = logging.getLogger(__name__)
+# Configure monitoring and structured logging
+logger = configure_monitoring()
 
 # Create FastAPI application
 app = FastAPI(
@@ -27,14 +24,8 @@ app = FastAPI(
     debug=settings.debug
 )
 
-# Add CORS middleware
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=settings.cors_origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+# Configure production security (includes CORS, rate limiting, security headers)
+configure_production_security(app)
 
 # Include API routes
 app.include_router(api_router, prefix="/api/v1")
