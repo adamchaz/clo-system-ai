@@ -317,6 +317,93 @@ async def get_active_sessions(
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to fetch sessions: {str(e)}")
 
+@router.post("/login", response_model=Token)
+async def login(
+    credentials: dict,
+    auth_service: AuthService = Depends(get_auth_service)
+):
+    """Login endpoint for frontend compatibility (redirects to token endpoint)"""
+    try:
+        # Extract credentials from JSON payload
+        username = credentials.get("username") or credentials.get("email")
+        password = credentials.get("password")
+        
+        if not username or not password:
+            raise HTTPException(
+                status_code=400,
+                detail="Username/email and password are required"
+            )
+        
+        # Demo credentials for testing
+        demo_users = {
+            "demo@clo-system.com": {
+                "password": "demo12345",
+                "user_data": {
+                    "id": "demo_001",
+                    "email": "demo@clo-system.com",
+                    "full_name": "Demo User",
+                    "role": "admin"
+                }
+            },
+            "admin@clo-system.com": {
+                "password": "admin123", 
+                "user_data": {
+                    "id": "admin_001",
+                    "email": "admin@clo-system.com",
+                    "full_name": "System Administrator", 
+                    "role": "admin"
+                }
+            }
+        }
+        
+        # Check demo credentials
+        if username in demo_users and password == demo_users[username]["password"]:
+            user_data = demo_users[username]["user_data"]
+            
+            # Create access token
+            access_token_expires = timedelta(minutes=settings.access_token_expire_minutes)
+            access_token = auth_service.create_access_token(
+                data={"sub": user_data["email"]}, expires_delta=access_token_expires
+            )
+            
+            return {
+                "access_token": access_token,
+                "token_type": "bearer",
+                "expires_in": settings.access_token_expire_minutes * 60,
+                "user": user_data
+            }
+        
+        # Try regular authentication as fallback
+        user = auth_service.authenticate_user(username, password)
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Incorrect email or password",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+        
+        access_token_expires = timedelta(minutes=settings.access_token_expire_minutes)
+        access_token = auth_service.create_access_token(
+            data={"sub": user.email}, expires_delta=access_token_expires
+        )
+        
+        return {
+            "access_token": access_token,
+            "token_type": "bearer", 
+            "expires_in": settings.access_token_expire_minutes * 60,
+            "user": {
+                "id": user.id,
+                "email": user.email,
+                "full_name": user.full_name,
+                "role": user.role
+            }
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Login failed: {str(e)}")
+
 @router.post("/validate-token")
 async def validate_token(
     token: str,

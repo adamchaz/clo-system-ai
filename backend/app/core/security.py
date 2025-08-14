@@ -185,12 +185,15 @@ def configure_cors(app: FastAPI):
     if settings.environment == "production":
         # Remove wildcard origins in production
         allowed_origins = [origin for origin in allowed_origins if "*" not in origin]
+    else:
+        # Allow all localhost origins in development
+        allowed_origins = ["*"]
     
     app.add_middleware(
         CORSMiddleware,
         allow_origins=allowed_origins,
         allow_credentials=True,
-        allow_methods=["GET", "POST", "PUT", "DELETE", "PATCH"],
+        allow_methods=["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
         allow_headers=[
             "Accept",
             "Accept-Language", 
