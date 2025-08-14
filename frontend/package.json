@@ -1,0 +1,104 @@
+{
+  "name": "frontend",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@mui/icons-material": "^7.3.1",
+    "@mui/material": "^7.3.1",
+    "@mui/x-charts": "^8.10.0",
+    "@mui/x-data-grid": "^8.10.0",
+    "@mui/x-date-pickers": "^8.10.0",
+    "@reduxjs/toolkit": "^2.8.2",
+    "@tanstack/react-query": "^5.84.2",
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/jest-dom": "^6.6.4",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^13.5.0",
+    "@types/d3": "^7.4.3",
+    "@types/jest": "^27.5.2",
+    "@types/numeral": "^2.0.5",
+    "@types/react": "^19.1.9",
+    "@types/react-dom": "^19.1.7",
+    "@types/react-redux": "^7.1.34",
+    "axios": "^1.11.0",
+    "cmdk": "^0.2.0",
+    "d3": "^7.9.0",
+    "date-fns": "^4.1.0",
+    "formik": "^2.4.6",
+    "framer-motion": "^10.18.0",
+    "numeral": "^2.0.6",
+    "react": "^19.1.1",
+    "@hello-pangea/dnd": "^16.3.1",
+    "react-dom": "^19.1.1",
+    "react-hotkeys-hook": "^4.5.0",
+    "react-joyride": "^2.5.2",
+    "react-redux": "^9.2.0",
+    "react-router-dom": "^7.8.0",
+    "react-scripts": "5.0.1",
+    "react-use": "^17.5.1",
+    "react-virtualized": "^9.22.6",
+    "recharts": "^3.1.2",
+    "socket.io-client": "^4.8.1",
+    "typescript": "^4.9.5",
+    "web-vitals": "^2.1.4",
+    "yup": "^1.7.0"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest",
+      "eslint-config-prettier"
+    ],
+    "rules": {
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          "argsIgnorePattern": "^_"
+        }
+      ],
+      "no-console": [
+        "warn",
+        {
+          "allow": [
+            "warn",
+            "error"
+          ]
+        }
+      ],
+      "prefer-const": "error",
+      "no-var": "error"
+    }
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@types/node": "^24.2.1",
+    "@types/react-virtualized": "^9.21.30",
+    "eslint-config-prettier": "^10.1.8",
+    "msw": "^2.10.4",
+    "prettier": "^3.6.2"
+  },
+  "jest": {
+    "transformIgnorePatterns": [
+      "node_modules/(?!(@reduxjs/toolkit|@standard-schema|date-fns|@mui/x-date-pickers|react-router|react-router-dom|framer-motion|cmdk|react-use))"
+    ]
+  }
+}
