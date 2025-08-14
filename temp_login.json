@@ -1,0 +1,1 @@
+{"access_token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkZW1vQGNsby1zeXN0ZW0uY29tIiwiZXhwIjoxNzU1MTIxMjkzfQ.3j--yQ1EmrnIRmWWCmMen2OUQtFqSKRuH039iI8-ZAw","token_type":"bearer","expires_in":1800,"user":{"id":"demo_001","email":"demo@clo-system.com","full_name":"Demo User","role":"admin"}}

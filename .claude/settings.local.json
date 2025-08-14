@@ -42,8 +42,26 @@
       "Bash(call venvScriptsactivate.bat)",
       "Bash(source:*)",
       "Bash(venv/Scripts/activate:*)",
-      "Bash(venvScripts:*)"
+      "Bash(venvScripts:*)",
+      "Bash(curl:*)",
+      "Bash($env:PORT=3001)",
+      "Bash(cmd /c:*)",
+      "Bash(tasklist:*)",
+      "Bash(npx:*)",
+      "Bash(\"venv\\Scripts\\activate.bat\")",
+      "Bash(uvicorn:*)",
+      "Bash(SKIP_PREFLIGHT_CHECK=true PORT=3002 npm start)",
+      "Bash(set TSC_COMPILE_ON_ERROR=true)",
+      "Bash(SKIP_PREFLIGHT_CHECK=true PORT=3005 npm start)",
+      "Bash(echo $REACT_APP_API_URL)",
+      "Bash(PORT=3005 npm start)",
+      "Bash(taskkill:*)",
+      "Bash(REACT_APP_API_URL=http://localhost:8000 node test-auth.js)",
+      "Bash(PORT=3006 npm start)",
+      "Bash(.venvScriptsactivate)",
+      "Bash(venv/Scripts/python.exe -m uvicorn:*)"
     ],
-    "deny": []
+    "deny": [],
+    "defaultMode": "acceptEdits"
   }
 }
