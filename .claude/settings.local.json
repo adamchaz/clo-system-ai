@@ -59,7 +59,11 @@
       "Bash(REACT_APP_API_URL=http://localhost:8000 node test-auth.js)",
       "Bash(PORT=3006 npm start)",
       "Bash(.venvScriptsactivate)",
-      "Bash(venv/Scripts/python.exe -m uvicorn:*)"
+      "Bash(venv/Scripts/python.exe -m uvicorn:*)",
+      "Bash(timeout 120 npm run build)",
+      "Bash(SET TSC_COMPILE_ON_ERROR=true)",
+      "Bash(net start:*)",
+      "Bash(npm run type-check:*)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits"
