@@ -189,7 +189,7 @@ const CorrelationAnalysis: React.FC<CorrelationAnalysisProps> = ({
 
       {/* Analysis Controls */}
       <Grid container spacing={3} sx={{ mb: 4 }}>
-        <Grid {...({ item: true } as any)} size={{ xs: 12, md: 3 }}>
+        <Grid size={{ xs: 12, md: 3 }}>
           <FormControl fullWidth size="small">
             <InputLabel>Time Window</InputLabel>
             <Select
@@ -207,7 +207,7 @@ const CorrelationAnalysis: React.FC<CorrelationAnalysisProps> = ({
           </FormControl>
         </Grid>
 
-        <Grid {...({ item: true } as any)} size={{ xs: 12, md: 3 }}>
+        <Grid size={{ xs: 12, md: 3 }}>
           <FormControl fullWidth size="small">
             <InputLabel>Analysis Type</InputLabel>
             <Select
@@ -223,7 +223,7 @@ const CorrelationAnalysis: React.FC<CorrelationAnalysisProps> = ({
           </FormControl>
         </Grid>
 
-        <Grid {...({ item: true } as any)} size={{ xs: 12, md: 3 }}>
+        <Grid size={{ xs: 12, md: 3 }}>
           <FormControl fullWidth size="small">
             <InputLabel>Sector Filter</InputLabel>
             <Select
@@ -241,7 +241,7 @@ const CorrelationAnalysis: React.FC<CorrelationAnalysisProps> = ({
           </FormControl>
         </Grid>
 
-        <Grid {...({ item: true } as any)} size={{ xs: 12, md: 3 }}>
+        <Grid size={{ xs: 12, md: 3 }}>
           <Box>
             <Typography variant="body2" gutterBottom>
               Correlation Threshold: {correlationThreshold.toFixed(2)}
@@ -272,7 +272,7 @@ const CorrelationAnalysis: React.FC<CorrelationAnalysisProps> = ({
       <TabPanel value={currentTab} index={0}>
         {/* Correlation Matrix Tab */}
         <Grid container spacing={3}>
-          <Grid {...({ item: true } as any)} size={{ xs: 12, lg: 8 }}>
+          <Grid size={{ xs: 12, lg: 8 }}>
             <Card>
               <CardContent>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
@@ -365,7 +365,7 @@ const CorrelationAnalysis: React.FC<CorrelationAnalysisProps> = ({
             </Card>
           </Grid>
 
-          <Grid {...({ item: true } as any)} size={{ xs: 12, lg: 4 }}>
+          <Grid size={{ xs: 12, lg: 4 }}>
             <Card>
               <CardContent>
                 <Typography variant="h6" gutterBottom>
@@ -474,7 +474,7 @@ const CorrelationAnalysis: React.FC<CorrelationAnalysisProps> = ({
                         <Chip
                           label={corr.significance}
                           size="small"
-                          color={getSignificanceColor(corr.significance) as any}
+                          color={getSignificanceColor(corr.significance)}
                         />
                       </TableCell>
                       <TableCell>
@@ -591,7 +591,7 @@ const CorrelationAnalysis: React.FC<CorrelationAnalysisProps> = ({
       <TabPanel value={currentTab} index={3}>
         {/* Diversification Tab */}
         <Grid container spacing={3}>
-          <Grid {...({ item: true } as any)} size={{ xs: 12, md: 6 }}>
+          <Grid size={{ xs: 12, md: 6 }}>
             <Card>
               <CardContent>
                 <Typography variant="h6" gutterBottom>
@@ -624,7 +624,7 @@ const CorrelationAnalysis: React.FC<CorrelationAnalysisProps> = ({
             </Card>
           </Grid>
 
-          <Grid {...({ item: true } as any)} size={{ xs: 12, md: 6 }}>
+          <Grid size={{ xs: 12, md: 6 }}>
             <Card>
               <CardContent>
                 <Typography variant="h6" gutterBottom>

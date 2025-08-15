@@ -647,7 +647,7 @@ const IntegrationTest: React.FC = () => {
 
       {/* Test Statistics */}
       <Grid container spacing={2} sx={{ mb: 3 }}>
-        <Grid {...({ item: true } as any)} size={{ xs: 6, sm: 3 }}>
+        <Grid size={{ xs: 6, sm: 3 }}>
           <Card>
             <CardContent sx={{ textAlign: 'center' }}>
               <Typography variant="h4" color="primary">
@@ -659,7 +659,7 @@ const IntegrationTest: React.FC = () => {
             </CardContent>
           </Card>
         </Grid>
-        <Grid {...({ item: true } as any)} size={{ xs: 6, sm: 3 }}>
+        <Grid size={{ xs: 6, sm: 3 }}>
           <Card>
             <CardContent sx={{ textAlign: 'center' }}>
               <Typography variant="h4" color="success.main">
@@ -671,7 +671,7 @@ const IntegrationTest: React.FC = () => {
             </CardContent>
           </Card>
         </Grid>
-        <Grid {...({ item: true } as any)} size={{ xs: 6, sm: 3 }}>
+        <Grid size={{ xs: 6, sm: 3 }}>
           <Card>
             <CardContent sx={{ textAlign: 'center' }}>
               <Typography variant="h4" color="error.main">
@@ -683,7 +683,7 @@ const IntegrationTest: React.FC = () => {
             </CardContent>
           </Card>
         </Grid>
-        <Grid {...({ item: true } as any)} size={{ xs: 6, sm: 3 }}>
+        <Grid size={{ xs: 6, sm: 3 }}>
           <Card>
             <CardContent sx={{ textAlign: 'center' }}>
               <Typography variant="h4" color="text.secondary">
@@ -700,7 +700,7 @@ const IntegrationTest: React.FC = () => {
       {/* Test Results by Category */}
       <Grid container spacing={3}>
         {testCategories.map((category) => (
-          <Grid {...({ item: true } as any)} size={12} key={category.name}>
+          <Grid size={12} key={category.name}>
             <Accordion defaultExpanded>
               <AccordionSummary expandIcon={<ExpandMore />}>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, width: '100%' }}>
@@ -715,7 +715,7 @@ const IntegrationTest: React.FC = () => {
                       <Chip
                         key={test.id}
                         label={testResults[test.id]?.status || 'pending'}
-                        color={getStatusColor(testResults[test.id]?.status || 'pending') as any}
+                        color={getStatusColor(testResults[test.id]?.status || 'pending')}
                         size="small"
                       />
                     ))}
@@ -755,7 +755,7 @@ const IntegrationTest: React.FC = () => {
                             <TableCell>
                               <Chip
                                 label={result?.status || 'pending'}
-                                color={getStatusColor(result?.status || 'pending') as any}
+                                color={getStatusColor(result?.status || 'pending')}
                                 size="small"
                               />
                             </TableCell>

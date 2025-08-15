@@ -316,7 +316,7 @@ const PortfolioOptimizer: React.FC<PortfolioOptimizerProps> = ({
         {constraint.enabled && (
           <Grid container spacing={2}>
             {constraint.minValue !== undefined && (
-              <Grid {...({ item: true } as any)} size={6}>
+              <Grid size={6}>
                 <TextField
                   label="Minimum Value (%)"
                   type="number"
@@ -329,7 +329,7 @@ const PortfolioOptimizer: React.FC<PortfolioOptimizerProps> = ({
             )}
             
             {constraint.maxValue !== undefined && (
-              <Grid {...({ item: true } as any)} size={6}>
+              <Grid size={6}>
                 <TextField
                   label="Maximum Value (%)"
                   type="number"
@@ -341,7 +341,7 @@ const PortfolioOptimizer: React.FC<PortfolioOptimizerProps> = ({
               </Grid>
             )}
             
-            <Grid {...({ item: true } as any)} size={12}>
+            <Grid size={12}>
               <Typography variant="body2" color="text.secondary" gutterBottom>
                 Constraint Weight: {constraint.weight}
               </Typography>
@@ -430,7 +430,7 @@ const PortfolioOptimizer: React.FC<PortfolioOptimizerProps> = ({
 
       <Grid container spacing={3}>
         {/* Configuration Panel */}
-        <Grid {...({ item: true } as any)} size={{ xs: 12, md: 8 }}>
+        <Grid size={{ xs: 12, md: 8 }}>
           <Card>
             <CardContent>
               <Stepper activeStep={activeStep} orientation="vertical">
@@ -440,7 +440,7 @@ const PortfolioOptimizer: React.FC<PortfolioOptimizerProps> = ({
                   <StepContent>
                     <Grid container spacing={2}>
                       {Object.entries(OptimizationTypeInfo).map(([type, info]) => (
-                        <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6 }} key={type}>
+                        <Grid size={{ xs: 12, sm: 6 }} key={type}>
                           <Card 
                             sx={{ 
                               cursor: 'pointer',
@@ -497,7 +497,7 @@ const PortfolioOptimizer: React.FC<PortfolioOptimizerProps> = ({
                   <StepLabel>Set Parameters</StepLabel>
                   <StepContent>
                     <Grid container spacing={3}>
-                      <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6 }}>
+                      <Grid size={{ xs: 12, sm: 6 }}>
                         <TextField
                           label="Target Volatility (%)"
                           type="number"
@@ -508,7 +508,7 @@ const PortfolioOptimizer: React.FC<PortfolioOptimizerProps> = ({
                         />
                       </Grid>
                       
-                      <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6 }}>
+                      <Grid size={{ xs: 12, sm: 6 }}>
                         <TextField
                           label="Maximum Risk (%)"
                           type="number"
@@ -519,7 +519,7 @@ const PortfolioOptimizer: React.FC<PortfolioOptimizerProps> = ({
                         />
                       </Grid>
                       
-                      <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6 }}>
+                      <Grid size={{ xs: 12, sm: 6 }}>
                         <TextField
                           label="Risk-Free Rate (%)"
                           type="number"
@@ -530,7 +530,7 @@ const PortfolioOptimizer: React.FC<PortfolioOptimizerProps> = ({
                         />
                       </Grid>
                       
-                      <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6 }}>
+                      <Grid size={{ xs: 12, sm: 6 }}>
                         <TextField
                           label="Max Single Asset Weight (%)"
                           type="number"
@@ -541,7 +541,7 @@ const PortfolioOptimizer: React.FC<PortfolioOptimizerProps> = ({
                         />
                       </Grid>
                       
-                      <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6 }}>
+                      <Grid size={{ xs: 12, sm: 6 }}>
                         <TextField
                           label="Monte Carlo Runs"
                           type="number"
@@ -552,7 +552,7 @@ const PortfolioOptimizer: React.FC<PortfolioOptimizerProps> = ({
                         />
                       </Grid>
                       
-                      <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6 }}>
+                      <Grid size={{ xs: 12, sm: 6 }}>
                         <TextField
                           label="Optimization Horizon (days)"
                           type="number"
@@ -563,7 +563,7 @@ const PortfolioOptimizer: React.FC<PortfolioOptimizerProps> = ({
                         />
                       </Grid>
                       
-                      <Grid {...({ item: true } as any)} size={12}>
+                      <Grid size={12}>
                         <FormControlLabel
                           control={
                             <Switch
@@ -639,7 +639,7 @@ const PortfolioOptimizer: React.FC<PortfolioOptimizerProps> = ({
         </Grid>
 
         {/* Portfolio Summary Panel */}
-        <Grid {...({ item: true } as any)} size={{ xs: 12, md: 4 }}>
+        <Grid size={{ xs: 12, md: 4 }}>
           <Card sx={{ mb: 2 }}>
             <CardContent>
               <Typography variant="h6" gutterBottom>

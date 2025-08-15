@@ -203,7 +203,7 @@ const FinancialAnalystDashboard: React.FC = () => {
 
       {/* Key Analytics Metrics */}
       <Grid container spacing={3} sx={{ mb: 4 }}>
-        <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6, md: 3 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <MetricCard
             title="Total AUM"
             value={`$${(analyticsMetrics.totalAUM / 1000000).toFixed(1)}M`}
@@ -214,7 +214,7 @@ const FinancialAnalystDashboard: React.FC = () => {
           />
         </Grid>
         
-        <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6, md: 3 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <MetricCard
             title="Portfolio VaR"
             value={`${analyticsMetrics.avgVaR}%`}
@@ -225,7 +225,7 @@ const FinancialAnalystDashboard: React.FC = () => {
           />
         </Grid>
         
-        <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6, md: 3 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <MetricCard
             title="Model Accuracy"
             value={`${analyticsMetrics.backTestAccuracy}%`}
@@ -236,7 +236,7 @@ const FinancialAnalystDashboard: React.FC = () => {
           />
         </Grid>
         
-        <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6, md: 3 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <MetricCard
             title="Avg Sharpe Ratio"
             value={analyticsMetrics.avgSharpeRatio.toFixed(2)}
@@ -263,7 +263,7 @@ const FinancialAnalystDashboard: React.FC = () => {
         {/* Modeling Tools Tab */}
         <Grid container spacing={3}>
           {modelingTools.map((tool, index) => (
-            <Grid {...({ item: true } as any)} size={{ xs: 12, md: 6, lg: 3 }} key={index}>
+            <Grid size={{ xs: 12, md: 6, lg: 3 }} key={index}>
               <Card sx={{ height: '100%', cursor: 'pointer', '&:hover': { elevation: 4 } }}>
                 <CardContent>
                   <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
@@ -329,7 +329,7 @@ const FinancialAnalystDashboard: React.FC = () => {
       <TabPanel value={currentTab} index={1}>
         {/* Risk Analytics Tab */}
         <Grid container spacing={3}>
-          <Grid {...({ item: true } as any)} size={{ xs: 12, lg: 8 }}>
+          <Grid size={{ xs: 12, lg: 8 }}>
             <Card>
               <CardContent>
                 <Typography variant="h6" gutterBottom>
@@ -362,7 +362,7 @@ const FinancialAnalystDashboard: React.FC = () => {
             </Card>
           </Grid>
 
-          <Grid {...({ item: true } as any)} size={{ xs: 12, lg: 4 }}>
+          <Grid size={{ xs: 12, lg: 4 }}>
             <Card sx={{ height: '100%' }}>
               <CardContent>
                 <Typography variant="h6" gutterBottom>
@@ -394,7 +394,7 @@ const FinancialAnalystDashboard: React.FC = () => {
       <TabPanel value={currentTab} index={2}>
         {/* Portfolio Analysis Tab */}
         <Grid container spacing={3}>
-          <Grid {...({ item: true } as any)} size={{ xs: 12, md: 6 }}>
+          <Grid size={{ xs: 12, md: 6 }}>
             <Card>
               <CardContent>
                 <Typography variant="h6" gutterBottom>
@@ -427,7 +427,7 @@ const FinancialAnalystDashboard: React.FC = () => {
             </Card>
           </Grid>
 
-          <Grid {...({ item: true } as any)} size={{ xs: 12, md: 6 }}>
+          <Grid size={{ xs: 12, md: 6 }}>
             <Card>
               <CardContent>
                 <Typography variant="h6" gutterBottom>
@@ -471,7 +471,7 @@ const FinancialAnalystDashboard: React.FC = () => {
               <LinearProgress />
             ) : (
               <Grid container spacing={3}>
-                <Grid {...({ item: true } as any)} size={{ xs: 6, md: 3 }}>
+                <Grid size={{ xs: 6, md: 3 }}>
                   <Typography variant="body2" color="text.secondary">
                     Total Portfolios
                   </Typography>
@@ -479,7 +479,7 @@ const FinancialAnalystDashboard: React.FC = () => {
                     {analyticsMetrics.totalPortfolios}
                   </Typography>
                 </Grid>
-                <Grid {...({ item: true } as any)} size={{ xs: 6, md: 3 }}>
+                <Grid size={{ xs: 6, md: 3 }}>
                   <Typography variant="body2" color="text.secondary">
                     Active Portfolios
                   </Typography>
@@ -487,7 +487,7 @@ const FinancialAnalystDashboard: React.FC = () => {
                     {portfoliosData?.data?.filter(p => p.status === 'effective').length || 0}
                   </Typography>
                 </Grid>
-                <Grid {...({ item: true } as any)} size={{ xs: 6, md: 3 }}>
+                <Grid size={{ xs: 6, md: 3 }}>
                   <Typography variant="body2" color="text.secondary">
                     Total Assets
                   </Typography>
@@ -495,7 +495,7 @@ const FinancialAnalystDashboard: React.FC = () => {
                     {portfoliosData?.data?.reduce((sum, p) => sum + p.current_asset_count, 0) || 0}
                   </Typography>
                 </Grid>
-                <Grid {...({ item: true } as any)} size={{ xs: 6, md: 3 }}>
+                <Grid size={{ xs: 6, md: 3 }}>
                   <Typography variant="body2" color="text.secondary">
                     Avg. Deal Size
                   </Typography>
@@ -516,7 +516,7 @@ const FinancialAnalystDashboard: React.FC = () => {
       <TabPanel value={currentTab} index={3}>
         {/* Model Validation Tab */}
         <Grid container spacing={3}>
-          <Grid {...({ item: true } as any)} size={{ xs: 12, lg: 6 }}>
+          <Grid size={{ xs: 12, lg: 6 }}>
             <Card>
               <CardContent>
                 <Typography variant="h6" gutterBottom>
@@ -544,7 +544,7 @@ const FinancialAnalystDashboard: React.FC = () => {
             </Card>
           </Grid>
 
-          <Grid {...({ item: true } as any)} size={{ xs: 12, lg: 6 }}>
+          <Grid size={{ xs: 12, lg: 6 }}>
             <Card>
               <CardContent>
                 <Typography variant="h6" gutterBottom>

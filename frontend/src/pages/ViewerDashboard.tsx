@@ -112,7 +112,7 @@ const ViewerDashboard: React.FC = () => {
 
       {/* Key Summary Metrics */}
       <Grid container spacing={3} sx={{ mb: 4 }}>
-        <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6, md: 3 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <MetricCard
             title="Total Portfolios"
             value={summaryMetrics.totalPortfolios}
@@ -123,7 +123,7 @@ const ViewerDashboard: React.FC = () => {
           />
         </Grid>
         
-        <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6, md: 3 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <MetricCard
             title="Total AUM"
             value={`$${(summaryMetrics.totalAUM / 1000000).toFixed(1)}M`}
@@ -134,7 +134,7 @@ const ViewerDashboard: React.FC = () => {
           />
         </Grid>
         
-        <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6, md: 3 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <MetricCard
             title="Avg Performance"
             value={`${summaryMetrics.avgPerformance}%`}
@@ -145,7 +145,7 @@ const ViewerDashboard: React.FC = () => {
           />
         </Grid>
         
-        <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6, md: 3 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <MetricCard
             title="Avg Rating"
             value={summaryMetrics.avgRating}

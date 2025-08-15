@@ -132,17 +132,17 @@ const DocumentViewer: React.FC<DocumentViewerProps> = ({
   const [deleteDocument, { isLoading: isDeleting }] = useDeleteDocumentMutation();
   const [downloadDocument] = useDownloadDocumentMutation();
 
-  const document = documentResponse?.data;
+  const doc = documentResponse?.data;
 
   // Initialize edit form data when document loads
   React.useEffect(() => {
-    if (document) {
+    if (doc) {
       setEditFormData({
-        title: document.title || '',
-        description: document.description || '',
-        document_type: document.document_type,
-        access_level: document.access_level,
-        tags: document.tags,
+        title: doc.title || '',
+        description: doc.description || '',
+        document_type: doc.document_type,
+        access_level: doc.access_level,
+        tags: doc.tags,
       });
     }
   }, [document]);
@@ -213,14 +213,14 @@ const DocumentViewer: React.FC<DocumentViewerProps> = ({
   };
 
   const handleDownload = async () => {
-    if (!document) return;
+    if (!doc) return;
     
     try {
-      const response = await downloadDocument(document.document_id);
+      const response = await downloadDocument(doc.document_id);
       // Handle download response
       const link = document.createElement('a');
       link.href = URL.createObjectURL(response.data as Blob);
-      link.download = document.original_filename;
+      link.download = doc.original_filename;
       link.click();
       URL.revokeObjectURL(link.href);
     } catch (error) {
@@ -233,7 +233,7 @@ const DocumentViewer: React.FC<DocumentViewerProps> = ({
 
     try {
       const updatedDoc = await updateDocument({
-        documentId: document.document_id,
+        documentId: doc.document_id,
         update: editFormData,
       }).unwrap();
 
@@ -249,7 +249,7 @@ const DocumentViewer: React.FC<DocumentViewerProps> = ({
     if (!document || !window.confirm('Are you sure you want to delete this document?')) return;
 
     try {
-      await deleteDocument(document.document_id);
+      await deleteDocument(doc.document_id);
       onDeleted?.();
       onClose();
     } catch (error) {
@@ -261,11 +261,11 @@ const DocumentViewer: React.FC<DocumentViewerProps> = ({
     setEditMode(false);
     if (document) {
       setEditFormData({
-        title: document.title || '',
-        description: document.description || '',
-        document_type: document.document_type,
-        access_level: document.access_level,
-        tags: document.tags,
+        title: doc.title || '',
+        description: doc.description || '',
+        document_type: doc.document_type,
+        access_level: doc.access_level,
+        tags: doc.tags,
       });
     }
   };
@@ -280,7 +280,7 @@ const DocumentViewer: React.FC<DocumentViewerProps> = ({
             {isLoading ? (
               <Skeleton variant="circular" width={40} height={40} />
             ) : document ? (
-              getDocumentIcon(document.document_type, document.mime_type)
+              getDocumentIcon(doc.document_type, doc.mime_type)
             ) : null}
             
             <Box sx={{ flex: 1 }}>
@@ -288,14 +288,14 @@ const DocumentViewer: React.FC<DocumentViewerProps> = ({
                 <Skeleton variant="text" width="60%" />
               ) : (
                 <Typography variant="h6" component="div" noWrap>
-                  {document?.title || document?.filename || 'Document'}
+                  {doc?.title || 'Document'}
                 </Typography>
               )}
               
-              {document && (
+              {doc && (
                 <Stack direction="row" spacing={1} sx={{ mt: 0.5 }}>
-                  {getStatusChip(document.status)}
-                  {getAccessLevelChip(document.access_level)}
+                  {getStatusChip(doc.status)}
+                  {getAccessLevelChip(doc.access_level)}
                 </Stack>
               )}
             </Box>
@@ -329,7 +329,7 @@ const DocumentViewer: React.FC<DocumentViewerProps> = ({
             <TabPanel value={currentTab} index={0}>
               <Grid container spacing={3}>
                 {/* Basic Information */}
-                <Grid {...({ item: true } as any)} size={{ xs: 12, md: 8 }}>
+                <Grid size={{ xs: 12, md: 8 }}>
                   <Card sx={{ mb: 2 }}>
                     <CardContent>
                       <Typography variant="h6" gutterBottom>
@@ -387,17 +387,17 @@ const DocumentViewer: React.FC<DocumentViewerProps> = ({
                         <Stack spacing={2}>
                           <Box>
                             <Typography variant="body2" color="text.secondary">Title</Typography>
-                            <Typography variant="body1">{document.title || 'No title'}</Typography>
+                            <Typography variant="body1">{doc.title || 'No title'}</Typography>
                           </Box>
                           
                           <Box>
                             <Typography variant="body2" color="text.secondary">Description</Typography>
-                            <Typography variant="body1">{document.description || 'No description'}</Typography>
+                            <Typography variant="body1">{doc.description || 'No description'}</Typography>
                           </Box>
                           
                           <Box>
                             <Typography variant="body2" color="text.secondary">Document Type</Typography>
-                            <Typography variant="body1">{document.document_type.replace('_', ' ')}</Typography>
+                            <Typography variant="body1">{doc.document_type.replace('_', ' ')}</Typography>
                           </Box>
                         </Stack>
                       )}
@@ -411,8 +411,8 @@ const DocumentViewer: React.FC<DocumentViewerProps> = ({
                         Tags
                       </Typography>
                       <Stack direction="row" spacing={1} flexWrap="wrap">
-                        {document.tags.length > 0 ? (
-                          document.tags.map((tag, index) => (
+                        {doc.tags.length > 0 ? (
+                          doc.tags.map((tag, index) => (
                             <Chip key={index} label={tag} variant="outlined" />
                           ))
                         ) : (
@@ -426,7 +426,7 @@ const DocumentViewer: React.FC<DocumentViewerProps> = ({
                 </Grid>
 
                 {/* Metadata */}
-                <Grid {...({ item: true } as any)} size={{ xs: 12, md: 4 }}>
+                <Grid size={{ xs: 12, md: 4 }}>
                   <Card>
                     <CardContent>
                       <Typography variant="h6" gutterBottom>
@@ -438,7 +438,7 @@ const DocumentViewer: React.FC<DocumentViewerProps> = ({
                           <ListItemIcon><InsertDriveFile /></ListItemIcon>
                           <ListItemText 
                             primary="Filename" 
-                            secondary={document.original_filename}
+                            secondary={doc.original_filename}
                           />
                         </ListItem>
                         
@@ -446,7 +446,7 @@ const DocumentViewer: React.FC<DocumentViewerProps> = ({
                           <ListItemIcon><Storage /></ListItemIcon>
                           <ListItemText 
                             primary="File Size" 
-                            secondary={formatFileSize(document.file_size)}
+                            secondary={formatFileSize(doc.file_size)}
                           />
                         </ListItem>
                         
@@ -454,7 +454,7 @@ const DocumentViewer: React.FC<DocumentViewerProps> = ({
                           <ListItemIcon><Fingerprint /></ListItemIcon>
                           <ListItemText 
                             primary="Version" 
-                            secondary={`v${document.version}${document.is_latest_version ? ' (Latest)' : ''}`}
+                            secondary={`v${doc.version}${doc.is_latest_version ? ' (Latest)' : ''}`}
                           />
                         </ListItem>
                         
@@ -462,7 +462,7 @@ const DocumentViewer: React.FC<DocumentViewerProps> = ({
                           <ListItemIcon><Schedule /></ListItemIcon>
                           <ListItemText 
                             primary="Uploaded" 
-                            secondary={format(new Date(document.uploaded_at), 'PPp')}
+                            secondary={format(new Date(doc.uploaded_at), 'PPp')}
                           />
                         </ListItem>
                         
@@ -470,16 +470,16 @@ const DocumentViewer: React.FC<DocumentViewerProps> = ({
                           <ListItemIcon><Schedule /></ListItemIcon>
                           <ListItemText 
                             primary="Modified" 
-                            secondary={format(new Date(document.updated_at), 'PPp')}
+                            secondary={format(new Date(doc.updated_at), 'PPp')}
                           />
                         </ListItem>
                         
-                        {document.accessed_at && (
+                        {doc.accessed_at && (
                           <ListItem>
                             <ListItemIcon><Visibility /></ListItemIcon>
                             <ListItemText 
                               primary="Last Accessed" 
-                              secondary={format(new Date(document.accessed_at), 'PPp')}
+                              secondary={format(new Date(doc.accessed_at), 'PPp')}
                             />
                           </ListItem>
                         )}

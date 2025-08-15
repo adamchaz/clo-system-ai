@@ -117,7 +117,7 @@ const PortfolioSummaryView: React.FC<PortfolioSummaryViewProps> = ({
     <Box>
       {/* Summary Statistics */}
       <Grid container spacing={3} sx={{ mb: 3 }}>
-        <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6, md: 3 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <Card>
             <CardContent>
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
@@ -133,7 +133,7 @@ const PortfolioSummaryView: React.FC<PortfolioSummaryViewProps> = ({
           </Card>
         </Grid>
 
-        <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6, md: 3 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <Card>
             <CardContent>
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
@@ -149,7 +149,7 @@ const PortfolioSummaryView: React.FC<PortfolioSummaryViewProps> = ({
           </Card>
         </Grid>
 
-        <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6, md: 3 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <Card>
             <CardContent>
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
@@ -165,7 +165,7 @@ const PortfolioSummaryView: React.FC<PortfolioSummaryViewProps> = ({
           </Card>
         </Grid>
 
-        <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6, md: 3 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <Card>
             <CardContent>
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
@@ -264,7 +264,7 @@ const PortfolioSummaryView: React.FC<PortfolioSummaryViewProps> = ({
                         <Chip
                           label={portfolio.status}
                           size="small"
-                          color={getStatusColor(portfolio.status) as any}
+                          color={getStatusColor(portfolio.status)}
                           variant="outlined"
                         />
                       </TableCell>

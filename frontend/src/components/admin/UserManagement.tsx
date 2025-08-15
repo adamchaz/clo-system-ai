@@ -374,7 +374,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ onUserSelected }) => {
       {/* User Statistics */}
       {userStats && (
         <Grid container spacing={2} sx={{ mb: 3 }}>
-          <Grid {...({ item: true } as any)} size={{ xs: 6, sm: 3 }}>
+          <Grid size={{ xs: 6, sm: 3 }}>
             <Card>
               <CardContent sx={{ textAlign: 'center' }}>
                 <Typography variant="h4" color="primary">
@@ -386,7 +386,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ onUserSelected }) => {
               </CardContent>
             </Card>
           </Grid>
-          <Grid {...({ item: true } as any)} size={{ xs: 6, sm: 3 }}>
+          <Grid size={{ xs: 6, sm: 3 }}>
             <Card>
               <CardContent sx={{ textAlign: 'center' }}>
                 <Typography variant="h4" color="success.main">
@@ -398,7 +398,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ onUserSelected }) => {
               </CardContent>
             </Card>
           </Grid>
-          <Grid {...({ item: true } as any)} size={{ xs: 6, sm: 3 }}>
+          <Grid size={{ xs: 6, sm: 3 }}>
             <Card>
               <CardContent sx={{ textAlign: 'center' }}>
                 <Typography variant="h4" color="info.main">
@@ -410,7 +410,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ onUserSelected }) => {
               </CardContent>
             </Card>
           </Grid>
-          <Grid {...({ item: true } as any)} size={{ xs: 6, sm: 3 }}>
+          <Grid size={{ xs: 6, sm: 3 }}>
             <Card>
               <CardContent sx={{ textAlign: 'center' }}>
                 <Typography variant="h4" color="warning.main">
@@ -429,7 +429,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ onUserSelected }) => {
       <Card sx={{ mb: 3 }}>
         <CardContent>
           <Grid container spacing={3} alignItems="center">
-            <Grid {...({ item: true } as any)} size={{ xs: 12, md: 4 }}>
+            <Grid size={{ xs: 12, md: 4 }}>
               <TextField
                 fullWidth
                 placeholder="Search users..."
@@ -441,7 +441,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ onUserSelected }) => {
               />
             </Grid>
             
-            <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6, md: 3 }}>
+            <Grid size={{ xs: 12, sm: 6, md: 3 }}>
               <FormControl fullWidth>
                 <InputLabel>Role</InputLabel>
                 <Select
@@ -459,7 +459,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ onUserSelected }) => {
               </FormControl>
             </Grid>
 
-            <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6, md: 3 }}>
+            <Grid size={{ xs: 12, sm: 6, md: 3 }}>
               <FormControl fullWidth>
                 <InputLabel>Status</InputLabel>
                 <Select
@@ -477,7 +477,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ onUserSelected }) => {
               </FormControl>
             </Grid>
 
-            <Grid {...({ item: true } as any)} size={{ xs: 12, md: 2 }}>
+            <Grid size={{ xs: 12, md: 2 }}>
               <Button
                 fullWidth
                 variant="outlined"
@@ -633,7 +633,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ onUserSelected }) => {
         <DialogTitle>Create New User</DialogTitle>
         <DialogContent>
           <Grid container spacing={2} sx={{ mt: 1 }}>
-            <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6 }}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 fullWidth
                 label="First Name"
@@ -642,7 +642,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ onUserSelected }) => {
               />
             </Grid>
             
-            <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6 }}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 fullWidth
                 label="Last Name"
@@ -651,7 +651,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ onUserSelected }) => {
               />
             </Grid>
             
-            <Grid {...({ item: true } as any)} size={12}>
+            <Grid size={12}>
               <TextField
                 fullWidth
                 label="Username"
@@ -660,7 +660,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ onUserSelected }) => {
               />
             </Grid>
             
-            <Grid {...({ item: true } as any)} size={12}>
+            <Grid size={12}>
               <TextField
                 fullWidth
                 label="Email"
@@ -670,7 +670,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ onUserSelected }) => {
               />
             </Grid>
             
-            <Grid {...({ item: true } as any)} size={12}>
+            <Grid size={12}>
               <TextField
                 fullWidth
                 label="Password"
@@ -680,7 +680,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ onUserSelected }) => {
               />
             </Grid>
             
-            <Grid {...({ item: true } as any)} size={12}>
+            <Grid size={12}>
               <FormControl fullWidth>
                 <InputLabel>Role</InputLabel>
                 <Select
@@ -697,7 +697,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ onUserSelected }) => {
               </FormControl>
             </Grid>
             
-            <Grid {...({ item: true } as any)} size={12}>
+            <Grid size={12}>
               <FormControlLabel
                 control={
                   <Switch
@@ -728,7 +728,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ onUserSelected }) => {
         <DialogContent>
           {selectedUser && (
             <Grid container spacing={2} sx={{ mt: 1 }}>
-              <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6 }}>
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <TextField
                   fullWidth
                   label="First Name"
@@ -737,7 +737,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ onUserSelected }) => {
                 />
               </Grid>
               
-              <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6 }}>
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <TextField
                   fullWidth
                   label="Last Name"
@@ -746,7 +746,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ onUserSelected }) => {
                 />
               </Grid>
               
-              <Grid {...({ item: true } as any)} size={12}>
+              <Grid size={12}>
                 <TextField
                   fullWidth
                   label="Email"
@@ -756,7 +756,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ onUserSelected }) => {
                 />
               </Grid>
               
-              <Grid {...({ item: true } as any)} size={12}>
+              <Grid size={12}>
                 <FormControl fullWidth>
                   <InputLabel>Role</InputLabel>
                   <Select
@@ -773,7 +773,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ onUserSelected }) => {
                 </FormControl>
               </Grid>
               
-              <Grid {...({ item: true } as any)} size={12}>
+              <Grid size={12}>
                 <FormControlLabel
                   control={
                     <Switch

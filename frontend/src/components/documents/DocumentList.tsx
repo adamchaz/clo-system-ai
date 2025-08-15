@@ -257,7 +257,7 @@ const DocumentList: React.FC<DocumentListProps> = ({
         {displayDocuments.map((document) => (
           <ListItem
             key={document.document_id}
-            button={!!onView}
+            component={onView ? "button" : "div"}
             onClick={() => onView?.(document)}
             sx={{
               '&:hover': { bgcolor: 'action.hover' },

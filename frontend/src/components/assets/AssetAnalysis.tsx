@@ -45,8 +45,7 @@ import StatusIndicator from '../common/UI/StatusIndicator';
 import { useCloApi } from '../../hooks/useCloApi';
 import type { AssetCorrelation, AssetRiskMetrics } from '../../store/api/cloApi';
 
-// Fix for Grid item prop typing
-const GridItem = Grid as any;
+// Using MUI Grid v2 API
 
 // Types - using Asset from API instead of local interface
 
@@ -264,7 +263,7 @@ const AssetAnalysis: React.FC<AssetAnalysisProps> = ({
             <Typography variant="h6" color="text.secondary" gutterBottom>
               {asset.issuer} • {asset.asset_type.replace('_', ' ').toUpperCase()}
             </Typography>
-            <StatusIndicator status={asset.status as any} />
+            <StatusIndicator status={asset.status} />
           </Box>
         </Box>
         
@@ -288,7 +287,7 @@ const AssetAnalysis: React.FC<AssetAnalysisProps> = ({
 
       {/* Key Risk Metrics */}
       <Grid container spacing={3} sx={{ mb: 3 }}>
-        <GridItem item size={{ xs: 12, md: 3 }}>
+        <Grid size={{ xs: 12, md: 3 }}>
           <MetricCard
             title="VaR (95%)"
             value={formatPercentage((riskMetrics || mockRiskMetrics).var_95)}
@@ -296,8 +295,8 @@ const AssetAnalysis: React.FC<AssetAnalysisProps> = ({
             status="warning"
             icon={<Security />}
           />
-        </GridItem>
-        <GridItem item size={{ xs: 12, md: 3 }}>
+        </Grid>
+        <Grid size={{ xs: 12, md: 3 }}>
           <MetricCard
             title="Expected Shortfall"
             value={formatPercentage((riskMetrics || mockRiskMetrics).expected_shortfall)}
@@ -305,8 +304,8 @@ const AssetAnalysis: React.FC<AssetAnalysisProps> = ({
             status="error"
             icon={<Warning />}
           />
-        </GridItem>
-        <GridItem item size={{ xs: 12, md: 3 }}>
+        </Grid>
+        <Grid size={{ xs: 12, md: 3 }}>
           <MetricCard
             title="Portfolio Contribution"
             value={formatPercentage((riskMetrics || mockRiskMetrics).component_var)}
@@ -314,8 +313,8 @@ const AssetAnalysis: React.FC<AssetAnalysisProps> = ({
             status="info"
             icon={<Assessment />}
           />
-        </GridItem>
-        <GridItem item size={{ xs: 12, md: 3 }}>
+        </Grid>
+        <Grid size={{ xs: 12, md: 3 }}>
           <MetricCard
             title="Concentration Risk"
             value={formatPercentage((riskMetrics || mockRiskMetrics).concentration_risk)}
@@ -323,7 +322,7 @@ const AssetAnalysis: React.FC<AssetAnalysisProps> = ({
             status={(riskMetrics || mockRiskMetrics).concentration_risk > 0.2 ? 'warning' : 'success'}
             icon={<ShowChart />}
           />
-        </GridItem>
+        </Grid>
       </Grid>
 
       {/* Tabs */}
@@ -345,7 +344,7 @@ const AssetAnalysis: React.FC<AssetAnalysisProps> = ({
           {/* Correlation Analysis Tab */}
           <TabPanel value={activeTab} index={0}>
             <Grid container spacing={3}>
-              <GridItem item size={12}>
+              <Grid size={12}>
                 <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
                   <Typography variant="h6">Asset Correlations</Typography>
                   <Stack direction="row" spacing={2} alignItems="center">
@@ -388,9 +387,9 @@ const AssetAnalysis: React.FC<AssetAnalysisProps> = ({
                     />
                   </Stack>
                 </Box>
-              </GridItem>
+              </Grid>
 
-              <GridItem item size={12}>
+              <Grid size={12}>
                 {correlationsLoading ? (
                   <LinearProgress />
                 ) : (
@@ -446,7 +445,7 @@ const AssetAnalysis: React.FC<AssetAnalysisProps> = ({
                                   Math.abs(item.correlation) >= 0.3 ? 'Weak' : 'Very Weak'
                                 }
                                 size="small"
-                                color={getCorrelationColor(item.correlation) as any}
+                                color={getCorrelationColor(item.correlation)}
                                 variant="outlined"
                               />
                             </TableCell>
@@ -472,14 +471,14 @@ const AssetAnalysis: React.FC<AssetAnalysisProps> = ({
                     </Table>
                   </TableContainer>
                 )}
-              </GridItem>
+              </Grid>
             </Grid>
           </TabPanel>
 
           {/* Risk Metrics Tab */}
           <TabPanel value={activeTab} index={1}>
             <Grid container spacing={3}>
-              <GridItem item size={{ xs: 12, md: 6 }}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <Paper variant="outlined" sx={{ p: 3 }}>
                   <Typography variant="h6" gutterBottom>
                     Value at Risk (VaR)
@@ -521,9 +520,9 @@ const AssetAnalysis: React.FC<AssetAnalysisProps> = ({
                     </Stack>
                   </Box>
                 </Paper>
-              </GridItem>
+              </Grid>
 
-              <GridItem item size={{ xs: 12, md: 6 }}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <Paper variant="outlined" sx={{ p: 3 }}>
                   <Typography variant="h6" gutterBottom>
                     Risk Contribution
@@ -559,7 +558,7 @@ const AssetAnalysis: React.FC<AssetAnalysisProps> = ({
                     </Box>
                   </Stack>
                 </Paper>
-              </GridItem>
+              </Grid>
             </Grid>
           </TabPanel>
 

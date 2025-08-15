@@ -357,7 +357,7 @@ const ReportManager: React.FC<ReportManagerProps> = ({
       {/* Report Statistics */}
       {reportStats && (
         <Grid container spacing={2} sx={{ mb: 3 }}>
-          <Grid {...({ item: true } as any)} size={{ xs: 6, sm: 3 }}>
+          <Grid size={{ xs: 6, sm: 3 }}>
             <Card>
               <CardContent sx={{ textAlign: 'center' }}>
                 <Typography variant="h4" color="primary">
@@ -369,7 +369,7 @@ const ReportManager: React.FC<ReportManagerProps> = ({
               </CardContent>
             </Card>
           </Grid>
-          <Grid {...({ item: true } as any)} size={{ xs: 6, sm: 3 }}>
+          <Grid size={{ xs: 6, sm: 3 }}>
             <Card>
               <CardContent sx={{ textAlign: 'center' }}>
                 <Typography variant="h4" color="success.main">
@@ -381,7 +381,7 @@ const ReportManager: React.FC<ReportManagerProps> = ({
               </CardContent>
             </Card>
           </Grid>
-          <Grid {...({ item: true } as any)} size={{ xs: 6, sm: 3 }}>
+          <Grid size={{ xs: 6, sm: 3 }}>
             <Card>
               <CardContent sx={{ textAlign: 'center' }}>
                 <Typography variant="h4" color="warning.main">
@@ -393,7 +393,7 @@ const ReportManager: React.FC<ReportManagerProps> = ({
               </CardContent>
             </Card>
           </Grid>
-          <Grid {...({ item: true } as any)} size={{ xs: 6, sm: 3 }}>
+          <Grid size={{ xs: 6, sm: 3 }}>
             <Card>
               <CardContent sx={{ textAlign: 'center' }}>
                 <Typography variant="h4" color="info.main">
@@ -412,7 +412,7 @@ const ReportManager: React.FC<ReportManagerProps> = ({
       <Card sx={{ mb: 3 }}>
         <CardContent>
           <Grid container spacing={3} alignItems="center">
-            <Grid {...({ item: true } as any)} size={{ xs: 12, md: 4 }}>
+            <Grid size={{ xs: 12, md: 4 }}>
               <TextField
                 fullWidth
                 placeholder="Search reports..."
@@ -424,7 +424,7 @@ const ReportManager: React.FC<ReportManagerProps> = ({
               />
             </Grid>
             
-            <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6, md: 3 }}>
+            <Grid size={{ xs: 12, sm: 6, md: 3 }}>
               <FormControl fullWidth>
                 <InputLabel>Status</InputLabel>
                 <Select
@@ -445,7 +445,7 @@ const ReportManager: React.FC<ReportManagerProps> = ({
               </FormControl>
             </Grid>
 
-            <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6, md: 3 }}>
+            <Grid size={{ xs: 12, sm: 6, md: 3 }}>
               <FormControl fullWidth>
                 <InputLabel>Format</InputLabel>
                 <Select
@@ -462,7 +462,7 @@ const ReportManager: React.FC<ReportManagerProps> = ({
               </FormControl>
             </Grid>
 
-            <Grid {...({ item: true } as any)} size={{ xs: 12, md: 2 }}>
+            <Grid size={{ xs: 12, md: 2 }}>
               <Button
                 fullWidth
                 variant="outlined"

@@ -185,7 +185,7 @@ const BasicReportsView: React.FC<BasicReportsViewProps> = ({
     <Box>
       {/* Quick Stats */}
       <Grid container spacing={3} sx={{ mb: 4 }}>
-        <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6, md: 3 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <Card>
             <CardContent>
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
@@ -201,7 +201,7 @@ const BasicReportsView: React.FC<BasicReportsViewProps> = ({
           </Card>
         </Grid>
 
-        <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6, md: 3 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <Card>
             <CardContent>
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
@@ -217,7 +217,7 @@ const BasicReportsView: React.FC<BasicReportsViewProps> = ({
           </Card>
         </Grid>
 
-        <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6, md: 3 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <Card>
             <CardContent>
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
@@ -233,7 +233,7 @@ const BasicReportsView: React.FC<BasicReportsViewProps> = ({
           </Card>
         </Grid>
 
-        <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6, md: 3 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <Card>
             <CardContent>
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
@@ -253,7 +253,7 @@ const BasicReportsView: React.FC<BasicReportsViewProps> = ({
       {/* Reports by Category */}
       <Grid container spacing={3}>
         {Object.entries(categoryGroups).map(([category, reports]) => (
-          <Grid {...({ item: true } as any)} size={{ xs: 12, md: 6 }} key={category}>
+          <Grid size={{ xs: 12, md: 6 }} key={category}>
             <Card>
               <CardContent>
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
@@ -265,7 +265,7 @@ const BasicReportsView: React.FC<BasicReportsViewProps> = ({
                     label={reports.length} 
                     size="small" 
                     sx={{ ml: 'auto' }}
-                    color={getCategoryColor(category as Report['category']) as any}
+                    color={getCategoryColor(category as Report['category'])}
                   />
                 </Box>
                 
@@ -359,19 +359,19 @@ const BasicReportsView: React.FC<BasicReportsViewProps> = ({
               <Divider sx={{ my: 2 }} />
               
               <Grid container spacing={2}>
-                <Grid {...({ item: true } as any)} size={6}>
+                <Grid size={6}>
                   <Typography variant="body2" color="text.secondary">
                     Category
                   </Typography>
                   <Chip 
                     label={selectedReport.category}
                     size="small"
-                    color={getCategoryColor(selectedReport.category) as any}
+                    color={getCategoryColor(selectedReport.category)}
                     sx={{ textTransform: 'capitalize' }}
                   />
                 </Grid>
                 
-                <Grid {...({ item: true } as any)} size={6}>
+                <Grid size={6}>
                   <Typography variant="body2" color="text.secondary">
                     Format
                   </Typography>
@@ -380,7 +380,7 @@ const BasicReportsView: React.FC<BasicReportsViewProps> = ({
                   </Typography>
                 </Grid>
                 
-                <Grid {...({ item: true } as any)} size={6}>
+                <Grid size={6}>
                   <Typography variant="body2" color="text.secondary">
                     Last Generated
                   </Typography>
@@ -389,7 +389,7 @@ const BasicReportsView: React.FC<BasicReportsViewProps> = ({
                   </Typography>
                 </Grid>
                 
-                <Grid {...({ item: true } as any)} size={6}>
+                <Grid size={6}>
                   <Typography variant="body2" color="text.secondary">
                     File Size
                   </Typography>

@@ -419,7 +419,7 @@ const AssetManagement: React.FC<AssetManagementProps> = ({
 
         {/* Filters */}
         <Grid container spacing={2} sx={{ mb: 3 }}>
-          <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6, md: 3 }}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <TextField
               size="small"
               fullWidth
@@ -436,7 +436,7 @@ const AssetManagement: React.FC<AssetManagementProps> = ({
             />
           </Grid>
           
-          <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6, md: 2 }}>
+          <Grid size={{ xs: 12, sm: 6, md: 2 }}>
             <FormControl size="small" fullWidth>
               <InputLabel>Rating</InputLabel>
               <Select
@@ -454,7 +454,7 @@ const AssetManagement: React.FC<AssetManagementProps> = ({
             </FormControl>
           </Grid>
 
-          <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6, md: 2 }}>
+          <Grid size={{ xs: 12, sm: 6, md: 2 }}>
             <FormControl size="small" fullWidth>
               <InputLabel>Industry</InputLabel>
               <Select
@@ -472,7 +472,7 @@ const AssetManagement: React.FC<AssetManagementProps> = ({
             </FormControl>
           </Grid>
 
-          <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6, md: 2 }}>
+          <Grid size={{ xs: 12, sm: 6, md: 2 }}>
             <FormControl size="small" fullWidth>
               <InputLabel>Asset Type</InputLabel>
               <Select
@@ -490,7 +490,7 @@ const AssetManagement: React.FC<AssetManagementProps> = ({
             </FormControl>
           </Grid>
 
-          <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6, md: 2 }}>
+          <Grid size={{ xs: 12, sm: 6, md: 2 }}>
             <FormControl size="small" fullWidth>
               <InputLabel>Rating Category</InputLabel>
               <Select
@@ -505,7 +505,7 @@ const AssetManagement: React.FC<AssetManagementProps> = ({
             </FormControl>
           </Grid>
 
-          <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6, md: 1 }}>
+          <Grid size={{ xs: 12, sm: 6, md: 1 }}>
             <Button
               variant="outlined"
               startIcon={<FilterList />}
@@ -903,7 +903,7 @@ const AssetManagement: React.FC<AssetManagementProps> = ({
               </Box>
             ) : selectedAssetDetail && (
               <Grid container spacing={3}>
-                <Grid {...({ item: true } as any)} size={{ xs: 12, md: 6 }}>
+                <Grid size={{ xs: 12, md: 6 }}>
                   <Typography variant="h6" gutterBottom>
                     Basic Information
                   </Typography>
@@ -936,7 +936,7 @@ const AssetManagement: React.FC<AssetManagementProps> = ({
                   </Stack>
                 </Grid>
                 
-                <Grid {...({ item: true } as any)} size={{ xs: 12, md: 6 }}>
+                <Grid size={{ xs: 12, md: 6 }}>
                   <Typography variant="h6" gutterBottom>
                     Financial Details
                   </Typography>

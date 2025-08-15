@@ -566,7 +566,7 @@ const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
                 Visual
               </Typography>
               <Grid container spacing={2}>
-                <Grid {...({ item: true } as any)} size={12}>
+                <Grid size={12}>
                   <FormControlLabel
                     control={
                       <Switch
@@ -580,7 +580,7 @@ const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
                     label="High contrast mode"
                   />
                 </Grid>
-                <Grid {...({ item: true } as any)} size={12}>
+                <Grid size={12}>
                   <FormControlLabel
                     control={
                       <Switch
@@ -594,7 +594,7 @@ const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
                     label="Reduce motion effects"
                   />
                 </Grid>
-                <Grid {...({ item: true } as any)} size={12}>
+                <Grid size={12}>
                   <FormControlLabel
                     control={
                       <Switch
@@ -658,7 +658,7 @@ const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
                 Navigation
               </Typography>
               <Grid container spacing={2}>
-                <Grid {...({ item: true } as any)} size={12}>
+                <Grid size={12}>
                   <FormControlLabel
                     control={
                       <Switch
@@ -672,7 +672,7 @@ const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
                     label="Enable keyboard navigation"
                   />
                 </Grid>
-                <Grid {...({ item: true } as any)} size={12}>
+                <Grid size={12}>
                   <FormControlLabel
                     control={
                       <Switch
@@ -773,7 +773,7 @@ const GlobalShortcut: React.FC<{
     {
       enabled: !shortcut.disabled,
       preventDefault: true,
-      enableOnTags: shortcut.global ? ['INPUT', 'TEXTAREA', 'SELECT'] : [],
+      enableOnFormTags: shortcut.global ? ['INPUT', 'TEXTAREA', 'SELECT'] : false,
     },
     [onActivate, shortcut.disabled, shortcut.global]
   );

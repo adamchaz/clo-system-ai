@@ -66,10 +66,11 @@ interface RealTimeNotificationsProps {
 const RealTimeNotifications: React.FC<RealTimeNotificationsProps> = ({
   maxVisible = 5,
   autoHideDelay = 5000,
-  showAssetUpdates = true,
+  showAssetUpdates: showAssetUpdatesProp = true,
 }) => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [showToasts, setShowToasts] = useState(true);
+  const [showAssetUpdates, setShowAssetUpdates] = useState(showAssetUpdatesProp);
   
   // Get current user info
   const currentUser = useAppSelector(state => state.auth.user);

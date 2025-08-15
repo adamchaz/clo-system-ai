@@ -382,7 +382,7 @@ const PerformanceTracker: React.FC<PerformanceTrackerProps> = ({
 
       {/* Key Performance Metrics */}
       <Grid container spacing={3} sx={{ mb: 4 }}>
-        <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6, md: 3 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <PerformanceMetricCard
             title="Total Return"
             value={`${performanceMetrics.totalReturn.toFixed(1)}%`}
@@ -401,7 +401,7 @@ const PerformanceTracker: React.FC<PerformanceTrackerProps> = ({
           />
         </Grid>
         
-        <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6, md: 3 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <PerformanceMetricCard
             title="Annualized Return"
             value={`${performanceMetrics.annualizedReturn.toFixed(1)}%`}
@@ -416,7 +416,7 @@ const PerformanceTracker: React.FC<PerformanceTrackerProps> = ({
           />
         </Grid>
         
-        <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6, md: 3 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <PerformanceMetricCard
             title="Sharpe Ratio"
             value={performanceMetrics.sharpeRatio.toFixed(2)}
@@ -431,7 +431,7 @@ const PerformanceTracker: React.FC<PerformanceTrackerProps> = ({
           />
         </Grid>
         
-        <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6, md: 3 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <PerformanceMetricCard
             title="Max Drawdown"
             value={`${performanceMetrics.maxDrawdown.toFixed(1)}%`}
@@ -462,7 +462,7 @@ const PerformanceTracker: React.FC<PerformanceTrackerProps> = ({
       <TabPanel value={currentTab} index={0}>
         {/* Performance Chart Tab */}
         <Grid container spacing={3}>
-          <Grid {...({ item: true } as any)} size={{ xs: 12, lg: 8 }}>
+          <Grid size={{ xs: 12, lg: 8 }}>
             <Card>
               <CardContent>
                 <Typography variant="h6" gutterBottom>
@@ -498,7 +498,7 @@ const PerformanceTracker: React.FC<PerformanceTrackerProps> = ({
             </Card>
           </Grid>
 
-          <Grid {...({ item: true } as any)} size={{ xs: 12, lg: 4 }}>
+          <Grid size={{ xs: 12, lg: 4 }}>
             <Card sx={{ height: '100%' }}>
               <CardContent>
                 <Typography variant="h6" gutterBottom>
@@ -574,7 +574,7 @@ const PerformanceTracker: React.FC<PerformanceTrackerProps> = ({
       <TabPanel value={currentTab} index={1}>
         {/* Risk Metrics Tab */}
         <Grid container spacing={3}>
-          <Grid {...({ item: true } as any)} size={{ xs: 12, md: 8 }}>
+          <Grid size={{ xs: 12, md: 8 }}>
             <Card>
               <CardContent>
                 <Typography variant="h6" gutterBottom>
@@ -638,7 +638,7 @@ const PerformanceTracker: React.FC<PerformanceTrackerProps> = ({
             </Card>
           </Grid>
 
-          <Grid {...({ item: true } as any)} size={{ xs: 12, md: 4 }}>
+          <Grid size={{ xs: 12, md: 4 }}>
             <Card sx={{ height: '100%' }}>
               <CardContent>
                 <Typography variant="h6" gutterBottom>
@@ -702,7 +702,7 @@ const PerformanceTracker: React.FC<PerformanceTrackerProps> = ({
       <TabPanel value={currentTab} index={2}>
         {/* Attribution Tab */}
         <Grid container spacing={3}>
-          <Grid {...({ item: true } as any)} size={{ xs: 12, lg: 8 }}>
+          <Grid size={{ xs: 12, lg: 8 }}>
             <Card>
               <CardContent>
                 <Typography variant="h6" gutterBottom>
@@ -735,7 +735,7 @@ const PerformanceTracker: React.FC<PerformanceTrackerProps> = ({
             </Card>
           </Grid>
 
-          <Grid {...({ item: true } as any)} size={{ xs: 12, lg: 4 }}>
+          <Grid size={{ xs: 12, lg: 4 }}>
             <Card>
               <CardContent>
                 <Typography variant="h6" gutterBottom>
@@ -770,7 +770,7 @@ const PerformanceTracker: React.FC<PerformanceTrackerProps> = ({
       <TabPanel value={currentTab} index={3}>
         {/* Benchmark Analysis Tab */}
         <Grid container spacing={3}>
-          <Grid {...({ item: true } as any)} size={{ xs: 12, lg: 6 }}>
+          <Grid size={{ xs: 12, lg: 6 }}>
             <Card>
               <CardContent>
                 <Typography variant="h6" gutterBottom>
@@ -803,7 +803,7 @@ const PerformanceTracker: React.FC<PerformanceTrackerProps> = ({
             </Card>
           </Grid>
 
-          <Grid {...({ item: true } as any)} size={{ xs: 12, lg: 6 }}>
+          <Grid size={{ xs: 12, lg: 6 }}>
             <Card>
               <CardContent>
                 <Typography variant="h6" gutterBottom>

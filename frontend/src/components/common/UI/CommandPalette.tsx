@@ -412,8 +412,7 @@ const CommandPalette: React.FC<CommandPaletteProps> = ({ open, onClose }) => {
                             return (
                               <motion.div key={command.id} variants={staggerItem}>
                                 <ListItem
-                                  button
-                                  selected={isSelected}
+                                  component="button"
                                   onClick={() => executeCommand(command)}
                                   sx={{
                                     py: 1.5,

@@ -23,7 +23,7 @@ import {
 } from '@mui/material';
 import {
   PieChart,
-  Donut,
+  DonutLarge,
   Business as BusinessIcon,
   Public as PublicIcon,
   Category as CategoryIcon,
@@ -289,9 +289,8 @@ const PortfolioComposition: React.FC<PortfolioCompositionProps> = ({
   const renderTreemap = (data: CompositionData[]) => (
     <ResponsiveContainer width="100%" height={height}>
       <Treemap
-        data={data}
+        data={data as any}
         dataKey="value"
-        ratio={4 / 3}
         stroke="#fff"
         fill="#2196f3"
       />
@@ -360,7 +359,7 @@ const PortfolioComposition: React.FC<PortfolioCompositionProps> = ({
           <MetricCard
             title="Top 10 Holdings"
             value={formatPercent(top10Concentration)}
-            trend={top10Concentration > 0.6 ? "up" : "neutral"}
+            trend={top10Concentration > 0.6 ? "up" : "flat"}
             icon={<BusinessIcon />}
             color={top10Concentration > 0.6 ? "warning" : "success"}
           />

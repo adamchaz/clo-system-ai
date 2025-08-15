@@ -72,8 +72,6 @@ import StatusIndicator from '../common/UI/StatusIndicator';
 import MetricCard from '../common/UI/MetricCard';
 import { useCloApi } from '../../hooks/useCloApi';
 
-// Fix for Grid item prop typing
-const GridItem = Grid as any;
 
 // Types
 interface Asset {
@@ -202,7 +200,7 @@ const AssetDetail: React.FC<AssetDetailProps> = ({
     }
   };
 
-  const getRatingColor = (rating?: string | undefined) => {
+  const getRatingColor = (rating?: string | undefined): 'default' | 'success' | 'info' | 'warning' | 'error' => {
     if (!rating) return 'default';
     if (['AAA', 'AA'].some(r => rating.startsWith(r))) return 'success';
     if (['A', 'BBB'].some(r => rating.startsWith(r))) return 'info';
@@ -346,7 +344,7 @@ const AssetDetail: React.FC<AssetDetailProps> = ({
               {assetData.current_rating && (
                 <Chip
                   label={assetData.current_rating}
-                  color={getRatingColor(assetData.current_rating) as any}
+                  color={getRatingColor(assetData.current_rating)}
                   size="small"
                 />
               )}
@@ -399,15 +397,15 @@ const AssetDetail: React.FC<AssetDetailProps> = ({
 
       {/* Key Metrics Cards */}
       <Grid container spacing={3} sx={{ mb: 3 }}>
-        <GridItem item size={{ xs: 12, md: 3 }}>
+        <Grid size={{ xs: 12, md: 3 }}>
           <MetricCard
             title="Current Balance"
             value={formatCurrency(assetData.current_balance)}
             variant="outlined"
             status="info"
           />
-        </GridItem>
-        <GridItem item size={{ xs: 12, md: 3 }}>
+        </Grid>
+        <Grid size={{ xs: 12, md: 3 }}>
           <MetricCard
             title="Current Price"
             value={formatCurrency(assetData.current_price)}
@@ -421,23 +419,23 @@ const AssetDetail: React.FC<AssetDetailProps> = ({
                 } 
               : undefined}
           />
-        </GridItem>
-        <GridItem item size={{ xs: 12, md: 3 }}>
+        </Grid>
+        <Grid size={{ xs: 12, md: 3 }}>
           <MetricCard
             title="Yield to Maturity"
             value={formatPercentage(assetData.yield_to_maturity)}
             variant="outlined"
             status="success"
           />
-        </GridItem>
-        <GridItem item size={{ xs: 12, md: 3 }}>
+        </Grid>
+        <Grid size={{ xs: 12, md: 3 }}>
           <MetricCard
             title="Days to Maturity"
             value={assetMetrics?.daysToMaturity?.toString() || 'N/A'}
             variant="outlined"
             status={assetMetrics?.isNearMaturity ? 'warning' : 'info'}
           />
-        </GridItem>
+        </Grid>
       </Grid>
 
       {/* Tabs */}
@@ -460,7 +458,7 @@ const AssetDetail: React.FC<AssetDetailProps> = ({
           {/* Overview Tab */}
           <TabPanel value={activeTab} index={0}>
             <Grid container spacing={3}>
-              <GridItem item size={{ xs: 12, md: 6 }}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <Typography variant="h6" gutterBottom>
                   Basic Information
                 </Typography>
@@ -511,9 +509,9 @@ const AssetDetail: React.FC<AssetDetailProps> = ({
                     />
                   </ListItem>
                 </List>
-              </GridItem>
+              </Grid>
               
-              <GridItem item size={{ xs: 12, md: 6 }}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <Typography variant="h6" gutterBottom>
                   Status & Rating
                 </Typography>
@@ -539,7 +537,7 @@ const AssetDetail: React.FC<AssetDetailProps> = ({
                         assetData.current_rating ? (
                           <Chip
                             label={assetData.current_rating}
-                            color={getRatingColor(assetData.current_rating) as any}
+                            color={getRatingColor(assetData.current_rating)}
                             size="small"
                           />
                         ) : 'Not Rated'
@@ -574,14 +572,14 @@ const AssetDetail: React.FC<AssetDetailProps> = ({
                     />
                   </ListItem>
                 </List>
-              </GridItem>
+              </Grid>
             </Grid>
           </TabPanel>
 
           {/* Financial Tab */}
           <TabPanel value={activeTab} index={1}>
             <Grid container spacing={3}>
-              <GridItem item size={{ xs: 12, md: 6 }}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <Typography variant="h6" gutterBottom>
                   Pricing & Valuation
                 </Typography>
@@ -618,9 +616,9 @@ const AssetDetail: React.FC<AssetDetailProps> = ({
                     </TableBody>
                   </Table>
                 </TableContainer>
-              </GridItem>
+              </Grid>
               
-              <GridItem item size={{ xs: 12, md: 6 }}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <Typography variant="h6" gutterBottom>
                   Yield & Duration
                 </Typography>
@@ -650,14 +648,14 @@ const AssetDetail: React.FC<AssetDetailProps> = ({
                     </TableBody>
                   </Table>
                 </TableContainer>
-              </GridItem>
+              </Grid>
             </Grid>
           </TabPanel>
 
           {/* Risk Tab */}
           <TabPanel value={activeTab} index={2}>
             <Grid container spacing={3}>
-              <GridItem item size={{ xs: 12, md: 6 }}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <Typography variant="h6" gutterBottom>
                   Credit Risk Metrics
                 </Typography>
@@ -683,9 +681,9 @@ const AssetDetail: React.FC<AssetDetailProps> = ({
                     </TableBody>
                   </Table>
                 </TableContainer>
-              </GridItem>
+              </Grid>
               
-              <GridItem item size={{ xs: 12, md: 6 }}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <Typography variant="h6" gutterBottom>
                   Risk Assessment
                 </Typography>
@@ -713,14 +711,14 @@ const AssetDetail: React.FC<AssetDetailProps> = ({
                     )}
                   </Stack>
                 </Box>
-              </GridItem>
+              </Grid>
             </Grid>
           </TabPanel>
 
           {/* Performance Tab */}
           <TabPanel value={activeTab} index={3}>
             <Grid container spacing={3}>
-              <GridItem item size={{ xs: 12, md: 8 }}>
+              <Grid size={{ xs: 12, md: 8 }}>
                 <Typography variant="h6" gutterBottom>
                   Performance Metrics
                 </Typography>
@@ -773,9 +771,9 @@ const AssetDetail: React.FC<AssetDetailProps> = ({
                     </TableBody>
                   </Table>
                 </TableContainer>
-              </GridItem>
+              </Grid>
               
-              <GridItem item size={{ xs: 12, md: 4 }}>
+              <Grid size={{ xs: 12, md: 4 }}>
                 <Typography variant="h6" gutterBottom>
                   Performance Summary
                 </Typography>
@@ -797,7 +795,7 @@ const AssetDetail: React.FC<AssetDetailProps> = ({
                     </Typography>
                   </Stack>
                 </Box>
-              </GridItem>
+              </Grid>
             </Grid>
           </TabPanel>
 

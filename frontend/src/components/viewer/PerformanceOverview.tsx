@@ -159,7 +159,7 @@ const PerformanceOverview: React.FC<PerformanceOverviewProps> = ({
     <Box>
       {/* Key Performance Metrics */}
       <Grid container spacing={3} sx={{ mb: 4 }}>
-        <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6, md: 3 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <Card>
             <CardContent>
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
@@ -175,7 +175,7 @@ const PerformanceOverview: React.FC<PerformanceOverviewProps> = ({
           </Card>
         </Grid>
 
-        <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6, md: 3 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <Card>
             <CardContent>
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
@@ -191,7 +191,7 @@ const PerformanceOverview: React.FC<PerformanceOverviewProps> = ({
           </Card>
         </Grid>
 
-        <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6, md: 3 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <Card>
             <CardContent>
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
@@ -207,7 +207,7 @@ const PerformanceOverview: React.FC<PerformanceOverviewProps> = ({
           </Card>
         </Grid>
 
-        <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6, md: 3 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <Card>
             <CardContent>
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
@@ -226,7 +226,7 @@ const PerformanceOverview: React.FC<PerformanceOverviewProps> = ({
 
       {/* Performance Chart and Risk Summary */}
       <Grid container spacing={3} sx={{ mb: 4 }}>
-        <Grid {...({ item: true } as any)} size={{ xs: 12, lg: 8 }}>
+        <Grid size={{ xs: 12, lg: 8 }}>
           <Card>
             <CardContent>
               <Typography variant="h6" gutterBottom>
@@ -259,7 +259,7 @@ const PerformanceOverview: React.FC<PerformanceOverviewProps> = ({
           </Card>
         </Grid>
 
-        <Grid {...({ item: true } as any)} size={{ xs: 12, lg: 4 }}>
+        <Grid size={{ xs: 12, lg: 4 }}>
           <Card>
             <CardContent>
               <Typography variant="h6" gutterBottom>
@@ -273,7 +273,7 @@ const PerformanceOverview: React.FC<PerformanceOverviewProps> = ({
                   </Typography>
                   <Chip 
                     label={getRiskLevel(currentMetrics.sharpeRatio).level}
-                    color={getRiskLevel(currentMetrics.sharpeRatio).color as any}
+                    color={getRiskLevel(currentMetrics.sharpeRatio).color}
                     size="small"
                   />
                 </Box>
@@ -308,7 +308,7 @@ const PerformanceOverview: React.FC<PerformanceOverviewProps> = ({
 
       {/* Detailed Performance Table */}
       <Grid container spacing={3} sx={{ mb: 4 }}>
-        <Grid {...({ item: true } as any)} size={{ xs: 12, lg: 7 }}>
+        <Grid size={{ xs: 12, lg: 7 }}>
           <Card>
             <CardContent>
               <Typography variant="h6" gutterBottom>
@@ -389,7 +389,7 @@ const PerformanceOverview: React.FC<PerformanceOverviewProps> = ({
           </Card>
         </Grid>
 
-        <Grid {...({ item: true } as any)} size={{ xs: 12, lg: 5 }}>
+        <Grid size={{ xs: 12, lg: 5 }}>
           <Card>
             <CardContent>
               <Typography variant="h6" gutterBottom>

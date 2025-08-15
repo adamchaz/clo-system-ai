@@ -65,7 +65,7 @@ export const pageVariants: Variants = {
 };
 
 // Slide transition variants
-export const slideVariants: Variants = {
+export const slideVariants: Record<string, Variants> = {
   slideLeft: {
     initial: { x: -50, opacity: 0 },
     animate: { x: 0, opacity: 1 },

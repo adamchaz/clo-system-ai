@@ -32,9 +32,9 @@ import {
   CircularProgress,
   InputLabel,
   Chip,
-  Grid,
   Paper,
 } from '@mui/material';
+import Grid from '@mui/material/Grid';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import {
@@ -506,12 +506,7 @@ const FormFieldRenderer: React.FC<{ field: FormField; formikProps: FormikProps<a
                       {field.arrayConfig?.itemTemplate.map((itemField) => (
                         <Grid
                           key={itemField.name}
-                          {...({ item: true } as any)}
-                          xs={itemField.xs || 12}
-                          sm={itemField.sm}
-                          md={itemField.md}
-                          lg={itemField.lg}
-                          xl={itemField.xl}
+                          size={{ xs: itemField.xs || 12, sm: itemField.sm, md: itemField.md, lg: itemField.lg, xl: itemField.xl }}
                         >
                           <FormFieldRenderer
                             field={{
@@ -634,12 +629,7 @@ const FormikWrapper = <T extends Record<string, any>>({
                   {section.fields.map((field) => (
                     <Grid
                       key={field.name}
-                      {...({ item: true } as any)}
-                      xs={field.xs || 12}
-                      sm={field.sm}
-                      md={field.md}
-                      lg={field.lg}
-                      xl={field.xl}
+                      size={{ xs: field.xs || 12, sm: field.sm, md: field.md, lg: field.lg, xl: field.xl }}
                     >
                       <FormFieldRenderer field={field} formikProps={formikBag} />
                     </Grid>
@@ -655,12 +645,7 @@ const FormikWrapper = <T extends Record<string, any>>({
                 {fields.map((field) => (
                   <Grid
                     key={field.name}
-                    {...({ item: true } as any)}
-                    xs={field.xs || 12}
-                    sm={field.sm}
-                    md={field.md}
-                    lg={field.lg}
-                    xl={field.xl}
+                    size={{ xs: field.xs || 12, sm: field.sm, md: field.md, lg: field.lg, xl: field.xl }}
                   >
                     <FormFieldRenderer field={field} formikProps={formikBag} />
                   </Grid>

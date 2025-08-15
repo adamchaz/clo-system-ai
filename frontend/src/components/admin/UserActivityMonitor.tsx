@@ -84,6 +84,7 @@ import {
   useGetUserActivityQuery,
   useGetUserSessionsQuery,
   useGetUserStatsQuery,
+  useGetUsersQuery,
 } from '../../store/api/cloApi';
 
 // Import types
@@ -91,6 +92,7 @@ import {
   UserActivityResponse,
   UserSessionResponse,
 } from '../../store/api/newApiTypes';
+import { User } from '../../store/api/cloApi';
 
 // Import WebSocket hooks
 import { useUserActivity } from '../../hooks/useWebSocket';
@@ -163,9 +165,27 @@ const UserActivityMonitor: React.FC<UserActivityMonitorProps> = ({
     useGetUserSessionsQuery(userId || 'all');
 
   const { data: userStats } = useGetUserStatsQuery();
+  
+  // Fetch users to get user details for activities
+  const { data: usersResponse } = useGetUsersQuery({});
+  const users = usersResponse?.data || [];
 
   const userActivity = userActivityResponse?.data || [];
   const userSessions = userSessionsResponse?.data || [];
+  
+  // Create user lookup map for efficient access
+  const userLookup = React.useMemo(() => {
+    const lookup: Record<string, User> = {};
+    users.forEach(user => {
+      lookup[user.id] = user;
+    });
+    return lookup;
+  }, [users]);
+  
+  // Helper function to get user details from activity
+  const getUserFromActivity = (activity: UserActivityResponse) => {
+    return userLookup[activity.user_id] || null;
+  };
 
   // WebSocket integration for real-time activity updates
   useUserActivity((activityData) => {
@@ -249,11 +269,11 @@ const UserActivityMonitor: React.FC<UserActivityMonitorProps> = ({
       {/* Activity Statistics */}
       {userStats && (
         <Grid container spacing={2} sx={{ mb: 3 }}>
-          <Grid {...({ item: true } as any)} size={{ xs: 6, sm: 3 }}>
+          <Grid size={{ xs: 6, sm: 3 }}>
             <Card>
               <CardContent sx={{ textAlign: 'center' }}>
                 <Typography variant="h4" color="success.main">
-                  {(userStats.data as any).current_sessions || 0}
+                  {userStats?.data?.active_users || 0}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
                   Active Sessions
@@ -261,11 +281,11 @@ const UserActivityMonitor: React.FC<UserActivityMonitorProps> = ({
               </CardContent>
             </Card>
           </Grid>
-          <Grid {...({ item: true } as any)} size={{ xs: 6, sm: 3 }}>
+          <Grid size={{ xs: 6, sm: 3 }}>
             <Card>
               <CardContent sx={{ textAlign: 'center' }}>
                 <Typography variant="h4" color="primary.main">
-                  {(userStats.data as any).total_logins_today || 0}
+                  {userStats?.data?.daily_active_users || 0}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
                   Logins Today
@@ -273,11 +293,11 @@ const UserActivityMonitor: React.FC<UserActivityMonitorProps> = ({
               </CardContent>
             </Card>
           </Grid>
-          <Grid {...({ item: true } as any)} size={{ xs: 6, sm: 3 }}>
+          <Grid size={{ xs: 6, sm: 3 }}>
             <Card>
               <CardContent sx={{ textAlign: 'center' }}>
                 <Typography variant="h4" color="warning.main">
-                  {(userStats.data as any).failed_login_attempts || 0}
+                  0
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
                   Failed Attempts
@@ -285,11 +305,11 @@ const UserActivityMonitor: React.FC<UserActivityMonitorProps> = ({
               </CardContent>
             </Card>
           </Grid>
-          <Grid {...({ item: true } as any)} size={{ xs: 6, sm: 3 }}>
+          <Grid size={{ xs: 6, sm: 3 }}>
             <Card>
               <CardContent sx={{ textAlign: 'center' }}>
                 <Typography variant="h4" color="error.main">
-                  {(userStats.data as any).security_events || 0}
+                  0
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
                   Security Events
@@ -304,7 +324,7 @@ const UserActivityMonitor: React.FC<UserActivityMonitorProps> = ({
       <Card sx={{ mb: 3 }}>
         <CardContent>
           <Grid container spacing={3} alignItems="center">
-            <Grid {...({ item: true } as any)} size={{ xs: 12, md: 6 }}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <TextField
                 fullWidth
                 placeholder="Search activity logs..."
@@ -316,7 +336,7 @@ const UserActivityMonitor: React.FC<UserActivityMonitorProps> = ({
               />
             </Grid>
             
-            <Grid {...({ item: true } as any)} size={{ xs: 12, md: 4 }}>
+            <Grid size={{ xs: 12, md: 4 }}>
               <FormControl fullWidth>
                 <InputLabel>Activity Type</InputLabel>
                 <Select
@@ -334,7 +354,7 @@ const UserActivityMonitor: React.FC<UserActivityMonitorProps> = ({
               </FormControl>
             </Grid>
 
-            <Grid {...({ item: true } as any)} size={{ xs: 12, md: 2 }}>
+            <Grid size={{ xs: 12, md: 2 }}>
               <Button
                 fullWidth
                 variant="outlined"
@@ -402,12 +422,20 @@ const UserActivityMonitor: React.FC<UserActivityMonitorProps> = ({
                     <TableCell>
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                         <Avatar sx={{ width: 32, height: 32, fontSize: 14 }}>
-                          {(activity as any).user_name?.charAt(0) || 'U'}
+                          {(() => {
+                            const user = getUserFromActivity(activity);
+                            return user ? `${user.firstName?.[0] || ''}${user.lastName?.[0] || ''}` : 'U';
+                          })()}
                         </Avatar>
                         <Box>
-                          <Typography variant="body2">{(activity as any).user_name}</Typography>
+                          <Typography variant="body2">
+                            {(() => {
+                              const user = getUserFromActivity(activity);
+                              return user ? `${user.firstName || ''} ${user.lastName || ''}`.trim() : `User ${activity.user_id}`;
+                            })()}
+                          </Typography>
                           <Typography variant="caption" color="text.secondary">
-                            {(activity as any).user_email}
+                            {getUserFromActivity(activity)?.email || 'No email'}
                           </Typography>
                         </Box>
                       </Box>
@@ -415,16 +443,16 @@ const UserActivityMonitor: React.FC<UserActivityMonitorProps> = ({
                     
                     <TableCell>
                       <Chip
-                        icon={ActivityTypeIcons[(activity as any).activity_type as keyof typeof ActivityTypeIcons] || ActivityTypeIcons['login']}
-                        label={ActivityTypeBadges[(activity as any).activity_type as keyof typeof ActivityTypeBadges]?.label || (activity as any).activity_type || activity.action}
-                        color={ActivityTypeBadges[(activity as any).activity_type as keyof typeof ActivityTypeBadges]?.color || 'default'}
+                        icon={ActivityTypeIcons[activity.action as keyof typeof ActivityTypeIcons] || ActivityTypeIcons['login']}
+                        label={ActivityTypeBadges[activity.action as keyof typeof ActivityTypeBadges]?.label || activity.action}
+                        color={ActivityTypeBadges[activity.action as keyof typeof ActivityTypeBadges]?.color || 'default'}
                         size="small"
                       />
                     </TableCell>
                     
                     <TableCell>
                       <Typography variant="body2" noWrap>
-                        {(activity as any).description || activity.details || 'No description'}
+                        {JSON.stringify(activity.details) !== '{}' ? JSON.stringify(activity.details) : activity.action}
                       </Typography>
                     </TableCell>
                     
@@ -436,9 +464,9 @@ const UserActivityMonitor: React.FC<UserActivityMonitorProps> = ({
                     
                     <TableCell>
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        {DeviceIcons[(activity as any).device_type as keyof typeof DeviceIcons] || <Computer />}
+                        <Computer />
                         <Typography variant="body2">
-                          {(activity as any).device_info || activity.user_agent || 'Unknown device'}
+                          {activity.user_agent || 'Unknown device'}
                         </Typography>
                       </Box>
                     </TableCell>
@@ -463,24 +491,30 @@ const UserActivityMonitor: React.FC<UserActivityMonitorProps> = ({
         <TabPanel value={currentTab} index={1}>
           <Grid container spacing={2}>
             {userSessions.map((session, index) => (
-              <Grid {...({ item: true } as any)} size={{ xs: 12, md: 6 }} key={index}>
+              <Grid size={{ xs: 12, md: 6 }} key={index}>
                 <Card variant="outlined">
                   <CardContent>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
                       <Avatar>
-                        {(session as any).user_name?.charAt(0) || 'U'}
+                        {(() => {
+                          const user = userLookup[session.user_id];
+                          return user ? `${user.firstName?.[0] || ''}${user.lastName?.[0] || ''}` : 'U';
+                        })()}
                       </Avatar>
                       <Box sx={{ flex: 1 }}>
                         <Typography variant="subtitle1">
-                          {(session as any).user_name || 'Unknown User'}
+                          {(() => {
+                            const user = userLookup[session.user_id];
+                            return user ? `${user.firstName || ''} ${user.lastName || ''}`.trim() : `User ${session.user_id}`;
+                          })()}
                         </Typography>
                         <Typography variant="caption" color="text.secondary">
-                          {(session as any).user_email || 'No email'}
+                          {userLookup[session.user_id]?.email || 'No email'}
                         </Typography>
                       </Box>
                       <Chip
-                        label={(session as any).is_active ? 'Active' : 'Inactive'}
-                        color={(session as any).is_active ? 'success' : 'default'}
+                        label={session.is_current ? 'Current' : 'Expired'}
+                        color={session.is_current ? 'success' : 'default'}
                         size="small"
                       />
                     </Box>
@@ -496,7 +530,7 @@ const UserActivityMonitor: React.FC<UserActivityMonitorProps> = ({
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                         <Computer fontSize="small" />
                         <Typography variant="body2">
-                          {(session as any).device_info || 'Unknown device'}
+                          {session.user_agent || 'Unknown device'}
                         </Typography>
                       </Box>
                       

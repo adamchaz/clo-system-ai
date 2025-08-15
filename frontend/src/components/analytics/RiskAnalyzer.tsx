@@ -293,7 +293,7 @@ const RiskAnalyzer: React.FC<RiskAnalyzerProps> = ({ portfolioId }) => {
           </Typography>
 
           <Grid container spacing={3}>
-            <Grid {...({ item: true } as any)} size={{ xs: 12, md: 4 }}>
+            <Grid size={{ xs: 12, md: 4 }}>
               <Typography variant="subtitle2" gutterBottom>
                 Confidence Levels (%)
               </Typography>
@@ -316,7 +316,7 @@ const RiskAnalyzer: React.FC<RiskAnalyzerProps> = ({ portfolioId }) => {
               </Stack>
             </Grid>
 
-            <Grid {...({ item: true } as any)} size={{ xs: 12, md: 4 }}>
+            <Grid size={{ xs: 12, md: 4 }}>
               <Typography variant="subtitle2" gutterBottom>
                 Time Horizons (Days)
               </Typography>
@@ -339,7 +339,7 @@ const RiskAnalyzer: React.FC<RiskAnalyzerProps> = ({ portfolioId }) => {
               </Stack>
             </Grid>
 
-            <Grid {...({ item: true } as any)} size={{ xs: 12, md: 4 }}>
+            <Grid size={{ xs: 12, md: 4 }}>
               <Typography variant="subtitle2" gutterBottom>
                 Monte Carlo Runs
               </Typography>
@@ -352,13 +352,13 @@ const RiskAnalyzer: React.FC<RiskAnalyzerProps> = ({ portfolioId }) => {
               />
             </Grid>
 
-            <Grid {...({ item: true } as any)} size={12}>
+            <Grid size={12}>
               <Typography variant="subtitle2" gutterBottom>
                 Stress Test Scenarios
               </Typography>
               <Grid container spacing={2}>
                 {StressScenarios.map(scenario => (
-                  <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6, md: 4 }} key={scenario.id}>
+                  <Grid size={{ xs: 12, sm: 6, md: 4 }} key={scenario.id}>
                     <Card 
                       sx={{ 
                         cursor: 'pointer',
@@ -381,7 +381,7 @@ const RiskAnalyzer: React.FC<RiskAnalyzerProps> = ({ portfolioId }) => {
               </Grid>
             </Grid>
 
-            <Grid {...({ item: true } as any)} size={12}>
+            <Grid size={12}>
               <Stack direction="row" spacing={3} alignItems="center">
                 <FormControlLabel
                   control={
@@ -437,7 +437,7 @@ const RiskAnalyzer: React.FC<RiskAnalyzerProps> = ({ portfolioId }) => {
         {/* VaR Analysis Tab */}
         <TabPanel value={currentTab} index={0}>
           <Grid container spacing={3}>
-            <Grid {...({ item: true } as any)} size={12}>
+            <Grid size={12}>
               <Typography variant="h6" gutterBottom>
                 Value at Risk Analysis
               </Typography>
@@ -485,7 +485,7 @@ const RiskAnalyzer: React.FC<RiskAnalyzerProps> = ({ portfolioId }) => {
               </Box>
             </Grid>
 
-            <Grid {...({ item: true } as any)} size={12}>
+            <Grid size={12}>
               <Typography variant="h6" gutterBottom>
                 VaR Summary Table
               </Typography>
@@ -508,14 +508,14 @@ const RiskAnalyzer: React.FC<RiskAnalyzerProps> = ({ portfolioId }) => {
                         <TableCell align="right">
                           <Chip 
                             label={formatPercent(row.VaR_95)} 
-                            color={getRiskLevelColor(Math.abs(row.VaR_95)) as any}
+                            color={getRiskLevelColor(Math.abs(row.VaR_95))}
                             size="small"
                           />
                         </TableCell>
                         <TableCell align="right">
                           <Chip 
                             label={formatPercent(row.VaR_99)} 
-                            color={getRiskLevelColor(Math.abs(row.VaR_99)) as any}
+                            color={getRiskLevelColor(Math.abs(row.VaR_99))}
                             size="small"
                           />
                         </TableCell>
@@ -533,7 +533,7 @@ const RiskAnalyzer: React.FC<RiskAnalyzerProps> = ({ portfolioId }) => {
         {/* Stress Testing Tab */}
         <TabPanel value={currentTab} index={1}>
           <Grid container spacing={3}>
-            <Grid {...({ item: true } as any)} size={{ xs: 12, md: 8 }}>
+            <Grid size={{ xs: 12, md: 8 }}>
               <Typography variant="h6" gutterBottom>
                 Stress Test Results
               </Typography>
@@ -558,7 +558,7 @@ const RiskAnalyzer: React.FC<RiskAnalyzerProps> = ({ portfolioId }) => {
               </Box>
             </Grid>
 
-            <Grid {...({ item: true } as any)} size={{ xs: 12, md: 4 }}>
+            <Grid size={{ xs: 12, md: 4 }}>
               <Typography variant="h6" gutterBottom>
                 Scenario Impact Summary
               </Typography>
@@ -592,7 +592,7 @@ const RiskAnalyzer: React.FC<RiskAnalyzerProps> = ({ portfolioId }) => {
         {/* Risk Decomposition Tab */}
         <TabPanel value={currentTab} index={2}>
           <Grid container spacing={3}>
-            <Grid {...({ item: true } as any)} size={{ xs: 12, md: 6 }}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <Typography variant="h6" gutterBottom>
                 Risk Contribution by Sector
               </Typography>
@@ -620,7 +620,7 @@ const RiskAnalyzer: React.FC<RiskAnalyzerProps> = ({ portfolioId }) => {
               </Box>
             </Grid>
 
-            <Grid {...({ item: true } as any)} size={{ xs: 12, md: 6 }}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <Typography variant="h6" gutterBottom>
                 Marginal VaR Analysis
               </Typography>
@@ -638,7 +638,7 @@ const RiskAnalyzer: React.FC<RiskAnalyzerProps> = ({ portfolioId }) => {
               </Box>
             </Grid>
 
-            <Grid {...({ item: true } as any)} size={12}>
+            <Grid size={12}>
               <Typography variant="h6" gutterBottom>
                 Risk Decomposition Summary
               </Typography>
@@ -664,7 +664,7 @@ const RiskAnalyzer: React.FC<RiskAnalyzerProps> = ({ portfolioId }) => {
                         <TableCell align="right">
                           <Chip
                             label={row.contribution > 30 ? 'High' : row.contribution > 15 ? 'Medium' : 'Low'}
-                            color={getRiskLevelColor(row.contribution) as any}
+                            color={getRiskLevelColor(row.contribution)}
                             size="small"
                           />
                         </TableCell>
@@ -680,7 +680,7 @@ const RiskAnalyzer: React.FC<RiskAnalyzerProps> = ({ portfolioId }) => {
         {/* Correlation Analysis Tab */}
         <TabPanel value={currentTab} index={3}>
           <Grid container spacing={3}>
-            <Grid {...({ item: true } as any)} size={{ xs: 12, md: 6 }}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <Typography variant="h6" gutterBottom>
                 Correlation Clusters
               </Typography>
@@ -714,7 +714,7 @@ const RiskAnalyzer: React.FC<RiskAnalyzerProps> = ({ portfolioId }) => {
               </List>
             </Grid>
 
-            <Grid {...({ item: true } as any)} size={{ xs: 12, md: 6 }}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <Typography variant="h6" gutterBottom>
                 Diversification Analysis
               </Typography>
@@ -745,7 +745,7 @@ const RiskAnalyzer: React.FC<RiskAnalyzerProps> = ({ portfolioId }) => {
           </Typography>
           
           <Grid container spacing={3}>
-            <Grid {...({ item: true } as any)} size={{ xs: 12, md: 8 }}>
+            <Grid size={{ xs: 12, md: 8 }}>
               <Alert severity="info">
                 Monte Carlo simulation results with {monteCarloRuns.toLocaleString()} iterations 
                 will be displayed here when analysis completes. This will include:
@@ -758,7 +758,7 @@ const RiskAnalyzer: React.FC<RiskAnalyzerProps> = ({ portfolioId }) => {
               </Alert>
             </Grid>
 
-            <Grid {...({ item: true } as any)} size={{ xs: 12, md: 4 }}>
+            <Grid size={{ xs: 12, md: 4 }}>
               <Card variant="outlined">
                 <CardContent>
                   <Typography variant="h6" gutterBottom>

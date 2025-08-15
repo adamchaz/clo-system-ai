@@ -444,8 +444,7 @@ const DocumentUpload: React.FC<DocumentUploadProps> = ({
                             <LinearProgress 
                               variant="determinate" 
                               value={file.uploadProgress || 0} 
-                              size="small"
-                              sx={{ mt: 0.5 }}
+                              sx={{ mt: 0.5, height: 4 }}
                             />
                           )}
                           

@@ -477,7 +477,7 @@ const PerformanceChart: React.FC<PerformanceChartProps> = ({
           <MetricCard
             title="Sharpe Ratio"
             value={performanceMetrics.sharpeRatio.toFixed(2)}
-            trend={performanceMetrics.sharpeRatio > 1 ? "up" : "neutral"}
+            trend={performanceMetrics.sharpeRatio > 1 ? "up" : "flat"}
             icon={<CompareIcon />}
             color={performanceMetrics.sharpeRatio > 1 ? "success" : "warning"}
           />

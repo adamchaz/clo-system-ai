@@ -68,8 +68,6 @@ import { useNavigate } from 'react-router-dom';
 import StatusIndicator from '../common/UI/StatusIndicator';
 import { useCloApi } from '../../hooks/useCloApi';
 
-// Fix for Grid item prop typing
-const GridItem = Grid as any;
 
 // Types
 interface AssetFilters {
@@ -370,7 +368,7 @@ const AssetList: React.FC<AssetListProps> = ({
     setPage(0);
   }, []);
 
-  const getRatingColor = (rating?: string | undefined) => {
+  const getRatingColor = (rating?: string | undefined): 'default' | 'success' | 'info' | 'warning' | 'error' => {
     if (!rating) return 'default';
     if (['AAA', 'AA'].some(r => rating.startsWith(r))) return 'success';
     if (['A', 'BBB'].some(r => rating.startsWith(r))) return 'info';
@@ -459,7 +457,7 @@ const AssetList: React.FC<AssetListProps> = ({
           <Card variant="outlined" sx={{ mb: 3 }}>
             <CardContent>
               <Grid container spacing={2} alignItems="center">
-                <GridItem item size={{ xs: 12, md: 3 }}>
+                <Grid size={{ xs: 12, md: 3 }}>
                   <TextField
                     fullWidth
                     size="small"
@@ -475,8 +473,8 @@ const AssetList: React.FC<AssetListProps> = ({
                       ),
                     }}
                   />
-                </GridItem>
-                <GridItem item size={{ xs: 12, md: 2 }}>
+                </Grid>
+                <Grid size={{ xs: 12, md: 2 }}>
                   <FormControl fullWidth size="small">
                     <InputLabel>Asset Type</InputLabel>
                     <Select
@@ -491,8 +489,8 @@ const AssetList: React.FC<AssetListProps> = ({
                       <MenuItem value="equity">Equity</MenuItem>
                     </Select>
                   </FormControl>
-                </GridItem>
-                <GridItem item size={{ xs: 12, md: 2 }}>
+                </Grid>
+                <Grid size={{ xs: 12, md: 2 }}>
                   <FormControl fullWidth size="small">
                     <InputLabel>Industry</InputLabel>
                     <Select
@@ -509,8 +507,8 @@ const AssetList: React.FC<AssetListProps> = ({
                       <MenuItem value="industrials">Industrials</MenuItem>
                     </Select>
                   </FormControl>
-                </GridItem>
-                <GridItem item size={{ xs: 12, md: 2 }}>
+                </Grid>
+                <Grid size={{ xs: 12, md: 2 }}>
                   <FormControl fullWidth size="small">
                     <InputLabel>Rating Category</InputLabel>
                     <Select
@@ -523,8 +521,8 @@ const AssetList: React.FC<AssetListProps> = ({
                       <MenuItem value="speculative-grade">Speculative Grade</MenuItem>
                     </Select>
                   </FormControl>
-                </GridItem>
-                <GridItem item size={{ xs: 12, md: 2 }}>
+                </Grid>
+                <Grid size={{ xs: 12, md: 2 }}>
                   <FormControl fullWidth size="small">
                     <InputLabel>Maturity</InputLabel>
                     <Select
@@ -540,8 +538,8 @@ const AssetList: React.FC<AssetListProps> = ({
                       <MenuItem value="10+">10+ Years</MenuItem>
                     </Select>
                   </FormControl>
-                </GridItem>
-                <GridItem item size={{ xs: 12, md: 1 }}>
+                </Grid>
+                <Grid size={{ xs: 12, md: 1 }}>
                   <Button
                     variant="outlined"
                     size="small"
@@ -550,7 +548,7 @@ const AssetList: React.FC<AssetListProps> = ({
                   >
                     Clear
                   </Button>
-                </GridItem>
+                </Grid>
               </Grid>
             </CardContent>
           </Card>
@@ -671,7 +669,7 @@ const AssetList: React.FC<AssetListProps> = ({
                       <Chip
                         label={asset.current_rating}
                         size="small"
-                        color={getRatingColor(asset.current_rating) as any}
+                        color={getRatingColor(asset.current_rating)}
                       />
                     )}
                   </TableCell>

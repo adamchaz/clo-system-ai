@@ -360,7 +360,7 @@ const CalculationProgressTracker: React.FC<CalculationProgressTrackerProps> = ({
             <Box>
               {/* Single calculation details */}
               <Typography variant="body2" paragraph>
-                Detailed view of calculation {(selectedCalculation as any).calculationId}
+                Detailed view of calculation {selectedCalculation?.calculationId || 'Unknown'}
               </Typography>
               {/* Add more detailed information here */}
             </Box>

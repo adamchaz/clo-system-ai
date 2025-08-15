@@ -335,7 +335,7 @@ const ReportViewer: React.FC<ReportViewerProps> = ({
             <TabPanel value={currentTab} index={0}>
               <Grid container spacing={3}>
                 {/* Basic Information */}
-                <Grid {...({ item: true } as any)} size={{ xs: 12, md: 8 }}>
+                <Grid size={{ xs: 12, md: 8 }}>
                   <Card>
                     <CardContent>
                       <Typography variant="h6" gutterBottom>
@@ -426,7 +426,7 @@ const ReportViewer: React.FC<ReportViewerProps> = ({
                 </Grid>
 
                 {/* Metadata */}
-                <Grid {...({ item: true } as any)} size={{ xs: 12, md: 4 }}>
+                <Grid size={{ xs: 12, md: 4 }}>
                   <Card>
                     <CardContent>
                       <Typography variant="h6" gutterBottom>

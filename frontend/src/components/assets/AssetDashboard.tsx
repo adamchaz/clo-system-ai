@@ -67,8 +67,6 @@ import {
   ConnectionStatusIndicator,
 } from '../common/RealTime';
 
-// Fix for Grid item prop typing
-const GridItem = Grid as any;
 
 // Types
 interface AssetSummary {
@@ -422,7 +420,7 @@ const AssetDashboard: React.FC = () => {
 
       {/* Key Metrics */}
       <Grid container spacing={3} sx={{ mb: 4 }}>
-        <GridItem item size={{ xs: 12, sm: 6, md: 3 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <MetricCard
             title="Total Assets"
             value={mockAssetSummary.totalAssets.toString()}
@@ -431,8 +429,8 @@ const AssetDashboard: React.FC = () => {
             icon={<AccountBalance />}
             subtitle={`${mockAssetSummary.activeAssets} active`}
           />
-        </GridItem>
-        <GridItem item size={{ xs: 12, sm: 6, md: 3 }}>
+        </Grid>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <MetricCard
             title="Total Value"
             value={formatCurrency(mockAssetSummary.totalValue)}
@@ -445,8 +443,8 @@ const AssetDashboard: React.FC = () => {
               period: 'YTD' 
             }}
           />
-        </GridItem>
-        <GridItem item size={{ xs: 12, sm: 6, md: 3 }}>
+        </Grid>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <MetricCard
             title={
               realTimePortfolio.portfolioData ? "YTD Performance (Live)" : "YTD Performance"
@@ -462,8 +460,8 @@ const AssetDashboard: React.FC = () => {
               period: realTimePortfolio.portfolioData ? 'Live' : 'YTD',
             }}
           />
-        </GridItem>
-        <GridItem item size={{ xs: 12, sm: 6, md: 3 }}>
+        </Grid>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <MetricCard
             title="Risk Alerts"
             value={unacknowledgedAlerts.length.toString()}
@@ -472,7 +470,7 @@ const AssetDashboard: React.FC = () => {
             icon={<Warning />}
             subtitle={`${criticalAlerts.length} critical`}
           />
-        </GridItem>
+        </Grid>
       </Grid>
 
       {/* Real-time Calculation Progress - TASK 12 */}
@@ -488,7 +486,7 @@ const AssetDashboard: React.FC = () => {
 
       <Grid container spacing={3}>
         {/* Quick Actions */}
-        <GridItem item size={{ xs: 12, md: 4 }}>
+        <Grid size={{ xs: 12, md: 4 }}>
           <Card>
             <CardContent>
               <Typography variant="h6" gutterBottom>
@@ -529,33 +527,33 @@ const AssetDashboard: React.FC = () => {
               </Stack>
             </CardContent>
           </Card>
-        </GridItem>
+        </Grid>
 
         {/* Performance Summary */}
-        <GridItem item size={{ xs: 12, md: 8 }}>
+        <Grid size={{ xs: 12, md: 8 }}>
           <Card>
             <CardContent>
               <Typography variant="h6" gutterBottom>
                 Performance Summary
               </Typography>
               <Grid container spacing={3}>
-                <GridItem item size={{ xs: 6, md: 3 }}>
+                <Grid size={{ xs: 6, md: 3 }}>
                   <Box textAlign="center">
                     <Typography variant="h5" color={mockPerformance.portfolio1Day >= 0 ? 'success.main' : 'error.main'}>
                       {mockPerformance.portfolio1Day >= 0 ? '+' : ''}{formatPercentage(mockPerformance.portfolio1Day)}
                     </Typography>
                     <Typography variant="caption" color="text.secondary">1 Day</Typography>
                   </Box>
-                </GridItem>
-                <GridItem item size={{ xs: 6, md: 3 }}>
+                </Grid>
+                <Grid size={{ xs: 6, md: 3 }}>
                   <Box textAlign="center">
                     <Typography variant="h5" color={mockPerformance.portfolio30Day >= 0 ? 'success.main' : 'error.main'}>
                       {mockPerformance.portfolio30Day >= 0 ? '+' : ''}{formatPercentage(mockPerformance.portfolio30Day)}
                     </Typography>
                     <Typography variant="caption" color="text.secondary">30 Days</Typography>
                   </Box>
-                </GridItem>
-                <GridItem item size={{ xs: 6, md: 3 }}>
+                </Grid>
+                <Grid size={{ xs: 6, md: 3 }}>
                   <Box textAlign="center">
                     <Typography variant="body2" color="text.secondary">Best Performer</Typography>
                     <Typography variant="body2" fontWeight="medium">{mockPerformance.bestPerformer.cusip}</Typography>
@@ -563,8 +561,8 @@ const AssetDashboard: React.FC = () => {
                       +{formatPercentage(mockPerformance.bestPerformer.return)}
                     </Typography>
                   </Box>
-                </GridItem>
-                <GridItem item size={{ xs: 6, md: 3 }}>
+                </Grid>
+                <Grid size={{ xs: 6, md: 3 }}>
                   <Box textAlign="center">
                     <Typography variant="body2" color="text.secondary">Worst Performer</Typography>
                     <Typography variant="body2" fontWeight="medium">{mockPerformance.worstPerformer.cusip}</Typography>
@@ -572,14 +570,14 @@ const AssetDashboard: React.FC = () => {
                       {formatPercentage(mockPerformance.worstPerformer.return)}
                     </Typography>
                   </Box>
-                </GridItem>
+                </Grid>
               </Grid>
             </CardContent>
           </Card>
-        </GridItem>
+        </Grid>
 
         {/* Asset Distribution */}
-        <GridItem item size={{ xs: 12, md: 6 }}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <Card>
             <CardContent>
               <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
@@ -609,10 +607,10 @@ const AssetDashboard: React.FC = () => {
               </Stack>
             </CardContent>
           </Card>
-        </GridItem>
+        </Grid>
 
         {/* Risk Alerts */}
-        <GridItem item size={{ xs: 12, md: 6 }}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <Card>
             <CardContent>
               <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
@@ -658,10 +656,10 @@ const AssetDashboard: React.FC = () => {
               )}
             </CardContent>
           </Card>
-        </GridItem>
+        </Grid>
 
         {/* Recent Activity */}
-        <GridItem item size={12}>
+        <Grid size={12}>
           <Card>
             <CardContent>
               <Typography variant="h6" gutterBottom>
@@ -754,7 +752,7 @@ const AssetDashboard: React.FC = () => {
               </TableContainer>
             </CardContent>
           </Card>
-        </GridItem>
+        </Grid>
       </Grid>
     </Box>
   );

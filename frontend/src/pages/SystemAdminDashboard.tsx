@@ -193,13 +193,13 @@ const SystemHealthIndicator: React.FC<SystemHealthIndicatorProps> = ({
         </Box>
         
         <Grid container spacing={2}>
-          <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6 }}>
+          <Grid size={{ xs: 12, sm: 6 }}>
             <Typography variant="body2" color="text.secondary" gutterBottom>
               Uptime: {Math.floor(uptime / 3600)}h {Math.floor((uptime % 3600) / 60)}m
             </Typography>
           </Grid>
           
-          <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6 }}>
+          <Grid size={{ xs: 12, sm: 6 }}>
             <Box>
               <Typography variant="body2" color="text.secondary">
                 CPU Usage
@@ -216,7 +216,7 @@ const SystemHealthIndicator: React.FC<SystemHealthIndicatorProps> = ({
             </Box>
           </Grid>
           
-          <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6 }}>
+          <Grid size={{ xs: 12, sm: 6 }}>
             <Box>
               <Typography variant="body2" color="text.secondary">
                 Memory Usage
@@ -233,7 +233,7 @@ const SystemHealthIndicator: React.FC<SystemHealthIndicatorProps> = ({
             </Box>
           </Grid>
           
-          <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6 }}>
+          <Grid size={{ xs: 12, sm: 6 }}>
             <Box>
               <Typography variant="body2" color="text.secondary">
                 Disk Usage
@@ -377,7 +377,7 @@ const SystemAdminDashboard: React.FC = () => {
 
       {/* System Metrics Grid */}
       <Grid container spacing={3} sx={{ mb: 4 }}>
-        <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6, md: 3 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <MetricCard
             title="Total Users"
             value={systemStats?.totalUsers || 0}
@@ -387,7 +387,7 @@ const SystemAdminDashboard: React.FC = () => {
             trend={{ value: 5.2, isPositive: true }}
           />
         </Grid>
-        <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6, md: 3 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <MetricCard
             title="Active Portfolios"
             value={systemStats?.totalPortfolios || 0}
@@ -397,7 +397,7 @@ const SystemAdminDashboard: React.FC = () => {
             trend={{ value: 2.1, isPositive: true }}
           />
         </Grid>
-        <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6, md: 3 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <MetricCard
             title="Total Assets"
             value={(systemStats?.totalAssets || 0).toLocaleString()}
@@ -407,7 +407,7 @@ const SystemAdminDashboard: React.FC = () => {
             trend={{ value: 0.8, isPositive: true }}
           />
         </Grid>
-        <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6, md: 3 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <MetricCard
             title="Calculations Today"
             value={systemStats?.calculationsToday || 0}
@@ -422,7 +422,7 @@ const SystemAdminDashboard: React.FC = () => {
       {/* Main Content Grid */}
       <Grid container spacing={3}>
         {/* System Health */}
-        <Grid {...({ item: true } as any)} size={{ xs: 12, lg: 6 }}>
+        <Grid size={{ xs: 12, lg: 6 }}>
           {systemHealth && (
             <SystemHealthIndicator
               status={systemHealth.status}
@@ -435,7 +435,7 @@ const SystemAdminDashboard: React.FC = () => {
         </Grid>
 
         {/* Recent Alerts */}
-        <Grid {...({ item: true } as any)} size={{ xs: 12, lg: 6 }}>
+        <Grid size={{ xs: 12, lg: 6 }}>
           <Card>
             <CardContent>
               <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
@@ -516,7 +516,7 @@ const SystemAdminDashboard: React.FC = () => {
         </Grid>
 
         {/* Recent Users */}
-        <Grid {...({ item: true } as any)} size={{ xs: 12, lg: 6 }}>
+        <Grid size={{ xs: 12, lg: 6 }}>
           <Card>
             <CardContent>
               <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
@@ -580,7 +580,7 @@ const SystemAdminDashboard: React.FC = () => {
         </Grid>
 
         {/* Quick Actions */}
-        <Grid {...({ item: true } as any)} size={{ xs: 12, lg: 6 }}>
+        <Grid size={{ xs: 12, lg: 6 }}>
           <Card>
             <CardContent>
               <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center' }}>
@@ -589,7 +589,7 @@ const SystemAdminDashboard: React.FC = () => {
               </Typography>
               
               <Grid container spacing={2}>
-                <Grid {...({ item: true } as any)} size={6}>
+                <Grid size={6}>
                   <Button
                     variant="outlined"
                     fullWidth
@@ -600,7 +600,7 @@ const SystemAdminDashboard: React.FC = () => {
                     User Management
                   </Button>
                 </Grid>
-                <Grid {...({ item: true } as any)} size={6}>
+                <Grid size={6}>
                   <Button
                     variant="outlined"
                     fullWidth
@@ -611,7 +611,7 @@ const SystemAdminDashboard: React.FC = () => {
                     Audit Logs
                   </Button>
                 </Grid>
-                <Grid {...({ item: true } as any)} size={6}>
+                <Grid size={6}>
                   <Button
                     variant="outlined"
                     fullWidth
@@ -622,7 +622,7 @@ const SystemAdminDashboard: React.FC = () => {
                     System Reports
                   </Button>
                 </Grid>
-                <Grid {...({ item: true } as any)} size={6}>
+                <Grid size={6}>
                   <Button
                     variant="outlined"
                     fullWidth

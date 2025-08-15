@@ -24,7 +24,6 @@ import {
   DialogContent,
   DialogActions,
   Button,
-  Grid,
   Card,
   CardContent,
   CardActions,
@@ -44,6 +43,7 @@ import {
   useTheme,
   alpha,
 } from '@mui/material';
+import Grid from '@mui/material/Grid';
 import {
   DragIndicator,
   Add as AddIcon,
@@ -348,12 +348,13 @@ const DashboardCustomizer: React.FC<DashboardCustomizerProps> = ({
                       isDragDisabled={!isCustomizing}
                     >
                       {(provided, snapshot) => (
-                        <Grid
-                          item
-                          xs={widget.size.width}
+                        <div
                           ref={provided.innerRef}
                           {...provided.draggableProps}
                         >
+                          <Grid
+                            size={widget.size.width}
+                          >
                           <motion.div
                             variants={scaleVariants}
                             initial="initial"
@@ -440,7 +441,8 @@ const DashboardCustomizer: React.FC<DashboardCustomizerProps> = ({
                               </Box>
                             </Paper>
                           </motion.div>
-                        </Grid>
+                          </Grid>
+                        </div>
                       )}
                     </Draggable>
                   );
@@ -488,7 +490,7 @@ const DashboardCustomizer: React.FC<DashboardCustomizerProps> = ({
               
               <Grid container spacing={1}>
                 {widgets.map(widget => (
-                  <Grid {...({ item: true } as any)} size={12} key={widget.id}>
+                  <Grid size={12} key={widget.id}>
                     <motion.div variants={staggerItem}>
                       <Card
                         sx={{
@@ -544,7 +546,7 @@ const DashboardCustomizer: React.FC<DashboardCustomizerProps> = ({
           </Typography>
           <Grid container spacing={2}>
             {layoutTemplates.map((template, index) => (
-              <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6 }} key={index}>
+              <Grid size={{ xs: 12, sm: 6 }} key={index}>
                 <Card>
                   <CardContent>
                     <Typography variant="subtitle1" gutterBottom>
@@ -582,7 +584,7 @@ const DashboardCustomizer: React.FC<DashboardCustomizerProps> = ({
               </Typography>
               <Grid container spacing={2}>
                 {savedLayouts.map((layout) => (
-                  <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6 }} key={layout.id}>
+                  <Grid size={{ xs: 12, sm: 6 }} key={layout.id}>
                     <Card>
                       <CardContent>
                         <Typography variant="subtitle1" gutterBottom>

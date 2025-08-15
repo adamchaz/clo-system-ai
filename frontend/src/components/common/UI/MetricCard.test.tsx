@@ -446,7 +446,7 @@ describe('MetricCard Edge Cases', () => {
     renderWithTheme(
       <MetricCard
         title="Undefined Value"
-        value={undefined as any}
+        value={undefined}
       />
     );
 

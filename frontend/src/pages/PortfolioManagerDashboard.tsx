@@ -278,7 +278,7 @@ const PortfolioManagerDashboard: React.FC = () => {
 
       {/* Key Metrics */}
       <Grid container spacing={3} sx={{ mb: 4 }}>
-        <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6, md: 3 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <PortfolioMetricCard
             title="Total AUM"
             value={`$${(totalAUM / 1000000).toFixed(1)}M`}
@@ -290,7 +290,7 @@ const PortfolioManagerDashboard: React.FC = () => {
           />
         </Grid>
         
-        <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6, md: 3 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <PortfolioMetricCard
             title="Active Portfolios"
             value={activePortfolios}
@@ -302,7 +302,7 @@ const PortfolioManagerDashboard: React.FC = () => {
           />
         </Grid>
         
-        <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6, md: 3 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <PortfolioMetricCard
             title="Avg Performance"
             value={`+${avgPerformance.toFixed(1)}%`}
@@ -314,7 +314,7 @@ const PortfolioManagerDashboard: React.FC = () => {
           />
         </Grid>
         
-        <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6, md: 3 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <PortfolioMetricCard
             title="Total Assets"
             value={assetStats?.total_assets || 0}
@@ -329,7 +329,7 @@ const PortfolioManagerDashboard: React.FC = () => {
       {/* Main Content Grid */}
       <Grid container spacing={3}>
         {/* Portfolio Performance Chart Placeholder */}
-        <Grid {...({ item: true } as any)} size={{ xs: 12, lg: 8 }}>
+        <Grid size={{ xs: 12, lg: 8 }}>
           <Card>
             <CardContent>
               <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
@@ -378,7 +378,7 @@ const PortfolioManagerDashboard: React.FC = () => {
         </Grid>
 
         {/* Portfolio Quick View */}
-        <Grid {...({ item: true } as any)} size={{ xs: 12, lg: 4 }}>
+        <Grid size={{ xs: 12, lg: 4 }}>
           <Card sx={{ height: '100%' }}>
             <CardContent>
               <Typography variant="h6" fontWeight={600} gutterBottom>
@@ -453,7 +453,7 @@ const PortfolioManagerDashboard: React.FC = () => {
         </Grid>
 
         {/* Risk Dashboard Summary */}
-        <Grid {...({ item: true } as any)} size={{ xs: 12, lg: 6 }}>
+        <Grid size={{ xs: 12, lg: 6 }}>
           <Card>
             <CardContent>
               <Typography variant="h6" fontWeight={600} gutterBottom>
@@ -548,7 +548,7 @@ const PortfolioManagerDashboard: React.FC = () => {
         </Grid>
 
         {/* Market Overview */}
-        <Grid {...({ item: true } as any)} size={{ xs: 12, lg: 6 }}>
+        <Grid size={{ xs: 12, lg: 6 }}>
           <Card>
             <CardContent>
               <Typography variant="h6" fontWeight={600} gutterBottom>

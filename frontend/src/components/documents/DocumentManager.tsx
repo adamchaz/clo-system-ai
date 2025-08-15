@@ -289,11 +289,11 @@ const DocumentManager: React.FC<DocumentManagerProps> = ({
     }
   };
 
-  const handleDownload = (document: Document) => {
+  const handleDownload = (doc: Document) => {
     // Implement download functionality
     const link = document.createElement('a');
-    link.href = `/api/v1/documents/${document.document_id}/download`;
-    link.download = document.original_filename;
+    link.href = `/api/v1/documents/${doc.document_id}/download`;
+    link.download = doc.original_filename;
     link.click();
   };
 
@@ -380,7 +380,7 @@ const DocumentManager: React.FC<DocumentManagerProps> = ({
       {/* Statistics Cards */}
       {documentStats?.data && (
         <Grid container spacing={3} sx={{ mb: 3 }}>
-          <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6, md: 3 }}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <Card>
               <CardContent>
                 <Typography color="textSecondary" gutterBottom>
@@ -392,7 +392,7 @@ const DocumentManager: React.FC<DocumentManagerProps> = ({
               </CardContent>
             </Card>
           </Grid>
-          <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6, md: 3 }}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <Card>
               <CardContent>
                 <Typography color="textSecondary" gutterBottom>
@@ -404,7 +404,7 @@ const DocumentManager: React.FC<DocumentManagerProps> = ({
               </CardContent>
             </Card>
           </Grid>
-          <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6, md: 3 }}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <Card>
               <CardContent>
                 <Typography color="textSecondary" gutterBottom>
@@ -416,7 +416,7 @@ const DocumentManager: React.FC<DocumentManagerProps> = ({
               </CardContent>
             </Card>
           </Grid>
-          <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6, md: 3 }}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <Card>
               <CardContent>
                 <Typography color="textSecondary" gutterBottom>
@@ -435,7 +435,7 @@ const DocumentManager: React.FC<DocumentManagerProps> = ({
       <Card sx={{ mb: 3 }}>
         <CardContent>
           <Grid container spacing={2} alignItems="center">
-            <Grid {...({ item: true } as any)} size={{ xs: 12, md: 4 }}>
+            <Grid size={{ xs: 12, md: 4 }}>
               <TextField
                 fullWidth
                 placeholder="Search documents..."
@@ -448,7 +448,7 @@ const DocumentManager: React.FC<DocumentManagerProps> = ({
               />
             </Grid>
             
-            <Grid {...({ item: true } as any)} size={{ xs: 12, md: 3 }}>
+            <Grid size={{ xs: 12, md: 3 }}>
               <FormControl fullWidth>
                 <InputLabel>Document Type</InputLabel>
                 <Select
@@ -466,7 +466,7 @@ const DocumentManager: React.FC<DocumentManagerProps> = ({
               </FormControl>
             </Grid>
             
-            <Grid {...({ item: true } as any)} size={{ xs: 12, md: 3 }}>
+            <Grid size={{ xs: 12, md: 3 }}>
               <FormControl fullWidth>
                 <InputLabel>Access Level</InputLabel>
                 <Select
@@ -483,7 +483,7 @@ const DocumentManager: React.FC<DocumentManagerProps> = ({
               </FormControl>
             </Grid>
             
-            <Grid {...({ item: true } as any)} size={{ xs: 12, md: 2 }}>
+            <Grid size={{ xs: 12, md: 2 }}>
               <Button
                 fullWidth
                 variant="contained"
@@ -534,12 +534,12 @@ const DocumentManager: React.FC<DocumentManagerProps> = ({
                       <Chip 
                         label={document.status} 
                         size="small" 
-                        color={getStatusColor(document.status) as any}
+                        color={getStatusColor(document.status)}
                       />
                       <Chip 
                         label={document.access_level} 
                         size="small" 
-                        color={getAccessLevelColor(document.access_level) as any}
+                        color={getAccessLevelColor(document.access_level)}
                         variant="outlined"
                       />
                     </Box>

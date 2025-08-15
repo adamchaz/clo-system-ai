@@ -263,7 +263,7 @@ const TestRunner: React.FC = () => {
                       </Typography>
                       <Chip 
                         label={test.status} 
-                        color={getStatusColor(test.status) as any} 
+                        color={getStatusColor(test.status)} 
                         size="small" 
                       />
                     </Box>

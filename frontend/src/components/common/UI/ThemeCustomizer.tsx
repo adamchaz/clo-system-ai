@@ -68,7 +68,7 @@ import {
 import { HexColorPicker, HexColorInput } from 'react-colorful';
 import { useLocalStorage } from 'react-use';
 import { motion, AnimatePresence } from 'framer-motion';
-import { fadeVariants, staggerContainer, staggerItem } from '../Animations/variants';
+import { fadeVariants, staggerContainer, staggerItem, scaleVariants } from '../Animations/variants';
 
 // Theme configuration interface
 export interface CustomThemeConfig {
@@ -711,7 +711,7 @@ const ThemeCustomizer: React.FC<ThemeCustomizerProps> = ({
               <Typography variant="subtitle1" gutterBottom>Built-in Presets</Typography>
               <Grid container spacing={2}>
                 {themePresets.map((preset) => (
-                  <Grid {...({ item: true } as any)} size={12} key={preset.id}>
+                  <Grid size={12} key={preset.id}>
                     <motion.div variants={staggerItem}>
                       <Card>
                         <CardContent sx={{ pb: 1 }}>
@@ -769,7 +769,7 @@ const ThemeCustomizer: React.FC<ThemeCustomizerProps> = ({
                   </Typography>
                   <Grid container spacing={2}>
                     {savedThemes.map((savedTheme) => (
-                      <Grid {...({ item: true } as any)} size={12} key={savedTheme.id}>
+                      <Grid size={12} key={savedTheme.id}>
                         <motion.div variants={staggerItem}>
                           <Card>
                             <CardContent sx={{ pb: 1 }}>
@@ -829,13 +829,14 @@ const ThemeCustomizer: React.FC<ThemeCustomizerProps> = ({
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
+              cursor: 'pointer',
             }}
-            onClick={() => setActiveColorPicker(null)}
+            onTap={() => setActiveColorPicker(null)}
           >
-            <motion.div
-              variants={scaleVariants}
-              onClick={(e) => e.stopPropagation()}
-            >
+            <div onClick={(e) => e.stopPropagation()}>
+              <motion.div
+                variants={scaleVariants}
+              >
               <Paper elevation={8} sx={{ p: 3 }}>
                 <HexColorPicker
                   color={colorPickerValue}
@@ -869,7 +870,8 @@ const ThemeCustomizer: React.FC<ThemeCustomizerProps> = ({
                   </Button>
                 </Box>
               </Paper>
-            </motion.div>
+              </motion.div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

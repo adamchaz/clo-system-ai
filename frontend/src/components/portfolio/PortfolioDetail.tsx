@@ -297,7 +297,7 @@ const PortfolioDetail: React.FC<PortfolioDetailProps> = ({
 
       {/* Key Metrics */}
       <Grid container spacing={3} sx={{ mb: 4 }}>
-        <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6, md: 3 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <Card>
             <CardContent>
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
@@ -316,7 +316,7 @@ const PortfolioDetail: React.FC<PortfolioDetailProps> = ({
           </Card>
         </Grid>
 
-        <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6, md: 3 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <Card>
             <CardContent>
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
@@ -335,7 +335,7 @@ const PortfolioDetail: React.FC<PortfolioDetailProps> = ({
           </Card>
         </Grid>
 
-        <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6, md: 3 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <Card>
             <CardContent>
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
@@ -354,7 +354,7 @@ const PortfolioDetail: React.FC<PortfolioDetailProps> = ({
           </Card>
         </Grid>
 
-        <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6, md: 3 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <Card>
             <CardContent>
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
@@ -389,7 +389,7 @@ const PortfolioDetail: React.FC<PortfolioDetailProps> = ({
       <TabPanel value={currentTab} index={0}>
         {/* Overview Tab */}
         <Grid container spacing={3}>
-          <Grid {...({ item: true } as any)} size={{ xs: 12, md: 6 }}>
+          <Grid size={{ xs: 12, md: 6 }}>
             <Card>
               <CardContent>
                 <Typography variant="h6" gutterBottom>
@@ -447,7 +447,7 @@ const PortfolioDetail: React.FC<PortfolioDetailProps> = ({
             </Card>
           </Grid>
 
-          <Grid {...({ item: true } as any)} size={{ xs: 12, md: 6 }}>
+          <Grid size={{ xs: 12, md: 6 }}>
             <Card>
               <CardContent>
                 <Typography variant="h6" gutterBottom>
@@ -517,7 +517,7 @@ const PortfolioDetail: React.FC<PortfolioDetailProps> = ({
       <TabPanel value={currentTab} index={2}>
         {/* Risk Analysis Tab */}
         <Grid container spacing={3}>
-          <Grid {...({ item: true } as any)} size={{ xs: 12, md: 8 }}>
+          <Grid size={{ xs: 12, md: 8 }}>
             <Card>
               <CardContent>
                 <Typography variant="h6" gutterBottom>
@@ -585,7 +585,7 @@ const PortfolioDetail: React.FC<PortfolioDetailProps> = ({
             </Card>
           </Grid>
 
-          <Grid {...({ item: true } as any)} size={{ xs: 12, md: 4 }}>
+          <Grid size={{ xs: 12, md: 4 }}>
             <Card>
               <CardContent>
                 <Typography variant="h6" gutterBottom>
@@ -676,7 +676,7 @@ const PortfolioDetail: React.FC<PortfolioDetailProps> = ({
             </Typography>
             {summary?.compliance_status ? (
               <Grid container spacing={3}>
-                <Grid {...({ item: true } as any)} size={{ xs: 12, md: 6 }}>
+                <Grid size={{ xs: 12, md: 6 }}>
                   <Typography variant="subtitle2" gutterBottom>
                     Failed Tests
                   </Typography>
@@ -696,7 +696,7 @@ const PortfolioDetail: React.FC<PortfolioDetailProps> = ({
                   )}
                 </Grid>
 
-                <Grid {...({ item: true } as any)} size={{ xs: 12, md: 6 }}>
+                <Grid size={{ xs: 12, md: 6 }}>
                   <Typography variant="subtitle2" gutterBottom>
                     Warnings
                   </Typography>

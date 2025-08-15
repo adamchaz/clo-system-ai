@@ -34,8 +34,6 @@ import { parseISO } from 'date-fns';
 import { useCloApi } from '../../hooks/useCloApi';
 import { useAuth } from '../../hooks/useAuth';
 
-// Fix for Grid item prop typing in MUI v7
-const GridComponent: any = Grid;
 
 // Types
 interface Asset {
@@ -365,10 +363,9 @@ const AssetEditForm: React.FC<AssetEditFormProps> = ({
     try {
       // Detect changed fields only
       const changedFields: Partial<AssetEditData> = {};
-      Object.keys(values).forEach(key => {
-        const fieldKey = key as keyof AssetEditData;
-        if (JSON.stringify(values[fieldKey]) !== JSON.stringify(initialValues[fieldKey])) {
-          changedFields[fieldKey] = values[fieldKey] as any;
+      (Object.keys(values) as Array<keyof AssetEditData>).forEach(key => {
+        if (JSON.stringify(values[key]) !== JSON.stringify(initialValues[key])) {
+          (changedFields as any)[key] = values[key];
         }
       });
 
@@ -536,15 +533,15 @@ const AssetEditForm: React.FC<AssetEditFormProps> = ({
               </Alert>
             )}
 
-            <GridComponent container spacing={3}>
+            <Grid container spacing={3}>
               {/* Basic Information */}
-              <GridComponent item size={12}>
+              <Grid size={12}>
                 <Paper variant="outlined" sx={{ p: 3 }}>
                   <Typography variant="h6" gutterBottom>
                     Basic Information
                   </Typography>
-                  <GridComponent container spacing={2}>
-                    <GridComponent item size={{ xs: 12, md: 6 }}>
+                  <Grid container spacing={2}>
+                    <Grid size={{ xs: 12, md: 6 }}>
                       <Field name="cusip">
                         {({ field, meta }: any) => 
                           renderField('cusip', field, meta,
@@ -558,8 +555,8 @@ const AssetEditForm: React.FC<AssetEditFormProps> = ({
                           )
                         }
                       </Field>
-                    </GridComponent>
-                    <GridComponent item size={{ xs: 12, md: 6 }}>
+                    </Grid>
+                    <Grid size={{ xs: 12, md: 6 }}>
                       <Field name="issuer">
                         {({ field, meta }: any) =>
                           renderField('issuer', field, meta,
@@ -573,8 +570,8 @@ const AssetEditForm: React.FC<AssetEditFormProps> = ({
                           )
                         }
                       </Field>
-                    </GridComponent>
-                    <GridComponent item size={12}>
+                    </Grid>
+                    <Grid size={12}>
                       <Field name="asset_description">
                         {({ field, meta }: any) =>
                           renderField('asset_description', field, meta,
@@ -590,8 +587,8 @@ const AssetEditForm: React.FC<AssetEditFormProps> = ({
                           )
                         }
                       </Field>
-                    </GridComponent>
-                    <GridComponent item size={{ xs: 12, md: 4 }}>
+                    </Grid>
+                    <Grid size={{ xs: 12, md: 4 }}>
                       <Field name="asset_type">
                         {({ field, meta }: any) => (
                           <FormControl fullWidth disabled={!fieldPermissions.asset_type?.editable}>
@@ -606,8 +603,8 @@ const AssetEditForm: React.FC<AssetEditFormProps> = ({
                           </FormControl>
                         )}
                       </Field>
-                    </GridComponent>
-                    <GridComponent item size={{ xs: 12, md: 4 }}>
+                    </Grid>
+                    <Grid size={{ xs: 12, md: 4 }}>
                       <Field name="industry">
                         {({ field, meta }: any) => (
                           <FormControl fullWidth disabled={!fieldPermissions.industry?.editable}>
@@ -622,8 +619,8 @@ const AssetEditForm: React.FC<AssetEditFormProps> = ({
                           </FormControl>
                         )}
                       </Field>
-                    </GridComponent>
-                    <GridComponent item size={{ xs: 12, md: 4 }}>
+                    </Grid>
+                    <Grid size={{ xs: 12, md: 4 }}>
                       <Field name="status">
                         {({ field, meta }: any) => (
                           <FormControl fullWidth disabled={!fieldPermissions.status?.editable}>
@@ -638,19 +635,19 @@ const AssetEditForm: React.FC<AssetEditFormProps> = ({
                           </FormControl>
                         )}
                       </Field>
-                    </GridComponent>
-                  </GridComponent>
+                    </Grid>
+                  </Grid>
                 </Paper>
-              </GridComponent>
+              </Grid>
 
               {/* Financial Details */}
-              <GridComponent item size={12}>
+              <Grid size={12}>
                 <Paper variant="outlined" sx={{ p: 3 }}>
                   <Typography variant="h6" gutterBottom>
                     Financial Details
                   </Typography>
-                  <GridComponent container spacing={2}>
-                    <GridComponent item size={{ xs: 12, md: 4 }}>
+                  <Grid container spacing={2}>
+                    <Grid size={{ xs: 12, md: 4 }}>
                       <Field name="current_price">
                         {({ field, meta }: any) =>
                           renderField('current_price', field, meta,
@@ -668,8 +665,8 @@ const AssetEditForm: React.FC<AssetEditFormProps> = ({
                           )
                         }
                       </Field>
-                    </GridComponent>
-                    <GridComponent item size={{ xs: 12, md: 4 }}>
+                    </Grid>
+                    <Grid size={{ xs: 12, md: 4 }}>
                       <Field name="current_balance">
                         {({ field, meta }: any) =>
                           renderField('current_balance', field, meta,
@@ -687,8 +684,8 @@ const AssetEditForm: React.FC<AssetEditFormProps> = ({
                           )
                         }
                       </Field>
-                    </GridComponent>
-                    <GridComponent item size={{ xs: 12, md: 4 }}>
+                    </Grid>
+                    <Grid size={{ xs: 12, md: 4 }}>
                       <Field name="par_amount">
                         {({ field, meta }: any) =>
                           renderField('par_amount', field, meta,
@@ -706,8 +703,8 @@ const AssetEditForm: React.FC<AssetEditFormProps> = ({
                           )
                         }
                       </Field>
-                    </GridComponent>
-                    <GridComponent item size={{ xs: 12, md: 4 }}>
+                    </Grid>
+                    <Grid size={{ xs: 12, md: 4 }}>
                       <Field name="coupon_rate">
                         {({ field, meta }: any) =>
                           renderField('coupon_rate', field, meta,
@@ -725,8 +722,8 @@ const AssetEditForm: React.FC<AssetEditFormProps> = ({
                           )
                         }
                       </Field>
-                    </GridComponent>
-                    <GridComponent item size={{ xs: 12, md: 4 }}>
+                    </Grid>
+                    <Grid size={{ xs: 12, md: 4 }}>
                       <Field name="spread">
                         {({ field, meta }: any) =>
                           renderField('spread', field, meta,
@@ -744,8 +741,8 @@ const AssetEditForm: React.FC<AssetEditFormProps> = ({
                           )
                         }
                       </Field>
-                    </GridComponent>
-                    <GridComponent item size={{ xs: 12, md: 4 }}>
+                    </Grid>
+                    <Grid size={{ xs: 12, md: 4 }}>
                       <Field name="yield_to_maturity">
                         {({ field, meta }: any) =>
                           renderField('yield_to_maturity', field, meta,
@@ -763,19 +760,19 @@ const AssetEditForm: React.FC<AssetEditFormProps> = ({
                           )
                         }
                       </Field>
-                    </GridComponent>
-                  </GridComponent>
+                    </Grid>
+                  </Grid>
                 </Paper>
-              </GridComponent>
+              </Grid>
 
               {/* Risk Metrics */}
-              <GridComponent item size={12}>
+              <Grid size={12}>
                 <Paper variant="outlined" sx={{ p: 3 }}>
                   <Typography variant="h6" gutterBottom>
                     Risk Metrics
                   </Typography>
-                  <GridComponent container spacing={2}>
-                    <GridComponent item size={{ xs: 12, md: 4 }}>
+                  <Grid container spacing={2}>
+                    <Grid size={{ xs: 12, md: 4 }}>
                       <Field name="current_rating">
                         {({ field, meta }: any) => (
                           <FormControl fullWidth disabled={!fieldPermissions.current_rating?.editable}>
@@ -790,8 +787,8 @@ const AssetEditForm: React.FC<AssetEditFormProps> = ({
                           </FormControl>
                         )}
                       </Field>
-                    </GridComponent>
-                    <GridComponent item size={{ xs: 12, md: 4 }}>
+                    </Grid>
+                    <Grid size={{ xs: 12, md: 4 }}>
                       <Field name="default_probability">
                         {({ field, meta }: any) =>
                           renderField('default_probability', field, meta,
@@ -809,8 +806,8 @@ const AssetEditForm: React.FC<AssetEditFormProps> = ({
                           )
                         }
                       </Field>
-                    </GridComponent>
-                    <GridComponent item size={{ xs: 12, md: 4 }}>
+                    </Grid>
+                    <Grid size={{ xs: 12, md: 4 }}>
                       <Field name="recovery_rate">
                         {({ field, meta }: any) =>
                           renderField('recovery_rate', field, meta,
@@ -828,11 +825,11 @@ const AssetEditForm: React.FC<AssetEditFormProps> = ({
                           )
                         }
                       </Field>
-                    </GridComponent>
-                  </GridComponent>
+                    </Grid>
+                  </Grid>
                 </Paper>
-              </GridComponent>
-            </GridComponent>
+              </Grid>
+            </Grid>
 
             {/* Action Buttons */}
             <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 3 }}>

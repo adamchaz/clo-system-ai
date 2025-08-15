@@ -336,7 +336,7 @@ const RiskDashboard: React.FC = () => {
 
       {/* Risk Overview Metrics */}
       <Grid container spacing={3} sx={{ mb: 4 }}>
-        <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6, md: 3 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <RiskMetricCard
             title="Overall Risk Score"
             value={aggregateMetrics?.riskScore.toFixed(1) || '0.0'}
@@ -346,7 +346,7 @@ const RiskDashboard: React.FC = () => {
           />
         </Grid>
         
-        <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6, md: 3 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <RiskMetricCard
             title="VaR (95%)"
             value="$2.3M"
@@ -357,7 +357,7 @@ const RiskDashboard: React.FC = () => {
           />
         </Grid>
         
-        <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6, md: 3 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <RiskMetricCard
             title="Stress Test Results"
             value={`${aggregateMetrics?.stressTestPassed || 0}/${aggregateMetrics?.stressTestTotal || 0}`}
@@ -367,7 +367,7 @@ const RiskDashboard: React.FC = () => {
           />
         </Grid>
         
-        <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6, md: 3 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <RiskMetricCard
             title="Portfolio Correlation"
             value="0.73"
@@ -394,7 +394,7 @@ const RiskDashboard: React.FC = () => {
       <TabPanel value={currentTab} index={0}>
         {/* Portfolio Risk Tab */}
         <Grid container spacing={3}>
-          <Grid {...({ item: true } as any)} size={{ xs: 12, lg: 8 }}>
+          <Grid size={{ xs: 12, lg: 8 }}>
             <Card>
               <CardContent>
                 <Typography variant="h6" gutterBottom>
@@ -490,7 +490,7 @@ const RiskDashboard: React.FC = () => {
             </Card>
           </Grid>
 
-          <Grid {...({ item: true } as any)} size={{ xs: 12, lg: 4 }}>
+          <Grid size={{ xs: 12, lg: 4 }}>
             <Card>
               <CardContent>
                 <Typography variant="h6" gutterBottom>
@@ -552,7 +552,7 @@ const RiskDashboard: React.FC = () => {
       <TabPanel value={currentTab} index={1}>
         {/* Compliance Tab */}
         <Grid container spacing={3}>
-          <Grid {...({ item: true } as any)} size={{ xs: 12, md: 6 }}>
+          <Grid size={{ xs: 12, md: 6 }}>
             <Card>
               <CardContent>
                 <Typography variant="h6" gutterBottom>
@@ -619,7 +619,7 @@ const RiskDashboard: React.FC = () => {
             </Card>
           </Grid>
 
-          <Grid {...({ item: true } as any)} size={{ xs: 12, md: 6 }}>
+          <Grid size={{ xs: 12, md: 6 }}>
             <Card>
               <CardContent>
                 <Typography variant="h6" gutterBottom>

@@ -232,7 +232,7 @@ const PerformanceAnalyzer: React.FC<PerformanceAnalyzerProps> = ({ portfolioId }
           </Typography>
 
           <Grid container spacing={3}>
-            <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6, md: 3 }}>
+            <Grid size={{ xs: 12, sm: 6, md: 3 }}>
               <FormControl fullWidth>
                 <InputLabel>Analysis Period</InputLabel>
                 <Select
@@ -249,7 +249,7 @@ const PerformanceAnalyzer: React.FC<PerformanceAnalyzerProps> = ({ portfolioId }
               </FormControl>
             </Grid>
 
-            <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6, md: 3 }}>
+            <Grid size={{ xs: 12, sm: 6, md: 3 }}>
               <FormControl fullWidth>
                 <InputLabel>Benchmark</InputLabel>
                 <Select
@@ -268,7 +268,7 @@ const PerformanceAnalyzer: React.FC<PerformanceAnalyzerProps> = ({ portfolioId }
 
             {analysisPeriod === 'CUSTOM' && (
               <>
-                <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6, md: 3 }}>
+                <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                   <TextField
                     label="Start Date"
                     type="date"
@@ -279,7 +279,7 @@ const PerformanceAnalyzer: React.FC<PerformanceAnalyzerProps> = ({ portfolioId }
                   />
                 </Grid>
                 
-                <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6, md: 3 }}>
+                <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                   <TextField
                     label="End Date"
                     type="date"
@@ -292,7 +292,7 @@ const PerformanceAnalyzer: React.FC<PerformanceAnalyzerProps> = ({ portfolioId }
               </>
             )}
 
-            <Grid {...({ item: true } as any)} size={12}>
+            <Grid size={12}>
               <Stack direction="row" spacing={3} flexWrap="wrap">
                 <FormControlLabel
                   control={
@@ -364,7 +364,7 @@ const PerformanceAnalyzer: React.FC<PerformanceAnalyzerProps> = ({ portfolioId }
         {/* Summary Tab */}
         <TabPanel value={currentTab} index={0}>
           <Grid container spacing={3}>
-            <Grid {...({ item: true } as any)} size={{ xs: 12, md: 6 }}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <Typography variant="h6" gutterBottom>
                 Performance Summary
               </Typography>
@@ -413,7 +413,7 @@ const PerformanceAnalyzer: React.FC<PerformanceAnalyzerProps> = ({ portfolioId }
               </TableContainer>
             </Grid>
 
-            <Grid {...({ item: true } as any)} size={{ xs: 12, md: 6 }}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <Typography variant="h6" gutterBottom>
                 Benchmark Comparison
               </Typography>
@@ -513,7 +513,7 @@ const PerformanceAnalyzer: React.FC<PerformanceAnalyzerProps> = ({ portfolioId }
         {/* Attribution Tab */}
         <TabPanel value={currentTab} index={2}>
           <Grid container spacing={3}>
-            <Grid {...({ item: true } as any)} size={{ xs: 12, md: 6 }}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <Typography variant="h6" gutterBottom>
                 Sector Attribution
               </Typography>
@@ -531,7 +531,7 @@ const PerformanceAnalyzer: React.FC<PerformanceAnalyzerProps> = ({ portfolioId }
               </Box>
             </Grid>
 
-            <Grid {...({ item: true } as any)} size={{ xs: 12, md: 6 }}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <Typography variant="h6" gutterBottom>
                 Sector Weights
               </Typography>
@@ -559,7 +559,7 @@ const PerformanceAnalyzer: React.FC<PerformanceAnalyzerProps> = ({ portfolioId }
               </Box>
             </Grid>
 
-            <Grid {...({ item: true } as any)} size={12}>
+            <Grid size={12}>
               <Typography variant="h6" gutterBottom>
                 Attribution Summary
               </Typography>
@@ -608,7 +608,7 @@ const PerformanceAnalyzer: React.FC<PerformanceAnalyzerProps> = ({ portfolioId }
         {/* Risk Metrics Tab */}
         <TabPanel value={currentTab} index={3}>
           <Grid container spacing={3}>
-            <Grid {...({ item: true } as any)} size={{ xs: 12, md: 6 }}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <Typography variant="h6" gutterBottom>
                 Risk-Adjusted Returns
               </Typography>
@@ -649,7 +649,7 @@ const PerformanceAnalyzer: React.FC<PerformanceAnalyzerProps> = ({ portfolioId }
               </List>
             </Grid>
 
-            <Grid {...({ item: true } as any)} size={{ xs: 12, md: 6 }}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <Typography variant="h6" gutterBottom>
                 Risk Measures
               </Typography>

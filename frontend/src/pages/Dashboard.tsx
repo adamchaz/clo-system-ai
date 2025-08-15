@@ -103,7 +103,7 @@ const Dashboard: React.FC = () => {
   const theme = useTheme();
 
   const getWelcomeMessage = () => {
-    const role = user?.roles?.[0]?.name || (user as any)?.role || 'viewer';
+    const role = user?.roles?.[0]?.name || user?.role || 'viewer';
     const timeOfDay = new Date().getHours();
     const greeting = timeOfDay < 12 ? 'Good morning' : timeOfDay < 18 ? 'Good afternoon' : 'Good evening';
     
@@ -125,7 +125,7 @@ const Dashboard: React.FC = () => {
   };
 
   const getRoleSpecificMetrics = () => {
-    const role = user?.roles?.[0]?.name || (user as any)?.role || 'viewer';
+    const role = user?.roles?.[0]?.name || user?.role || 'viewer';
     
     switch (role) {
       case 'system_admin':
@@ -275,7 +275,7 @@ const Dashboard: React.FC = () => {
             mb: 1,
           }}
         >
-          Welcome back, {user?.firstName || (user as any)?.full_name?.split(' ')[0] || 'User'}!
+          Welcome back, {user?.firstName || user?.full_name?.split(' ')[0] || 'User'}!
         </Typography>
         <Typography
           variant="body1"
@@ -302,7 +302,7 @@ const Dashboard: React.FC = () => {
       {/* Key Metrics Grid */}
       <Grid container spacing={3} sx={{ mb: 4 }}>
         {getRoleSpecificMetrics().map((metric, index) => (
-          <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6, md: 3 }} key={index}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }} key={index}>
             <MetricCard {...metric} />
           </Grid>
         ))}
@@ -310,7 +310,7 @@ const Dashboard: React.FC = () => {
 
       {/* Quick Actions or Charts Area */}
       <Grid container spacing={3}>
-        <Grid {...({ item: true } as any)} size={{ xs: 12, lg: 8 }}>
+        <Grid size={{ xs: 12, lg: 8 }}>
           <Paper
             sx={{
               p: 3,
@@ -336,7 +336,7 @@ const Dashboard: React.FC = () => {
           </Paper>
         </Grid>
         
-        <Grid {...({ item: true } as any)} size={{ xs: 12, lg: 4 }}>
+        <Grid size={{ xs: 12, lg: 4 }}>
           <Paper
             sx={{
               p: 3,

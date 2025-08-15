@@ -63,7 +63,16 @@
       "Bash(timeout 120 npm run build)",
       "Bash(SET TSC_COMPILE_ON_ERROR=true)",
       "Bash(net start:*)",
-      "Bash(npm run type-check:*)"
+      "Bash(npm run type-check:*)",
+      "Bash(cat:*)",
+      "Bash(git rm:*)",
+      "WebSearch",
+      "WebFetch(domain:mui.com)",
+      "Bash(for dir in reporting documents common admin testing)",
+      "Bash(do echo \"=== $dir components ===\")",
+      "Bash(echo \"Directory $dir not found\")",
+      "Bash(scriptsstart-dev.bat)",
+      "Bash(npm uninstall:*)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits"

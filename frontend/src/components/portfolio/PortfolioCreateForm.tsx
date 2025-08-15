@@ -189,14 +189,14 @@ const PortfolioCreateForm: React.FC<PortfolioCreateFormProps> = ({
       case 0: // Basic Information
         return (
           <Grid container spacing={3}>
-            <Grid {...({ item: true } as any)} size={12}>
+            <Grid size={12}>
               <Typography variant="h6" gutterBottom color="primary">
                 <AccountBalance sx={{ mr: 1, verticalAlign: 'middle' }} />
                 Portfolio Identity
               </Typography>
             </Grid>
             
-            <Grid {...({ item: true } as any)} size={12}>
+            <Grid size={12}>
               <TextField
                 fullWidth
                 label="Deal Name"
@@ -208,7 +208,7 @@ const PortfolioCreateForm: React.FC<PortfolioCreateFormProps> = ({
               />
             </Grid>
             
-            <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6 }}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 fullWidth
                 label="Manager"
@@ -220,7 +220,7 @@ const PortfolioCreateForm: React.FC<PortfolioCreateFormProps> = ({
               />
             </Grid>
             
-            <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6 }}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 fullWidth
                 label="Trustee"
@@ -232,7 +232,7 @@ const PortfolioCreateForm: React.FC<PortfolioCreateFormProps> = ({
               />
             </Grid>
             
-            <Grid {...({ item: true } as any)} size={12}>
+            <Grid size={12}>
               <TextField
                 fullWidth
                 multiline
@@ -250,14 +250,14 @@ const PortfolioCreateForm: React.FC<PortfolioCreateFormProps> = ({
       case 1: // Financial Details
         return (
           <Grid container spacing={3}>
-            <Grid {...({ item: true } as any)} size={12}>
+            <Grid size={12}>
               <Typography variant="h6" gutterBottom color="primary">
                 <AttachMoney sx={{ mr: 1, verticalAlign: 'middle' }} />
                 Financial Structure
               </Typography>
             </Grid>
             
-            <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6 }}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 fullWidth
                 label="Deal Size"
@@ -274,7 +274,7 @@ const PortfolioCreateForm: React.FC<PortfolioCreateFormProps> = ({
               />
             </Grid>
             
-            <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6 }}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <FormControl fullWidth>
                 <InputLabel>Currency</InputLabel>
                 <Select
@@ -290,7 +290,7 @@ const PortfolioCreateForm: React.FC<PortfolioCreateFormProps> = ({
               </FormControl>
             </Grid>
             
-            <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6 }}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 fullWidth
                 label="Minimum Denomination"
@@ -306,7 +306,7 @@ const PortfolioCreateForm: React.FC<PortfolioCreateFormProps> = ({
               />
             </Grid>
             
-            <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6 }}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <FormControl fullWidth>
                 <InputLabel>Payment Frequency</InputLabel>
                 <Select
@@ -322,7 +322,7 @@ const PortfolioCreateForm: React.FC<PortfolioCreateFormProps> = ({
               </FormControl>
             </Grid>
             
-            <Grid {...({ item: true } as any)} size={12}>
+            <Grid size={12}>
               <FormControl fullWidth>
                 <InputLabel>Collateral Type</InputLabel>
                 <Select
@@ -345,14 +345,14 @@ const PortfolioCreateForm: React.FC<PortfolioCreateFormProps> = ({
         return (
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <Grid container spacing={3}>
-              <Grid {...({ item: true } as any)} size={12}>
+              <Grid size={12}>
                 <Typography variant="h6" gutterBottom color="primary">
                   <CalendarToday sx={{ mr: 1, verticalAlign: 'middle' }} />
                   Timeline & Periods
                 </Typography>
               </Grid>
               
-              <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6 }}>
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <DatePicker
                   label="Effective Date"
                   value={formData.effectiveDate}
@@ -367,7 +367,7 @@ const PortfolioCreateForm: React.FC<PortfolioCreateFormProps> = ({
                 />
               </Grid>
               
-              <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6 }}>
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <DatePicker
                   label="Stated Maturity"
                   value={formData.statedMaturity}
@@ -382,11 +382,11 @@ const PortfolioCreateForm: React.FC<PortfolioCreateFormProps> = ({
                 />
               </Grid>
               
-              <Grid {...({ item: true } as any)} size={12}>
+              <Grid size={12}>
                 <Divider sx={{ my: 2 }} />
               </Grid>
               
-              <Grid {...({ item: true } as any)} size={12}>
+              <Grid size={12}>
                 <FormControlLabel
                   control={
                     <Switch
@@ -399,7 +399,7 @@ const PortfolioCreateForm: React.FC<PortfolioCreateFormProps> = ({
               </Grid>
               
               {formData.hasRevolvingPeriod && (
-                <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6 }}>
+                <Grid size={{ xs: 12, sm: 6 }}>
                   <DatePicker
                     label="Revolving Period End"
                     value={formData.revolvingPeriodEnd}
@@ -415,7 +415,7 @@ const PortfolioCreateForm: React.FC<PortfolioCreateFormProps> = ({
                 </Grid>
               )}
               
-              <Grid {...({ item: true } as any)} size={12}>
+              <Grid size={12}>
                 <FormControlLabel
                   control={
                     <Switch
@@ -428,7 +428,7 @@ const PortfolioCreateForm: React.FC<PortfolioCreateFormProps> = ({
               </Grid>
               
               {formData.hasReinvestmentPeriod && (
-                <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6 }}>
+                <Grid size={{ xs: 12, sm: 6 }}>
                   <DatePicker
                     label="Reinvestment Period End"
                     value={formData.reinvestmentPeriodEnd}
@@ -450,14 +450,14 @@ const PortfolioCreateForm: React.FC<PortfolioCreateFormProps> = ({
       case 3: // Additional Details
         return (
           <Grid container spacing={3}>
-            <Grid {...({ item: true } as any)} size={12}>
+            <Grid size={12}>
               <Typography variant="h6" gutterBottom color="primary">
                 <Business sx={{ mr: 1, verticalAlign: 'middle' }} />
                 Legal & Regulatory
               </Typography>
             </Grid>
             
-            <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6 }}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <FormControl fullWidth>
                 <InputLabel>Rating Agency</InputLabel>
                 <Select
@@ -473,7 +473,7 @@ const PortfolioCreateForm: React.FC<PortfolioCreateFormProps> = ({
               </FormControl>
             </Grid>
             
-            <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6 }}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <FormControl fullWidth>
                 <InputLabel>Jurisdiction</InputLabel>
                 <Select
@@ -490,7 +490,7 @@ const PortfolioCreateForm: React.FC<PortfolioCreateFormProps> = ({
               </FormControl>
             </Grid>
             
-            <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6 }}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <FormControl fullWidth>
                 <InputLabel>Governing Law</InputLabel>
                 <Select

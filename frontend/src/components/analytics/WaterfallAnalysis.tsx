@@ -207,7 +207,7 @@ const WaterfallAnalysis: React.FC<WaterfallAnalysisProps> = ({
 
       {/* Controls */}
       <Grid container spacing={3} sx={{ mb: 4 }}>
-        <Grid {...({ item: true } as any)} size={{ xs: 12, md: 4 }}>
+        <Grid size={{ xs: 12, md: 4 }}>
           <FormControl fullWidth size="small">
             <InputLabel>Portfolio</InputLabel>
             <Select
@@ -225,7 +225,7 @@ const WaterfallAnalysis: React.FC<WaterfallAnalysisProps> = ({
           </FormControl>
         </Grid>
         
-        <Grid {...({ item: true } as any)} size={{ xs: 12, md: 4 }}>
+        <Grid size={{ xs: 12, md: 4 }}>
           <FormControl fullWidth size="small">
             <InputLabel>Waterfall Version</InputLabel>
             <Select
@@ -242,7 +242,7 @@ const WaterfallAnalysis: React.FC<WaterfallAnalysisProps> = ({
           </FormControl>
         </Grid>
         
-        <Grid {...({ item: true } as any)} size={{ xs: 12, md: 4 }}>
+        <Grid size={{ xs: 12, md: 4 }}>
           <TextField
             fullWidth
             size="small"
@@ -265,7 +265,7 @@ const WaterfallAnalysis: React.FC<WaterfallAnalysisProps> = ({
 
       {/* Summary Cards */}
       <Grid container spacing={3} sx={{ mb: 4 }}>
-        <Grid {...({ item: true } as any)} size={{ xs: 12, md: 3 }}>
+        <Grid size={{ xs: 12, md: 3 }}>
           <Card>
             <CardContent>
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
@@ -281,7 +281,7 @@ const WaterfallAnalysis: React.FC<WaterfallAnalysisProps> = ({
           </Card>
         </Grid>
         
-        <Grid {...({ item: true } as any)} size={{ xs: 12, md: 3 }}>
+        <Grid size={{ xs: 12, md: 3 }}>
           <Card>
             <CardContent>
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
@@ -297,7 +297,7 @@ const WaterfallAnalysis: React.FC<WaterfallAnalysisProps> = ({
           </Card>
         </Grid>
         
-        <Grid {...({ item: true } as any)} size={{ xs: 12, md: 3 }}>
+        <Grid size={{ xs: 12, md: 3 }}>
           <Card>
             <CardContent>
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
@@ -313,7 +313,7 @@ const WaterfallAnalysis: React.FC<WaterfallAnalysisProps> = ({
           </Card>
         </Grid>
         
-        <Grid {...({ item: true } as any)} size={{ xs: 12, md: 3 }}>
+        <Grid size={{ xs: 12, md: 3 }}>
           <Card>
             <CardContent>
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
@@ -401,7 +401,7 @@ const WaterfallAnalysis: React.FC<WaterfallAnalysisProps> = ({
                         <Chip
                           label={step.status}
                           size="small"
-                          color={getStepStatusColor(step.status) as any}
+                          color={getStepStatusColor(step.status)}
                           icon={
                             step.status === 'paid' ? <CheckCircle /> :
                             step.status === 'partial' ? <Warning /> : <Error />
@@ -478,7 +478,7 @@ const WaterfallAnalysis: React.FC<WaterfallAnalysisProps> = ({
                         <Chip
                           label={tranche.status}
                           size="small"
-                          color={getTrancheStatusColor(tranche.status) as any}
+                          color={getTrancheStatusColor(tranche.status)}
                         />
                       </TableCell>
                     </TableRow>
@@ -493,7 +493,7 @@ const WaterfallAnalysis: React.FC<WaterfallAnalysisProps> = ({
       <TabPanel value={currentTab} index={2}>
         {/* Scenario Comparison Tab */}
         <Grid container spacing={3}>
-          <Grid {...({ item: true } as any)} size={{ xs: 12, lg: 6 }}>
+          <Grid size={{ xs: 12, lg: 6 }}>
             <Card>
               <CardContent>
                 <Typography variant="h6" gutterBottom>
@@ -526,7 +526,7 @@ const WaterfallAnalysis: React.FC<WaterfallAnalysisProps> = ({
             </Card>
           </Grid>
 
-          <Grid {...({ item: true } as any)} size={{ xs: 12, lg: 6 }}>
+          <Grid size={{ xs: 12, lg: 6 }}>
             <Card>
               <CardContent>
                 <Typography variant="h6" gutterBottom>

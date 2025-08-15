@@ -235,7 +235,7 @@ const ReportDashboard: React.FC<ReportDashboardProps> = ({
       {/* Statistics Cards */}
       {reportStats && (
         <Grid container spacing={3} sx={{ mb: 3 }}>
-          <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6, md: 3 }}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <Card>
               <CardContent>
                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -261,7 +261,7 @@ const ReportDashboard: React.FC<ReportDashboardProps> = ({
             </Card>
           </Grid>
 
-          <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6, md: 3 }}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <Card>
               <CardContent>
                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -287,7 +287,7 @@ const ReportDashboard: React.FC<ReportDashboardProps> = ({
             </Card>
           </Grid>
 
-          <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6, md: 3 }}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <Card>
               <CardContent>
                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -313,7 +313,7 @@ const ReportDashboard: React.FC<ReportDashboardProps> = ({
             </Card>
           </Grid>
 
-          <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6, md: 3 }}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <Card>
               <CardContent>
                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -343,7 +343,7 @@ const ReportDashboard: React.FC<ReportDashboardProps> = ({
 
       <Grid container spacing={3}>
         {/* Recent Reports & Active Generation */}
-        <Grid {...({ item: true } as any)} size={{ xs: 12, lg: 8 }}>
+        <Grid size={{ xs: 12, lg: 8 }}>
           <Card sx={{ height: '100%' }}>
             <CardContent>
               <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 2 }}>
@@ -495,7 +495,7 @@ const ReportDashboard: React.FC<ReportDashboardProps> = ({
                 
                 <Grid container spacing={2}>
                   {templates.slice(0, 6).map((template) => (
-                    <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6 }} key={template.template_id}>
+                    <Grid size={{ xs: 12, sm: 6 }} key={template.template_id}>
                       <Card 
                         variant="outlined"
                         sx={{ 
@@ -536,7 +536,7 @@ const ReportDashboard: React.FC<ReportDashboardProps> = ({
         </Grid>
 
         {/* Quick Actions & System Status */}
-        <Grid {...({ item: true } as any)} size={{ xs: 12, lg: 4 }}>
+        <Grid size={{ xs: 12, lg: 4 }}>
           <Stack spacing={3}>
             {/* Quick Actions */}
             <Card>

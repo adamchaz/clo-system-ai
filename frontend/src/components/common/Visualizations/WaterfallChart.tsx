@@ -388,7 +388,10 @@ const WaterfallChart: React.FC<WaterfallChartProps> = ({
       .attr('dx', '-.8em')
       .attr('dy', '.15em')
       .attr('transform', 'rotate(-45)')
-      .text(d => waterfallSteps.find(s => s.id === d)?.name || d);
+      .text(d => {
+        const step = waterfallSteps.find(s => s.id === (d as string));
+        return step?.name || (d as string);
+      });
 
     g.append('g')
       .attr('class', 'y-axis')
@@ -541,7 +544,7 @@ const WaterfallChart: React.FC<WaterfallChartProps> = ({
           <MetricCard
             title="Remaining Cash"
             value={formatValue(remainingCash)}
-            trend={remainingCash > 0 ? "up" : "neutral"}
+            trend={remainingCash > 0 ? "up" : "flat"}
             icon={<ShowChartIcon />}
             color={remainingCash > 0 ? "warning" : "info"}
           />
@@ -647,11 +650,11 @@ const WaterfallChart: React.FC<WaterfallChartProps> = ({
         )}
       </Grid>
 
-      {enableRealTime && (calculationProgress?.waterfallProgress || portfolioData) && (
+      {enableRealTime && (calculationProgress?.length || portfolioData) && (
         <Typography variant="caption" color="textSecondary" sx={{ mt: 2, display: 'block' }}>
           Last updated: {new Date().toLocaleTimeString()} (Real-time) |
-          {calculationProgress?.waterfallProgress && 
-            ` Calculation Progress: ${calculationProgress.waterfallProgress.percentage}%`
+          {calculationProgress?.find(p => p.type === 'waterfall') && 
+            ` Calculation Progress: ${(calculationProgress.find(p => p.type === 'waterfall') as any)?.percentage || 0}%`
           }
         </Typography>
       )}

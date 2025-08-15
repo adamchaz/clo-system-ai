@@ -295,7 +295,7 @@ const SystemHealth: React.FC = () => {
       </Typography>
       
       <Grid container spacing={3} sx={{ mb: 4 }}>
-        <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6, md: 3 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <HealthMetricCard
             title="CPU Usage"
             value={statsData?.cpuUsage || 0}
@@ -305,7 +305,7 @@ const SystemHealth: React.FC = () => {
           />
         </Grid>
         
-        <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6, md: 3 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <HealthMetricCard
             title="Memory Usage"
             value={statsData?.memoryUsage || 0}
@@ -315,7 +315,7 @@ const SystemHealth: React.FC = () => {
           />
         </Grid>
         
-        <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6, md: 3 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <HealthMetricCard
             title="Disk Usage"
             value={statsData?.diskUsage || 0}
@@ -325,7 +325,7 @@ const SystemHealth: React.FC = () => {
           />
         </Grid>
         
-        <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6, md: 3 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <Card>
             <CardContent>
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
@@ -417,7 +417,7 @@ const SystemHealth: React.FC = () => {
           </Typography>
           
           <Grid container spacing={3}>
-            <Grid {...({ item: true } as any)} size={{ xs: 12, md: 6 }}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <Card>
                 <CardContent>
                   <Typography variant="h6" gutterBottom>
@@ -444,7 +444,7 @@ const SystemHealth: React.FC = () => {
               </Card>
             </Grid>
             
-            <Grid {...({ item: true } as any)} size={{ xs: 12, md: 6 }}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <Card>
                 <CardContent>
                   <Typography variant="h6" gutterBottom>

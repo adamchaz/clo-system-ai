@@ -203,7 +203,7 @@ const TopBar: React.FC<TopBarProps> = ({ onMenuClick, sidebarOpen }) => {
                 color="text.secondary"
                 sx={{ lineHeight: 1.2 }}
               >
-                {user.roles?.[0]?.displayName || (user as any).role || 'User'}
+                {user.roles?.[0]?.displayName || 'User'}
               </Typography>
             </Box>
           )}

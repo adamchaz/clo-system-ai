@@ -335,10 +335,10 @@ const UserPermissionsManager: React.FC<UserPermissionsManagerProps> = ({ userId 
 
   const getUserRoleInfo = (role: UserRoleType) => {
     const roleConfig = {
-      admin: { icon: <AdminPanelSettings />, color: 'error' },
-      manager: { icon: <SupervisorAccount />, color: 'primary' },
-      analyst: { icon: <Analytics />, color: 'info' },
-      viewer: { icon: <Visibility />, color: 'default' },
+      admin: { icon: <AdminPanelSettings />, color: 'error' as const },
+      manager: { icon: <SupervisorAccount />, color: 'primary' as const },
+      analyst: { icon: <Analytics />, color: 'info' as const },
+      viewer: { icon: <Visibility />, color: 'default' as const },
     };
     return roleConfig[role] || roleConfig.viewer;
   };
@@ -387,7 +387,7 @@ const UserPermissionsManager: React.FC<UserPermissionsManagerProps> = ({ userId 
 
       <Grid container spacing={3}>
         {/* User Selection Panel */}
-        <Grid {...({ item: true } as any)} size={{ xs: 12, md: 4 }}>
+        <Grid size={{ xs: 12, md: 4 }}>
           <Card>
             <CardContent>
               <Typography variant="h6" gutterBottom>
@@ -419,7 +419,7 @@ const UserPermissionsManager: React.FC<UserPermissionsManagerProps> = ({ userId 
                             icon={getUserRoleInfo(user.role).icon}
                             label={user.role.replace('_', ' ')}
                             size="small"
-                            color={getUserRoleInfo(user.role).color as any}
+                            color={getUserRoleInfo(user.role).color}
                             sx={{ mt: 0.5 }}
                           />
                         </Box>
@@ -446,7 +446,7 @@ const UserPermissionsManager: React.FC<UserPermissionsManagerProps> = ({ userId 
         </Grid>
 
         {/* Permissions Management Panel */}
-        <Grid {...({ item: true } as any)} size={{ xs: 12, md: 8 }}>
+        <Grid size={{ xs: 12, md: 8 }}>
           {selectedUser ? (
             <Card>
               <CardContent>
@@ -549,7 +549,7 @@ const UserPermissionsManager: React.FC<UserPermissionsManagerProps> = ({ userId 
           
           <Grid container spacing={2} sx={{ mt: 1 }}>
             {Object.entries(RolePermissionPresets).map(([role, preset]) => (
-              <Grid {...({ item: true } as any)} size={12} key={role}>
+              <Grid size={12} key={role}>
                 <Card 
                   sx={{ cursor: 'pointer', '&:hover': { bgcolor: 'action.hover' } }}
                   onClick={() => {

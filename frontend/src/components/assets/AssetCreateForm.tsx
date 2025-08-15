@@ -8,7 +8,7 @@
  * - Date picker integration and file upload support
  * 
  * Part of CLO Management System - Task 3 Complete
- * Features GridComponent workaround for Material-UI v5 compatibility
+ * Features Grid workaround for Material-UI v5 compatibility
  */
 import React, { useState } from 'react';
 import {
@@ -33,8 +33,7 @@ import {
   Stack,
 } from '@mui/material';
 
-// Fix for Grid item prop typing in MUI v7
-const GridComponent: any = Grid;
+// Using MUI Grid v2 API
 import {
   Save,
   Cancel,
@@ -298,13 +297,13 @@ const AssetCreateForm: React.FC<AssetCreateFormProps> = ({
     switch (step) {
       case 0:
         return (
-          <GridComponent container spacing={3}>
-            <GridComponent item size={12}>
+          <Grid container spacing={3}>
+            <Grid size={12}>
               <Typography variant="h6" gutterBottom>
                 Basic Asset Information
               </Typography>
-            </GridComponent>
-            <GridComponent item size={{ xs: 12, md: 6 }}>
+            </Grid>
+            <Grid size={{ xs: 12, md: 6 }}>
               <Field name="cusip">
                 {({ field, meta }: any) => (
                   <TextField
@@ -328,8 +327,8 @@ const AssetCreateForm: React.FC<AssetCreateFormProps> = ({
                   />
                 )}
               </Field>
-            </GridComponent>
-            <GridComponent item size={{ xs: 12, md: 6 }}>
+            </Grid>
+            <Grid size={{ xs: 12, md: 6 }}>
               <Field name="issuer">
                 {({ field, meta }: any) => (
                   <TextField
@@ -342,8 +341,8 @@ const AssetCreateForm: React.FC<AssetCreateFormProps> = ({
                   />
                 )}
               </Field>
-            </GridComponent>
-            <GridComponent item size={12}>
+            </Grid>
+            <Grid size={12}>
               <Field name="asset_description">
                 {({ field, meta }: any) => (
                   <TextField
@@ -358,8 +357,8 @@ const AssetCreateForm: React.FC<AssetCreateFormProps> = ({
                   />
                 )}
               </Field>
-            </GridComponent>
-            <GridComponent item size={{ xs: 12, md: 6 }}>
+            </Grid>
+            <Grid size={{ xs: 12, md: 6 }}>
               <Field name="asset_type">
                 {({ field, meta }: any) => (
                   <FormControl fullWidth error={meta.touched && Boolean(meta.error)}>
@@ -382,8 +381,8 @@ const AssetCreateForm: React.FC<AssetCreateFormProps> = ({
                   </FormControl>
                 )}
               </Field>
-            </GridComponent>
-            <GridComponent item size={{ xs: 12, md: 6 }}>
+            </Grid>
+            <Grid size={{ xs: 12, md: 6 }}>
               <Field name="industry">
                 {({ field, meta }: any) => (
                   <FormControl fullWidth error={meta.touched && Boolean(meta.error)}>
@@ -406,19 +405,19 @@ const AssetCreateForm: React.FC<AssetCreateFormProps> = ({
                   </FormControl>
                 )}
               </Field>
-            </GridComponent>
-          </GridComponent>
+            </Grid>
+          </Grid>
         );
 
       case 1:
         return (
-          <GridComponent container spacing={3}>
-            <GridComponent item size={12}>
+          <Grid container spacing={3}>
+            <Grid size={12}>
               <Typography variant="h6" gutterBottom>
                 Financial Details
               </Typography>
-            </GridComponent>
-            <GridComponent item size={{ xs: 12, md: 6 }}>
+            </Grid>
+            <Grid size={{ xs: 12, md: 6 }}>
               <Field name="current_price">
                 {({ field, meta }: any) => (
                   <TextField
@@ -434,8 +433,8 @@ const AssetCreateForm: React.FC<AssetCreateFormProps> = ({
                   />
                 )}
               </Field>
-            </GridComponent>
-            <GridComponent item size={{ xs: 12, md: 6 }}>
+            </Grid>
+            <Grid size={{ xs: 12, md: 6 }}>
               <Field name="purchase_price">
                 {({ field, meta }: any) => (
                   <TextField
@@ -451,8 +450,8 @@ const AssetCreateForm: React.FC<AssetCreateFormProps> = ({
                   />
                 )}
               </Field>
-            </GridComponent>
-            <GridComponent item size={{ xs: 12, md: 6 }}>
+            </Grid>
+            <Grid size={{ xs: 12, md: 6 }}>
               <Field name="par_amount">
                 {({ field, meta }: any) => (
                   <TextField
@@ -468,8 +467,8 @@ const AssetCreateForm: React.FC<AssetCreateFormProps> = ({
                   />
                 )}
               </Field>
-            </GridComponent>
-            <GridComponent item size={{ xs: 12, md: 6 }}>
+            </Grid>
+            <Grid size={{ xs: 12, md: 6 }}>
               <Field name="current_balance">
                 {({ field, meta }: any) => (
                   <TextField
@@ -485,8 +484,8 @@ const AssetCreateForm: React.FC<AssetCreateFormProps> = ({
                   />
                 )}
               </Field>
-            </GridComponent>
-            <GridComponent item size={{ xs: 12, md: 6 }}>
+            </Grid>
+            <Grid size={{ xs: 12, md: 6 }}>
               <Field name="coupon_rate">
                 {({ field, meta }: any) => (
                   <TextField
@@ -503,8 +502,8 @@ const AssetCreateForm: React.FC<AssetCreateFormProps> = ({
                   />
                 )}
               </Field>
-            </GridComponent>
-            <GridComponent item size={{ xs: 12, md: 6 }}>
+            </Grid>
+            <Grid size={{ xs: 12, md: 6 }}>
               <Field name="spread">
                 {({ field, meta }: any) => (
                   <TextField
@@ -521,8 +520,8 @@ const AssetCreateForm: React.FC<AssetCreateFormProps> = ({
                   />
                 )}
               </Field>
-            </GridComponent>
-            <GridComponent item size={{ xs: 12, md: 6 }}>
+            </Grid>
+            <Grid size={{ xs: 12, md: 6 }}>
               <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <Field name="purchase_date">
                   {({ field, form, meta }: any) => (
@@ -541,8 +540,8 @@ const AssetCreateForm: React.FC<AssetCreateFormProps> = ({
                   )}
                 </Field>
               </LocalizationProvider>
-            </GridComponent>
-            <GridComponent item size={{ xs: 12, md: 6 }}>
+            </Grid>
+            <Grid size={{ xs: 12, md: 6 }}>
               <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <Field name="maturity_date">
                   {({ field, form, meta }: any) => (
@@ -561,19 +560,19 @@ const AssetCreateForm: React.FC<AssetCreateFormProps> = ({
                   )}
                 </Field>
               </LocalizationProvider>
-            </GridComponent>
-          </GridComponent>
+            </Grid>
+          </Grid>
         );
 
       case 2:
         return (
-          <GridComponent container spacing={3}>
-            <GridComponent item size={12}>
+          <Grid container spacing={3}>
+            <Grid size={12}>
               <Typography variant="h6" gutterBottom>
                 Risk Metrics & Rating
               </Typography>
-            </GridComponent>
-            <GridComponent item size={{ xs: 12, md: 6 }}>
+            </Grid>
+            <Grid size={{ xs: 12, md: 6 }}>
               <Field name="current_rating">
                 {({ field, meta }: any) => (
                   <FormControl fullWidth error={meta.touched && Boolean(meta.error)}>
@@ -596,8 +595,8 @@ const AssetCreateForm: React.FC<AssetCreateFormProps> = ({
                   </FormControl>
                 )}
               </Field>
-            </GridComponent>
-            <GridComponent item size={{ xs: 12, md: 6 }}>
+            </Grid>
+            <Grid size={{ xs: 12, md: 6 }}>
               <Field name="yield_to_maturity">
                 {({ field, meta }: any) => (
                   <TextField
@@ -614,8 +613,8 @@ const AssetCreateForm: React.FC<AssetCreateFormProps> = ({
                   />
                 )}
               </Field>
-            </GridComponent>
-            <GridComponent item size={{ xs: 12, md: 6 }}>
+            </Grid>
+            <Grid size={{ xs: 12, md: 6 }}>
               <Field name="duration">
                 {({ field, meta }: any) => (
                   <TextField
@@ -632,8 +631,8 @@ const AssetCreateForm: React.FC<AssetCreateFormProps> = ({
                   />
                 )}
               </Field>
-            </GridComponent>
-            <GridComponent item size={{ xs: 12, md: 6 }}>
+            </Grid>
+            <Grid size={{ xs: 12, md: 6 }}>
               <Field name="convexity">
                 {({ field, meta }: any) => (
                   <TextField
@@ -649,8 +648,8 @@ const AssetCreateForm: React.FC<AssetCreateFormProps> = ({
                   />
                 )}
               </Field>
-            </GridComponent>
-            <GridComponent item size={{ xs: 12, md: 6 }}>
+            </Grid>
+            <Grid size={{ xs: 12, md: 6 }}>
               <Field name="default_probability">
                 {({ field, meta }: any) => (
                   <TextField
@@ -667,8 +666,8 @@ const AssetCreateForm: React.FC<AssetCreateFormProps> = ({
                   />
                 )}
               </Field>
-            </GridComponent>
-            <GridComponent item size={{ xs: 12, md: 6 }}>
+            </Grid>
+            <Grid size={{ xs: 12, md: 6 }}>
               <Field name="recovery_rate">
                 {({ field, meta }: any) => (
                   <TextField
@@ -685,8 +684,8 @@ const AssetCreateForm: React.FC<AssetCreateFormProps> = ({
                   />
                 )}
               </Field>
-            </GridComponent>
-            <GridComponent item size={{ xs: 12, md: 6 }}>
+            </Grid>
+            <Grid size={{ xs: 12, md: 6 }}>
               <Field name="lgd">
                 {({ field, meta }: any) => (
                   <TextField
@@ -703,8 +702,8 @@ const AssetCreateForm: React.FC<AssetCreateFormProps> = ({
                   />
                 )}
               </Field>
-            </GridComponent>
-            <GridComponent item size={{ xs: 12, md: 6 }}>
+            </Grid>
+            <Grid size={{ xs: 12, md: 6 }}>
               <Field name="ead">
                 {({ field, meta }: any) => (
                   <TextField
@@ -720,8 +719,8 @@ const AssetCreateForm: React.FC<AssetCreateFormProps> = ({
                   />
                 )}
               </Field>
-            </GridComponent>
-          </GridComponent>
+            </Grid>
+          </Grid>
         );
 
       case 3:
@@ -730,8 +729,8 @@ const AssetCreateForm: React.FC<AssetCreateFormProps> = ({
             <Typography variant="h6" gutterBottom>
               Review Asset Information
             </Typography>
-            <GridComponent container spacing={3}>
-              <GridComponent item size={{ xs: 12, md: 6 }}>
+            <Grid container spacing={3}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <Paper variant="outlined" sx={{ p: 2 }}>
                   <Typography variant="subtitle1" gutterBottom>
                     <Business sx={{ mr: 1, verticalAlign: 'middle' }} />
@@ -763,9 +762,9 @@ const AssetCreateForm: React.FC<AssetCreateFormProps> = ({
                     </Box>
                   </Stack>
                 </Paper>
-              </GridComponent>
+              </Grid>
               
-              <GridComponent item size={{ xs: 12, md: 6 }}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <Paper variant="outlined" sx={{ p: 2 }}>
                   <Typography variant="subtitle1" gutterBottom>
                     <AttachMoney sx={{ mr: 1, verticalAlign: 'middle' }} />
@@ -790,35 +789,35 @@ const AssetCreateForm: React.FC<AssetCreateFormProps> = ({
                     </Box>
                   </Stack>
                 </Paper>
-              </GridComponent>
+              </Grid>
               
-              <GridComponent item size={12}>
+              <Grid size={12}>
                 <Paper variant="outlined" sx={{ p: 2 }}>
                   <Typography variant="subtitle1" gutterBottom>
                     <Assessment sx={{ mr: 1, verticalAlign: 'middle' }} />
                     Risk & Rating
                   </Typography>
-                  <GridComponent container spacing={2}>
-                    <GridComponent item size={{ xs: 6, md: 3 }}>
+                  <Grid container spacing={2}>
+                    <Grid size={{ xs: 6, md: 3 }}>
                       <Typography variant="caption" color="text.secondary">Rating</Typography>
                       <Typography variant="body2">{values.current_rating}</Typography>
-                    </GridComponent>
-                    <GridComponent item size={{ xs: 6, md: 3 }}>
+                    </Grid>
+                    <Grid size={{ xs: 6, md: 3 }}>
                       <Typography variant="caption" color="text.secondary">Default Probability</Typography>
                       <Typography variant="body2">{(values.default_probability * 100).toFixed(2)}%</Typography>
-                    </GridComponent>
-                    <GridComponent item size={{ xs: 6, md: 3 }}>
+                    </Grid>
+                    <Grid size={{ xs: 6, md: 3 }}>
                       <Typography variant="caption" color="text.secondary">Recovery Rate</Typography>
                       <Typography variant="body2">{(values.recovery_rate * 100).toFixed(0)}%</Typography>
-                    </GridComponent>
-                    <GridComponent item size={{ xs: 6, md: 3 }}>
+                    </Grid>
+                    <Grid size={{ xs: 6, md: 3 }}>
                       <Typography variant="caption" color="text.secondary">Duration</Typography>
                       <Typography variant="body2">{values.duration.toFixed(1)} years</Typography>
-                    </GridComponent>
-                  </GridComponent>
+                    </Grid>
+                  </Grid>
                 </Paper>
-              </GridComponent>
-            </GridComponent>
+              </Grid>
+            </Grid>
           </Box>
         );
 

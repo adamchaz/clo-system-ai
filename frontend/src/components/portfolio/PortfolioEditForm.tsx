@@ -217,7 +217,7 @@ const PortfolioEditForm: React.FC<PortfolioEditFormProps> = ({
           </Typography>
           
           <Grid container spacing={3}>
-            <Grid {...({ item: true } as any)} size={12}>
+            <Grid size={12}>
               <TextField
                 fullWidth
                 label="Deal Name"
@@ -236,7 +236,7 @@ const PortfolioEditForm: React.FC<PortfolioEditFormProps> = ({
               />
             </Grid>
             
-            <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6 }}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 fullWidth
                 label="Manager"
@@ -255,7 +255,7 @@ const PortfolioEditForm: React.FC<PortfolioEditFormProps> = ({
               />
             </Grid>
             
-            <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6 }}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 fullWidth
                 label="Trustee"
@@ -274,7 +274,7 @@ const PortfolioEditForm: React.FC<PortfolioEditFormProps> = ({
               />
             </Grid>
             
-            <Grid {...({ item: true } as any)} size={12}>
+            <Grid size={12}>
               <TextField
                 fullWidth
                 multiline
@@ -306,7 +306,7 @@ const PortfolioEditForm: React.FC<PortfolioEditFormProps> = ({
           </Typography>
           
           <Grid container spacing={3}>
-            <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6 }}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 fullWidth
                 label="Deal Size"
@@ -333,7 +333,7 @@ const PortfolioEditForm: React.FC<PortfolioEditFormProps> = ({
               />
             </Grid>
             
-            <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6 }}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <FormControl fullWidth disabled={isReadOnlyField('currency') || isLoading}>
                 <InputLabel>Currency</InputLabel>
                 <Select
@@ -354,7 +354,7 @@ const PortfolioEditForm: React.FC<PortfolioEditFormProps> = ({
               </FormControl>
             </Grid>
             
-            <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6 }}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 fullWidth
                 label="Minimum Denomination"
@@ -374,7 +374,7 @@ const PortfolioEditForm: React.FC<PortfolioEditFormProps> = ({
               />
             </Grid>
             
-            <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6 }}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <FormControl fullWidth disabled={isLoading}>
                 <InputLabel>Payment Frequency</InputLabel>
                 <Select
@@ -408,7 +408,7 @@ const PortfolioEditForm: React.FC<PortfolioEditFormProps> = ({
           
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <Grid container spacing={3}>
-              <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6 }}>
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <DatePicker
                   label="Effective Date"
                   value={formData.effectiveDate}
@@ -431,7 +431,7 @@ const PortfolioEditForm: React.FC<PortfolioEditFormProps> = ({
                 />
               </Grid>
               
-              <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6 }}>
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <DatePicker
                   label="Stated Maturity"
                   value={formData.statedMaturity}
@@ -454,11 +454,11 @@ const PortfolioEditForm: React.FC<PortfolioEditFormProps> = ({
                 />
               </Grid>
               
-              <Grid {...({ item: true } as any)} size={12}>
+              <Grid size={12}>
                 <Divider />
               </Grid>
               
-              <Grid {...({ item: true } as any)} size={12}>
+              <Grid size={12}>
                 <FormControlLabel
                   control={
                     <Switch
@@ -472,7 +472,7 @@ const PortfolioEditForm: React.FC<PortfolioEditFormProps> = ({
               </Grid>
               
               {formData.hasRevolvingPeriod && (
-                <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6 }}>
+                <Grid size={{ xs: 12, sm: 6 }}>
                   <DatePicker
                     label="Revolving Period End"
                     value={formData.revolvingPeriodEnd}
@@ -496,7 +496,7 @@ const PortfolioEditForm: React.FC<PortfolioEditFormProps> = ({
                 </Grid>
               )}
               
-              <Grid {...({ item: true } as any)} size={12}>
+              <Grid size={12}>
                 <FormControlLabel
                   control={
                     <Switch
@@ -510,7 +510,7 @@ const PortfolioEditForm: React.FC<PortfolioEditFormProps> = ({
               </Grid>
               
               {formData.hasReinvestmentPeriod && (
-                <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6 }}>
+                <Grid size={{ xs: 12, sm: 6 }}>
                   <DatePicker
                     label="Reinvestment Period End"
                     value={formData.reinvestmentPeriodEnd}
@@ -544,21 +544,21 @@ const PortfolioEditForm: React.FC<PortfolioEditFormProps> = ({
           Current Portfolio Statistics
         </Typography>
         <Grid container spacing={3}>
-          <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 3 }}>
+          <Grid size={{ xs: 12, sm: 3 }}>
             <Typography variant="body2" color="text.secondary">Current NAV</Typography>
             <Typography variant="h6">
               ${(portfolio.current_portfolio_balance / 1000000).toFixed(1)}M
             </Typography>
           </Grid>
-          <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 3 }}>
+          <Grid size={{ xs: 12, sm: 3 }}>
             <Typography variant="body2" color="text.secondary">Asset Count</Typography>
             <Typography variant="h6">{portfolio.current_asset_count}</Typography>
           </Grid>
-          <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 3 }}>
+          <Grid size={{ xs: 12, sm: 3 }}>
             <Typography variant="body2" color="text.secondary">Days to Maturity</Typography>
             <Typography variant="h6">{portfolio.days_to_maturity}</Typography>
           </Grid>
-          <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 3 }}>
+          <Grid size={{ xs: 12, sm: 3 }}>
             <Typography variant="body2" color="text.secondary">Last Updated</Typography>
             <Typography variant="h6">
               {format(parseISO(portfolio.updated_at), 'MMM d, yyyy')}

@@ -256,7 +256,7 @@ const PortfolioComparison: React.FC<PortfolioComparisonProps> = ({
           </Typography>
           
           <Grid container spacing={3} alignItems="center">
-            <Grid {...({ item: true } as any)} size={{ xs: 12, md: 6 }}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <FormControl fullWidth>
                 <InputLabel>Portfolios</InputLabel>
                 <Select
@@ -295,7 +295,7 @@ const PortfolioComparison: React.FC<PortfolioComparisonProps> = ({
               </FormControl>
             </Grid>
             
-            <Grid {...({ item: true } as any)} size={{ xs: 12, md: 4 }}>
+            <Grid size={{ xs: 12, md: 4 }}>
               <FormControl fullWidth>
                 <InputLabel>Visible Categories</InputLabel>
                 <Select
@@ -329,7 +329,7 @@ const PortfolioComparison: React.FC<PortfolioComparisonProps> = ({
               </FormControl>
             </Grid>
             
-            <Grid {...({ item: true } as any)} size={{ xs: 12, md: 2 }}>
+            <Grid size={{ xs: 12, md: 2 }}>
               <Button
                 variant="outlined"
                 startIcon={<SwapHoriz />}
@@ -484,7 +484,7 @@ const PortfolioComparison: React.FC<PortfolioComparisonProps> = ({
                 Legend:
               </Typography>
               <Grid container spacing={2}>
-                <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6 }}>
+                <Grid size={{ xs: 12, sm: 6 }}>
                   <Box sx={{ display: 'flex', alignItems: 'center' }}>
                     <Box sx={{ 
                       width: 16, 
@@ -496,7 +496,7 @@ const PortfolioComparison: React.FC<PortfolioComparisonProps> = ({
                     <Typography variant="caption">Best performing value</Typography>
                   </Box>
                 </Grid>
-                <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6 }}>
+                <Grid size={{ xs: 12, sm: 6 }}>
                   <Box sx={{ display: 'flex', alignItems: 'center' }}>
                     <Box sx={{ 
                       width: 16, 
@@ -508,7 +508,7 @@ const PortfolioComparison: React.FC<PortfolioComparisonProps> = ({
                     <Typography variant="caption">Needs attention</Typography>
                   </Box>
                 </Grid>
-                <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6 }}>
+                <Grid size={{ xs: 12, sm: 6 }}>
                   <Box sx={{ display: 'flex', alignItems: 'center' }}>
                     <Box sx={{ 
                       width: 16, 

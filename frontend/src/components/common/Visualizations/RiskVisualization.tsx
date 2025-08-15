@@ -35,8 +35,7 @@ import {
   CartesianGrid,
   Tooltip as RechartsTooltip,
   Legend,
-  ResponsiveContainer,
-  Histogram
+  ResponsiveContainer
 } from 'recharts';
 import { useRealTime } from '../../../hooks/useRealTimeData';
 import MetricCard from '../UI/MetricCard';
@@ -367,7 +366,7 @@ const RiskVisualization: React.FC<RiskVisualizationProps> = ({
           <MetricCard
             title="Volatility"
             value={`${(currentRisk?.volatility * 100).toFixed(2)}%`}
-            trend="neutral"
+            trend="flat"
             icon={<ShowChart />}
             color="warning"
           />

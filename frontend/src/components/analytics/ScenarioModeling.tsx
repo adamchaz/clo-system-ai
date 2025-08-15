@@ -251,7 +251,7 @@ const ScenarioModeling: React.FC<ScenarioModelingProps> = ({
 
       {/* Quick Scenario Controls */}
       <Grid container spacing={3} sx={{ mb: 4 }}>
-        <Grid {...({ item: true } as any)} size={{ xs: 12, md: 6 }}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <FormControl fullWidth size="small">
             <InputLabel>Stress Scenario</InputLabel>
             <Select
@@ -268,7 +268,7 @@ const ScenarioModeling: React.FC<ScenarioModelingProps> = ({
           </FormControl>
         </Grid>
         
-        <Grid {...({ item: true } as any)} size={{ xs: 12, md: 6 }}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <Stack direction="row" spacing={1}>
             <Button
               variant={running ? "outlined" : "contained"}
@@ -300,7 +300,7 @@ const ScenarioModeling: React.FC<ScenarioModelingProps> = ({
       <TabPanel value={currentTab} index={0}>
         {/* Scenario Results Tab */}
         <Grid container spacing={3}>
-          <Grid {...({ item: true } as any)} size={12}>
+          <Grid size={12}>
             <Card>
               <CardContent>
                 <Typography variant="h6" gutterBottom>
@@ -401,7 +401,7 @@ const ScenarioModeling: React.FC<ScenarioModelingProps> = ({
       <TabPanel value={currentTab} index={1}>
         {/* Monte Carlo Config Tab */}
         <Grid container spacing={3}>
-          <Grid {...({ item: true } as any)} size={{ xs: 12, md: 6 }}>
+          <Grid size={{ xs: 12, md: 6 }}>
             <Card>
               <CardContent>
                 <Typography variant="h6" gutterBottom>
@@ -448,7 +448,7 @@ const ScenarioModeling: React.FC<ScenarioModelingProps> = ({
             </Card>
           </Grid>
 
-          <Grid {...({ item: true } as any)} size={{ xs: 12, md: 6 }}>
+          <Grid size={{ xs: 12, md: 6 }}>
             <Card>
               <CardContent>
                 <Typography variant="h6" gutterBottom>
@@ -508,7 +508,7 @@ const ScenarioModeling: React.FC<ScenarioModelingProps> = ({
       <TabPanel value={currentTab} index={2}>
         {/* Stress Testing Tab */}
         <Grid container spacing={3}>
-          <Grid {...({ item: true } as any)} size={{ xs: 12, lg: 8 }}>
+          <Grid size={{ xs: 12, lg: 8 }}>
             <Card>
               <CardContent>
                 <Typography variant="h6" gutterBottom>
@@ -544,7 +544,7 @@ const ScenarioModeling: React.FC<ScenarioModelingProps> = ({
             </Card>
           </Grid>
 
-          <Grid {...({ item: true } as any)} size={{ xs: 12, lg: 4 }}>
+          <Grid size={{ xs: 12, lg: 4 }}>
             <Card>
               <CardContent>
                 <Typography variant="h6" gutterBottom>

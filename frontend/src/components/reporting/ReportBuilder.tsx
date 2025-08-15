@@ -159,8 +159,8 @@ const ReportBuilder: React.FC<ReportBuilderProps> = ({
   const [activeStep, setActiveStep] = useState(0);
   const [currentTab, setCurrentTab] = useState(0);
   
-  const [reportConfig, setReportConfig] = useState<ReportCreateRequest>({
-    name: '',
+  const [reportConfig, setReportConfig] = useState<any>({
+    title: '',
     description: '',
     template_id: templateId || '',
     parameters: {},
@@ -181,7 +181,7 @@ const ReportBuilder: React.FC<ReportBuilderProps> = ({
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
 
   // API hooks
-  const { data: templatesResponse, isLoading: isLoadingTemplates } = useGetReportTemplatesQuery();
+  const { data: templatesResponse, isLoading: isLoadingTemplates } = useGetReportTemplatesQuery({});
   const [createReport, { isLoading: isCreating }] = useCreateReportMutation();
   
   const { data: progressResponse } = useGetReportProgressQuery(currentGenerationId || '', {
@@ -403,7 +403,7 @@ const ReportBuilder: React.FC<ReportBuilderProps> = ({
 
       <Grid container spacing={3}>
         {/* Configuration Panel */}
-        <Grid {...({ item: true } as any)} size={{ xs: 12, md: 8 }}>
+        <Grid size={{ xs: 12, md: 8 }}>
           <Card>
             <CardContent>
               <Stepper activeStep={activeStep} orientation="vertical">
@@ -413,7 +413,7 @@ const ReportBuilder: React.FC<ReportBuilderProps> = ({
                   <StepContent>
                     <Grid container spacing={2}>
                       {templates.map((template) => (
-                        <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6 }} key={template.template_id}>
+                        <Grid size={{ xs: 12, sm: 6 }} key={template.template_id}>
                           <Card 
                             sx={{ 
                               cursor: 'pointer',
@@ -467,7 +467,7 @@ const ReportBuilder: React.FC<ReportBuilderProps> = ({
                   <StepLabel>Configure Parameters</StepLabel>
                   <StepContent>
                     <Grid container spacing={3}>
-                      <Grid {...({ item: true } as any)} size={12}>
+                      <Grid size={12}>
                         <TextField
                           fullWidth
                           label="Report Name"
@@ -477,7 +477,7 @@ const ReportBuilder: React.FC<ReportBuilderProps> = ({
                         />
                       </Grid>
                       
-                      <Grid {...({ item: true } as any)} size={12}>
+                      <Grid size={12}>
                         <TextField
                           fullWidth
                           label="Description"
@@ -489,14 +489,14 @@ const ReportBuilder: React.FC<ReportBuilderProps> = ({
                       </Grid>
                       
                       {selectedTemplate?.parameters && (
-                        <Grid {...({ item: true } as any)} size={12}>
+                        <Grid size={12}>
                           <Typography variant="h6" gutterBottom>
                             Template Parameters
                           </Typography>
                           
                           <Grid container spacing={2}>
                             {selectedTemplate.parameters.map((param) => (
-                              <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6 }} key={param.name}>
+                              <Grid size={{ xs: 12, sm: 6 }} key={param.name}>
                                 {param.type === 'string' && (
                                   <TextField
                                     fullWidth
@@ -561,13 +561,13 @@ const ReportBuilder: React.FC<ReportBuilderProps> = ({
                   <StepLabel>Format & Delivery Options</StepLabel>
                   <StepContent>
                     <Grid container spacing={3}>
-                      <Grid {...({ item: true } as any)} size={12}>
+                      <Grid size={12}>
                         <Typography variant="h6" gutterBottom>
                           Export Format
                         </Typography>
                         <Grid container spacing={2}>
                           {ExportFormats.map((format) => (
-                            <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6 }} key={format.value}>
+                            <Grid size={{ xs: 12, sm: 6 }} key={format.value}>
                               <Card 
                                 sx={{ 
                                   cursor: 'pointer',
@@ -610,7 +610,7 @@ const ReportBuilder: React.FC<ReportBuilderProps> = ({
                   <StepLabel>Schedule & Generate</StepLabel>
                   <StepContent>
                     <Grid container spacing={3}>
-                      <Grid {...({ item: true } as any)} size={12}>
+                      <Grid size={12}>
                         <FormControlLabel
                           control={
                             <Switch
@@ -624,7 +624,7 @@ const ReportBuilder: React.FC<ReportBuilderProps> = ({
                       
                       {reportConfig.scheduled_delivery?.enabled && (
                         <>
-                          <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6 }}>
+                          <Grid size={{ xs: 12, sm: 6 }}>
                             <FormControl fullWidth>
                               <InputLabel>Frequency</InputLabel>
                               <Select
@@ -644,7 +644,7 @@ const ReportBuilder: React.FC<ReportBuilderProps> = ({
                             </FormControl>
                           </Grid>
                           
-                          <Grid {...({ item: true } as any)} size={{ xs: 12, sm: 6 }}>
+                          <Grid size={{ xs: 12, sm: 6 }}>
                             <TextField
                               fullWidth
                               label="Delivery Time"
@@ -655,7 +655,7 @@ const ReportBuilder: React.FC<ReportBuilderProps> = ({
                             />
                           </Grid>
                           
-                          <Grid {...({ item: true } as any)} size={12}>
+                          <Grid size={12}>
                             <TextField
                               fullWidth
                               label="Recipients (comma-separated emails)"
@@ -681,7 +681,7 @@ const ReportBuilder: React.FC<ReportBuilderProps> = ({
         </Grid>
 
         {/* Preview Panel */}
-        <Grid {...({ item: true } as any)} size={{ xs: 12, md: 4 }}>
+        <Grid size={{ xs: 12, md: 4 }}>
           <Card sx={{ position: 'sticky', top: 20 }}>
             <CardContent>
               <Typography variant="h6" gutterBottom>
