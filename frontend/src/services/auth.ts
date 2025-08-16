@@ -1,14 +1,14 @@
 import axios from 'axios';
 import { AuthUser, LoginCredentials, RegisterData, AuthTokens } from '../types/auth';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000/api/v1';
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8001';
 
 export class AuthService {
   private static instance: AuthService;
   private baseURL: string;
 
   private constructor() {
-    this.baseURL = `${API_BASE_URL}/auth`;
+    this.baseURL = `${API_BASE_URL}/api/v1/auth`;
   }
 
   static getInstance(): AuthService {
@@ -21,8 +21,31 @@ export class AuthService {
   // Login user and return tokens
   async login(credentials: LoginCredentials): Promise<{ user: AuthUser; tokens: AuthTokens }> {
     try {
-      const response = await axios.post(`${this.baseURL}/login`, credentials);
-      const { user, access_token, refresh_token } = response.data;
+      // Convert to FormData as expected by backend
+      const formData = new FormData();
+      formData.append('username', credentials.email);
+      formData.append('password', credentials.password);
+      
+      const response = await axios.post(`${this.baseURL}/token`, formData);
+      const { user: backendUser, access_token, refresh_token, token_type } = response.data;
+      
+      // Transform backend user to frontend AuthUser format
+      const user: AuthUser = {
+        id: backendUser.id,
+        email: backendUser.email,
+        firstName: backendUser.full_name.split(' ')[0] || '',
+        lastName: backendUser.full_name.split(' ').slice(1).join(' ') || '',
+        roles: [{ 
+          id: backendUser.role, 
+          name: backendUser.role, 
+          displayName: backendUser.role, 
+          description: '', 
+          permissions: [] 
+        }],
+        isActive: true,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
       
       const tokens = { accessToken: access_token, refreshToken: refresh_token };
       
@@ -149,7 +172,9 @@ export class AuthService {
   // Token management methods
   private setTokens(tokens: AuthTokens): void {
     localStorage.setItem('accessToken', tokens.accessToken);
-    localStorage.setItem('refreshToken', tokens.refreshToken);
+    if (tokens.refreshToken) {
+      localStorage.setItem('refreshToken', tokens.refreshToken);
+    }
   }
 
   getAccessToken(): string | null {

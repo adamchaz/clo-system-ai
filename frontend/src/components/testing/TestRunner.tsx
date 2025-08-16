@@ -103,15 +103,16 @@ const TestRunner: React.FC = () => {
   ]);
 
   // API hooks (skip initially)
-  const portfolioQuery = useGetPortfoliosQuery({ page: 1, page_size: 1 }, { skip: true });
-  const assetQuery = useGetAssetsQuery({ page: 1, page_size: 1 }, { skip: true });
-  const userQuery = useGetUsersEnhancedQuery({ page: 1, page_size: 1 }, { skip: true });
-  const documentQuery = useGetDocumentsQuery({ page: 1, page_size: 1 }, { skip: true });
-  const reportQuery = useGetReportsQuery({ page: 1, page_size: 1 }, { skip: true });
+  const portfolioQuery = useGetPortfoliosQuery(undefined, { skip: true });
+  const assetQuery = useGetAssetsQuery({ skip: 0, limit: 1 }, { skip: true });
+  const userQuery = useGetUsersEnhancedQuery({ skip: 0, limit: 1 }, { skip: true });
+  const documentQuery = useGetDocumentsQuery({ skip: 0, limit: 1 }, { skip: true });
+  const reportQuery = useGetReportsQuery({ skip: 0, limit: 1 }, { skip: true });
   const webSocketStatsQuery = useGetWebSocketStatsQuery(undefined, { skip: true });
   
   // WebSocket connection
-  const { isConnected } = useWebSocketConnection();
+  const { status } = useWebSocketConnection();
+  const isConnected = status === 'connected';
 
   const runQuickTests = async () => {
     setIsRunning(true);

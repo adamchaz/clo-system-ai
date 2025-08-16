@@ -103,7 +103,7 @@ const Dashboard: React.FC = () => {
   const theme = useTheme();
 
   const getWelcomeMessage = () => {
-    const role = user?.roles?.[0]?.name || user?.role || 'viewer';
+    const role = user?.roles?.[0]?.name || 'viewer';
     const timeOfDay = new Date().getHours();
     const greeting = timeOfDay < 12 ? 'Good morning' : timeOfDay < 18 ? 'Good afternoon' : 'Good evening';
     
@@ -125,7 +125,7 @@ const Dashboard: React.FC = () => {
   };
 
   const getRoleSpecificMetrics = () => {
-    const role = user?.roles?.[0]?.name || user?.role || 'viewer';
+    const role = user?.roles?.[0]?.name || 'viewer';
     
     switch (role) {
       case 'system_admin':
@@ -275,7 +275,7 @@ const Dashboard: React.FC = () => {
             mb: 1,
           }}
         >
-          Welcome back, {user?.firstName || user?.full_name?.split(' ')[0] || 'User'}!
+          Welcome back, {user?.firstName || 'User'}!
         </Typography>
         <Typography
           variant="body1"

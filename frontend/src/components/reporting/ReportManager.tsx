@@ -160,13 +160,11 @@ const ReportManager: React.FC<ReportManagerProps> = ({
     error, 
     refetch 
   } = useGetReportsQuery({
-    page: currentPage,
-    page_size: pageSize,
+    skip: (currentPage - 1) * pageSize,
+    limit: pageSize,
     status: statusFilter || undefined,
-    format: formatFilter || undefined,
-    search: searchQuery || undefined,
-    sort_by: sortBy,
-    sort_order: sortOrder,
+    report_type: formatFilter || undefined,
+    requested_by: searchQuery || undefined,
   });
 
   const { data: reportStats } = useGetReportStatsQuery();
@@ -179,7 +177,7 @@ const ReportManager: React.FC<ReportManagerProps> = ({
   const totalPages = Math.ceil(totalReports / pageSize);
 
   // WebSocket integration for real-time report updates
-  useReportUpdates((updateData) => {
+  useReportUpdates(null, (updateData) => {
     setRealtimeUpdates(prev => [updateData, ...prev.slice(0, 4)]); // Keep last 5 updates
     refetch(); // Refresh the reports list
   });
@@ -212,12 +210,12 @@ const ReportManager: React.FC<ReportManagerProps> = ({
       
       // Create download link
       const blob = new Blob([response.data as any], { 
-        type: report.format === 'pdf' ? 'application/pdf' : 'application/octet-stream' 
+        type: report.output_format === 'pdf' ? 'application/pdf' : 'application/octet-stream' 
       });
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.download = `${report.name}.${report.format}`;
+      link.download = `${report.report_name}.${report.output_format}`;
       link.click();
       URL.revokeObjectURL(url);
     } catch (error) {
@@ -301,7 +299,7 @@ const ReportManager: React.FC<ReportManagerProps> = ({
   };
 
   const canCancel = (report: Report) => {
-    return report.status === 'pending' || report.status === 'generating';
+    return report.status === 'queued' || report.status === 'generating';
   };
 
   return (
@@ -541,10 +539,10 @@ const ReportManager: React.FC<ReportManagerProps> = ({
                     <TableCell>
                       <Box>
                         <Typography variant="subtitle2">
-                          {report.name}
+                          {report.report_name}
                         </Typography>
                         <Typography variant="caption" color="text.secondary">
-                          {report.description || 'No description'}
+                          {report.report_type || 'No description'}
                         </Typography>
                       </Box>
                     </TableCell>
@@ -555,9 +553,9 @@ const ReportManager: React.FC<ReportManagerProps> = ({
                     
                     <TableCell>
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        {ReportFormatIcons[report.format]}
+                        {ReportFormatIcons[report.output_format]}
                         <Typography variant="body2">
-                          {report.format.toUpperCase()}
+                          {report.output_format.toUpperCase()}
                         </Typography>
                       </Box>
                     </TableCell>
@@ -587,12 +585,11 @@ const ReportManager: React.FC<ReportManagerProps> = ({
                       {report.status === 'generating' && (
                         <Box sx={{ width: 100 }}>
                           <LinearProgress
-                            variant="determinate"
-                            value={report.progress || 0}
-                            size="small"
+                            variant="indeterminate"
+                            sx={{ height: 4 }}
                           />
                           <Typography variant="caption">
-                            {report.progress?.toFixed(0) || 0}%
+                            In progress...
                           </Typography>
                         </Box>
                       )}

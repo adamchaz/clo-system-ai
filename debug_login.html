@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug CLO Login Issue</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 600px; margin: 50px auto; padding: 20px; }
+        .test-section { background: #f8f9fa; border: 1px solid #dee2e6; padding: 15px; margin: 10px 0; border-radius: 5px; }
+        .result { margin: 10px 0; padding: 10px; border-radius: 4px; }
+        .success { background-color: #d4edda; border: 1px solid #c3e6cb; color: #155724; }
+        .error { background-color: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; }
+        button { padding: 8px 16px; margin: 5px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 4px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>CLO System Login Debug Tool</h1>
+    
+    <div class="test-section">
+        <h3>Test 1: Backend API Direct</h3>
+        <button onclick="testBackendAPI()">Test Backend API</button>
+        <div id="backend-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>Test 2: CORS & Network</h3>
+        <button onclick="testCORS()">Test CORS</button>
+        <div id="cors-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>Test 3: Frontend Response Format</h3>
+        <button onclick="testResponseFormat()">Test Response Format</button>
+        <div id="format-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>Test 4: Full Frontend Simulation</h3>
+        <button onclick="testFullFlow()">Test Full Flow</button>
+        <div id="full-result"></div>
+    </div>
+
+    <script>
+        async function testBackendAPI() {
+            const resultDiv = document.getElementById('backend-result');
+            resultDiv.innerHTML = '<p>Testing backend API...</p>';
+            
+            try {
+                const response = await fetch('http://localhost:8000/api/v1/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: 'demo@clo-system.com',
+                        password: 'demo12345'
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = `
+                        <div class="result success">
+                            <h4>✅ Backend API Working</h4>
+                            <p><strong>Status:</strong> ${response.status}</p>
+                            <p><strong>User:</strong> ${data.user.full_name}</p>
+                            <p><strong>Token:</strong> ${data.access_token.substring(0, 20)}...</p>
+                        </div>
+                    `;
+                } else {
+                    throw new Error(`HTTP ${response.status}: ${data.detail || data.message}`);
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="result error">
+                        <h4>❌ Backend API Failed</h4>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        async function testCORS() {
+            const resultDiv = document.getElementById('cors-result');
+            resultDiv.innerHTML = '<p>Testing CORS...</p>';
+            
+            try {
+                // Test if we can make a CORS request
+                const response = await fetch('http://localhost:8000/api/v1/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Origin': 'http://localhost:3000'
+                    },
+                    body: JSON.stringify({
+                        email: 'demo@clo-system.com',
+                        password: 'demo12345'
+                    })
+                });
+
+                if (response.ok) {
+                    resultDiv.innerHTML = `
+                        <div class="result success">
+                            <h4>✅ CORS Working</h4>
+                            <p>No CORS issues detected</p>
+                        </div>
+                    `;
+                } else {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+            } catch (error) {
+                if (error.message.includes('CORS')) {
+                    resultDiv.innerHTML = `
+                        <div class="result error">
+                            <h4>❌ CORS Issue Detected</h4>
+                            <p>${error.message}</p>
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="result success">
+                            <h4>✅ CORS OK (Other Error)</h4>
+                            <p>CORS is working, error is: ${error.message}</p>
+                        </div>
+                    `;
+                }
+            }
+        }
+
+        async function testResponseFormat() {
+            const resultDiv = document.getElementById('format-result');
+            resultDiv.innerHTML = '<p>Testing response format...</p>';
+            
+            try {
+                const response = await fetch('http://localhost:8000/api/v1/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: 'demo@clo-system.com',
+                        password: 'demo12345'
+                    })
+                });
+
+                const data = await response.json();
+                
+                // Simulate frontend transformation
+                const backendUser = data.user;
+                const frontendUser = {
+                    id: backendUser.id,
+                    email: backendUser.email,
+                    firstName: backendUser.full_name.split(' ')[0] || '',
+                    lastName: backendUser.full_name.split(' ').slice(1).join(' ') || '',
+                    roles: [{
+                        id: backendUser.role,
+                        name: backendUser.role,
+                        displayName: backendUser.role,
+                        description: '',
+                        permissions: []
+                    }],
+                    isActive: true,
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString()
+                };
+
+                resultDiv.innerHTML = `
+                    <div class="result success">
+                        <h4>✅ Response Format Test</h4>
+                        <p><strong>Backend User:</strong></p>
+                        <pre>${JSON.stringify(backendUser, null, 2)}</pre>
+                        <p><strong>Transformed Frontend User:</strong></p>
+                        <pre>${JSON.stringify(frontendUser, null, 2)}</pre>
+                    </div>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="result error">
+                        <h4>❌ Response Format Error</h4>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        async function testFullFlow() {
+            const resultDiv = document.getElementById('full-result');
+            resultDiv.innerHTML = '<p>Testing full frontend flow...</p>';
+            
+            try {
+                // Test exactly what the React frontend does
+                const credentials = {
+                    email: 'demo@clo-system.com',
+                    password: 'demo12345'
+                };
+
+                console.log('🔍 Starting full flow test...');
+                console.log('📤 Sending credentials:', credentials);
+
+                const response = await fetch('http://localhost:8000/api/v1/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(credentials)
+                });
+
+                console.log('📥 Response status:', response.status);
+                console.log('📥 Response headers:', [...response.headers.entries()]);
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(`HTTP ${response.status}: ${errorData.detail || errorData.message}`);
+                }
+
+                const data = await response.json();
+                console.log('📥 Response data:', data);
+
+                // Simulate React authentication
+                const { user: backendUser, access_token, refresh_token } = data;
+                
+                const user = {
+                    id: backendUser.id,
+                    email: backendUser.email,
+                    firstName: backendUser.full_name.split(' ')[0] || '',
+                    lastName: backendUser.full_name.split(' ').slice(1).join(' ') || '',
+                    roles: [{
+                        id: backendUser.role,
+                        name: backendUser.role,
+                        displayName: backendUser.role,
+                        description: '',
+                        permissions: []
+                    }],
+                    isActive: true,
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString()
+                };
+
+                const tokens = { accessToken: access_token, refreshToken: refresh_token };
+
+                console.log('✅ Login simulation successful');
+                console.log('👤 User object:', user);
+                console.log('🔑 Tokens:', tokens);
+
+                resultDiv.innerHTML = `
+                    <div class="result success">
+                        <h4>✅ Full Flow Test Passed</h4>
+                        <p>All steps completed successfully!</p>
+                        <p><strong>User:</strong> ${user.firstName} ${user.lastName} (${user.email})</p>
+                        <p><strong>Role:</strong> ${user.roles[0].name}</p>
+                        <p><strong>Token:</strong> ${tokens.accessToken.substring(0, 30)}...</p>
+                        <p><strong>Check browser console for detailed logs</strong></p>
+                    </div>
+                `;
+                
+            } catch (error) {
+                console.error('❌ Full flow test failed:', error);
+                resultDiv.innerHTML = `
+                    <div class="result error">
+                        <h4>❌ Full Flow Test Failed</h4>
+                        <p><strong>Error:</strong> ${error.message}</p>
+                        <p><strong>Check browser console for details</strong></p>
+                    </div>
+                `;
+            }
+        }
+
+        // Auto-run basic test on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                testBackendAPI();
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

@@ -381,7 +381,7 @@ export interface PaginatedResponse<T> {
 // Enhanced base query with retry and error handling
 const baseQueryWithRetry = retry(
   fetchBaseQuery({
-    baseUrl: process.env.REACT_APP_API_URL || 'http://localhost:8000/api/v1/',
+    baseUrl: process.env.REACT_APP_API_URL || 'http://localhost:8001/api/v1/',
     prepareHeaders: (headers, { getState }) => {
       // Get token from Redux store first, fallback to authService
       const reduxToken = (getState() as RootState).auth.tokens?.accessToken;
@@ -449,16 +449,25 @@ export const cloApi = createApi({
     'UserPermission',
     'UserSession',
     'UserActivity',
-    'UserPreferences'
+    'UserPreferences',
+    'Alert',
+    'MarketData',
+    'Price'
   ],
   endpoints: (builder) => ({
     // Authentication endpoints
     login: builder.mutation<ApiResponse<LoginResponse>, LoginRequest>({
-      query: (credentials) => ({
-        url: 'auth/login',
-        method: 'POST',
-        body: credentials,
-      }),
+      query: (credentials) => {
+        const formData = new FormData();
+        formData.append('username', credentials.email);
+        formData.append('password', credentials.password);
+        
+        return {
+          url: 'auth/token',
+          method: 'POST',
+          body: formData,
+        };
+      },
       invalidatesTags: ['User'],
     }),
 

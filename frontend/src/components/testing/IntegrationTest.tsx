@@ -144,11 +144,11 @@ const IntegrationTest: React.FC = () => {
   const [endTime, setEndTime] = useState<number | null>(null);
 
   // API hooks for testing (using skip: true initially)
-  const portfolioQuery = useGetPortfoliosQuery({ page: 1, page_size: 5 }, { skip: true });
-  const assetQuery = useGetAssetsQuery({ page: 1, page_size: 5 }, { skip: true });
-  const documentQuery = useGetDocumentsQuery({ page: 1, page_size: 5 }, { skip: true });
-  const userQuery = useGetUsersEnhancedQuery({ page: 1, page_size: 5 }, { skip: true });
-  const reportQuery = useGetReportsQuery({ page: 1, page_size: 5 }, { skip: true });
+  const portfolioQuery = useGetPortfoliosQuery(undefined, { skip: true });
+  const assetQuery = useGetAssetsQuery({ skip: 0, limit: 5 }, { skip: true });
+  const documentQuery = useGetDocumentsQuery({ skip: 0, limit: 5 }, { skip: true });
+  const userQuery = useGetUsersEnhancedQuery({ skip: 0, limit: 5 }, { skip: true });
+  const reportQuery = useGetReportsQuery({ skip: 0, limit: 5 }, { skip: true });
   const webSocketStatsQuery = useGetWebSocketStatsQuery(undefined, { skip: true });
 
   // Mutation hooks
@@ -161,7 +161,8 @@ const IntegrationTest: React.FC = () => {
   const [createReport] = useCreateReportMutation();
 
   // WebSocket hooks
-  const { isConnected, connectionStats } = useWebSocketConnection();
+  const { status, subscriptions, reconnect } = useWebSocketConnection();
+  const isConnected = status === 'connected';
 
   // Initialize test categories and cases
   useEffect(() => {
@@ -388,7 +389,7 @@ const IntegrationTest: React.FC = () => {
               details: `Found ${portfolioResult.data.data?.length || 0} portfolios`
             };
           }
-          throw new Error('No portfolio data returned');
+          throw new window.Error('No portfolio data returned');
           
         case 'portfolio-optimization':
           // Test portfolio optimization
@@ -396,9 +397,14 @@ const IntegrationTest: React.FC = () => {
             await optimizePortfolio({
               portfolio_id: 'test-portfolio',
               optimization_type: 'sharpe_ratio',
+              constraints: {},
               target_volatility: 10,
               max_risk: 15,
               risk_free_rate: 2.5,
+              max_single_asset_weight: 0.1,
+              include_stress_testing: false,
+              monte_carlo_runs: 1000,
+              optimization_horizon: 12,
             }).unwrap();
             return { ...testCase, status: 'passed', duration: Date.now() - startTime };
           } catch (error: any) {
@@ -420,7 +426,12 @@ const IntegrationTest: React.FC = () => {
               details: `Asset API responded`
             };
           }
-          throw new Error('Asset API not responding');
+          return {
+            ...testCase,
+            status: 'failed',
+            duration: Date.now() - startTime,
+            details: 'Asset API not responding'
+          };
           
         case 'document-list':
           // Test document listing

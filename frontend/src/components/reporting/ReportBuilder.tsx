@@ -80,7 +80,6 @@ import {
   InsertChart,
   Email,
   Share,
-  Timer,
   Repeat,
 } from '@mui/icons-material';
 import { format } from 'date-fns';
@@ -192,21 +191,25 @@ const ReportBuilder: React.FC<ReportBuilderProps> = ({
   const templates = templatesResponse?.data || [];
 
   // WebSocket integration for real-time progress updates
-  useReportUpdates((progressData) => {
-    if (progressData.report_id === currentGenerationId) {
-      setGenerationProgress(progressData.progress);
-      
-      if (progressData.status === 'completed') {
-        setIsGenerating(false);
-        setCurrentGenerationId(null);
-        onReportCreated?.(progressData.report_id);
-      } else if (progressData.status === 'error') {
-        setIsGenerating(false);
-        setCurrentGenerationId(null);
-        console.error('Report generation failed:', progressData.error);
+  useReportUpdates(
+    currentGenerationId,
+    (progressData) => {
+      if (progressData.reportId === currentGenerationId) {
+        setGenerationProgress(progressData.progress);
+        
+        if (progressData.status === 'completed') {
+          setIsGenerating(false);
+          setCurrentGenerationId(null);
+          onReportCreated?.(progressData.reportId);
+        } else if (progressData.status === 'failed') {
+          setIsGenerating(false);
+          setCurrentGenerationId(null);
+          console.error('Report generation failed:', progressData.data);
+        }
       }
-    }
-  });
+    },
+    !!currentGenerationId
+  );
 
   // Initialize with template if provided
   useEffect(() => {
@@ -217,7 +220,7 @@ const ReportBuilder: React.FC<ReportBuilderProps> = ({
         setReportConfig(prev => ({
           ...prev,
           template_id: template.template_id,
-          name: template.default_name || '',
+          name: template.template_name || '',
           description: template.description || '',
           parameters: template.default_parameters || {},
         }));
@@ -230,7 +233,7 @@ const ReportBuilder: React.FC<ReportBuilderProps> = ({
     setReportConfig(prev => ({
       ...prev,
       template_id: template.template_id,
-      name: template.default_name || '',
+      name: template.template_name || '',
       description: template.description || '',
       parameters: template.default_parameters || {},
     }));
@@ -426,7 +429,7 @@ const ReportBuilder: React.FC<ReportBuilderProps> = ({
                               <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
                                 <Assessment sx={{ mr: 1 }} />
                                 <Typography variant="h6">
-                                  {template.name}
+                                  {template.template_name}
                                 </Typography>
                               </Box>
                               <Typography variant="body2" color="text.secondary">
@@ -434,14 +437,15 @@ const ReportBuilder: React.FC<ReportBuilderProps> = ({
                               </Typography>
                               <Stack direction="row" spacing={1} sx={{ mt: 1 }}>
                                 <Chip 
-                                  label={template.category} 
+                                  label={template.report_type} 
                                   size="small" 
                                   color="primary" 
                                 />
                                 <Chip 
-                                  label={`${template.estimated_time || 30}s`} 
+                                  label={template.is_system_template ? 'System' : 'Custom'} 
                                   size="small" 
-                                  icon={<Timer />} 
+                                  color="secondary" 
+                                  variant="outlined" 
                                 />
                               </Stack>
                             </CardContent>
@@ -488,56 +492,23 @@ const ReportBuilder: React.FC<ReportBuilderProps> = ({
                         />
                       </Grid>
                       
-                      {selectedTemplate?.parameters && (
+                      {selectedTemplate?.required_parameters && Object.keys(selectedTemplate.required_parameters).length > 0 && (
                         <Grid size={12}>
                           <Typography variant="h6" gutterBottom>
                             Template Parameters
                           </Typography>
                           
                           <Grid container spacing={2}>
-                            {selectedTemplate.parameters.map((param) => (
-                              <Grid size={{ xs: 12, sm: 6 }} key={param.name}>
-                                {param.type === 'string' && (
-                                  <TextField
-                                    fullWidth
-                                    label={param.display_name || param.name}
-                                    value={reportConfig.parameters[param.name] || param.default_value || ''}
-                                    onChange={(e) => handleParameterChange(param.name, e.target.value)}
-                                    required={param.required}
-                                    helperText={param.description}
-                                  />
-                                )}
-                                
-                                {param.type === 'date' && (
-                                  <TextField
-                                    fullWidth
-                                    label={param.display_name || param.name}
-                                    type="date"
-                                    value={reportConfig.parameters[param.name] || param.default_value || ''}
-                                    onChange={(e) => handleParameterChange(param.name, e.target.value)}
-                                    required={param.required}
-                                    helperText={param.description}
-                                    InputLabelProps={{ shrink: true }}
-                                  />
-                                )}
-                                
-                                {param.type === 'select' && (
-                                  <FormControl fullWidth>
-                                    <InputLabel>{param.display_name || param.name}</InputLabel>
-                                    <Select
-                                      value={reportConfig.parameters[param.name] || param.default_value || ''}
-                                      label={param.display_name || param.name}
-                                      onChange={(e) => handleParameterChange(param.name, e.target.value)}
-                                      required={param.required}
-                                    >
-                                      {param.options?.map((option) => (
-                                        <MenuItem key={option} value={option}>
-                                          {option}
-                                        </MenuItem>
-                                      ))}
-                                    </Select>
-                                  </FormControl>
-                                )}
+                            {Object.entries(selectedTemplate.required_parameters).map(([paramName, paramConfig]) => (
+                              <Grid size={{ xs: 12, sm: 6 }} key={paramName}>
+                                <TextField
+                                  fullWidth
+                                  label={paramName}
+                                  value={reportConfig.parameters[paramName] || selectedTemplate.default_parameters?.[paramName] || ''}
+                                  onChange={(e) => handleParameterChange(paramName, e.target.value)}
+                                  required={true}
+                                  helperText={`Required parameter: ${paramName}`}
+                                />
                               </Grid>
                             ))}
                           </Grid>
@@ -695,7 +666,7 @@ const ReportBuilder: React.FC<ReportBuilderProps> = ({
                       Template
                     </Typography>
                     <Typography variant="body1">
-                      {selectedTemplate.name}
+                      {selectedTemplate.template_name}
                     </Typography>
                   </Box>
                   
@@ -724,7 +695,7 @@ const ReportBuilder: React.FC<ReportBuilderProps> = ({
                       Estimated Generation Time
                     </Typography>
                     <Typography variant="body1">
-                      {selectedTemplate.estimated_time || 30} seconds
+                      Estimated time: 30 seconds
                     </Typography>
                   </Box>
                   

@@ -1,7 +1,7 @@
 // Application constants
 
-export const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
-export const WS_BASE_URL = process.env.REACT_APP_WS_URL || 'ws://localhost:8000';
+export const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8001';
+export const WS_BASE_URL = process.env.REACT_APP_WS_URL || 'ws://localhost:8001';
 
 // Local storage keys
 export const STORAGE_KEYS = {
@@ -46,7 +46,7 @@ export const ROUTES = {
 // API endpoints
 export const API_ENDPOINTS = {
   AUTH: {
-    LOGIN: '/api/v1/auth/login',
+    LOGIN: '/api/v1/auth/token',
     LOGOUT: '/api/v1/auth/logout',
     REFRESH: '/api/v1/auth/refresh',
     ME: '/api/v1/auth/me',

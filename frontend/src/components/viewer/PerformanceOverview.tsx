@@ -138,10 +138,10 @@ const PerformanceOverview: React.FC<PerformanceOverviewProps> = ({
   };
 
   const getRiskLevel = (sharpeRatio: number) => {
-    if (sharpeRatio > 1.5) return { level: 'Low Risk', color: 'success' };
-    if (sharpeRatio > 1.0) return { level: 'Moderate Risk', color: 'info' };
-    if (sharpeRatio > 0.5) return { level: 'High Risk', color: 'warning' };
-    return { level: 'Very High Risk', color: 'error' };
+    if (sharpeRatio > 1.5) return { level: 'Low Risk', color: 'success' as const };
+    if (sharpeRatio > 1.0) return { level: 'Moderate Risk', color: 'info' as const };
+    if (sharpeRatio > 0.5) return { level: 'High Risk', color: 'warning' as const };
+    return { level: 'Very High Risk', color: 'error' as const };
   };
 
   if (portfoliosLoading) {
@@ -273,7 +273,7 @@ const PerformanceOverview: React.FC<PerformanceOverviewProps> = ({
                   </Typography>
                   <Chip 
                     label={getRiskLevel(currentMetrics.sharpeRatio).level}
-                    color={getRiskLevel(currentMetrics.sharpeRatio).color}
+                    color={getRiskLevel(currentMetrics.sharpeRatio).color as "success" | "info" | "warning" | "error"}
                     size="small"
                   />
                 </Box>

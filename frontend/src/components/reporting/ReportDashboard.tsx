@@ -137,20 +137,18 @@ const ReportDashboard: React.FC<ReportDashboardProps> = ({
 
   // API hooks
   const { data: recentReportsResponse, refetch: refetchReports } = useGetReportsQuery({
-    page: 1,
-    page_size: 10,
-    sort_by: 'created_at',
-    sort_order: 'desc',
+    skip: 0,
+    limit: 10,
   });
 
   const { data: reportStats } = useGetReportStatsQuery();
-  const { data: templatesResponse } = useGetReportTemplatesQuery();
+  const { data: templatesResponse } = useGetReportTemplatesQuery({});
 
   const recentReports = recentReportsResponse?.data || [];
   const templates = templatesResponse?.data || [];
 
   // WebSocket integration for real-time updates
-  useReportUpdates((updateData) => {
+  useReportUpdates(null, (updateData) => {
     setRealtimeUpdates(prev => [updateData, ...prev.slice(0, 4)]); // Keep last 5 updates
     refetchReports();
   });
@@ -190,7 +188,7 @@ const ReportDashboard: React.FC<ReportDashboardProps> = ({
 
   const getActiveReports = () => {
     return recentReports.filter(report => 
-      report.status === 'generating' || report.status === 'pending'
+      report.status === 'generating' || report.status === 'queued'
     );
   };
 
@@ -383,13 +381,13 @@ const ReportDashboard: React.FC<ReportDashboardProps> = ({
                         onClick={() => handleViewReport(report.report_id)}
                       >
                         <ListItemIcon>
-                          {ReportFormatIcons[report.format]}
+                          {ReportFormatIcons[report.output_format]}
                         </ListItemIcon>
                         <ListItemText
                           primary={
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                               <Typography variant="subtitle2">
-                                {report.name}
+                                {report.report_name}
                               </Typography>
                               {getReportStatusChip(report.status)}
                             </Box>
@@ -412,9 +410,8 @@ const ReportDashboard: React.FC<ReportDashboardProps> = ({
                           {report.status === 'generating' && (
                             <Box sx={{ width: 60 }}>
                               <LinearProgress
-                                variant="determinate"
-                                value={report.progress || 0}
-                                size="small"
+                                variant="indeterminate"
+                                sx={{ height: 4 }}
                               />
                             </Box>
                           )}
@@ -447,7 +444,7 @@ const ReportDashboard: React.FC<ReportDashboardProps> = ({
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                               <Assessment color="info" />
                               <Typography variant="subtitle1">
-                                {report.name}
+                                {report.report_name}
                               </Typography>
                               {getReportStatusChip(report.status)}
                             </Box>
@@ -456,19 +453,18 @@ const ReportDashboard: React.FC<ReportDashboardProps> = ({
                             </Typography>
                           </Box>
                           
-                          {report.progress !== undefined && (
+                          {(report.status === 'generating' || report.status === 'queued') && (
                             <Box>
                               <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
                                 <Typography variant="body2">
                                   Progress
                                 </Typography>
                                 <Typography variant="body2">
-                                  {report.progress.toFixed(1)}%
+                                  In progress...
                                 </Typography>
                               </Box>
                               <LinearProgress
-                                variant="determinate"
-                                value={report.progress}
+                                variant="indeterminate"
                                 sx={{ height: 8, borderRadius: 4 }}
                               />
                             </Box>
@@ -511,16 +507,16 @@ const ReportDashboard: React.FC<ReportDashboardProps> = ({
                           <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
                             <Assessment sx={{ mr: 1 }} color="primary" />
                             <Typography variant="subtitle2">
-                              {template.name}
+                              {template.template_name}
                             </Typography>
                           </Box>
                           <Typography variant="body2" color="text.secondary" noWrap>
                             {template.description}
                           </Typography>
                           <Stack direction="row" spacing={1} sx={{ mt: 1 }}>
-                            <Chip label={template.category} size="small" />
+                            <Chip label={template.report_type} size="small" />
                             <Chip 
-                              label={`${template.estimated_time || 30}s`} 
+                              label={template.is_system_template ? 'System' : 'Custom'} 
                               size="small" 
                               icon={<AccessTime />} 
                             />

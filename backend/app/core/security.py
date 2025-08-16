@@ -186,8 +186,14 @@ def configure_cors(app: FastAPI):
         # Remove wildcard origins in production
         allowed_origins = [origin for origin in allowed_origins if "*" not in origin]
     else:
-        # Allow all localhost origins in development
-        allowed_origins = ["*"]
+        # Use specific localhost origins in development (can't use "*" with credentials)
+        allowed_origins = [
+            "http://localhost:3000",
+            "http://localhost:3001", 
+            "http://127.0.0.1:3000",
+            "http://127.0.0.1:3001",
+            "null"  # For file:// protocol testing
+        ]
     
     app.add_middleware(
         CORSMiddleware,

@@ -1,0 +1,1526 @@
+Compiled with problems:
+×
+ERROR in src/components/assets/AssetEditForm.tsx:369:11
+TS2322: Type 'string | number | Date' is not assignable to type 'never'.
+  Type 'string' is not assignable to type 'never'.
+    367 |         const fieldKey = key as keyof AssetEditData;
+    368 |         if (JSON.stringify(values[fieldKey]) !== JSON.stringify(initialValues[fieldKey])) {
+  > 369 |           changedFields[fieldKey] = values[fieldKey];
+        |           ^^^^^^^^^^^^^^^^^^^^^^^
+    370 |         }
+    371 |       });
+    372 |
+ERROR in src/components/common/Animations/variants.ts:70:5
+TS2322: Type '{ initial: { x: number; opacity: number; }; animate: { x: number; opacity: number; }; exit: { x: number; opacity: number; }; }' is not assignable to type 'Variant'.
+  Object literal may only specify known properties, and 'initial' does not exist in type 'Variant'.
+    68 | export const slideVariants: Variants = {
+    69 |   slideLeft: {
+  > 70 |     initial: { x: -50, opacity: 0 },
+       |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    71 |     animate: { x: 0, opacity: 1 },
+    72 |     exit: { x: 50, opacity: 0 },
+    73 |   },
+ERROR in src/components/common/Animations/variants.ts:75:5
+TS2322: Type '{ initial: { x: number; opacity: number; }; animate: { x: number; opacity: number; }; exit: { x: number; opacity: number; }; }' is not assignable to type 'Variant'.
+  Object literal may only specify known properties, and 'initial' does not exist in type 'Variant'.
+    73 |   },
+    74 |   slideRight: {
+  > 75 |     initial: { x: 50, opacity: 0 },
+       |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    76 |     animate: { x: 0, opacity: 1 },
+    77 |     exit: { x: -50, opacity: 0 },
+    78 |   },
+ERROR in src/components/common/Animations/variants.ts:80:5
+TS2322: Type '{ initial: { y: number; opacity: number; }; animate: { y: number; opacity: number; }; exit: { y: number; opacity: number; }; }' is not assignable to type 'Variant'.
+  Object literal may only specify known properties, and 'initial' does not exist in type 'Variant'.
+    78 |   },
+    79 |   slideUp: {
+  > 80 |     initial: { y: 50, opacity: 0 },
+       |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    81 |     animate: { y: 0, opacity: 1 },
+    82 |     exit: { y: -50, opacity: 0 },
+    83 |   },
+ERROR in src/components/common/Animations/variants.ts:85:5
+TS2322: Type '{ initial: { y: number; opacity: number; }; animate: { y: number; opacity: number; }; exit: { y: number; opacity: number; }; }' is not assignable to type 'Variant'.
+  Object literal may only specify known properties, and 'initial' does not exist in type 'Variant'.
+    83 |   },
+    84 |   slideDown: {
+  > 85 |     initial: { y: -50, opacity: 0 },
+       |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    86 |     animate: { y: 0, opacity: 1 },
+    87 |     exit: { y: 50, opacity: 0 },
+    88 |   },
+ERROR in src/components/common/Layout/TopBar.tsx:206:56
+TS2551: Property 'role' does not exist on type 'WritableDraft<AuthUser>'. Did you mean 'roles'?
+    204 |                 sx={{ lineHeight: 1.2 }}
+    205 |               >
+  > 206 |                 {user.roles?.[0]?.displayName || user?.role || 'User'}
+        |                                                        ^^^^
+    207 |               </Typography>
+    208 |             </Box>
+    209 |           )}
+ERROR in src/components/common/RealTime/RealTimeNotifications.tsx:354:30
+TS2552: Cannot find name 'setShowAssetUpdates'. Did you mean 'showAssetUpdates'?
+    352 |               size="small"
+    353 |               variant={showAssetUpdates ? 'contained' : 'outlined'}
+  > 354 |               onClick={() => setShowAssetUpdates(!showAssetUpdates)}
+        |                              ^^^^^^^^^^^^^^^^^^^
+    355 |             >
+    356 |               Asset Updates: {showAssetUpdates ? 'On' : 'Off'}
+    357 |             </Button>
+ERROR in src/components/common/UI/CommandPalette.tsx:414:33
+TS2769: No overload matches this call.
+  Overload 1 of 2, '(props: { component: ElementType<any, keyof IntrinsicElements>; } & ListItemOwnProps & CommonProps & Omit<any, "components" | ... 15 more ... | "secondaryAction">): Element', gave the following error.
+    Property 'component' is missing in type '{ children: Element[]; button: true; selected: boolean; onClick: () => void; sx: { py: number; px: number; borderRadius: number; mx: number; bgcolor: string; '&:hover': { bgcolor: string; }; }; }' but required in type '{ component: ElementType<any, keyof IntrinsicElements>; }'.
+  Overload 2 of 2, '(props: DefaultComponentProps<ListItemTypeMap<{}, "li">>): Element', gave the following error.
+    Type '{ children: Element[]; button: true; selected: boolean; onClick: () => void; sx: { py: number; px: number; borderRadius: number; mx: number; bgcolor: string; '&:hover': { bgcolor: string; }; }; }' is not assignable to type 'IntrinsicAttributes & ListItemOwnProps & CommonProps & Omit<DetailedHTMLProps<LiHTMLAttributes<HTMLLIElement>, HTMLLIElement>, "components" | ... 15 more ... | "secondaryAction">'.
+      Property 'button' does not exist on type 'IntrinsicAttributes & ListItemOwnProps & CommonProps & Omit<DetailedHTMLProps<LiHTMLAttributes<HTMLLIElement>, HTMLLIElement>, "components" | ... 15 more ... | "secondaryAction">'.
+    412 |                             return (
+    413 |                               <motion.div key={command.id} variants={staggerItem}>
+  > 414 |                                 <ListItem
+        |                                 ^^^^^^^^^
+  > 415 |                                   button
+        | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  > 416 |                                   selected={isSelected}
+        | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  > 417 |                                   onClick={() => executeCommand(command)}
+        | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  > 418 |                                   sx={{
+        | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  > 419 |                                     py: 1.5,
+        | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  > 420 |                                     px: 2,
+        | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  > 421 |                                     borderRadius: isSelected ? 1 : 0,
+        | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  > 422 |                                     mx: isSelected ? 1 : 0,
+        | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  > 423 |                                     bgcolor: isSelected ? alpha(theme.palette.primary.main, 0.1) : 'transparent',
+        | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  > 424 |                                     '&:hover': {
+        | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  > 425 |                                       bgcolor: alpha(theme.palette.primary.main, 0.05),
+        | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  > 426 |                                     },
+        | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  > 427 |                                   }}
+        | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  > 428 |                                 >
+        | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    429 |                                   <ListItemIcon sx={{ color: isSelected ? 'primary.main' : 'action.active' }}>
+    430 |                                     {command.icon}
+    431 |                                   </ListItemIcon>
+ERROR in src/components/common/UI/DashboardCustomizer.tsx:351:25
+TS2769: No overload matches this call.
+  Overload 1 of 2, '(props: { component: ElementType<any, keyof IntrinsicElements>; } & GridBaseProps & { sx?: SxProps<Theme>; } & SystemProps<Theme> & Omit<...>): Element', gave the following error.
+    Property 'component' is missing in type '{ children: Element; style?: DraggableStyle; 'data-rfd-draggable-context-id': string; 'data-rfd-draggable-id': string; onTransitionEnd?: TransitionEventHandler<Element>; item: true; xs: number; ref: (element?: HTMLElement) => void; }' but required in type '{ component: ElementType<any, keyof IntrinsicElements>; }'.
+  Overload 2 of 2, '(props: DefaultComponentProps<GridTypeMap<{}, "div">>): Element', gave the following error.
+    Type '{ children: Element; style?: DraggableStyle; 'data-rfd-draggable-context-id': string; 'data-rfd-draggable-id': string; onTransitionEnd?: TransitionEventHandler<Element>; item: true; xs: number; ref: (element?: HTMLElement) => void; }' is not assignable to type 'IntrinsicAttributes & GridBaseProps & { sx?: SxProps<Theme>; } & SystemProps<Theme> & Omit<DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>, "sx" | ... 1 more ... | keyof GridBaseProps>'.
+      Property 'item' does not exist on type 'IntrinsicAttributes & GridBaseProps & { sx?: SxProps<Theme>; } & SystemProps<Theme> & Omit<DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>, "sx" | ... 1 more ... | keyof GridBaseProps>'.
+    349 |                     >
+    350 |                       {(provided, snapshot) => (
+  > 351 |                         <Grid
+        |                         ^^^^^
+  > 352 |                           item
+        | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  > 353 |                           xs={widget.size.width}
+        | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  > 354 |                           ref={provided.innerRef}
+        | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  > 355 |                           {...provided.draggableProps}
+        | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  > 356 |                         >
+        | ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    357 |                           <motion.div
+    358 |                             variants={scaleVariants}
+    359 |                             initial="initial"
+ERROR in src/components/common/UI/FormikWrapper.tsx:507:25
+TS2769: No overload matches this call.
+  Overload 1 of 2, '(props: { component: ElementType<any, keyof IntrinsicElements>; } & GridBaseProps & { sx?: SxProps<Theme>; } & SystemProps<Theme> & Omit<...>): Element', gave the following error.
+    Property 'component' is missing in type '{ children: Element; key: string; item: true; xs: number; sm: number; md: number; lg: number; xl: number; }' but required in type '{ component: ElementType<any, keyof IntrinsicElements>; }'.
+  Overload 2 of 2, '(props: DefaultComponentProps<GridTypeMap<{}, "div">>): Element', gave the following error.
+    Type '{ children: Element; key: string; item: true; xs: number; sm: number; md: number; lg: number; xl: number; }' is not assignable to type 'IntrinsicAttributes & GridBaseProps & { sx?: SxProps<Theme>; } & SystemProps<Theme> & Omit<DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>, StandardSystemKeys | ... 1 more ... | keyof GridBaseProps>'.
+      Property 'item' does not exist on type 'IntrinsicAttributes & GridBaseProps & { sx?: SxProps<Theme>; } & SystemProps<Theme> & Omit<DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>, StandardSystemKeys | ... 1 more ... | keyof GridBaseProps>'.
+    505 |                     <Grid container spacing={2}>
+    506 |                       {field.arrayConfig?.itemTemplate.map((itemField) => (
+  > 507 |                         <Grid
+        |                         ^^^^^
+  > 508 |                           key={itemField.name}
+        | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  > 509 |                           item
+        | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  > 510 |                           xs={itemField.xs || 12}
+        | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  > 511 |                           sm={itemField.sm}
+        | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  > 512 |                           md={itemField.md}
+        | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  > 513 |                           lg={itemField.lg}
+        | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  > 514 |                           xl={itemField.xl}
+        | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  > 515 |                         >
+        | ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    516 |                           <FormFieldRenderer
+    517 |                             field={{
+    518 |                               ...itemField,
+ERROR in src/components/common/UI/FormikWrapper.tsx:635:21
+TS2769: No overload matches this call.
+  Overload 1 of 2, '(props: { component: ElementType<any, keyof IntrinsicElements>; } & GridBaseProps & { sx?: SxProps<Theme>; } & SystemProps<Theme> & Omit<...>): Element', gave the following error.
+    Property 'component' is missing in type '{ children: Element; key: string; item: true; xs: number; sm: number; md: number; lg: number; xl: number; }' but required in type '{ component: ElementType<any, keyof IntrinsicElements>; }'.
+  Overload 2 of 2, '(props: DefaultComponentProps<GridTypeMap<{}, "div">>): Element', gave the following error.
+    Type '{ children: Element; key: string; item: true; xs: number; sm: number; md: number; lg: number; xl: number; }' is not assignable to type 'IntrinsicAttributes & GridBaseProps & { sx?: SxProps<Theme>; } & SystemProps<Theme> & Omit<DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>, StandardSystemKeys | ... 1 more ... | keyof GridBaseProps>'.
+      Property 'item' does not exist on type 'IntrinsicAttributes & GridBaseProps & { sx?: SxProps<Theme>; } & SystemProps<Theme> & Omit<DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>, StandardSystemKeys | ... 1 more ... | keyof GridBaseProps>'.
+    633 |                 <Grid container spacing={2} {...gridProps}>
+    634 |                   {section.fields.map((field) => (
+  > 635 |                     <Grid
+        |                     ^^^^^
+  > 636 |                       key={field.name}
+        | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  > 637 |                       item
+        | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  > 638 |                       xs={field.xs || 12}
+        | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  > 639 |                       sm={field.sm}
+        | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  > 640 |                       md={field.md}
+        | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  > 641 |                       lg={field.lg}
+        | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  > 642 |                       xl={field.xl}
+        | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  > 643 |                     >
+        | ^^^^^^^^^^^^^^^^^^^^^^
+    644 |                       <FormFieldRenderer field={field} formikProps={formikBag} />
+    645 |                     </Grid>
+    646 |                   ))}
+ERROR in src/components/common/UI/FormikWrapper.tsx:656:19
+TS2769: No overload matches this call.
+  Overload 1 of 2, '(props: { component: ElementType<any, keyof IntrinsicElements>; } & GridBaseProps & { sx?: SxProps<Theme>; } & SystemProps<Theme> & Omit<...>): Element', gave the following error.
+    Property 'component' is missing in type '{ children: Element; key: string; item: true; xs: number; sm: number; md: number; lg: number; xl: number; }' but required in type '{ component: ElementType<any, keyof IntrinsicElements>; }'.
+  Overload 2 of 2, '(props: DefaultComponentProps<GridTypeMap<{}, "div">>): Element', gave the following error.
+    Type '{ children: Element; key: string; item: true; xs: number; sm: number; md: number; lg: number; xl: number; }' is not assignable to type 'IntrinsicAttributes & GridBaseProps & { sx?: SxProps<Theme>; } & SystemProps<Theme> & Omit<DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>, StandardSystemKeys | ... 1 more ... | keyof GridBaseProps>'.
+      Property 'item' does not exist on type 'IntrinsicAttributes & GridBaseProps & { sx?: SxProps<Theme>; } & SystemProps<Theme> & Omit<DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>, StandardSystemKeys | ... 1 more ... | keyof GridBaseProps>'.
+    654 |               <Grid container spacing={2} {...gridProps}>
+    655 |                 {fields.map((field) => (
+  > 656 |                   <Grid
+        |                   ^^^^^
+  > 657 |                     key={field.name}
+        | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  > 658 |                     item
+        | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  > 659 |                     xs={field.xs || 12}
+        | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  > 660 |                     sm={field.sm}
+        | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  > 661 |                     md={field.md}
+        | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  > 662 |                     lg={field.lg}
+        | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  > 663 |                     xl={field.xl}
+        | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  > 664 |                   >
+        | ^^^^^^^^^^^^^^^^^^^^
+    665 |                     <FormFieldRenderer field={field} formikProps={formikBag} />
+    666 |                   </Grid>
+    667 |                 ))}
+ERROR in src/components/common/UI/KeyboardShortcuts.tsx:776:7
+TS2345: Argument of type '{ enabled: boolean; preventDefault: true; enableOnTags: string[]; }' is not assignable to parameter of type 'OptionsOrDependencyArray'.
+  Object literal may only specify known properties, and 'enableOnTags' does not exist in type 'OptionsOrDependencyArray'.
+    774 |       enabled: !shortcut.disabled,
+    775 |       preventDefault: true,
+  > 776 |       enableOnTags: shortcut.global ? ['INPUT', 'TEXTAREA', 'SELECT'] : [],
+        |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    777 |     },
+    778 |     [onActivate, shortcut.disabled, shortcut.global]
+    779 |   );
+ERROR in src/components/common/UI/ThemeCustomizer.tsx:68:47
+TS2307: Cannot find module 'react-colorful' or its corresponding type declarations.
+    66 |   FormatSize as FontSizeIcon,
+    67 | } from '@mui/icons-material';
+  > 68 | import { HexColorPicker, HexColorInput } from 'react-colorful';
+       |                                               ^^^^^^^^^^^^^^^^
+    69 | import { useLocalStorage } from 'react-use';
+    70 | import { motion, AnimatePresence } from 'framer-motion';
+    71 | import { fadeVariants, staggerContainer, staggerItem } from '../Animations/variants';
+ERROR in src/components/common/UI/ThemeCustomizer.tsx:833:13
+TS2322: Type '{ children: Element; variants: Variants; initial: string; animate: string; exit: string; style: { position: "fixed"; top: number; left: number; right: number; bottom: number; zIndex: number; backgroundColor: string; display: "flex"; alignItems: "center"; justifyContent: "center"; }; onClick: () => void; }' is not assignable to type 'IntrinsicAttributes & HTMLAttributesWithoutMotionProps<unknown, unknown> & MotionProps & RefAttributes<unknown>'.
+  Property 'onClick' does not exist on type 'IntrinsicAttributes & HTMLAttributesWithoutMotionProps<unknown, unknown> & MotionProps & RefAttributes<unknown>'.
+    831 |               justifyContent: 'center',
+    832 |             }}
+  > 833 |             onClick={() => setActiveColorPicker(null)}
+        |             ^^^^^^^
+    834 |           >
+    835 |             <motion.div
+    836 |               variants={scaleVariants}
+ERROR in src/components/common/UI/ThemeCustomizer.tsx:836:25
+TS2552: Cannot find name 'scaleVariants'. Did you mean 'fadeVariants'?
+    834 |           >
+    835 |             <motion.div
+  > 836 |               variants={scaleVariants}
+        |                         ^^^^^^^^^^^^^
+    837 |               onClick={(e) => e.stopPropagation()}
+    838 |             >
+    839 |               <Paper elevation={8} sx={{ p: 3 }}>
+ERROR in src/components/common/UI/ThemeCustomizer.tsx:837:15
+TS2322: Type '{ children: Element; variants: any; onClick: (e: any) => any; }' is not assignable to type 'IntrinsicAttributes & HTMLAttributesWithoutMotionProps<unknown, unknown> & MotionProps & RefAttributes<unknown>'.
+  Property 'onClick' does not exist on type 'IntrinsicAttributes & HTMLAttributesWithoutMotionProps<unknown, unknown> & MotionProps & RefAttributes<unknown>'.
+    835 |             <motion.div
+    836 |               variants={scaleVariants}
+  > 837 |               onClick={(e) => e.stopPropagation()}
+        |               ^^^^^^^
+    838 |             >
+    839 |               <Paper elevation={8} sx={{ p: 3 }}>
+    840 |                 <HexColorPicker
+ERROR in src/components/common/Visualizations/PerformanceChart.tsx:480:13
+TS2322: Type '"up" | "neutral"' is not assignable to type 'MetricTrend | { value: number; isPositive: boolean; period: string; }'.
+  Type '"neutral"' is not assignable to type 'MetricTrend | { value: number; isPositive: boolean; period: string; }'.
+    478 |             title="Sharpe Ratio"
+    479 |             value={performanceMetrics.sharpeRatio.toFixed(2)}
+  > 480 |             trend={performanceMetrics.sharpeRatio > 1 ? "up" : "neutral"}
+        |             ^^^^^
+    481 |             icon={<CompareIcon />}
+    482 |             color={performanceMetrics.sharpeRatio > 1 ? "success" : "warning"}
+    483 |           />
+ERROR in src/components/common/Visualizations/PortfolioComposition.tsx:26:3
+TS2305: Module '"@mui/icons-material"' has no exported member 'Donut'.
+    24 | import {
+    25 |   PieChart,
+  > 26 |   Donut,
+       |   ^^^^^
+    27 |   Business as BusinessIcon,
+    28 |   Public as PublicIcon,
+    29 |   Category as CategoryIcon,
+ERROR in src/components/common/Visualizations/PortfolioComposition.tsx:292:9
+TS2322: Type 'CompositionData[]' is not assignable to type 'readonly TreemapDataType[]'.
+  Type 'CompositionData' is not assignable to type 'TreemapDataType'.
+    Index signature for type 'string' is missing in type 'CompositionData'.
+    290 |     <ResponsiveContainer width="100%" height={height}>
+    291 |       <Treemap
+  > 292 |         data={data}
+        |         ^^^^
+    293 |         dataKey="value"
+    294 |         ratio={4 / 3}
+    295 |         stroke="#fff"
+ERROR in src/components/common/Visualizations/PortfolioComposition.tsx:363:13
+TS2322: Type '"up" | "neutral"' is not assignable to type 'MetricTrend | { value: number; isPositive: boolean; period: string; }'.
+  Type '"neutral"' is not assignable to type 'MetricTrend | { value: number; isPositive: boolean; period: string; }'.
+    361 |             title="Top 10 Holdings"
+    362 |             value={formatPercent(top10Concentration)}
+  > 363 |             trend={top10Concentration > 0.6 ? "up" : "neutral"}
+        |             ^^^^^
+    364 |             icon={<BusinessIcon />}
+    365 |             color={top10Concentration > 0.6 ? "warning" : "success"}
+    366 |           />
+ERROR in src/components/common/Visualizations/RiskVisualization.tsx:39:3
+TS2305: Module '"recharts"' has no exported member 'Histogram'.
+    37 |   Legend,
+    38 |   ResponsiveContainer,
+  > 39 |   Histogram
+       |   ^^^^^^^^^
+    40 | } from 'recharts';
+    41 | import { useRealTime } from '../../../hooks/useRealTimeData';
+    42 | import MetricCard from '../UI/MetricCard';
+ERROR in src/components/common/Visualizations/RiskVisualization.tsx:370:13
+TS2322: Type '"neutral"' is not assignable to type 'MetricTrend | { value: number; isPositive: boolean; period: string; }'.
+    368 |             title="Volatility"
+    369 |             value={`${(currentRisk?.volatility * 100).toFixed(2)}%`}
+  > 370 |             trend="neutral"
+        |             ^^^^^
+    371 |             icon={<ShowChart />}
+    372 |             color="warning"
+    373 |           />
+ERROR in src/components/common/Visualizations/WaterfallChart.tsx:391:13
+TS2345: Argument of type '(this: BaseType, d: unknown) => unknown' is not assignable to parameter of type 'string | number | boolean | ValueFn<BaseType, unknown, string | number | boolean>'.
+  Type '(this: BaseType, d: unknown) => unknown' is not assignable to type 'ValueFn<BaseType, unknown, string | number | boolean>'.
+    Type 'unknown' is not assignable to type 'string | number | boolean'.
+    389 |       .attr('dy', '.15em')
+    390 |       .attr('transform', 'rotate(-45)')
+  > 391 |       .text(d => waterfallSteps.find(s => s.id === d)?.name || d);
+        |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    392 |
+    393 |     g.append('g')
+    394 |       .attr('class', 'y-axis')
+ERROR in src/components/common/Visualizations/WaterfallChart.tsx:544:13
+TS2322: Type '"up" | "neutral"' is not assignable to type 'MetricTrend | { value: number; isPositive: boolean; period: string; }'.
+  Type '"neutral"' is not assignable to type 'MetricTrend | { value: number; isPositive: boolean; period: string; }'.
+    542 |             title="Remaining Cash"
+    543 |             value={formatValue(remainingCash)}
+  > 544 |             trend={remainingCash > 0 ? "up" : "neutral"}
+        |             ^^^^^
+    545 |             icon={<ShowChartIcon />}
+    546 |             color={remainingCash > 0 ? "warning" : "info"}
+    547 |           />
+ERROR in src/components/common/Visualizations/WaterfallChart.tsx:650:48
+TS2339: Property 'waterfallProgress' does not exist on type 'CalculationProgress[]'.
+    648 |       </Grid>
+    649 |
+  > 650 |       {enableRealTime && (calculationProgress?.waterfallProgress || portfolioData) && (
+        |                                                ^^^^^^^^^^^^^^^^^
+    651 |         <Typography variant="caption" color="textSecondary" sx={{ mt: 2, display: 'block' }}>
+    652 |           Last updated: {new Date().toLocaleTimeString()} (Real-time) |
+    653 |           {calculationProgress?.waterfallProgress && 
+ERROR in src/components/common/Visualizations/WaterfallChart.tsx:653:33
+TS2339: Property 'waterfallProgress' does not exist on type 'CalculationProgress[]'.
+    651 |         <Typography variant="caption" color="textSecondary" sx={{ mt: 2, display: 'block' }}>
+    652 |           Last updated: {new Date().toLocaleTimeString()} (Real-time) |
+  > 653 |           {calculationProgress?.waterfallProgress && 
+        |                                 ^^^^^^^^^^^^^^^^^
+    654 |             ` Calculation Progress: ${calculationProgress.waterfallProgress.percentage}%`
+    655 |           }
+    656 |         </Typography>
+ERROR in src/components/common/Visualizations/WaterfallChart.tsx:654:59
+TS2339: Property 'waterfallProgress' does not exist on type 'CalculationProgress[]'.
+    652 |           Last updated: {new Date().toLocaleTimeString()} (Real-time) |
+    653 |           {calculationProgress?.waterfallProgress && 
+  > 654 |             ` Calculation Progress: ${calculationProgress.waterfallProgress.percentage}%`
+        |                                                           ^^^^^^^^^^^^^^^^^
+    655 |           }
+    656 |         </Typography>
+    657 |       )}
+ERROR in src/components/documents/DocumentList.tsx:258:11
+TS2769: No overload matches this call.
+  Overload 1 of 2, '(props: { component: ElementType<any, keyof IntrinsicElements>; } & ListItemOwnProps & CommonProps & Omit<any, "alignItems" | ... 15 more ... | "secondaryAction">): Element', gave the following error.
+    Property 'component' is missing in type '{ children: Element[]; key: string; button: boolean; onClick: () => void; sx: { '&:hover': { bgcolor: "action.hover"; }; py: number; }; }' but required in type '{ component: ElementType<any, keyof IntrinsicElements>; }'.
+  Overload 2 of 2, '(props: DefaultComponentProps<ListItemTypeMap<{}, "li">>): Element', gave the following error.
+    Type '{ children: Element[]; key: string; button: boolean; onClick: () => void; sx: { '&:hover': { bgcolor: "action.hover"; }; py: number; }; }' is not assignable to type 'IntrinsicAttributes & ListItemOwnProps & CommonProps & Omit<DetailedHTMLProps<LiHTMLAttributes<HTMLLIElement>, HTMLLIElement>, "alignItems" | ... 15 more ... | "secondaryAction">'.
+      Property 'button' does not exist on type 'IntrinsicAttributes & ListItemOwnProps & CommonProps & Omit<DetailedHTMLProps<LiHTMLAttributes<HTMLLIElement>, HTMLLIElement>, "alignItems" | ... 15 more ... | "secondaryAction">'.
+    256 |       <List dense={compact}>
+    257 |         {displayDocuments.map((document) => (
+  > 258 |           <ListItem
+        |           ^^^^^^^^^
+  > 259 |             key={document.document_id}
+        | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  > 260 |             button={!!onView}
+        | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  > 261 |             onClick={() => onView?.(document)}
+        | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  > 262 |             sx={{
+        | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  > 263 |               '&:hover': { bgcolor: 'action.hover' },
+        | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  > 264 |               py: compact ? 0.5 : 1,
+        | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  > 265 |             }}
+        | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  > 266 |           >
+        | ^^^^^^^^^^^^
+    267 |             <ListItemIcon>
+    268 |               {getDocumentIcon(document.document_type, document.mime_type)}
+    269 |             </ListItemIcon>
+ERROR in src/components/documents/DocumentManager.tsx:70:29
+TS2307: Cannot find module 'react-dropzone' or its corresponding type declarations.
+    68 |   Refresh,
+    69 | } from '@mui/icons-material';
+  > 70 | import { useDropzone } from 'react-dropzone';
+       |                             ^^^^^^^^^^^^^^^^
+    71 | import { format } from 'date-fns';
+    72 |
+    73 | // Import our new API hooks
+ERROR in src/components/documents/DocumentManager.tsx:294:27
+TS2339: Property 'createElement' does not exist on type 'Document'.
+    292 |   const handleDownload = (document: Document) => {
+    293 |     // Implement download functionality
+  > 294 |     const link = document.createElement('a');
+        |                           ^^^^^^^^^^^^^
+    295 |     link.href = `/api/v1/documents/${document.document_id}/download`;
+    296 |     link.download = document.original_filename;
+    297 |     link.click();
+ERROR in src/components/documents/DocumentUpload.tsx:51:29
+TS2307: Cannot find module 'react-dropzone' or its corresponding type declarations.
+    49 |   Upload,
+    50 | } from '@mui/icons-material';
+  > 51 | import { useDropzone } from 'react-dropzone';
+       |                             ^^^^^^^^^^^^^^^^
+    52 |
+    53 | // Import API hooks
+    54 | import { useUploadDocumentMutation } from '../../store/api/cloApi';
+ERROR in src/components/documents/DocumentUpload.tsx:447:31
+TS2322: Type '{ variant: "determinate"; value: number; size: string; sx: { mt: number; }; }' is not assignable to type 'IntrinsicAttributes & LinearProgressProps'.
+  Property 'size' does not exist on type 'IntrinsicAttributes & LinearProgressProps'.
+    445 |                               variant="determinate" 
+    446 |                               value={file.uploadProgress || 0} 
+  > 447 |                               size="small"
+        |                               ^^^^
+    448 |                               sx={{ mt: 0.5 }}
+    449 |                             />
+    450 |                           )}
+ERROR in src/components/documents/DocumentViewer.tsx:221:29
+TS2339: Property 'createElement' does not exist on type 'Document'.
+    219 |       const response = await downloadDocument(document.document_id);
+    220 |       // Handle download response
+  > 221 |       const link = document.createElement('a');
+        |                             ^^^^^^^^^^^^^
+    222 |       link.href = URL.createObjectURL(response.data as Blob);
+    223 |       link.download = document.original_filename;
+    224 |       link.click();
+ERROR in src/components/reporting/ReportBuilder.tsx:163:5
+TS2345: Argument of type '{ name: string; description: string; template_id: string; parameters: {}; format: string; scheduled_delivery: { enabled: boolean; frequency: string; recipients: undefined[]; delivery_time: string; }; }' is not assignable to parameter of type 'ReportCreateRequest | (() => ReportCreateRequest)'.
+  Object literal may only specify known properties, and 'name' does not exist in type 'ReportCreateRequest | (() => ReportCreateRequest)'.
+    161 |   
+    162 |   const [reportConfig, setReportConfig] = useState<ReportCreateRequest>({
+  > 163 |     name: '',
+        |     ^^^^^^^^
+    164 |     description: '',
+    165 |     template_id: templateId || '',
+    166 |     parameters: {},
+ERROR in src/components/reporting/ReportBuilder.tsx:184:70
+TS2554: Expected 1-2 arguments, but got 0.
+    182 |
+    183 |   // API hooks
+  > 184 |   const { data: templatesResponse, isLoading: isLoadingTemplates } = useGetReportTemplatesQuery();
+        |                                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    185 |   const [createReport, { isLoading: isCreating }] = useCreateReportMutation();
+    186 |   
+    187 |   const { data: progressResponse } = useGetReportProgressQuery(currentGenerationId || '', {
+ERROR in src/components/reporting/ReportBuilder.tsx:195:3
+TS2554: Expected 2-3 arguments, but got 1.
+    193 |
+    194 |   // WebSocket integration for real-time progress updates
+  > 195 |   useReportUpdates((progressData) => {
+        |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  > 196 |     if (progressData.report_id === currentGenerationId) {
+        | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  > 197 |       setGenerationProgress(progressData.progress);
+        | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  > 198 |       
+        | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  > 199 |       if (progressData.status === 'completed') {
+        | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  > 200 |         setIsGenerating(false);
+        | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  > 201 |         setCurrentGenerationId(null);
+        | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  > 202 |         onReportCreated?.(progressData.report_id);
+        | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  > 203 |       } else if (progressData.status === 'error') {
+        | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  > 204 |         setIsGenerating(false);
+        | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  > 205 |         setCurrentGenerationId(null);
+        | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  > 206 |         console.error('Report generation failed:', progressData.error);
+        | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  > 207 |       }
+        | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  > 208 |     }
+        | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  > 209 |   });
+        | ^^^^^
+    210 |
+    211 |   // Initialize with template if provided
+    212 |   useEffect(() => {
+ERROR in src/components/reporting/ReportBuilder.tsx:220:26
+TS2339: Property 'default_name' does not exist on type 'ReportTemplate'.
+    218 |           ...prev,
+    219 |           template_id: template.template_id,
+  > 220 |           name: template.default_name || '',
+        |                          ^^^^^^^^^^^^
+    221 |           description: template.description || '',
+    222 |           parameters: template.default_parameters || {},
+    223 |         }));
+ERROR in src/components/reporting/ReportBuilder.tsx:233:22
+TS2339: Property 'default_name' does not exist on type 'ReportTemplate'.
+    231 |       ...prev,
+    232 |       template_id: template.template_id,
+  > 233 |       name: template.default_name || '',
+        |                      ^^^^^^^^^^^^
+    234 |       description: template.description || '',
+    235 |       parameters: template.default_parameters || {},
+    236 |     }));
+ERROR in src/components/reporting/ReportBuilder.tsx:253:17
+TS2339: Property 'scheduled_delivery' does not exist on type 'ReportCreateRequest'.
+    251 |       ...prev,
+    252 |       scheduled_delivery: {
+  > 253 |         ...prev.scheduled_delivery!,
+        |                 ^^^^^^^^^^^^^^^^^^
+    254 |         [field]: value,
+    255 |       },
+    256 |     }));
+ERROR in src/components/reporting/ReportBuilder.tsx:262:23
+TS2339: Property 'name' does not exist on type 'ReportCreateRequest'.
+    260 |     const errors: string[] = [];
+    261 |     
+  > 262 |     if (!reportConfig.name.trim()) {
+        |                       ^^^^
+    263 |       errors.push('Report name is required');
+    264 |     }
+    265 |     
+ERROR in src/components/reporting/ReportBuilder.tsx:278:22
+TS2339: Property 'scheduled_delivery' does not exist on type 'ReportCreateRequest'.
+    276 |     }
+    277 |     
+  > 278 |     if (reportConfig.scheduled_delivery?.enabled && reportConfig.scheduled_delivery.recipients.length === 0) {
+        |                      ^^^^^^^^^^^^^^^^^^
+    279 |       errors.push('At least one recipient is required for scheduled delivery');
+    280 |     }
+    281 |     
+ERROR in src/components/reporting/ReportBuilder.tsx:278:66
+TS2339: Property 'scheduled_delivery' does not exist on type 'ReportCreateRequest'.
+    276 |     }
+    277 |     
+  > 278 |     if (reportConfig.scheduled_delivery?.enabled && reportConfig.scheduled_delivery.recipients.length === 0) {
+        |                                                                  ^^^^^^^^^^^^^^^^^^
+    279 |       errors.push('At least one recipient is required for scheduled delivery');
+    280 |     }
+    281 |     
+ERROR in src/components/reporting/ReportBuilder.tsx:384:73
+TS2339: Property 'name' does not exist on type 'ReportCreateRequest'.
+    382 |             />
+    383 |             <Typography variant="body2" color="text.secondary">
+  > 384 |               {generationProgress.toFixed(1)}% Complete - {reportConfig.name}
+        |                                                                         ^^^^
+    385 |             </Typography>
+    386 |           </CardContent>
+    387 |         </Card>
+ERROR in src/components/reporting/ReportBuilder.tsx:429:45
+TS2339: Property 'name' does not exist on type 'ReportTemplate'.
+    427 |                                 <Assessment sx={{ mr: 1 }} />
+    428 |                                 <Typography variant="h6">
+  > 429 |                                   {template.name}
+        |                                             ^^^^
+    430 |                                 </Typography>
+    431 |                               </Box>
+    432 |                               <Typography variant="body2" color="text.secondary">
+ERROR in src/components/reporting/ReportBuilder.tsx:437:51
+TS2339: Property 'category' does not exist on type 'ReportTemplate'.
+    435 |                               <Stack direction="row" spacing={1} sx={{ mt: 1 }}>
+    436 |                                 <Chip 
+  > 437 |                                   label={template.category} 
+        |                                                   ^^^^^^^^
+    438 |                                   size="small" 
+    439 |                                   color="primary" 
+    440 |                                 />
+ERROR in src/components/reporting/ReportBuilder.tsx:442:54
+TS2339: Property 'estimated_time' does not exist on type 'ReportTemplate'.
+    440 |                                 />
+    441 |                                 <Chip 
+  > 442 |                                   label={`${template.estimated_time || 30}s`} 
+        |                                                      ^^^^^^^^^^^^^^
+    443 |                                   size="small" 
+    444 |                                   icon={<Timer />} 
+    445 |                                 />
+ERROR in src/components/reporting/ReportBuilder.tsx:474:47
+TS2339: Property 'name' does not exist on type 'ReportCreateRequest'.
+    472 |                           fullWidth
+    473 |                           label="Report Name"
+  > 474 |                           value={reportConfig.name}
+        |                                               ^^^^
+    475 |                           onChange={(e) => setReportConfig(prev => ({ ...prev, name: e.target.value }))}
+    476 |                           required
+    477 |                         />
+ERROR in src/components/reporting/ReportBuilder.tsx:486:47
+TS2339: Property 'description' does not exist on type 'ReportCreateRequest'.
+    484 |                           multiline
+    485 |                           rows={3}
+  > 486 |                           value={reportConfig.description}
+        |                                               ^^^^^^^^^^^
+    487 |                           onChange={(e) => setReportConfig(prev => ({ ...prev, description: e.target.value }))}
+    488 |                         />
+    489 |                       </Grid>
+ERROR in src/components/reporting/ReportBuilder.tsx:491:42
+TS2339: Property 'parameters' does not exist on type 'ReportTemplate'.
+    489 |                       </Grid>
+    490 |                       
+  > 491 |                       {selectedTemplate?.parameters && (
+        |                                          ^^^^^^^^^^
+    492 |                         <Grid size={12}>
+    493 |                           <Typography variant="h6" gutterBottom>
+    494 |                             Template Parameters
+ERROR in src/components/reporting/ReportBuilder.tsx:498:47
+TS2339: Property 'parameters' does not exist on type 'ReportTemplate'.
+    496 |                           
+    497 |                           <Grid container spacing={2}>
+  > 498 |                             {selectedTemplate.parameters.map((param) => (
+        |                                               ^^^^^^^^^^
+    499 |                               <Grid size={{ xs: 12, sm: 6 }} key={param.name}>
+    500 |                                 {param.type === 'string' && (
+    501 |                                   <TextField
+ERROR in src/components/reporting/ReportBuilder.tsx:574:56
+TS2339: Property 'format' does not exist on type 'ReportCreateRequest'.
+    572 |                                 sx={{ 
+    573 |                                   cursor: 'pointer',
+  > 574 |                                   border: reportConfig.format === format.value ? 2 : 1,
+        |                                                        ^^^^^^
+    575 |                                   borderColor: reportConfig.format === format.value ? 'primary.main' : 'divider',
+    576 |                                 }}
+    577 |                                 onClick={() => setReportConfig(prev => ({ ...prev, format: format.value as any }))}
+ERROR in src/components/reporting/ReportBuilder.tsx:575:61
+TS2339: Property 'format' does not exist on type 'ReportCreateRequest'.
+    573 |                                   cursor: 'pointer',
+    574 |                                   border: reportConfig.format === format.value ? 2 : 1,
+  > 575 |                                   borderColor: reportConfig.format === format.value ? 'primary.main' : 'divider',
+        |                                                             ^^^^^^
+    576 |                                 }}
+    577 |                                 onClick={() => setReportConfig(prev => ({ ...prev, format: format.value as any }))}
+    578 |                               >
+ERROR in src/components/reporting/ReportBuilder.tsx:617:53
+TS2339: Property 'scheduled_delivery' does not exist on type 'ReportCreateRequest'.
+    615 |                           control={
+    616 |                             <Switch
+  > 617 |                               checked={reportConfig.scheduled_delivery?.enabled || false}
+        |                                                     ^^^^^^^^^^^^^^^^^^
+    618 |                               onChange={(e) => handleScheduleChange('enabled', e.target.checked)}
+    619 |                             />
+    620 |                           }
+ERROR in src/components/reporting/ReportBuilder.tsx:625:37
+TS2339: Property 'scheduled_delivery' does not exist on type 'ReportCreateRequest'.
+    623 |                       </Grid>
+    624 |                       
+  > 625 |                       {reportConfig.scheduled_delivery?.enabled && (
+        |                                     ^^^^^^^^^^^^^^^^^^
+    626 |                         <>
+    627 |                           <Grid size={{ xs: 12, sm: 6 }}>
+    628 |                             <FormControl fullWidth>
+ERROR in src/components/reporting/ReportBuilder.tsx:631:53
+TS2339: Property 'scheduled_delivery' does not exist on type 'ReportCreateRequest'.
+    629 |                               <InputLabel>Frequency</InputLabel>
+    630 |                               <Select
+  > 631 |                                 value={reportConfig.scheduled_delivery.frequency}
+        |                                                     ^^^^^^^^^^^^^^^^^^
+    632 |                                 label="Frequency"
+    633 |                                 onChange={(e) => handleScheduleChange('frequency', e.target.value)}
+    634 |                               >
+ERROR in src/components/reporting/ReportBuilder.tsx:652:51
+TS2339: Property 'scheduled_delivery' does not exist on type 'ReportCreateRequest'.
+    650 |                               label="Delivery Time"
+    651 |                               type="time"
+  > 652 |                               value={reportConfig.scheduled_delivery.delivery_time}
+        |                                                   ^^^^^^^^^^^^^^^^^^
+    653 |                               onChange={(e) => handleScheduleChange('delivery_time', e.target.value)}
+    654 |                               InputLabelProps={{ shrink: true }}
+    655 |                             />
+ERROR in src/components/reporting/ReportBuilder.tsx:662:51
+TS2339: Property 'scheduled_delivery' does not exist on type 'ReportCreateRequest'.
+    660 |                               fullWidth
+    661 |                               label="Recipients (comma-separated emails)"
+  > 662 |                               value={reportConfig.scheduled_delivery.recipients.join(', ')}
+        |                                                   ^^^^^^^^^^^^^^^^^^
+    663 |                               onChange={(e) => handleScheduleChange('recipients', e.target.value.split(',').map(s => s.trim()))}
+    664 |                               helperText="Enter email addresses separated by commas"
+    665 |                             />
+ERROR in src/components/reporting/ReportBuilder.tsx:698:41
+TS2339: Property 'name' does not exist on type 'ReportTemplate'.
+    696 |                     </Typography>
+    697 |                     <Typography variant="body1">
+  > 698 |                       {selectedTemplate.name}
+        |                                         ^^^^
+    699 |                     </Typography>
+    700 |                   </Box>
+    701 |                   
+ERROR in src/components/reporting/ReportBuilder.tsx:707:37
+TS2339: Property 'name' does not exist on type 'ReportCreateRequest'.
+    705 |                     </Typography>
+    706 |                     <Typography variant="body1">
+  > 707 |                       {reportConfig.name || 'Untitled Report'}
+        |                                     ^^^^
+    708 |                     </Typography>
+    709 |                   </Box>
+    710 |                   
+ERROR in src/components/reporting/ReportBuilder.tsx:716:43
+TS2339: Property 'format' does not exist on type 'ReportCreateRequest'.
+    714 |                     </Typography>
+    715 |                     <Chip 
+  > 716 |                       label={reportConfig.format?.toUpperCase()}
+        |                                           ^^^^^^
+    717 |                       size="small"
+    718 |                       color="primary"
+    719 |                     />
+ERROR in src/components/reporting/ReportBuilder.tsx:727:41
+TS2339: Property 'estimated_time' does not exist on type 'ReportTemplate'.
+    725 |                     </Typography>
+    726 |                     <Typography variant="body1">
+  > 727 |                       {selectedTemplate.estimated_time || 30} seconds
+        |                                         ^^^^^^^^^^^^^^
+    728 |                     </Typography>
+    729 |                   </Box>
+    730 |                   
+ERROR in src/components/reporting/ReportBuilder.tsx:731:33
+TS2339: Property 'scheduled_delivery' does not exist on type 'ReportCreateRequest'.
+    729 |                   </Box>
+    730 |                   
+  > 731 |                   {reportConfig.scheduled_delivery?.enabled && (
+        |                                 ^^^^^^^^^^^^^^^^^^
+    732 |                     <Box>
+    733 |                       <Typography variant="subtitle2" color="text.secondary">
+    734 |                         Schedule
+ERROR in src/components/reporting/ReportBuilder.tsx:737:39
+TS2339: Property 'scheduled_delivery' does not exist on type 'ReportCreateRequest'.
+    735 |                       </Typography>
+    736 |                       <Typography variant="body1">
+  > 737 |                         {reportConfig.scheduled_delivery.frequency} at {reportConfig.scheduled_delivery.delivery_time}
+        |                                       ^^^^^^^^^^^^^^^^^^
+    738 |                       </Typography>
+    739 |                     </Box>
+    740 |                   )}
+ERROR in src/components/reporting/ReportBuilder.tsx:737:86
+TS2339: Property 'scheduled_delivery' does not exist on type 'ReportCreateRequest'.
+    735 |                       </Typography>
+    736 |                       <Typography variant="body1">
+  > 737 |                         {reportConfig.scheduled_delivery.frequency} at {reportConfig.scheduled_delivery.delivery_time}
+        |                                                                                      ^^^^^^^^^^^^^^^^^^
+    738 |                       </Typography>
+    739 |                     </Box>
+    740 |                   )}
+ERROR in src/components/reporting/ReportDashboard.tsx:140:5
+TS2345: Argument of type '{ page: number; page_size: number; sort_by: string; sort_order: string; }' is not assignable to parameter of type '{ skip?: number; limit?: number; status?: string; report_type?: string; requested_by?: string; } | unique symbol'.
+  Object literal may only specify known properties, and 'page' does not exist in type '{ skip?: number; limit?: number; status?: string; report_type?: string; requested_by?: string; }'.
+    138 |   // API hooks
+    139 |   const { data: recentReportsResponse, refetch: refetchReports } = useGetReportsQuery({
+  > 140 |     page: 1,
+        |     ^^^^^^^
+    141 |     page_size: 10,
+    142 |     sort_by: 'created_at',
+    143 |     sort_order: 'desc',
+ERROR in src/components/reporting/ReportDashboard.tsx:147:39
+TS2554: Expected 1-2 arguments, but got 0.
+    145 |
+    146 |   const { data: reportStats } = useGetReportStatsQuery();
+  > 147 |   const { data: templatesResponse } = useGetReportTemplatesQuery();
+        |                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    148 |
+    149 |   const recentReports = recentReportsResponse?.data || [];
+    150 |   const templates = templatesResponse?.data || [];
+ERROR in src/components/reporting/ReportDashboard.tsx:153:3
+TS2554: Expected 2-3 arguments, but got 1.
+    151 |
+    152 |   // WebSocket integration for real-time updates
+  > 153 |   useReportUpdates((updateData) => {
+        |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  > 154 |     setRealtimeUpdates(prev => [updateData, ...prev.slice(0, 4)]); // Keep last 5 updates
+        | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  > 155 |     refetchReports();
+        | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  > 156 |   });
+        | ^^^^^
+    157 |
+    158 |   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+    159 |     setCurrentTab(newValue);
+ERROR in src/components/reporting/ReportDashboard.tsx:193:41
+TS2367: This comparison appears to be unintentional because the types '"queued" | "completed" | "failed" | "cancelled"' and '"pending"' have no overlap.
+    191 |   const getActiveReports = () => {
+    192 |     return recentReports.filter(report => 
+  > 193 |       report.status === 'generating' || report.status === 'pending'
+        |                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    194 |     );
+    195 |   };
+    196 |
+ERROR in src/components/reporting/ReportDashboard.tsx:386:53
+TS2339: Property 'format' does not exist on type 'Report'.
+    384 |                       >
+    385 |                         <ListItemIcon>
+  > 386 |                           {ReportFormatIcons[report.format]}
+        |                                                     ^^^^^^
+    387 |                         </ListItemIcon>
+    388 |                         <ListItemText
+    389 |                           primary={
+ERROR in src/components/reporting/ReportDashboard.tsx:392:41
+TS2339: Property 'name' does not exist on type 'Report'.
+    390 |                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+    391 |                               <Typography variant="subtitle2">
+  > 392 |                                 {report.name}
+        |                                         ^^^^
+    393 |                               </Typography>
+    394 |                               {getReportStatusChip(report.status)}
+    395 |                             </Box>
+ERROR in src/components/reporting/ReportDashboard.tsx:416:47
+TS2339: Property 'progress' does not exist on type 'Report'.
+    414 |                               <LinearProgress
+    415 |                                 variant="determinate"
+  > 416 |                                 value={report.progress || 0}
+        |                                               ^^^^^^^^
+    417 |                                 size="small"
+    418 |                               />
+    419 |                             </Box>
+ERROR in src/components/reporting/ReportDashboard.tsx:417:33
+TS2322: Type '{ variant: "determinate"; value: any; size: string; }' is not assignable to type 'IntrinsicAttributes & LinearProgressProps'.
+  Property 'size' does not exist on type 'IntrinsicAttributes & LinearProgressProps'.
+    415 |                                 variant="determinate"
+    416 |                                 value={report.progress || 0}
+  > 417 |                                 size="small"
+        |                                 ^^^^
+    418 |                               />
+    419 |                             </Box>
+    420 |                           )}
+ERROR in src/components/reporting/ReportDashboard.tsx:450:41
+TS2339: Property 'name' does not exist on type 'Report'.
+    448 |                               <Assessment color="info" />
+    449 |                               <Typography variant="subtitle1">
+  > 450 |                                 {report.name}
+        |                                         ^^^^
+    451 |                               </Typography>
+    452 |                               {getReportStatusChip(report.status)}
+    453 |                             </Box>
+ERROR in src/components/reporting/ReportDashboard.tsx:459:35
+TS2339: Property 'progress' does not exist on type 'Report'.
+    457 |                           </Box>
+    458 |                           
+  > 459 |                           {report.progress !== undefined && (
+        |                                   ^^^^^^^^
+    460 |                             <Box>
+    461 |                               <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+    462 |                                 <Typography variant="body2">
+ERROR in src/components/reporting/ReportDashboard.tsx:466:43
+TS2339: Property 'progress' does not exist on type 'Report'.
+    464 |                                 </Typography>
+    465 |                                 <Typography variant="body2">
+  > 466 |                                   {report.progress.toFixed(1)}%
+        |                                           ^^^^^^^^
+    467 |                                 </Typography>
+    468 |                               </Box>
+    469 |                               <LinearProgress
+ERROR in src/components/reporting/ReportDashboard.tsx:471:47
+TS2339: Property 'progress' does not exist on type 'Report'.
+    469 |                               <LinearProgress
+    470 |                                 variant="determinate"
+  > 471 |                                 value={report.progress}
+        |                                               ^^^^^^^^
+    472 |                                 sx={{ height: 8, borderRadius: 4 }}
+    473 |                               />
+    474 |                             </Box>
+ERROR in src/components/reporting/ReportDashboard.tsx:514:41
+TS2339: Property 'name' does not exist on type 'ReportTemplate'.
+    512 |                             <Assessment sx={{ mr: 1 }} color="primary" />
+    513 |                             <Typography variant="subtitle2">
+  > 514 |                               {template.name}
+        |                                         ^^^^
+    515 |                             </Typography>
+    516 |                           </Box>
+    517 |                           <Typography variant="body2" color="text.secondary" noWrap>
+ERROR in src/components/reporting/ReportDashboard.tsx:521:51
+TS2339: Property 'category' does not exist on type 'ReportTemplate'.
+    519 |                           </Typography>
+    520 |                           <Stack direction="row" spacing={1} sx={{ mt: 1 }}>
+  > 521 |                             <Chip label={template.category} size="small" />
+        |                                                   ^^^^^^^^
+    522 |                             <Chip 
+    523 |                               label={`${template.estimated_time || 30}s`} 
+    524 |                               size="small" 
+ERROR in src/components/reporting/ReportDashboard.tsx:523:50
+TS2339: Property 'estimated_time' does not exist on type 'ReportTemplate'.
+    521 |                             <Chip label={template.category} size="small" />
+    522 |                             <Chip 
+  > 523 |                               label={`${template.estimated_time || 30}s`} 
+        |                                                  ^^^^^^^^^^^^^^
+    524 |                               size="small" 
+    525 |                               icon={<AccessTime />} 
+    526 |                             />
+ERROR in src/components/reporting/ReportManager.tsx:163:5
+TS2345: Argument of type '{ page: number; page_size: number; status: ReportStatus; format: ReportFormat; search: string; sort_by: string; sort_order: "desc" | "asc"; }' is not assignable to parameter of type '{ skip?: number; limit?: number; status?: string; report_type?: string; requested_by?: string; } | unique symbol'.
+  Object literal may only specify known properties, and 'page' does not exist in type '{ skip?: number; limit?: number; status?: string; report_type?: string; requested_by?: string; }'.
+    161 |     refetch 
+    162 |   } = useGetReportsQuery({
+  > 163 |     page: currentPage,
+        |     ^^^^^^^^^^^^^^^^^
+    164 |     page_size: pageSize,
+    165 |     status: statusFilter || undefined,
+    166 |     format: formatFilter || undefined,
+ERROR in src/components/reporting/ReportManager.tsx:182:3
+TS2554: Expected 2-3 arguments, but got 1.
+    180 |
+    181 |   // WebSocket integration for real-time report updates
+  > 182 |   useReportUpdates((updateData) => {
+        |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  > 183 |     setRealtimeUpdates(prev => [updateData, ...prev.slice(0, 4)]); // Keep last 5 updates
+        | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  > 184 |     refetch(); // Refresh the reports list
+        | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  > 185 |   });
+        | ^^^^^
+    186 |
+    187 |   const handleSearchChange = (query: string) => {
+    188 |     setSearchQuery(query);
+ERROR in src/components/reporting/ReportManager.tsx:215:22
+TS2339: Property 'format' does not exist on type 'Report'.
+    213 |       // Create download link
+    214 |       const blob = new Blob([response.data as any], { 
+  > 215 |         type: report.format === 'pdf' ? 'application/pdf' : 'application/octet-stream' 
+        |                      ^^^^^^
+    216 |       });
+    217 |       const url = URL.createObjectURL(blob);
+    218 |       const link = document.createElement('a');
+ERROR in src/components/reporting/ReportManager.tsx:220:33
+TS2339: Property 'name' does not exist on type 'Report'.
+    218 |       const link = document.createElement('a');
+    219 |       link.href = url;
+  > 220 |       link.download = `${report.name}.${report.format}`;
+        |                                 ^^^^
+    221 |       link.click();
+    222 |       URL.revokeObjectURL(url);
+    223 |     } catch (error) {
+ERROR in src/components/reporting/ReportManager.tsx:220:48
+TS2339: Property 'format' does not exist on type 'Report'.
+    218 |       const link = document.createElement('a');
+    219 |       link.href = url;
+  > 220 |       link.download = `${report.name}.${report.format}`;
+        |                                                ^^^^^^
+    221 |       link.click();
+    222 |       URL.revokeObjectURL(url);
+    223 |     } catch (error) {
+ERROR in src/components/reporting/ReportManager.tsx:304:12
+TS2367: This comparison appears to be unintentional because the types 'ReportStatus' and '"pending"' have no overlap.
+    302 |
+    303 |   const canCancel = (report: Report) => {
+  > 304 |     return report.status === 'pending' || report.status === 'generating';
+        |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    305 |   };
+    306 |
+    307 |   return (
+ERROR in src/components/reporting/ReportManager.tsx:544:35
+TS2339: Property 'name' does not exist on type 'Report'.
+    542 |                       <Box>
+    543 |                         <Typography variant="subtitle2">
+  > 544 |                           {report.name}
+        |                                   ^^^^
+    545 |                         </Typography>
+    546 |                         <Typography variant="caption" color="text.secondary">
+    547 |                           {report.description || 'No description'}
+ERROR in src/components/reporting/ReportManager.tsx:547:35
+TS2339: Property 'description' does not exist on type 'Report'.
+    545 |                         </Typography>
+    546 |                         <Typography variant="caption" color="text.secondary">
+  > 547 |                           {report.description || 'No description'}
+        |                                   ^^^^^^^^^^^
+    548 |                         </Typography>
+    549 |                       </Box>
+    550 |                     </TableCell>
+ERROR in src/components/reporting/ReportManager.tsx:558:51
+TS2339: Property 'format' does not exist on type 'Report'.
+    556 |                     <TableCell>
+    557 |                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+  > 558 |                         {ReportFormatIcons[report.format]}
+        |                                                   ^^^^^^
+    559 |                         <Typography variant="body2">
+    560 |                           {report.format.toUpperCase()}
+    561 |                         </Typography>
+ERROR in src/components/reporting/ReportManager.tsx:560:35
+TS2339: Property 'format' does not exist on type 'Report'.
+    558 |                         {ReportFormatIcons[report.format]}
+    559 |                         <Typography variant="body2">
+  > 560 |                           {report.format.toUpperCase()}
+        |                                   ^^^^^^
+    561 |                         </Typography>
+    562 |                       </Box>
+    563 |                     </TableCell>
+ERROR in src/components/reporting/ReportManager.tsx:591:43
+TS2339: Property 'progress' does not exist on type 'Report'.
+    589 |                           <LinearProgress
+    590 |                             variant="determinate"
+  > 591 |                             value={report.progress || 0}
+        |                                           ^^^^^^^^
+    592 |                             size="small"
+    593 |                           />
+    594 |                           <Typography variant="caption">
+ERROR in src/components/reporting/ReportManager.tsx:592:29
+TS2322: Type '{ variant: "determinate"; value: any; size: string; }' is not assignable to type 'IntrinsicAttributes & LinearProgressProps'.
+  Property 'size' does not exist on type 'IntrinsicAttributes & LinearProgressProps'.
+    590 |                             variant="determinate"
+    591 |                             value={report.progress || 0}
+  > 592 |                             size="small"
+        |                             ^^^^
+    593 |                           />
+    594 |                           <Typography variant="caption">
+    595 |                             {report.progress?.toFixed(0) || 0}%
+ERROR in src/components/reporting/ReportManager.tsx:595:37
+TS2339: Property 'progress' does not exist on type 'Report'.
+    593 |                           />
+    594 |                           <Typography variant="caption">
+  > 595 |                             {report.progress?.toFixed(0) || 0}%
+        |                                     ^^^^^^^^
+    596 |                           </Typography>
+    597 |                         </Box>
+    598 |                       )}
+ERROR in src/components/reporting/ReportViewer.tsx:174:22
+TS2339: Property 'name' does not exist on type 'Report'.
+    172 |     if (report) {
+    173 |       setEditFormData({
+  > 174 |         name: report.name || '',
+        |                      ^^^^
+    175 |         description: report.description || '',
+    176 |       });
+    177 |     }
+ERROR in src/components/reporting/ReportViewer.tsx:175:29
+TS2339: Property 'description' does not exist on type 'Report'.
+    173 |       setEditFormData({
+    174 |         name: report.name || '',
+  > 175 |         description: report.description || '',
+        |                             ^^^^^^^^^^^
+    176 |       });
+    177 |     }
+    178 |   }, [report]);
+ERROR in src/components/reporting/ReportViewer.tsx:192:22
+TS2339: Property 'format' does not exist on type 'Report'.
+    190 |       // Create download link
+    191 |       const blob = new Blob([response.data as any], { 
+  > 192 |         type: report.format === 'pdf' ? 'application/pdf' : 'application/octet-stream' 
+        |                      ^^^^^^
+    193 |       });
+    194 |       const url = URL.createObjectURL(blob);
+    195 |       const link = document.createElement('a');
+ERROR in src/components/reporting/ReportViewer.tsx:197:33
+TS2339: Property 'name' does not exist on type 'Report'.
+    195 |       const link = document.createElement('a');
+    196 |       link.href = url;
+  > 197 |       link.download = `${report.name}.${report.format}`;
+        |                                 ^^^^
+    198 |       link.click();
+    199 |       URL.revokeObjectURL(url);
+    200 |     } catch (error) {
+ERROR in src/components/reporting/ReportViewer.tsx:197:48
+TS2339: Property 'format' does not exist on type 'Report'.
+    195 |       const link = document.createElement('a');
+    196 |       link.href = url;
+  > 197 |       link.download = `${report.name}.${report.format}`;
+        |                                                ^^^^^^
+    198 |       link.click();
+    199 |       URL.revokeObjectURL(url);
+    200 |     } catch (error) {
+ERROR in src/components/reporting/ReportViewer.tsx:255:12
+TS2367: This comparison appears to be unintentional because the types 'ReportStatus' and '"pending"' have no overlap.
+    253 |
+    254 |   const canCancel = (report: Report) => {
+  > 255 |     return report.status === 'pending' || report.status === 'generating';
+        |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    256 |   };
+    257 |
+    258 |   const formatFileSize = (bytes?: number): string => {
+ERROR in src/components/reporting/ReportViewer.tsx:283:40
+TS2339: Property 'format' does not exist on type 'Report'.
+    281 |               <Skeleton variant="circular" width={40} height={40} />
+    282 |             ) : report ? (
+  > 283 |               ReportFormatIcons[report.format]
+        |                                        ^^^^^^
+    284 |             ) : null}
+    285 |             
+    286 |             <Box sx={{ flex: 1 }}>
+ERROR in src/components/reporting/ReportViewer.tsx:291:28
+TS2339: Property 'name' does not exist on type 'Report'.
+    289 |               ) : (
+    290 |                 <Typography variant="h6" component="div" noWrap>
+  > 291 |                   {report?.name || 'Report'}
+        |                            ^^^^
+    292 |                 </Typography>
+    293 |               )}
+    294 |               
+ERROR in src/components/reporting/ReportViewer.tsx:299:35
+TS2339: Property 'format' does not exist on type 'Report'.
+    297 |                   {getReportStatusChip(report.status)}
+    298 |                   <Chip
+  > 299 |                     label={report.format.toUpperCase()}
+        |                                   ^^^^^^
+    300 |                     size="small"
+    301 |                     variant="outlined"
+    302 |                   />
+ERROR in src/components/reporting/ReportViewer.tsx:350:63
+TS2339: Property 'name' does not exist on type 'Report'.
+    348 |                             Name
+    349 |                           </Typography>
+  > 350 |                           <Typography variant="body1">{report.name}</Typography>
+        |                                                               ^^^^
+    351 |                         </Box>
+    352 |                         
+    353 |                         <Box>
+ERROR in src/components/reporting/ReportViewer.tsx:358:37
+TS2339: Property 'description' does not exist on type 'Report'.
+    356 |                           </Typography>
+    357 |                           <Typography variant="body1">
+  > 358 |                             {report.description || 'No description'}
+        |                                     ^^^^^^^^^^^
+    359 |                           </Typography>
+    360 |                         </Box>
+    361 |                         
+ERROR in src/components/reporting/ReportViewer.tsx:367:37
+TS2339: Property 'template_name' does not exist on type 'Report'.
+    365 |                           </Typography>
+    366 |                           <Typography variant="body1">
+  > 367 |                             {report.template_name || 'Custom Report'}
+        |                                     ^^^^^^^^^^^^^
+    368 |                           </Typography>
+    369 |                         </Box>
+    370 |                         
+ERROR in src/components/reporting/ReportViewer.tsx:376:69
+TS2339: Property 'progress' does not exist on type 'Report'.
+    374 |                           </Typography>
+    375 |                           {getReportStatusChip(report.status)}
+  > 376 |                           {report.status === 'generating' && report.progress && (
+        |                                                                     ^^^^^^^^
+    377 |                             <Box sx={{ mt: 1, width: '100%' }}>
+    378 |                               <LinearProgress 
+    379 |                                 variant="determinate" 
+ERROR in src/components/reporting/ReportViewer.tsx:380:47
+TS2339: Property 'progress' does not exist on type 'Report'.
+    378 |                               <LinearProgress 
+    379 |                                 variant="determinate" 
+  > 380 |                                 value={report.progress} 
+        |                                               ^^^^^^^^
+    381 |                                 sx={{ height: 6, borderRadius: 3 }}
+    382 |                               />
+    383 |                               <Typography variant="caption" color="text.secondary">
+ERROR in src/components/reporting/ReportViewer.tsx:384:41
+TS2339: Property 'progress' does not exist on type 'Report'.
+    382 |                               />
+    383 |                               <Typography variant="caption" color="text.secondary">
+  > 384 |                                 {report.progress.toFixed(1)}% Complete
+        |                                         ^^^^^^^^
+    385 |                               </Typography>
+    386 |                             </Box>
+    387 |                           )}
+ERROR in src/components/reporting/ReportViewer.tsx:439:55
+TS2339: Property 'format' does not exist on type 'Report'.
+    437 |                         <ListItem>
+    438 |                           <ListItemIcon>
+  > 439 |                             {ReportFormatIcons[report.format]}
+        |                                                       ^^^^^^
+    440 |                           </ListItemIcon>
+    441 |                           <ListItemText 
+    442 |                             primary="Format" 
+ERROR in src/components/reporting/ReportViewer.tsx:443:47
+TS2339: Property 'format' does not exist on type 'Report'.
+    441 |                           <ListItemText 
+    442 |                             primary="Format" 
+  > 443 |                             secondary={report.format.toUpperCase()}
+        |                                               ^^^^^^
+    444 |                           />
+    445 |                         </ListItem>
+    446 |                         
+ERROR in src/components/reporting/ReportViewer.tsx:481:33
+TS2551: Property 'created_by' does not exist on type 'Report'. Did you mean 'created_at'?
+    479 |                         )}
+    480 |                         
+  > 481 |                         {report.created_by && (
+        |                                 ^^^^^^^^^^
+    482 |                           <ListItem>
+    483 |                             <ListItemIcon><Person /></ListItemIcon>
+    484 |                             <ListItemText 
+ERROR in src/components/reporting/ReportViewer.tsx:486:49
+TS2551: Property 'created_by' does not exist on type 'Report'. Did you mean 'created_at'?
+    484 |                             <ListItemText 
+    485 |                               primary="Created By" 
+  > 486 |                               secondary={report.created_by}
+        |                                                 ^^^^^^^^^^
+    487 |                             />
+    488 |                           </ListItem>
+    489 |                         )}
+ERROR in src/components/reporting/ReportViewer.tsx:527:27
+TS2339: Property 'scheduled_delivery' does not exist on type 'Report'.
+    525 |                   </Typography>
+    526 |                   
+  > 527 |                   {report.scheduled_delivery ? (
+        |                           ^^^^^^^^^^^^^^^^^^
+    528 |                     <Stack spacing={2}>
+    529 |                       <Box>
+    530 |                         <Typography variant="body2" color="text.secondary">
+ERROR in src/components/reporting/ReportViewer.tsx:534:41
+TS2339: Property 'scheduled_delivery' does not exist on type 'Report'.
+    532 |                         </Typography>
+    533 |                         <Chip 
+  > 534 |                           label={report.scheduled_delivery.enabled ? 'Enabled' : 'Disabled'}
+        |                                         ^^^^^^^^^^^^^^^^^^
+    535 |                           color={report.scheduled_delivery.enabled ? 'success' : 'default'}
+    536 |                         />
+    537 |                       </Box>
+ERROR in src/components/reporting/ReportViewer.tsx:535:41
+TS2339: Property 'scheduled_delivery' does not exist on type 'Report'.
+    533 |                         <Chip 
+    534 |                           label={report.scheduled_delivery.enabled ? 'Enabled' : 'Disabled'}
+  > 535 |                           color={report.scheduled_delivery.enabled ? 'success' : 'default'}
+        |                                         ^^^^^^^^^^^^^^^^^^
+    536 |                         />
+    537 |                       </Box>
+    538 |                       
+ERROR in src/components/reporting/ReportViewer.tsx:539:31
+TS2339: Property 'scheduled_delivery' does not exist on type 'Report'.
+    537 |                       </Box>
+    538 |                       
+  > 539 |                       {report.scheduled_delivery.enabled && (
+        |                               ^^^^^^^^^^^^^^^^^^
+    540 |                         <>
+    541 |                           <Box>
+    542 |                             <Typography variant="body2" color="text.secondary">
+ERROR in src/components/reporting/ReportViewer.tsx:546:39
+TS2339: Property 'scheduled_delivery' does not exist on type 'Report'.
+    544 |                             </Typography>
+    545 |                             <Typography variant="body1">
+  > 546 |                               {report.scheduled_delivery.frequency}
+        |                                       ^^^^^^^^^^^^^^^^^^
+    547 |                             </Typography>
+    548 |                           </Box>
+    549 |                           
+ERROR in src/components/reporting/ReportViewer.tsx:555:39
+TS2339: Property 'scheduled_delivery' does not exist on type 'Report'.
+    553 |                             </Typography>
+    554 |                             <Typography variant="body1">
+  > 555 |                               {report.scheduled_delivery.delivery_time}
+        |                                       ^^^^^^^^^^^^^^^^^^
+    556 |                             </Typography>
+    557 |                           </Box>
+    558 |                           
+ERROR in src/components/reporting/ReportViewer.tsx:564:39
+TS2339: Property 'scheduled_delivery' does not exist on type 'Report'.
+    562 |                             </Typography>
+    563 |                             <Stack direction="row" spacing={1} flexWrap="wrap">
+  > 564 |                               {report.scheduled_delivery.recipients?.map((email, index) => (
+        |                                       ^^^^^^^^^^^^^^^^^^
+    565 |                                 <Chip key={index} label={email} size="small" />
+    566 |                               ))}
+    567 |                             </Stack>
+ERROR in src/components/testing/IntegrationTest.tsx:147:48
+TS2345: Argument of type '{ page: number; page_size: number; }' is not assignable to parameter of type 'void | unique symbol'.
+    145 |
+    146 |   // API hooks for testing (using skip: true initially)
+  > 147 |   const portfolioQuery = useGetPortfoliosQuery({ page: 1, page_size: 5 }, { skip: true });
+        |                                                ^^^^^^^^^^^^^^^^^^^^^^^^^
+    148 |   const assetQuery = useGetAssetsQuery({ page: 1, page_size: 5 }, { skip: true });
+    149 |   const documentQuery = useGetDocumentsQuery({ page: 1, page_size: 5 }, { skip: true });
+    150 |   const userQuery = useGetUsersEnhancedQuery({ page: 1, page_size: 5 }, { skip: true });
+ERROR in src/components/testing/IntegrationTest.tsx:148:42
+TS2345: Argument of type '{ page: number; page_size: number; }' is not assignable to parameter of type '{ skip?: number; limit?: number; asset_type?: string; rating?: string; sector?: string; industry?: string; deal_id?: string; portfolio_id?: string; search?: string; } | unique symbol'.
+  Object literal may only specify known properties, and 'page' does not exist in type '{ skip?: number; limit?: number; asset_type?: string; rating?: string; sector?: string; industry?: string; deal_id?: string; portfolio_id?: string; search?: string; }'.
+    146 |   // API hooks for testing (using skip: true initially)
+    147 |   const portfolioQuery = useGetPortfoliosQuery({ page: 1, page_size: 5 }, { skip: true });
+  > 148 |   const assetQuery = useGetAssetsQuery({ page: 1, page_size: 5 }, { skip: true });
+        |                                          ^^^^^^^
+    149 |   const documentQuery = useGetDocumentsQuery({ page: 1, page_size: 5 }, { skip: true });
+    150 |   const userQuery = useGetUsersEnhancedQuery({ page: 1, page_size: 5 }, { skip: true });
+    151 |   const reportQuery = useGetReportsQuery({ page: 1, page_size: 5 }, { skip: true });
+ERROR in src/components/testing/IntegrationTest.tsx:149:48
+TS2345: Argument of type '{ page: number; page_size: number; }' is not assignable to parameter of type '{ skip?: number; limit?: number; document_type?: string; access_level?: string; portfolio_id?: string; owner_id?: string; } | unique symbol'.
+  Object literal may only specify known properties, and 'page' does not exist in type '{ skip?: number; limit?: number; document_type?: string; access_level?: string; portfolio_id?: string; owner_id?: string; }'.
+    147 |   const portfolioQuery = useGetPortfoliosQuery({ page: 1, page_size: 5 }, { skip: true });
+    148 |   const assetQuery = useGetAssetsQuery({ page: 1, page_size: 5 }, { skip: true });
+  > 149 |   const documentQuery = useGetDocumentsQuery({ page: 1, page_size: 5 }, { skip: true });
+        |                                                ^^^^^^^
+    150 |   const userQuery = useGetUsersEnhancedQuery({ page: 1, page_size: 5 }, { skip: true });
+    151 |   const reportQuery = useGetReportsQuery({ page: 1, page_size: 5 }, { skip: true });
+    152 |   const webSocketStatsQuery = useGetWebSocketStatsQuery(undefined, { skip: true });
+ERROR in src/components/testing/IntegrationTest.tsx:150:48
+TS2345: Argument of type '{ page: number; page_size: number; }' is not assignable to parameter of type '{ skip?: number; limit?: number; role?: string; status?: string; organization?: string; department?: string; } | unique symbol'.
+  Object literal may only specify known properties, and 'page' does not exist in type '{ skip?: number; limit?: number; role?: string; status?: string; organization?: string; department?: string; }'.
+    148 |   const assetQuery = useGetAssetsQuery({ page: 1, page_size: 5 }, { skip: true });
+    149 |   const documentQuery = useGetDocumentsQuery({ page: 1, page_size: 5 }, { skip: true });
+  > 150 |   const userQuery = useGetUsersEnhancedQuery({ page: 1, page_size: 5 }, { skip: true });
+        |                                                ^^^^^^^
+    151 |   const reportQuery = useGetReportsQuery({ page: 1, page_size: 5 }, { skip: true });
+    152 |   const webSocketStatsQuery = useGetWebSocketStatsQuery(undefined, { skip: true });
+    153 |
+ERROR in src/components/testing/IntegrationTest.tsx:151:44
+TS2345: Argument of type '{ page: number; page_size: number; }' is not assignable to parameter of type '{ skip?: number; limit?: number; status?: string; report_type?: string; requested_by?: string; } | unique symbol'.
+  Object literal may only specify known properties, and 'page' does not exist in type '{ skip?: number; limit?: number; status?: string; report_type?: string; requested_by?: string; }'.
+    149 |   const documentQuery = useGetDocumentsQuery({ page: 1, page_size: 5 }, { skip: true });
+    150 |   const userQuery = useGetUsersEnhancedQuery({ page: 1, page_size: 5 }, { skip: true });
+  > 151 |   const reportQuery = useGetReportsQuery({ page: 1, page_size: 5 }, { skip: true });
+        |                                            ^^^^^^^
+    152 |   const webSocketStatsQuery = useGetWebSocketStatsQuery(undefined, { skip: true });
+    153 |
+    154 |   // Mutation hooks
+ERROR in src/components/testing/IntegrationTest.tsx:164:11
+TS2339: Property 'isConnected' does not exist on type '{ status: "connected" | "connecting" | "disconnected"; subscriptions: { id: string; channel: string; }[]; reconnect: () => void; }'.
+    162 |
+    163 |   // WebSocket hooks
+  > 164 |   const { isConnected, connectionStats } = useWebSocketConnection();
+        |           ^^^^^^^^^^^
+    165 |
+    166 |   // Initialize test categories and cases
+    167 |   useEffect(() => {
+ERROR in src/components/testing/IntegrationTest.tsx:164:24
+TS2339: Property 'connectionStats' does not exist on type '{ status: "connected" | "connecting" | "disconnected"; subscriptions: { id: string; channel: string; }[]; reconnect: () => void; }'.
+    162 |
+    163 |   // WebSocket hooks
+  > 164 |   const { isConnected, connectionStats } = useWebSocketConnection();
+        |                        ^^^^^^^^^^^^^^^
+    165 |
+    166 |   // Initialize test categories and cases
+    167 |   useEffect(() => {
+ERROR in src/components/testing/IntegrationTest.tsx:391:17
+TS2350: Only a void function can be called with the 'new' keyword.
+    389 |             };
+    390 |           }
+  > 391 |           throw new Error('No portfolio data returned');
+        |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    392 |           
+    393 |         case 'portfolio-optimization':
+    394 |           // Test portfolio optimization
+ERROR in src/components/testing/IntegrationTest.tsx:391:27
+TS2769: No overload matches this call.
+  Overload 1 of 2, '(props: { component: ElementType<any, keyof IntrinsicElements>; } & SvgIconOwnProps & CommonProps & Omit<any, "color" | ... 10 more ... | "viewBox">): Element', gave the following error.
+    Argument of type 'string' is not assignable to parameter of type '{ component: ElementType<any, keyof IntrinsicElements>; } & SvgIconOwnProps & CommonProps & Omit<any, "color" | ... 10 more ... | "viewBox">'.
+      Type 'string' is not assignable to type '{ component: ElementType<any, keyof IntrinsicElements>; }'.
+  Overload 2 of 2, '(props: DefaultComponentProps<SvgIconTypeMap<{}, "svg">>): Element', gave the following error.
+    Type '"No portfolio data returned"' has no properties in common with type 'DefaultComponentProps<SvgIconTypeMap<{}, "svg">>'.
+    389 |             };
+    390 |           }
+  > 391 |           throw new Error('No portfolio data returned');
+        |                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    392 |           
+    393 |         case 'portfolio-optimization':
+    394 |           // Test portfolio optimization
+ERROR in src/components/testing/IntegrationTest.tsx:396:37
+TS2345: Argument of type '{ portfolio_id: string; optimization_type: "sharpe_ratio"; target_volatility: number; max_risk: number; risk_free_rate: number; }' is not assignable to parameter of type 'PortfolioOptimizationRequest'.
+  Type '{ portfolio_id: string; optimization_type: "sharpe_ratio"; target_volatility: number; max_risk: number; risk_free_rate: number; }' is missing the following properties from type 'PortfolioOptimizationRequest': constraints, max_single_asset_weight, include_stress_testing, monte_carlo_runs, optimization_horizon
+    394 |           // Test portfolio optimization
+    395 |           try {
+  > 396 |             await optimizePortfolio({
+        |                                     ^
+  > 397 |               portfolio_id: 'test-portfolio',
+        | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  > 398 |               optimization_type: 'sharpe_ratio',
+        | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  > 399 |               target_volatility: 10,
+        | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  > 400 |               max_risk: 15,
+        | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  > 401 |               risk_free_rate: 2.5,
+        | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  > 402 |             }).unwrap();
+        | ^^^^^^^^^^^^^^
+    403 |             return { ...testCase, status: 'passed', duration: Date.now() - startTime };
+    404 |           } catch (error: any) {
+    405 |             if (error.status === 404 || error.message?.includes('test-portfolio')) {
+ERROR in src/components/testing/IntegrationTest.tsx:423:17
+TS2350: Only a void function can be called with the 'new' keyword.
+    421 |             };
+    422 |           }
+  > 423 |           throw new Error('Asset API not responding');
+        |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    424 |           
+    425 |         case 'document-list':
+    426 |           // Test document listing
+ERROR in src/components/testing/IntegrationTest.tsx:423:27
+TS2769: No overload matches this call.
+  Overload 1 of 2, '(props: { component: ElementType<any, keyof IntrinsicElements>; } & SvgIconOwnProps & CommonProps & Omit<any, "color" | ... 10 more ... | "viewBox">): Element', gave the following error.
+    Argument of type 'string' is not assignable to parameter of type '{ component: ElementType<any, keyof IntrinsicElements>; } & SvgIconOwnProps & CommonProps & Omit<any, "color" | ... 10 more ... | "viewBox">'.
+      Type 'string' is not assignable to type '{ component: ElementType<any, keyof IntrinsicElements>; }'.
+  Overload 2 of 2, '(props: DefaultComponentProps<SvgIconTypeMap<{}, "svg">>): Element', gave the following error.
+    Type '"Asset API not responding"' has no properties in common with type 'DefaultComponentProps<SvgIconTypeMap<{}, "svg">>'.
+    421 |             };
+    422 |           }
+  > 423 |           throw new Error('Asset API not responding');
+        |                           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    424 |           
+    425 |         case 'document-list':
+    426 |           // Test document listing
+ERROR in src/components/testing/TestRunner.tsx:106:48
+TS2345: Argument of type '{ page: number; page_size: number; }' is not assignable to parameter of type 'void | unique symbol'.
+    104 |
+    105 |   // API hooks (skip initially)
+  > 106 |   const portfolioQuery = useGetPortfoliosQuery({ page: 1, page_size: 1 }, { skip: true });
+        |                                                ^^^^^^^^^^^^^^^^^^^^^^^^^
+    107 |   const assetQuery = useGetAssetsQuery({ page: 1, page_size: 1 }, { skip: true });
+    108 |   const userQuery = useGetUsersEnhancedQuery({ page: 1, page_size: 1 }, { skip: true });
+    109 |   const documentQuery = useGetDocumentsQuery({ page: 1, page_size: 1 }, { skip: true });
+ERROR in src/components/testing/TestRunner.tsx:107:42
+TS2345: Argument of type '{ page: number; page_size: number; }' is not assignable to parameter of type '{ skip?: number; limit?: number; asset_type?: string; rating?: string; sector?: string; industry?: string; deal_id?: string; portfolio_id?: string; search?: string; } | unique symbol'.
+  Object literal may only specify known properties, and 'page' does not exist in type '{ skip?: number; limit?: number; asset_type?: string; rating?: string; sector?: string; industry?: string; deal_id?: string; portfolio_id?: string; search?: string; }'.
+    105 |   // API hooks (skip initially)
+    106 |   const portfolioQuery = useGetPortfoliosQuery({ page: 1, page_size: 1 }, { skip: true });
+  > 107 |   const assetQuery = useGetAssetsQuery({ page: 1, page_size: 1 }, { skip: true });
+        |                                          ^^^^^^^
+    108 |   const userQuery = useGetUsersEnhancedQuery({ page: 1, page_size: 1 }, { skip: true });
+    109 |   const documentQuery = useGetDocumentsQuery({ page: 1, page_size: 1 }, { skip: true });
+    110 |   const reportQuery = useGetReportsQuery({ page: 1, page_size: 1 }, { skip: true });
+ERROR in src/components/testing/TestRunner.tsx:108:48
+TS2345: Argument of type '{ page: number; page_size: number; }' is not assignable to parameter of type '{ skip?: number; limit?: number; role?: string; status?: string; organization?: string; department?: string; } | unique symbol'.
+  Object literal may only specify known properties, and 'page' does not exist in type '{ skip?: number; limit?: number; role?: string; status?: string; organization?: string; department?: string; }'.
+    106 |   const portfolioQuery = useGetPortfoliosQuery({ page: 1, page_size: 1 }, { skip: true });
+    107 |   const assetQuery = useGetAssetsQuery({ page: 1, page_size: 1 }, { skip: true });
+  > 108 |   const userQuery = useGetUsersEnhancedQuery({ page: 1, page_size: 1 }, { skip: true });
+        |                                                ^^^^^^^
+    109 |   const documentQuery = useGetDocumentsQuery({ page: 1, page_size: 1 }, { skip: true });
+    110 |   const reportQuery = useGetReportsQuery({ page: 1, page_size: 1 }, { skip: true });
+    111 |   const webSocketStatsQuery = useGetWebSocketStatsQuery(undefined, { skip: true });
+ERROR in src/components/testing/TestRunner.tsx:109:48
+TS2345: Argument of type '{ page: number; page_size: number; }' is not assignable to parameter of type '{ skip?: number; limit?: number; document_type?: string; access_level?: string; portfolio_id?: string; owner_id?: string; } | unique symbol'.
+  Object literal may only specify known properties, and 'page' does not exist in type '{ skip?: number; limit?: number; document_type?: string; access_level?: string; portfolio_id?: string; owner_id?: string; }'.
+    107 |   const assetQuery = useGetAssetsQuery({ page: 1, page_size: 1 }, { skip: true });
+    108 |   const userQuery = useGetUsersEnhancedQuery({ page: 1, page_size: 1 }, { skip: true });
+  > 109 |   const documentQuery = useGetDocumentsQuery({ page: 1, page_size: 1 }, { skip: true });
+        |                                                ^^^^^^^
+    110 |   const reportQuery = useGetReportsQuery({ page: 1, page_size: 1 }, { skip: true });
+    111 |   const webSocketStatsQuery = useGetWebSocketStatsQuery(undefined, { skip: true });
+    112 |   
+ERROR in src/components/testing/TestRunner.tsx:110:44
+TS2345: Argument of type '{ page: number; page_size: number; }' is not assignable to parameter of type '{ skip?: number; limit?: number; status?: string; report_type?: string; requested_by?: string; } | unique symbol'.
+  Object literal may only specify known properties, and 'page' does not exist in type '{ skip?: number; limit?: number; status?: string; report_type?: string; requested_by?: string; }'.
+    108 |   const userQuery = useGetUsersEnhancedQuery({ page: 1, page_size: 1 }, { skip: true });
+    109 |   const documentQuery = useGetDocumentsQuery({ page: 1, page_size: 1 }, { skip: true });
+  > 110 |   const reportQuery = useGetReportsQuery({ page: 1, page_size: 1 }, { skip: true });
+        |                                            ^^^^^^^
+    111 |   const webSocketStatsQuery = useGetWebSocketStatsQuery(undefined, { skip: true });
+    112 |   
+    113 |   // WebSocket connection
+ERROR in src/components/testing/TestRunner.tsx:114:11
+TS2339: Property 'isConnected' does not exist on type '{ status: "connected" | "connecting" | "disconnected"; subscriptions: { id: string; channel: string; }[]; reconnect: () => void; }'.
+    112 |   
+    113 |   // WebSocket connection
+  > 114 |   const { isConnected } = useWebSocketConnection();
+        |           ^^^^^^^^^^^
+    115 |
+    116 |   const runQuickTests = async () => {
+    117 |     setIsRunning(true);
+ERROR in src/components/viewer/PerformanceOverview.tsx:276:21
+TS2769: No overload matches this call.
+  Overload 1 of 2, '(props: { component: ElementType<any, keyof IntrinsicElements>; } & ChipOwnProps & ChipSlotsAndSlotProps & CommonProps & Omit<...>): Element', gave the following error.
+    Type 'string' is not assignable to type '"error" | "default" | "success" | "info" | "warning" | "primary" | "secondary"'.
+  Overload 2 of 2, '(props: DefaultComponentProps<ChipTypeMap<{}, "div">>): Element', gave the following error.
+    Type 'string' is not assignable to type '"error" | "default" | "success" | "info" | "warning" | "primary" | "secondary"'.
+    274 |                   <Chip 
+    275 |                     label={getRiskLevel(currentMetrics.sharpeRatio).level}
+  > 276 |                     color={getRiskLevel(currentMetrics.sharpeRatio).color}
+        |                     ^^^^^
+    277 |                     size="small"
+    278 |                   />
+    279 |                 </Box>
+ERROR in src/pages/Dashboard.tsx:106:50
+TS2551: Property 'role' does not exist on type 'WritableDraft<AuthUser>'. Did you mean 'roles'?
+    104 |
+    105 |   const getWelcomeMessage = () => {
+  > 106 |     const role = user?.roles?.[0]?.name || user?.role || 'viewer';
+        |                                                  ^^^^
+    107 |     const timeOfDay = new Date().getHours();
+    108 |     const greeting = timeOfDay < 12 ? 'Good morning' : timeOfDay < 18 ? 'Good afternoon' : 'Good evening';
+    109 |     
+ERROR in src/pages/Dashboard.tsx:128:50
+TS2551: Property 'role' does not exist on type 'WritableDraft<AuthUser>'. Did you mean 'roles'?
+    126 |
+    127 |   const getRoleSpecificMetrics = () => {
+  > 128 |     const role = user?.roles?.[0]?.name || user?.role || 'viewer';
+        |                                                  ^^^^
+    129 |     
+    130 |     switch (role) {
+    131 |       case 'system_admin':
+ERROR in src/pages/Dashboard.tsx:278:51
+TS2339: Property 'full_name' does not exist on type 'WritableDraft<AuthUser>'.
+    276 |           }}
+    277 |         >
+  > 278 |           Welcome back, {user?.firstName || user?.full_name?.split(' ')[0] || 'User'}!
+        |                                                   ^^^^^^^^^
+    279 |         </Typography>
+    280 |         <Typography
+    281 |           variant="body1"
+ERROR in src/services/websocketService.ts:480:47
+TS2322: Type '"Alert"' is not assignable to type 'TagDescription<"User" | "Portfolio" | "Asset" | "Waterfall" | "Risk" | "Scenario" | "Calculation" | "SystemHealth" | "Report" | "Correlation" | "Analytics" | "SystemAlert" | "AuditLog" | ... 13 more ... | "UserPreferences">'.
+    478 |         // Invalidate risk cache
+    479 |         store.dispatch(
+  > 480 |           cloApi.util.invalidateTags(['Risk', 'Alert'])
+        |                                               ^^^^^^^
+    481 |         );
+    482 |       }
+    483 |     });
+ERROR in src/services/websocketService.ts:510:39
+TS2322: Type '"MarketData"' is not assignable to type 'TagDescription<"User" | "Portfolio" | "Asset" | "Waterfall" | "Risk" | "Scenario" | "Calculation" | "SystemHealth" | "Report" | "Correlation" | "Analytics" | "SystemAlert" | "AuditLog" | ... 13 more ... | "UserPreferences">'.
+    508 |         // Invalidate market data cache
+    509 |         store.dispatch(
+  > 510 |           cloApi.util.invalidateTags(['MarketData', 'Price'])
+        |                                       ^^^^^^^^^^^^
+    511 |         );
+    512 |       }
+    513 |     });
+ERROR in src/services/websocketService.ts:510:53
+TS2322: Type '"Price"' is not assignable to type 'TagDescription<"User" | "Portfolio" | "Asset" | "Waterfall" | "Risk" | "Scenario" | "Calculation" | "SystemHealth" | "Report" | "Correlation" | "Analytics" | "SystemAlert" | "AuditLog" | ... 13 more ... | "UserPreferences">'.
+    508 |         // Invalidate market data cache
+    509 |         store.dispatch(
+  > 510 |           cloApi.util.invalidateTags(['MarketData', 'Price'])
+        |                                                     ^^^^^^^
+    511 |         );
+    512 |       }
+    513 |     });

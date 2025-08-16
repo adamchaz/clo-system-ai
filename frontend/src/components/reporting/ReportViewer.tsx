@@ -171,8 +171,8 @@ const ReportViewer: React.FC<ReportViewerProps> = ({
   useEffect(() => {
     if (report) {
       setEditFormData({
-        name: report.name || '',
-        description: report.description || '',
+        name: report.report_name || '',
+        description: report.report_type || '',
       });
     }
   }, [report]);
@@ -189,12 +189,12 @@ const ReportViewer: React.FC<ReportViewerProps> = ({
       
       // Create download link
       const blob = new Blob([response.data as any], { 
-        type: report.format === 'pdf' ? 'application/pdf' : 'application/octet-stream' 
+        type: report.output_format === 'pdf' ? 'application/pdf' : 'application/octet-stream' 
       });
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.download = `${report.name}.${report.format}`;
+      link.download = `${report.report_name}.${report.output_format}`;
       link.click();
       URL.revokeObjectURL(url);
     } catch (error) {
@@ -252,7 +252,7 @@ const ReportViewer: React.FC<ReportViewerProps> = ({
   };
 
   const canCancel = (report: Report) => {
-    return report.status === 'pending' || report.status === 'generating';
+    return report.status === 'queued' || report.status === 'generating';
   };
 
   const formatFileSize = (bytes?: number): string => {
@@ -280,7 +280,7 @@ const ReportViewer: React.FC<ReportViewerProps> = ({
             {isLoading ? (
               <Skeleton variant="circular" width={40} height={40} />
             ) : report ? (
-              ReportFormatIcons[report.format]
+              ReportFormatIcons[report.output_format]
             ) : null}
             
             <Box sx={{ flex: 1 }}>
@@ -288,7 +288,7 @@ const ReportViewer: React.FC<ReportViewerProps> = ({
                 <Skeleton variant="text" width="60%" />
               ) : (
                 <Typography variant="h6" component="div" noWrap>
-                  {report?.name || 'Report'}
+                  {report?.report_name || 'Report'}
                 </Typography>
               )}
               
@@ -296,7 +296,7 @@ const ReportViewer: React.FC<ReportViewerProps> = ({
                 <Stack direction="row" spacing={1} sx={{ mt: 0.5 }}>
                   {getReportStatusChip(report.status)}
                   <Chip
-                    label={report.format.toUpperCase()}
+                    label={report.output_format.toUpperCase()}
                     size="small"
                     variant="outlined"
                   />
@@ -347,7 +347,7 @@ const ReportViewer: React.FC<ReportViewerProps> = ({
                           <Typography variant="body2" color="text.secondary">
                             Name
                           </Typography>
-                          <Typography variant="body1">{report.name}</Typography>
+                          <Typography variant="body1">{report.report_name}</Typography>
                         </Box>
                         
                         <Box>
@@ -355,7 +355,7 @@ const ReportViewer: React.FC<ReportViewerProps> = ({
                             Description
                           </Typography>
                           <Typography variant="body1">
-                            {report.description || 'No description'}
+                            {report.report_type || 'No description'}
                           </Typography>
                         </Box>
                         
@@ -364,7 +364,7 @@ const ReportViewer: React.FC<ReportViewerProps> = ({
                             Template
                           </Typography>
                           <Typography variant="body1">
-                            {report.template_name || 'Custom Report'}
+                            {report.template_id ? 'Template Report' : 'Custom Report'}
                           </Typography>
                         </Box>
                         
@@ -373,15 +373,14 @@ const ReportViewer: React.FC<ReportViewerProps> = ({
                             Status
                           </Typography>
                           {getReportStatusChip(report.status)}
-                          {report.status === 'generating' && report.progress && (
+                          {report.status === 'generating' && (
                             <Box sx={{ mt: 1, width: '100%' }}>
                               <LinearProgress 
-                                variant="determinate" 
-                                value={report.progress} 
+                                variant="indeterminate" 
                                 sx={{ height: 6, borderRadius: 3 }}
                               />
                               <Typography variant="caption" color="text.secondary">
-                                {report.progress.toFixed(1)}% Complete
+                                Generating report...
                               </Typography>
                             </Box>
                           )}
@@ -436,11 +435,11 @@ const ReportViewer: React.FC<ReportViewerProps> = ({
                       <List dense>
                         <ListItem>
                           <ListItemIcon>
-                            {ReportFormatIcons[report.format]}
+                            {ReportFormatIcons[report.output_format]}
                           </ListItemIcon>
                           <ListItemText 
                             primary="Format" 
-                            secondary={report.format.toUpperCase()}
+                            secondary={report.output_format.toUpperCase()}
                           />
                         </ListItem>
                         
@@ -478,12 +477,12 @@ const ReportViewer: React.FC<ReportViewerProps> = ({
                           </ListItem>
                         )}
                         
-                        {report.created_by && (
+                        {report.requested_by && (
                           <ListItem>
                             <ListItemIcon><Person /></ListItemIcon>
                             <ListItemText 
                               primary="Created By" 
-                              secondary={report.created_by}
+                              secondary={report.requested_by}
                             />
                           </ListItem>
                         )}
@@ -524,56 +523,9 @@ const ReportViewer: React.FC<ReportViewerProps> = ({
                     Delivery Schedule
                   </Typography>
                   
-                  {report.scheduled_delivery ? (
-                    <Stack spacing={2}>
-                      <Box>
-                        <Typography variant="body2" color="text.secondary">
-                          Scheduled Delivery
-                        </Typography>
-                        <Chip 
-                          label={report.scheduled_delivery.enabled ? 'Enabled' : 'Disabled'}
-                          color={report.scheduled_delivery.enabled ? 'success' : 'default'}
-                        />
-                      </Box>
-                      
-                      {report.scheduled_delivery.enabled && (
-                        <>
-                          <Box>
-                            <Typography variant="body2" color="text.secondary">
-                              Frequency
-                            </Typography>
-                            <Typography variant="body1">
-                              {report.scheduled_delivery.frequency}
-                            </Typography>
-                          </Box>
-                          
-                          <Box>
-                            <Typography variant="body2" color="text.secondary">
-                              Delivery Time
-                            </Typography>
-                            <Typography variant="body1">
-                              {report.scheduled_delivery.delivery_time}
-                            </Typography>
-                          </Box>
-                          
-                          <Box>
-                            <Typography variant="body2" color="text.secondary">
-                              Recipients
-                            </Typography>
-                            <Stack direction="row" spacing={1} flexWrap="wrap">
-                              {report.scheduled_delivery.recipients?.map((email, index) => (
-                                <Chip key={index} label={email} size="small" />
-                              ))}
-                            </Stack>
-                          </Box>
-                        </>
-                      )}
-                    </Stack>
-                  ) : (
-                    <Alert severity="info">
-                      No scheduled delivery configured for this report.
-                    </Alert>
-                  )}
+                  <Alert severity="info">
+                    Scheduled delivery configuration will be implemented in the next phase.
+                  </Alert>
                 </CardContent>
               </Card>
             </TabPanel>

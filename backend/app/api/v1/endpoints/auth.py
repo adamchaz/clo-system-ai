@@ -9,7 +9,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
-from ....core.database_config import db_config
+from ....core.database import get_db
 from ....core.config import settings
 from ....services.auth_service import AuthService
 from ....schemas.auth import (
@@ -27,10 +27,13 @@ router = APIRouter()
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/v1/auth/token")
 
-def get_db():
+def get_db_session():
     """Database dependency"""
-    with db_config.get_db_session('postgresql') as session:
-        yield session
+    db = get_db()
+    try:
+        yield next(db)
+    finally:
+        next(db, None)
 
 def get_auth_service():
     """Authentication service dependency"""
@@ -59,7 +62,7 @@ async def get_current_active_user(
     current_user: User = Depends(get_current_user)
 ) -> User:
     """Get current active user"""
-    if not current_user.is_active:
+    if not current_user.get("is_active", False):
         raise HTTPException(status_code=400, detail="Inactive user")
     return current_user
 
@@ -112,7 +115,7 @@ async def login_for_access_token(
         
         access_token_expires = timedelta(minutes=settings.access_token_expire_minutes)
         access_token = auth_service.create_access_token(
-            data={"sub": user.email}, expires_delta=access_token_expires
+            data={"sub": user["email"]}, expires_delta=access_token_expires
         )
         
         return {
@@ -120,10 +123,10 @@ async def login_for_access_token(
             "token_type": "bearer",
             "expires_in": settings.access_token_expire_minutes * 60,
             "user": {
-                "id": user.id,
-                "email": user.email,
-                "full_name": user.full_name,
-                "role": user.role
+                "id": user["id"],
+                "email": user["email"],
+                "full_name": user["full_name"],
+                "role": user["role"]
             }
         }
         
@@ -138,13 +141,13 @@ async def read_users_me(
 ):
     """Get current user profile"""
     return UserResponse(
-        id=current_user.id,
-        email=current_user.email,
-        full_name=current_user.full_name,
-        is_active=current_user.is_active,
-        role=current_user.role,
-        created_at=current_user.created_at,
-        last_login=current_user.last_login
+        id=current_user["id"],
+        email=current_user["email"],
+        full_name=current_user["full_name"],
+        is_active=current_user["is_active"],
+        role=current_user["role"],
+        created_at=current_user["created_at"],
+        last_login=current_user.get("last_login")
     )
 
 @router.put("/me", response_model=UserResponse)
@@ -250,7 +253,7 @@ async def refresh_token(
     try:
         access_token_expires = timedelta(minutes=settings.access_token_expire_minutes)
         new_token = auth_service.create_access_token(
-            data={"sub": current_user.email}, expires_delta=access_token_expires
+            data={"sub": current_user["email"]}, expires_delta=access_token_expires
         )
         
         return {
@@ -384,7 +387,7 @@ async def login(
         
         access_token_expires = timedelta(minutes=settings.access_token_expire_minutes)
         access_token = auth_service.create_access_token(
-            data={"sub": user.email}, expires_delta=access_token_expires
+            data={"sub": user["email"]}, expires_delta=access_token_expires
         )
         
         return {
@@ -392,10 +395,10 @@ async def login(
             "token_type": "bearer", 
             "expires_in": settings.access_token_expire_minutes * 60,
             "user": {
-                "id": user.id,
-                "email": user.email,
-                "full_name": user.full_name,
-                "role": user.role
+                "id": user["id"],
+                "email": user["email"],
+                "full_name": user["full_name"],
+                "role": user["role"]
             }
         }
         

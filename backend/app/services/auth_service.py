@@ -14,7 +14,7 @@ from passlib.context import CryptContext
 from passlib.hash import bcrypt
 
 from sqlalchemy.orm import Session
-from ..core.database_config import db_config
+from ..core.database import engine, SessionLocal
 from ..core.config import settings
 from ..schemas.auth import User, UserCreate, UserRole
 
@@ -195,24 +195,28 @@ class AuthService:
             User data if found, None otherwise
         """
         try:
-            # Implementation would query PostgreSQL users table
-            # For now, return mock user for demo
-            if email == "admin@clo-system.com":
-                return {
-                    'id': 'user_001',
-                    'email': email,
-                    'full_name': 'System Administrator',
-                    'hashed_password': self.get_password_hash('admin123'),
-                    'role': UserRole.ADMIN,
-                    'is_active': True,
-                    'created_at': datetime.now() - timedelta(days=30),
-                    'login_count': 25,
-                    'last_login': datetime.now() - timedelta(hours=2)
-                }
-            
-            # For other emails, return None (not found)
-            return None
-            
+            # Query the actual PostgreSQL users table
+            with SessionLocal() as session:
+                from sqlalchemy import text
+                result = session.execute(
+                    text("SELECT user_id, email, password_hash, first_name, last_name, role, is_active, created_at, last_login FROM users WHERE email = :email AND is_active = true"),
+                    {'email': email}
+                ).fetchone()
+                
+                if result:
+                    return {
+                        'id': result[0],
+                        'email': result[1], 
+                        'hashed_password': result[2],
+                        'full_name': f"{result[3]} {result[4]}" if result[3] and result[4] else result[1],
+                        'role': UserRole.ADMIN if result[5] == 'ADMIN' else UserRole.MANAGER if result[5] == 'MANAGER' else UserRole.ANALYST if result[5] == 'ANALYST' else UserRole.VIEWER,
+                        'is_active': result[6],
+                        'created_at': result[7],
+                        'last_login': result[8]
+                    }
+                
+                return None
+                
         except Exception as e:
             logger.error(f"Error retrieving user {email}: {e}")
             return None
