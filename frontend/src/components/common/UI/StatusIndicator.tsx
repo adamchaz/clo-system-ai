@@ -209,7 +209,7 @@ const StatusIndicator: React.FC<StatusIndicatorProps> = ({
     },
   };
 
-  const config = statusConfig[status];
+  const config = statusConfig[status] || statusConfig.unknown;
   const finalColor = customColor || config.color;
   const IconComponent = config.icon;
 

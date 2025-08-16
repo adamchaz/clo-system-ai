@@ -54,8 +54,11 @@ async def list_assets(
             rating=rating
         )
         
+        # Convert to AssetResponse objects
+        asset_responses = [AssetResponse(**asset) for asset in assets]
+        
         return AssetListResponse(
-            assets=assets,
+            assets=asset_responses,
             total_count=total_count,
             skip=skip,
             limit=limit

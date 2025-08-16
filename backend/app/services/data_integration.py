@@ -47,9 +47,9 @@ class DataIntegrationService:
         try:
             # Read from migrated assets database
             with get_db_session('assets') as source_session:
-                # Query migrated assets (adjust query based on actual schema)
+                # Query all migrated assets
                 migrated_assets = source_session.execute(text("""
-                    SELECT * FROM assets LIMIT 100
+                    SELECT * FROM assets
                 """)).fetchall()
                 
                 logger.info(f"Found {len(migrated_assets)} migrated assets")
@@ -352,6 +352,206 @@ class DataIntegrationService:
         except (ValueError, TypeError):
             return None
     
+    def get_assets_paginated(self, skip: int = 0, limit: int = 100, asset_type: Optional[str] = None, rating: Optional[str] = None) -> List[Dict[str, Any]]:
+        """Get paginated list of assets from PostgreSQL database"""
+        try:
+            with get_db_session('postgresql') as session:
+                query = "SELECT * FROM assets"
+                params = {}
+                where_conditions = []
+                
+                if asset_type:
+                    where_conditions.append("bond_loan = :asset_type")
+                    params['asset_type'] = asset_type
+                    
+                if rating:
+                    where_conditions.append("(mdy_rating = :rating OR sp_rating = :rating)")
+                    params['rating'] = rating
+                
+                if where_conditions:
+                    query += " WHERE " + " AND ".join(where_conditions)
+                
+                query += f" LIMIT {limit} OFFSET {skip}"
+                
+                result = session.execute(text(query), params).fetchall()
+                
+                # Convert to dict format and map to API schema
+                assets = []
+                for row in result:
+                    row_dict = dict(row._mapping) if hasattr(row, '_mapping') else dict(row)
+                    
+                    # Map database fields to API schema fields
+                    asset_dict = {
+                        'id': row_dict.get('blkrock_id'),
+                        'cusip': row_dict.get('cusip'),  # Will be None if not in DB
+                        'isin': row_dict.get('isin'),    # Will be None if not in DB
+                        'asset_name': row_dict.get('issue_name'),
+                        'asset_type': row_dict.get('bond_loan'),
+                        'industry': row_dict.get('mdy_industry'),
+                        'sector': row_dict.get('sp_industry'), 
+                        'current_balance': row_dict.get('par_amount'),
+                        'original_balance': row_dict.get('facility_size'),
+                        'coupon_rate': row_dict.get('coupon'),
+                        'maturity_date': row_dict.get('maturity'),
+                        'rating': row_dict.get('mdy_rating') or row_dict.get('sp_rating'),
+                        'created_at': row_dict.get('created_at'),
+                        'updated_at': row_dict.get('updated_at'),
+                        'is_active': True,  # Default to active
+                        'days_to_maturity': None,  # Could calculate this
+                        'yield_to_maturity': None,  # Not available yet
+                        'duration': row_dict.get('wal')  # Weighted Average Life as proxy
+                    }
+                    assets.append(asset_dict)
+                
+                return assets
+                
+        except Exception as e:
+            logger.error(f"Error fetching paginated assets: {e}")
+            return []
+    
+    def get_assets_count(self, asset_type: Optional[str] = None, rating: Optional[str] = None) -> int:
+        """Get total count of assets with optional filtering"""
+        try:
+            with get_db_session('postgresql') as session:
+                query = "SELECT COUNT(*) FROM assets"
+                params = {}
+                where_conditions = []
+                
+                if asset_type:
+                    where_conditions.append("bond_loan = :asset_type")
+                    params['asset_type'] = asset_type
+                    
+                if rating:
+                    where_conditions.append("(mdy_rating = :rating OR sp_rating = :rating)")
+                    params['rating'] = rating
+                
+                if where_conditions:
+                    query += " WHERE " + " AND ".join(where_conditions)
+                
+                result = session.execute(text(query), params).fetchone()
+                return result[0] if result else 0
+                
+        except Exception as e:
+            logger.error(f"Error counting assets: {e}")
+            return 0
+    
+    def get_asset_by_id(self, asset_id: str) -> Optional[Dict[str, Any]]:
+        """Get a specific asset by ID from PostgreSQL database"""
+        try:
+            with get_db_session('postgresql') as session:
+                result = session.execute(text("""
+                    SELECT * FROM assets 
+                    WHERE blkrock_id = :asset_id
+                """), {'asset_id': asset_id}).fetchone()
+                
+                if result:
+                    row_dict = dict(result._mapping) if hasattr(result, '_mapping') else dict(result)
+                    
+                    # Map database fields to API schema fields
+                    asset_dict = {
+                        'id': row_dict.get('blkrock_id'),
+                        'cusip': row_dict.get('cusip'),  # Will be None if not in DB
+                        'isin': row_dict.get('isin'),    # Will be None if not in DB
+                        'asset_name': row_dict.get('issue_name'),
+                        'asset_type': row_dict.get('bond_loan'),
+                        'industry': row_dict.get('mdy_industry'),
+                        'sector': row_dict.get('sp_industry'), 
+                        'current_balance': row_dict.get('par_amount'),
+                        'original_balance': row_dict.get('facility_size'),
+                        'coupon_rate': row_dict.get('coupon'),
+                        'maturity_date': row_dict.get('maturity'),
+                        'rating': row_dict.get('mdy_rating') or row_dict.get('sp_rating'),
+                        'created_at': row_dict.get('created_at'),
+                        'updated_at': row_dict.get('updated_at'),
+                        'is_active': True,  # Default to active
+                        'days_to_maturity': None,  # Could calculate this
+                        'yield_to_maturity': None,  # Not available yet
+                        'duration': row_dict.get('wal')  # Weighted Average Life as proxy
+                    }
+                    return asset_dict
+                return None
+                
+        except Exception as e:
+            logger.error(f"Error fetching asset {asset_id}: {e}")
+            return None
+    
+    def get_asset_correlations(self, asset_id: str, limit: int = 50, threshold: Optional[float] = None) -> List[Dict[str, Any]]:
+        """Get correlations for a specific asset"""
+        try:
+            with get_db_session('correlations') as session:
+                query = """
+                    SELECT asset1_id, asset2_id, correlation_value 
+                    FROM asset_correlations 
+                    WHERE asset1_id = :asset_id OR asset2_id = :asset_id
+                """
+                params = {'asset_id': asset_id}
+                
+                if threshold is not None:
+                    query += " AND ABS(correlation_value) >= :threshold"
+                    params['threshold'] = threshold
+                
+                query += f" LIMIT {limit}"
+                
+                result = session.execute(text(query), params).fetchall()
+                
+                correlations = []
+                for row in result:
+                    correlations.append({
+                        'asset_id_1': row[0],
+                        'asset_id_2': row[1],
+                        'correlation': float(row[2]),
+                        'last_updated': None
+                    })
+                
+                return correlations
+                
+        except Exception as e:
+            logger.error(f"Error fetching correlations for asset {asset_id}: {e}")
+            return []
+    
+    def get_asset_statistics(self) -> Dict[str, Any]:
+        """Get asset statistics summary"""
+        try:
+            stats = {'total_count': 0, 'by_type': {}, 'by_rating': {}, 'correlation_count': 0}
+            
+            # Get asset counts from PostgreSQL
+            with get_db_session('postgresql') as session:
+                # Total count
+                total_result = session.execute(text("SELECT COUNT(*) FROM assets")).fetchone()
+                stats['total_count'] = total_result[0] if total_result else 0
+                
+                # By type (bond/loan)
+                type_result = session.execute(text("""
+                    SELECT bond_loan, COUNT(*) 
+                    FROM assets 
+                    WHERE bond_loan IS NOT NULL 
+                    GROUP BY bond_loan
+                """)).fetchall()
+                stats['by_type'] = {row[0]: row[1] for row in type_result}
+                
+                # By rating
+                rating_result = session.execute(text("""
+                    SELECT mdy_rating, COUNT(*) 
+                    FROM assets 
+                    WHERE mdy_rating IS NOT NULL 
+                    GROUP BY mdy_rating
+                """)).fetchall()
+                stats['by_rating'] = {row[0]: row[1] for row in rating_result}
+            
+            # Get correlation count (keep this from SQLite correlations DB for now)
+            try:
+                with get_db_session('correlations') as session:
+                    corr_result = session.execute(text("SELECT COUNT(*) FROM asset_correlations")).fetchone()
+                    stats['correlation_count'] = corr_result[0] if corr_result else 0
+            except Exception:
+                stats['correlation_count'] = 0
+            
+            return stats
+            
+        except Exception as e:
+            logger.error(f"Error fetching asset statistics: {e}")
+            return {'total_count': 0, 'by_type': {}, 'by_rating': {}, 'correlation_count': 0}
+
     def _safe_date(self, value: Any) -> Optional[date]:
         """Safely convert value to date"""
         if value is None:

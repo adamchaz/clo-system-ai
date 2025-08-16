@@ -381,7 +381,7 @@ export interface PaginatedResponse<T> {
 // Enhanced base query with retry and error handling
 const baseQueryWithRetry = retry(
   fetchBaseQuery({
-    baseUrl: process.env.REACT_APP_API_URL || 'http://localhost:8001/api/v1/',
+    baseUrl: `${process.env.REACT_APP_API_URL || 'http://localhost:8000'}/api/v1/`,
     prepareHeaders: (headers, { getState }) => {
       // Get token from Redux store first, fallback to authService
       const reduxToken = (getState() as RootState).auth.tokens?.accessToken;
@@ -511,11 +511,28 @@ export const cloApi = createApi({
         url: 'assets',
         params: { skip, limit, asset_type, rating, sector, industry, deal_id, portfolio_id, search },
       }),
+      transformResponse: (response: any): PaginatedResponse<Asset> => ({
+        data: (response.assets || []).map((asset: any) => ({
+          ...asset,
+          status: asset.is_active ? 'active' : 'inactive',
+        })),
+        total: response.total_count || 0,
+        skip: response.skip || 0,
+        limit: response.limit || 100,
+        has_more: response.has_more || false,
+      }),
       providesTags: ['Asset'],
     }),
 
     getAsset: builder.query<ApiResponse<Asset>, string>({
       query: (assetId) => `assets/${assetId}`,
+      transformResponse: (response: any): ApiResponse<Asset> => ({
+        data: {
+          ...response,
+          status: response.is_active ? 'active' : 'inactive',
+        },
+        success: true,
+      }),
       providesTags: (result, error, id) => [{ type: 'Asset', id }],
     }),
 

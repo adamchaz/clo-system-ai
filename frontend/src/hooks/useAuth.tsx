@@ -22,28 +22,44 @@ export const useAuth = () => {
     authService.setupAxiosInterceptors();
   }, []);
 
-  // Auto-refresh token on app load if refresh token exists
+  // Auto-restore authentication on app load
   useEffect(() => {
     const initializeAuth = async () => {
+      const accessToken = authService.getAccessToken();
       const refreshToken = authService.getRefreshToken();
-      if (refreshToken && !isAuthenticated) {
+      
+      if (accessToken && !isAuthenticated && !user) {
         try {
-          await dispatch(refreshTokenAsync()).unwrap();
-          // Get current user after token refresh
+          // First try to get current user with existing access token
           const currentUser = await authService.getCurrentUser();
           if (currentUser) {
             dispatch(setUser(currentUser));
+            return;
           }
         } catch (error) {
-          console.error('Token refresh failed:', error);
-          // Clear invalid tokens
-          authService.clearTokens();
+          console.log('Access token invalid, trying refresh...');
+        }
+        
+        // If getting user failed, try refreshing token
+        if (refreshToken) {
+          try {
+            await dispatch(refreshTokenAsync()).unwrap();
+            // Get current user after token refresh
+            const currentUser = await authService.getCurrentUser();
+            if (currentUser) {
+              dispatch(setUser(currentUser));
+            }
+          } catch (error) {
+            console.error('Token refresh failed:', error);
+            // Clear invalid tokens
+            authService.clearTokens();
+          }
         }
       }
     };
 
     initializeAuth();
-  }, [dispatch, isAuthenticated]);
+  }, [dispatch, isAuthenticated, user]);
 
   const login = useCallback(async (credentials: LoginCredentials) => {
     try {
@@ -125,7 +141,7 @@ export const useAuth = () => {
   // Get user's display name
   const getDisplayName = useCallback(() => {
     if (!user) return '';
-    return `${user.firstName} ${user.lastName}`;
+    return `${user.firstName || ''} ${user.lastName || ''}`.trim();
   }, [user]);
 
   // Get user's primary role for display
@@ -136,7 +152,7 @@ export const useAuth = () => {
 
   // Get user's initials for avatar
   const getUserInitials = useCallback(() => {
-    if (!user) return '';
+    if (!user || !user.firstName || !user.lastName) return '';
     return `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`.toUpperCase();
   }, [user]);
 

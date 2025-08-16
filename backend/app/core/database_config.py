@@ -19,19 +19,22 @@ class DatabaseConfig:
     """Database configuration manager for CLO system"""
     
     def __init__(self):
-        # Production PostgreSQL Database
+        # Production PostgreSQL Database  
         self.postgresql_url = os.getenv(
             'DATABASE_URL',
-            'postgresql://clo_user:clo_password@localhost:5432/clo_management'
+            'postgresql://postgres:adamchaz@127.0.0.1:5433/clo_dev'
         )
         
         # Migrated Data SQLite Databases (read-only)
+        # Get absolute paths to database files (they're in backend/data/databases)
+        backend_dir = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))  # Go up from app/core to backend
+        db_dir = os.path.join(backend_dir, "data", "databases")
         self.migration_databases = {
-            'assets': 'sqlite:///clo_assets.db',
-            'correlations': 'sqlite:///clo_correlations.db',
-            'scenarios': 'sqlite:///clo_mag_scenarios.db',
-            'config': 'sqlite:///clo_model_config.db',
-            'reference': 'sqlite:///clo_reference_quick.db'
+            'assets': f'sqlite:///{os.path.join(db_dir, "clo_assets_production.db")}',
+            'correlations': f'sqlite:///{os.path.join(db_dir, "clo_correlations.db")}',
+            'scenarios': f'sqlite:///{os.path.join(db_dir, "clo_mag_scenarios.db")}',
+            'config': f'sqlite:///{os.path.join(db_dir, "clo_model_config.db")}',
+            'reference': f'sqlite:///{os.path.join(db_dir, "clo_reference_quick.db")}'
         }
         
         # Redis for caching

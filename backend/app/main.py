@@ -110,4 +110,4 @@ async def health_check():
         "redis": "connected" if redis_status else "disconnected",
         "environment": settings.environment,
         "quantlib": "available"
-    }
+    }# reloading

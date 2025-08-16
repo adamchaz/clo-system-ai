@@ -122,11 +122,11 @@ const authSlice = createSlice({
     initializeAuth: (state) => {
       const token = authService.getAccessToken();
       if (token) {
-        state.isAuthenticated = true;
         state.tokens = {
           accessToken: token,
           refreshToken: authService.getRefreshToken() || '',
         };
+        // Don't set isAuthenticated yet - let the user fetch complete first
       }
     },
   },

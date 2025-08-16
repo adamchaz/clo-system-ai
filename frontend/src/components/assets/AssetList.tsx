@@ -67,6 +67,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import StatusIndicator from '../common/UI/StatusIndicator';
 import { useCloApi } from '../../hooks/useCloApi';
+import type { Asset } from '../../store/api/cloApi';
 
 
 // Types
@@ -82,35 +83,6 @@ interface AssetFilters {
   sortOrder: 'asc' | 'desc';
 }
 
-interface Asset {
-  id: string;
-  cusip: string;
-  issuer: string;
-  asset_description?: string;
-  asset_type: string;
-  industry?: string;
-  current_rating?: string;
-  current_price?: number;
-  par_amount?: number;
-  current_balance?: number;
-  maturity_date?: string;
-  coupon_rate?: number;
-  spread?: number;
-  purchase_date?: string;
-  purchase_price?: number;
-  yield_to_maturity?: number;
-  duration?: number;
-  convexity?: number;
-  default_probability?: number;
-  recovery_rate?: number;
-  lgd?: number;
-  ead?: number;
-  last_updated?: string;
-  status: 'active' | 'inactive' | 'matured' | 'defaulted';
-  performance_1d?: number;
-  performance_30d?: number;
-  performance_ytd?: number;
-}
 
 interface AssetListProps {
   portfolioId?: string;
@@ -139,7 +111,7 @@ const AssetList: React.FC<AssetListProps> = ({
     priceRange: '',
     maturityRange: '',
     ratingCategory: '',
-    sortBy: 'cusip',
+    sortBy: 'asset_name',
     sortOrder: 'asc',
   });
   const [selectedAssets, setSelectedAssets] = useState<Set<string>>(new Set());
@@ -174,16 +146,15 @@ const AssetList: React.FC<AssetListProps> = ({
     if (filters.search) {
       const searchLower = filters.search.toLowerCase();
       filtered = filtered.filter(asset =>
-        asset.cusip.toLowerCase().includes(searchLower) ||
-        asset.issuer.toLowerCase().includes(searchLower) ||
-        asset.asset_description?.toLowerCase().includes(searchLower) ||
+        asset.asset_name?.toLowerCase().includes(searchLower) ||
+        (asset.cusip && asset.cusip.toLowerCase().includes(searchLower)) ||
         asset.industry?.toLowerCase().includes(searchLower)
       );
     }
     
     // Rating filter
     if (filters.rating) {
-      filtered = filtered.filter(asset => asset.current_rating === filters.rating);
+      filtered = filtered.filter(asset => asset.rating === filters.rating);
     }
     
     // Industry filter
@@ -200,7 +171,7 @@ const AssetList: React.FC<AssetListProps> = ({
     if (filters.ratingCategory) {
       const isInvestmentGrade = (asset: Asset) => 
         ['AAA', 'AA', 'A', 'BBB'].some(rating => 
-          asset.current_rating?.startsWith(rating)
+          asset.rating?.startsWith(rating)
         );
       if (filters.ratingCategory === 'investment-grade') {
         filtered = filtered.filter(isInvestmentGrade);
@@ -213,7 +184,7 @@ const AssetList: React.FC<AssetListProps> = ({
     if (filters.priceRange) {
       const [min, max] = filters.priceRange.split('-').map(Number);
       filtered = filtered.filter(asset => {
-        const price = asset.current_price || 0;
+        const price = asset.original_balance || 0;
         return price >= min && (max ? price <= max : true);
       });
     }
@@ -362,7 +333,7 @@ const AssetList: React.FC<AssetListProps> = ({
       priceRange: '',
       maturityRange: '',
       ratingCategory: '',
-      sortBy: 'cusip',
+      sortBy: 'asset_name',
       sortOrder: 'asc',
     });
     setPage(0);
@@ -544,7 +515,7 @@ const AssetList: React.FC<AssetListProps> = ({
                     variant="outlined"
                     size="small"
                     onClick={clearFilters}
-                    disabled={Object.values(filters).every(v => !v || v === 'cusip' || v === 'asc')}
+                    disabled={Object.values(filters).every(v => !v || v === 'asset_name' || v === 'asc')}
                   >
                     Clear
                   </Button>
@@ -571,24 +542,24 @@ const AssetList: React.FC<AssetListProps> = ({
                 </TableCell>
                 <TableCell>
                   <Button
-                    onClick={() => handleSort('cusip')}
+                    onClick={() => handleSort('asset_name')}
                     sx={{ fontWeight: 'bold', color: 'text.primary' }}
                   >
-                    CUSIP
+                    Asset Name
                   </Button>
                 </TableCell>
                 <TableCell>
                   <Button
-                    onClick={() => handleSort('issuer')}
+                    onClick={() => handleSort('asset_name')}
                     sx={{ fontWeight: 'bold', color: 'text.primary' }}
                   >
-                    Issuer
+                    Name
                   </Button>
                 </TableCell>
                 <TableCell>Asset Type</TableCell>
                 <TableCell>
                   <Button
-                    onClick={() => handleSort('current_rating')}
+                    onClick={() => handleSort('rating')}
                     sx={{ fontWeight: 'bold', color: 'text.primary' }}
                   >
                     Rating
@@ -596,10 +567,10 @@ const AssetList: React.FC<AssetListProps> = ({
                 </TableCell>
                 <TableCell align="right">
                   <Button
-                    onClick={() => handleSort('current_price')}
+                    onClick={() => handleSort('original_balance')}
                     sx={{ fontWeight: 'bold', color: 'text.primary' }}
                   >
-                    Price
+                    Original Balance
                   </Button>
                 </TableCell>
                 <TableCell align="right">
@@ -632,19 +603,17 @@ const AssetList: React.FC<AssetListProps> = ({
                   <TableCell>
                     <Box>
                       <Typography variant="body2" fontWeight="medium">
-                        {asset.cusip}
+                        {asset.cusip || asset.id}
                       </Typography>
-                      {asset.asset_description && (
-                        <Typography variant="caption" color="text.secondary">
-                          {asset.asset_description.substring(0, 30)}...
-                        </Typography>
-                      )}
+                      <Typography variant="caption" color="text.secondary">
+                        {asset.asset_name?.substring(0, 40) || 'N/A'}...
+                      </Typography>
                     </Box>
                   </TableCell>
                   <TableCell>
                     <Box>
                       <Typography variant="body2">
-                        {asset.issuer}
+                        {asset.asset_name || 'N/A'}
                       </Typography>
                       {asset.industry && (
                         <Chip
@@ -665,17 +634,17 @@ const AssetList: React.FC<AssetListProps> = ({
                     />
                   </TableCell>
                   <TableCell>
-                    {asset.current_rating && (
+                    {asset.rating && (
                       <Chip
-                        label={asset.current_rating}
+                        label={asset.rating}
                         size="small"
-                        color={getRatingColor(asset.current_rating)}
+                        color={getRatingColor(asset.rating)}
                       />
                     )}
                   </TableCell>
                   <TableCell align="right">
                     <Typography variant="body2" fontWeight="medium">
-                      {formatCurrency(asset.current_price)}
+                      {formatCurrency(asset.original_balance)}
                     </Typography>
                   </TableCell>
                   <TableCell align="right">
@@ -777,7 +746,7 @@ const AssetList: React.FC<AssetListProps> = ({
           <DialogTitle>Confirm Delete</DialogTitle>
           <DialogContent>
             <Typography>
-              Are you sure you want to delete asset "{assetToDelete?.cusip}"? This action cannot be undone.
+              Are you sure you want to delete asset "{assetToDelete?.asset_name}"? This action cannot be undone.
             </Typography>
           </DialogContent>
           <DialogActions>

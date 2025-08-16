@@ -156,6 +156,22 @@ const AssetDetail: React.FC<AssetDetailProps> = ({
   // Derived data
   const assetData = asset?.data as Asset;
 
+  // Utility functions needed for useMemo
+  const getRatingCategory = (rating?: string) => {
+    if (!rating) return 'Unrated';
+    return ['AAA', 'AA', 'A', 'BBB'].some(r => rating.startsWith(r))
+      ? 'Investment Grade'
+      : 'Speculative Grade';
+  };
+
+  const getRiskLevel = (asset: Asset) => {
+    const defaultProb = asset.default_probability || 0;
+    if (defaultProb < 0.01) return 'Low';
+    if (defaultProb < 0.05) return 'Medium';
+    if (defaultProb < 0.1) return 'High';
+    return 'Very High';
+  };
+
   const assetMetrics = useMemo(() => {
     if (!assetData) return null;
 
@@ -164,7 +180,7 @@ const AssetDetail: React.FC<AssetDetailProps> = ({
       : null;
 
     const purchaseGainLoss = assetData.purchase_price && assetData.current_price
-      ? ((assetData.current_price - assetData.purchase_price) / assetData.purchase_price) * 100
+      ? ((Number(assetData.current_price) - Number(assetData.purchase_price)) / Number(assetData.purchase_price)) * 100
       : null;
 
     return {
@@ -177,18 +193,22 @@ const AssetDetail: React.FC<AssetDetailProps> = ({
   }, [assetData]);
 
   // Utility functions
-  const formatCurrency = (value?: number, decimals: number = 2) => {
-    if (!value && value !== 0) return 'N/A';
+  const formatCurrency = (value?: number | string, decimals: number = 2) => {
+    if (!value && value !== 0 && value !== '0' && value !== '0.00') return 'N/A';
+    const numValue = typeof value === 'string' ? Number(value) : value;
+    if (isNaN(numValue)) return 'N/A';
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD',
       minimumFractionDigits: decimals,
-    }).format(value);
+    }).format(numValue);
   };
 
-  const formatPercentage = (value?: number, decimals: number = 2) => {
+  const formatPercentage = (value?: number | string, decimals: number = 2) => {
     if (value === undefined || value === null) return 'N/A';
-    return `${(value * 100).toFixed(decimals)}%`;
+    const numValue = typeof value === 'string' ? Number(value) : value;
+    if (isNaN(numValue)) return 'N/A';
+    return `${(numValue * 100).toFixed(decimals)}%`;
   };
 
   const formatDate = (date?: string) => {
@@ -206,21 +226,6 @@ const AssetDetail: React.FC<AssetDetailProps> = ({
     if (['A', 'BBB'].some(r => rating.startsWith(r))) return 'info';
     if (['BB', 'B'].some(r => rating.startsWith(r))) return 'warning';
     return 'error';
-  };
-
-  const getRatingCategory = (rating?: string) => {
-    if (!rating) return 'Unrated';
-    return ['AAA', 'AA', 'A', 'BBB'].some(r => rating.startsWith(r))
-      ? 'Investment Grade'
-      : 'Speculative Grade';
-  };
-
-  const getRiskLevel = (asset: Asset) => {
-    const defaultProb = asset.default_probability || 0;
-    if (defaultProb < 0.01) return 'Low';
-    if (defaultProb < 0.05) return 'Medium';
-    if (defaultProb < 0.1) return 'High';
-    return 'Very High';
   };
 
   const getPerformanceIcon = (performance?: number) => {
@@ -631,7 +636,7 @@ const AssetDetail: React.FC<AssetDetailProps> = ({
                       </TableRow>
                       <TableRow>
                         <TableCell><strong>Spread</strong></TableCell>
-                        <TableCell align="right">{assetData.spread ? `${(assetData.spread * 10000).toFixed(0)} bps` : 'N/A'}</TableCell>
+                        <TableCell align="right">{assetData.spread ? `${(Number(assetData.spread) * 10000).toFixed(0)} bps` : 'N/A'}</TableCell>
                       </TableRow>
                       <TableRow>
                         <TableCell><strong>Yield to Maturity</strong></TableCell>
@@ -639,11 +644,11 @@ const AssetDetail: React.FC<AssetDetailProps> = ({
                       </TableRow>
                       <TableRow>
                         <TableCell><strong>Duration</strong></TableCell>
-                        <TableCell align="right">{assetData.duration ? `${assetData.duration.toFixed(2)} years` : 'N/A'}</TableCell>
+                        <TableCell align="right">{assetData.duration ? `${Number(assetData.duration).toFixed(2)} years` : 'N/A'}</TableCell>
                       </TableRow>
                       <TableRow>
                         <TableCell><strong>Convexity</strong></TableCell>
-                        <TableCell align="right">{assetData.convexity ? assetData.convexity.toFixed(2) : 'N/A'}</TableCell>
+                        <TableCell align="right">{assetData.convexity ? Number(assetData.convexity).toFixed(2) : 'N/A'}</TableCell>
                       </TableRow>
                     </TableBody>
                   </Table>

@@ -207,7 +207,8 @@ def configure_cors(app: FastAPI):
             "Content-Type",
             "Authorization",
             "X-Requested-With",
-            "X-CSRF-Token"
+            "X-CSRF-Token",
+            "X-Client-Version"
         ],
         expose_headers=["X-Total-Count", "X-Rate-Limit-*"],
         max_age=3600,  # Cache preflight for 1 hour

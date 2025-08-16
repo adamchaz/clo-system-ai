@@ -200,7 +200,7 @@ class WebSocketService {
   private isConnecting = false;
   
   /** WebSocket server URL with fallback to localhost */
-  private readonly wsUrl = process.env.REACT_APP_WS_URL || 'ws://localhost:8001/ws';
+  private readonly wsUrl = process.env.REACT_APP_WS_URL || 'ws://localhost:8000/ws';
 
   /**
    * Initialize WebSocket connection with JWT authentication

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { AuthUser, LoginCredentials, RegisterData, AuthTokens } from '../types/auth';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8001';
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
 
 export class AuthService {
   private static instance: AuthService;
@@ -30,11 +30,12 @@ export class AuthService {
       const { user: backendUser, access_token, refresh_token, token_type } = response.data;
       
       // Transform backend user to frontend AuthUser format
+      const fullNameParts = (backendUser.full_name || '').split(' ');
       const user: AuthUser = {
         id: backendUser.id,
         email: backendUser.email,
-        firstName: backendUser.full_name.split(' ')[0] || '',
-        lastName: backendUser.full_name.split(' ').slice(1).join(' ') || '',
+        firstName: fullNameParts[0] || '',
+        lastName: fullNameParts.slice(1).join(' ') || '',
         roles: [{ 
           id: backendUser.role, 
           name: backendUser.role, 
@@ -114,7 +115,28 @@ export class AuthService {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      return response.data;
+      const backendUser = response.data;
+      
+      // Transform backend user to frontend AuthUser format
+      const fullNameParts = (backendUser.full_name || '').split(' ');
+      const user: AuthUser = {
+        id: backendUser.id,
+        email: backendUser.email,
+        firstName: fullNameParts[0] || '',
+        lastName: fullNameParts.slice(1).join(' ') || '',
+        roles: [{ 
+          id: backendUser.role, 
+          name: backendUser.role, 
+          displayName: backendUser.role, 
+          description: '', 
+          permissions: [] 
+        }],
+        isActive: true,
+        createdAt: backendUser.created_at || new Date().toISOString(),
+        updatedAt: backendUser.updated_at || new Date().toISOString()
+      };
+
+      return user;
     } catch (error) {
       this.clearTokens();
       return null;
