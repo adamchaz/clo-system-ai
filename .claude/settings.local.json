@@ -88,7 +88,11 @@
       "Bash(dir:*)",
       "Bash(powershell:*)",
       "Bash(set PORT=3002)",
-      "Bash(call:*)"
+      "Bash(call:*)",
+      "Bash(.\\venv\\Scripts\\python.exe -m uvicorn:*)",
+      "Bash(sqlite3:*)",
+      "Bash(venv/Scripts/python.exe:*)",
+      "Bash(\"venv\\Scripts\\python.exe\":*)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits"

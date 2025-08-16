@@ -398,3 +398,41 @@ def generate_payment_schedule(start_date: date, end_date: date, frequency: str) 
 def add_tenor(start_date: date, tenor: str) -> date:
     """Add tenor to date"""
     return default_date_utils.add_tenor(start_date, tenor)
+
+def get_analysis_date(analysis_date_str: Optional[str] = None) -> date:
+    """
+    Get analysis date - either from parameter or default to March 23, 2016
+    
+    Args:
+        analysis_date_str: Optional date string in YYYY-MM-DD format
+        
+    Returns:
+        Date object for analysis
+    """
+    if analysis_date_str:
+        try:
+            return datetime.strptime(analysis_date_str, "%Y-%m-%d").date()
+        except ValueError:
+            raise ValueError(f"Invalid date format. Expected YYYY-MM-DD, got: {analysis_date_str}")
+    return date(2016, 3, 23)  # Default analysis date: March 23, 2016
+
+def validate_analysis_date(analysis_date_str: str) -> bool:
+    """
+    Validate analysis date string format and reasonable bounds
+    
+    Args:
+        analysis_date_str: Date string in YYYY-MM-DD format
+        
+    Returns:
+        True if valid, False otherwise
+    """
+    try:
+        parsed_date = datetime.strptime(analysis_date_str, "%Y-%m-%d").date()
+        
+        # Check reasonable bounds (not too far in past/future)
+        min_date = date(2010, 1, 1)  # Allow dates back to 2010
+        max_date = date.today() + timedelta(days=365)  # Allow 1 year in future
+        
+        return min_date <= parsed_date <= max_date
+    except ValueError:
+        return False

@@ -1,0 +1,53 @@
+{
+  "start_time": "2025-08-16T19:44:22.335451",
+  "databases_processed": [
+    {
+      "database": "clo_assets_production.db",
+      "tables_migrated": [
+        "assets (already in PostgreSQL)"
+      ],
+      "records_migrated": 0,
+      "errors": []
+    },
+    {
+      "database": "clo_correlations.db",
+      "tables_migrated": [
+        "asset_correlations"
+      ],
+      "records_migrated": 238144,
+      "errors": []
+    },
+    {
+      "database": "clo_mag_scenarios.db",
+      "tables_migrated": [],
+      "records_migrated": 0,
+      "errors": [
+        "Failed to migrate clo_mag_scenarios.db: (psycopg2.errors.InvalidTextRepresentation) invalid input syntax for type numeric: \"Table of Contents\"\nLINE 4: ...       VALUES ('Mag 6', 'R1C2_Table_of_Contents', 'Table of ...\n                                                             ^\n\n[SQL: \n                        INSERT INTO mag_scenarios_migrated \n                        (scenario_name, parameter_name, parameter_value, time_period, data_type)\n                        VALUES (%(scenario_name)s, %(parameter_name)s, %(parameter_value)s, %(time_period)s, %(data_type)s)\n                    ]\n[parameters: [{'scenario_name': 'Mag 6', 'parameter_name': 'R1C2_Table_of_Contents', 'parameter_value': 'Table of Contents', 'time_period': 'Table of Contents', 'data_type': 'text'}, {'scenario_name': 'Mag 6', 'parameter_name': 'R1C4_Table_of_Contents', 'parameter_value': 'Table of Contents', 'time_period': 'Table of Contents', 'data_type': 'text'}, {'scenario_name': 'Mag 6', 'parameter_name': 'R1C6_Table_of_Contents', 'parameter_value': 'Table of Contents', 'time_period': 'Table of Contents', 'data_type': 'text'}, {'scenario_name': 'Mag 6', 'parameter_name': 'R1C10_Table_of_Contents', 'parameter_value': 'Table of Contents', 'time_period': 'Table of Contents', 'data_type': 'text'}, {'scenario_name': 'Mag 6', 'parameter_name': 'R1C12_Table_of_Contents', 'parameter_value': 'Table of Contents', 'time_period': 'Table of Contents', 'data_type': 'text'}, {'scenario_name': 'Mag 6', 'parameter_name': 'R1C18_Table_of_Contents', 'parameter_value': 'Table of Contents', 'time_period': 'Table of Contents', 'data_type': 'text'}, {'scenario_name': 'Mag 6', 'parameter_name': 'R1C20_Table_of_Contents', 'parameter_value': 'Table of Contents', 'time_period': 'Table of Contents', 'data_type': 'text'}, {'scenario_name': 'Mag 6', 'parameter_name': 'R1C24_Table_of_Contents', 'parameter_value': 'Table of Contents', 'time_period': 'Table of Contents', 'data_type': 'text'}  ... displaying 10 of 1000 total bound parameter sets ...  {'scenario_name': 'Mag 6', 'parameter_name': 'Limitation_on_Letter_of_Credit_Obligation_R52C35', 'parameter_value': '2024-12-04', 'time_period': 'Limitation on Letter of Credit Obligation', 'data_type': 'date'}, {'scenario_name': 'Mag 6', 'parameter_name': 'Limitation_on_Letter_of_Credit_Obligation_R53C4_BRSKLPYG5', 'parameter_value': 'BRSKLPYG5', 'time_period': 'Limitation on Letter of Credit Obligation', 'data_type': 'text'}]]\n(Background on this error at: https://sqlalche.me/e/20/9h9h)"
+      ]
+    },
+    {
+      "database": "clo_model_config.db",
+      "tables_migrated": [
+        "model_parameters"
+      ],
+      "records_migrated": 356,
+      "errors": []
+    },
+    {
+      "database": "clo_reference_data.db",
+      "tables_migrated": [],
+      "records_migrated": 0,
+      "errors": []
+    },
+    {
+      "database": "clo_reference_quick.db",
+      "tables_migrated": [],
+      "records_migrated": 0,
+      "errors": []
+    }
+  ],
+  "total_records_migrated": 238500,
+  "errors": [],
+  "end_time": "2025-08-16T19:47:51.879715",
+  "status": "COMPLETED"
+}

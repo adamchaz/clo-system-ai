@@ -103,6 +103,7 @@ class PortfolioSummaryResponse(BaseModel):
     total_balance: Decimal
     average_rating: str
     weighted_average_life: Optional[Decimal] = None
+    analysis_date: Optional[str] = None  # Date the analysis was performed
     
     # Diversification metrics
     sector_diversification: Dict[str, Decimal]

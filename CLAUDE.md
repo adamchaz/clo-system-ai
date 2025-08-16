@@ -28,6 +28,7 @@ A comprehensive Collateralized Loan Obligation (CLO) Portfolio Management System
 - **Portfolio Optimization**: 91 compliance constraints
 - **Credit Risk Modeling**: 488×488 correlation matrix ✅
 - **Regulatory Compliance**: OC/IC trigger framework
+- **Historical Analysis**: Configurable analysis date system with March 23, 2016 default ✅
 
 ## Development Setup
 
@@ -72,6 +73,29 @@ docker-compose down     # Stop services
 ### Database Connections
 - **PostgreSQL**: `postgresql://postgres:adamchaz@127.0.0.1:5433/clo_dev`
 - **Redis**: `redis://127.0.0.1:6379`
+
+### Analysis Date Configuration
+
+The system uses **March 23, 2016** as the default analysis date for historical CLO portfolio analysis:
+
+**Backend Default**: All analysis endpoints default to March 23, 2016 when no `analysis_date` parameter is provided
+```python
+# API Usage Examples
+GET /api/v1/portfolios/                    # Uses March 23, 2016 default
+GET /api/v1/portfolios/{id}/summary        # Uses March 23, 2016 default  
+GET /api/v1/portfolios/{id}/summary?analysis_date=2016-06-30  # Custom date
+```
+
+**Frontend Interface**: Interactive date picker with 2016-relevant quick actions
+- Default baseline: March 23, 2016
+- Quick actions: 2016 Q1-Q3 ends, 2015 year end, current date
+- Visual indicators: Default/Historical/Future status
+- Sample portfolio data reflects 2013-2015 vintage CLO deals appropriate for 2016 analysis
+
+**Sample Portfolio Data** (as of March 23, 2016):
+- **CLO2014-001**: Magnetar Capital CLO 2014-1 (Revolving, 1910 days to maturity)
+- **CLO2013-002**: Blackstone Credit CLO 2013-A (Amortizing, 1623 days to maturity) 
+- **CLO2015-003**: Apollo Credit CLO 2015-C (Revolving, 2129 days to maturity)
 
 ## Project Structure
 

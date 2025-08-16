@@ -1,0 +1,53 @@
+{
+  "start_time": "2025-08-16T19:39:35.121576",
+  "databases_processed": [
+    {
+      "database": "clo_assets_production.db",
+      "tables_migrated": [
+        "assets (already in PostgreSQL)"
+      ],
+      "records_migrated": 0,
+      "errors": []
+    },
+    {
+      "database": "clo_correlations.db",
+      "tables_migrated": [],
+      "records_migrated": 0,
+      "errors": [
+        "Failed to migrate clo_correlations.db: no such column: borrower_1"
+      ]
+    },
+    {
+      "database": "clo_mag_scenarios.db",
+      "tables_migrated": [],
+      "records_migrated": 0,
+      "errors": [
+        "Failed to migrate clo_mag_scenarios.db: no such column: time_period"
+      ]
+    },
+    {
+      "database": "clo_model_config.db",
+      "tables_migrated": [],
+      "records_migrated": 0,
+      "errors": [
+        "Failed to migrate clo_model_config.db: (psycopg2.errors.InvalidTextRepresentation) invalid input syntax for type boolean: \"active\"\nLINE 4: ...fo_R7C2', 'Deal Info', 'text', 'Value: Deal Info', 'active')\n                                                              ^\n\n[SQL: \n                    INSERT INTO model_config_migrated \n                    (parameter_name, parameter_value, parameter_type, description, is_active)\n                    VALUES (%(parameter_name)s, %(parameter_value)s, %(parameter_type)s, %(description)s, %(is_active)s)\n                ]\n[parameters: [{'parameter_name': 'CLO_Reinvestment_Model_Deal_Info_R7C2', 'parameter_value': 'Deal Info', 'parameter_type': 'text', 'description': 'Value: Deal Info', 'is_active': 'active'}, {'parameter_name': 'CLO_Reinvestment_Model_Portfolio_Rebalancing__Asset_R7C4', 'parameter_value': 'Portfolio Rebalancing & Asset Rankings', 'parameter_type': 'text', 'description': 'Value: Portfolio Rebalancing & Asset Rankings', 'is_active': 'active'}, {'parameter_name': 'CLO_Reinvestment_Model_Hypothetical_Trading_R7C10', 'parameter_value': 'Hypothetical Trading', 'parameter_type': 'text', 'description': 'Value: Hypothetical Trading', 'is_active': 'active'}, {'parameter_name': 'CLO_Reinvestment_Model_Deal_Info_R8C2', 'parameter_value': 'Analysis Date', 'parameter_type': 'text', 'description': 'Parameter: Deal Info', 'is_active': 'active'}, {'parameter_name': 'CLO_Reinvestment_Model_Analysis_Date_R8C3', 'parameter_value': '2016-03-23', 'parameter_type': 'date', 'description': 'Parameter: Analysis Date', 'is_active': 'active'}, {'parameter_name': 'CLO_Reinvestment_Model_Portfolio_Rebalancing__Asset_Rankings_R8C4', 'parameter_value': 'Purchase/Sale Loan Par Amount', 'parameter_type': 'text', 'description': 'Parameter: Portfolio Rebalancing & Asset Rankings', 'is_active': 'active'}, {'parameter_name': 'CLO_Reinvestment_Model_PurchaseSale_Loan_Par_Amount_R8C5', 'parameter_value': '750000', 'parameter_type': 'numeric', 'description': 'Parameter: Purchase/Sale Loan Par Amount', 'is_active': 'active'}, {'parameter_name': 'CLO_Reinvestment_Model_Hypothetical_Trading_R8C10', 'parameter_value': 'Hypothetical Trade Pool Mode', 'parameter_type': 'text', 'description': 'Parameter: Hypothetical Trading', 'is_active': 'active'}  ... displaying 10 of 356 total bound parameter sets ...  {'parameter_name': 'Model_Inputs_Sale_R30C9', 'parameter_value': '1000000', 'parameter_type': 'numeric', 'description': 'Parameter: Sale', 'is_active': 'legacy'}, {'parameter_name': 'Model_Inputs_R30C10', 'parameter_value': '96.813', 'parameter_type': 'numeric', 'description': None, 'is_active': 'legacy'}]]\n(Background on this error at: https://sqlalche.me/e/20/9h9h)"
+      ]
+    },
+    {
+      "database": "clo_reference_data.db",
+      "tables_migrated": [],
+      "records_migrated": 0,
+      "errors": []
+    },
+    {
+      "database": "clo_reference_quick.db",
+      "tables_migrated": [],
+      "records_migrated": 0,
+      "errors": []
+    }
+  ],
+  "total_records_migrated": 0,
+  "errors": [],
+  "end_time": "2025-08-16T19:39:35.351469",
+  "status": "COMPLETED"
+}

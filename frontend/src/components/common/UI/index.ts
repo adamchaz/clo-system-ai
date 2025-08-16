@@ -1,4 +1,5 @@
 // Export all UI components
+export { default as AnalysisDatePicker } from './AnalysisDatePicker';
 export { default as DataTable } from './DataTable';
 export type {
   DataTableColumn,
