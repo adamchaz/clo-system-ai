@@ -39,6 +39,27 @@ imports/
 logs/
 *.log
 
+# Debug and temporary files
+debug_*.py
+simple_*.py
+test_*_auth.py
+*_debug*.py
+migration_report_*.json
+*_migration_results_*.json
+*_migration*.log
+
+# Temporary HTML test files
+test_*.html
+debug_*.html
+
+# Migration artifacts
+*_migration_plan.json
+reference_table_schema.sql
+mag_deals_insert.sql
+
+# Temporary null files (Windows)
+nul
+
 # ==============================================================================
 # STANDARD DEVELOPMENT FILES
 # ==============================================================================
