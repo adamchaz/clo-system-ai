@@ -95,12 +95,8 @@ const getRoleBasedDefaultRoute = (role: string): string => {
   switch (role) {
     case 'admin':
       return '/monitoring';
-    case 'admin':
-      return '/monitoring';
-    case 'manager':
     case 'manager':
       return '/portfolios';
-    case 'analyst':
     case 'analyst':
       return '/analytics';
     case 'viewer':
@@ -134,12 +130,9 @@ const SmartDashboard: React.FC = () => {
   
   switch (userRole) {
     case 'admin':
-    case 'admin':
       return <SystemAdminDashboard />;
     case 'manager':
-    case 'manager':
       return <PortfolioManagerDashboard />;
-    case 'analyst':
     case 'analyst':
       return <FinancialAnalystDashboard />;
     case 'viewer':

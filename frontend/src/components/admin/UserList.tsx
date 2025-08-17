@@ -274,7 +274,7 @@ const UserList: React.FC<UserListProps> = ({
                     Loading users...
                   </TableCell>
                 </TableRow>
-              ) : usersData?.data?.length === 0 ? (
+              ) : (!usersData?.data || usersData.data.length === 0) ? (
                 <TableRow>
                   <TableCell colSpan={6} align="center" sx={{ py: 4 }}>
                     <Typography variant="body1" color="text.secondary">
@@ -286,7 +286,7 @@ const UserList: React.FC<UserListProps> = ({
                   </TableCell>
                 </TableRow>
               ) : (
-                usersData?.data?.map((user) => (
+                (usersData?.data || []).map((user) => (
                   <TableRow 
                     key={user.id} 
                     hover 
@@ -296,11 +296,11 @@ const UserList: React.FC<UserListProps> = ({
                     <TableCell>
                       <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         <Avatar sx={{ mr: 2, bgcolor: 'primary.main' }}>
-                          {user.firstName[0]}{user.lastName[0]}
+                          {(user.firstName?.[0] || '').toUpperCase()}{(user.lastName?.[0] || '').toUpperCase()}
                         </Avatar>
                         <Box>
                           <Typography variant="body2" fontWeight={600}>
-                            {user.firstName} {user.lastName}
+                            {user.firstName || ''} {user.lastName || ''}
                           </Typography>
                           <Typography variant="caption" color="text.secondary">
                             ID: {user.id}
@@ -409,7 +409,7 @@ const UserList: React.FC<UserListProps> = ({
             {selectedUser && (
               <Box sx={{ p: 2, bgcolor: 'grey.100', borderRadius: 1, mt: 2 }}>
                 <Typography variant="body2" fontWeight={600}>
-                  {selectedUser.firstName} {selectedUser.lastName}
+                  {selectedUser.firstName || ''} {selectedUser.lastName || ''}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
                   {selectedUser.email}

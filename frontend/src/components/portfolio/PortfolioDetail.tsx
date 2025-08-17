@@ -160,8 +160,9 @@ const PortfolioDetail: React.FC<PortfolioDetailProps> = ({
   };
 
   const calculatePerformance = () => {
-    if (!portfolio) return 0;
-    return ((portfolio.current_portfolio_balance / portfolio.deal_size) - 1) * 100;
+    if (!portfolio || !portfolio.current_portfolio_balance || !portfolio.deal_size) return 0;
+    const result = ((portfolio.current_portfolio_balance / portfolio.deal_size) - 1) * 100;
+    return isNaN(result) ? 0 : result;
   };
 
   if (portfolioError || summaryError) {
@@ -307,7 +308,7 @@ const PortfolioDetail: React.FC<PortfolioDetailProps> = ({
                 </Typography>
               </Box>
               <Typography variant="h5" fontWeight={700}>
-                ${(portfolio.deal_size / 1000000).toFixed(1)}M
+                ${typeof portfolio.deal_size === 'number' ? (portfolio.deal_size / 1000000).toFixed(1) : '0.0'}M
               </Typography>
               <Typography variant="caption" color="text.secondary">
                 {portfolio.currency}
@@ -326,7 +327,7 @@ const PortfolioDetail: React.FC<PortfolioDetailProps> = ({
                 </Typography>
               </Box>
               <Typography variant="h5" fontWeight={700}>
-                ${(portfolio.current_portfolio_balance / 1000000).toFixed(1)}M
+                ${typeof portfolio.current_portfolio_balance === 'number' ? (portfolio.current_portfolio_balance / 1000000).toFixed(1) : '0.0'}M
               </Typography>
               <Typography variant="caption" color={isPositivePerformance ? 'success.main' : 'error.main'}>
                 {isPositivePerformance ? '+' : ''}{performance.toFixed(2)}% vs deal size
@@ -488,7 +489,7 @@ const PortfolioDetail: React.FC<PortfolioDetailProps> = ({
             </Typography>
             {summary && summary.assets ? (
               <Typography variant="body2" color="text.secondary" paragraph>
-                This portfolio contains {summary.assets.length} assets with a total value of ${(portfolio.current_portfolio_balance / 1000000).toFixed(1)}M.
+                This portfolio contains {summary.assets.length} assets with a total value of ${typeof portfolio.current_portfolio_balance === 'number' ? (portfolio.current_portfolio_balance / 1000000).toFixed(1) : '0.0'}M.
               </Typography>
             ) : (
               <Paper
@@ -537,7 +538,9 @@ const PortfolioDetail: React.FC<PortfolioDetailProps> = ({
                         <TableRow>
                           <TableCell>Weighted Average Life</TableCell>
                           <TableCell align="right">
-                            {summary.risk_metrics.weighted_average_life.toFixed(2)} years
+                            {typeof summary.risk_metrics.weighted_average_life === 'number' 
+                              ? `${summary.risk_metrics.weighted_average_life.toFixed(2)} years`
+                              : summary.risk_metrics.weighted_average_life || 'N/A'}
                           </TableCell>
                           <TableCell align="right">
                             <CheckCircle color="success" fontSize="small" />
@@ -555,7 +558,9 @@ const PortfolioDetail: React.FC<PortfolioDetailProps> = ({
                         <TableRow>
                           <TableCell>Portfolio Value</TableCell>
                           <TableCell align="right">
-                            ${(summary.risk_metrics.portfolio_value / 1000000).toFixed(1)}M
+                            {typeof summary.risk_metrics.portfolio_value === 'number' 
+                              ? `$${(summary.risk_metrics.portfolio_value / 1000000).toFixed(1)}M`
+                              : summary.risk_metrics.portfolio_value || 'N/A'}
                           </TableCell>
                           <TableCell align="right">
                             <CheckCircle color="success" fontSize="small" />
@@ -742,7 +747,7 @@ const PortfolioDetail: React.FC<PortfolioDetailProps> = ({
               {portfolio.deal_name}
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              Deal Size: ${(portfolio.deal_size / 1000000).toFixed(1)}M
+              Deal Size: ${typeof portfolio.deal_size === 'number' ? (portfolio.deal_size / 1000000).toFixed(1) : '0.0'}M
             </Typography>
             <Typography variant="body2" color="text.secondary">
               Assets: {portfolio.current_asset_count}
