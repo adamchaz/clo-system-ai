@@ -115,43 +115,133 @@ export interface ComplianceStatus {
 }
 
 export interface Asset {
-  id: string;
-  cusip: string;
-  isin?: string;
-  asset_name?: string;
-  asset_description?: string;
-  asset_type: string;
-  current_balance?: number;
-  original_balance?: number;
-  par_amount?: number;
-  current_price?: number;
-  purchase_price?: number;
-  purchase_date?: string;
-  coupon_rate?: number;
-  spread?: number;
-  maturity_date?: string;
-  final_maturity?: string;
-  current_rating?: string;
-  rating?: string;
-  sector?: string;
-  industry?: string;
+  // Required fields (non-nullable in database)
+  blkrock_id: string;
+  issue_name: string;
+  issuer_name: string;
+  par_amount: number;
+  maturity: string;
+  
+  // Optional string fields
+  issuer_id?: string;
+  tranche?: string;
+  bond_loan?: string;
+  currency?: string;
+  coupon_type?: string;
+  index_name?: string;
+  amortization_type?: string;
+  day_count?: string;
+  business_day_conv?: string;
+  
+  // Rating fields
+  mdy_rating?: string;
+  mdy_dp_rating?: string;
+  mdy_dp_rating_warf?: string;
+  sp_rating?: string;
+  derived_mdy_rating?: string;
+  derived_sp_rating?: string;
+  mdy_facility_rating?: string;
+  mdy_facility_outlook?: string;
+  mdy_issuer_rating?: string;
+  mdy_issuer_outlook?: string;
+  mdy_snr_sec_rating?: string;
+  mdy_snr_unsec_rating?: string;
+  mdy_sub_rating?: string;
+  mdy_credit_est_rating?: string;
+  sandp_facility_rating?: string;
+  sandp_issuer_rating?: string;
+  sandp_snr_sec_rating?: string;
+  sandp_subordinate?: string;
+  sandp_rec_rating?: string;
+  
+  // Industry and classification fields
+  mdy_industry?: string;
+  sp_industry?: string;
   country?: string;
-  issuer: string;
+  seniority?: string;
+  mdy_asset_category?: string;
+  sp_priority_category?: string;
+  discount_curve_name?: string;
+  
+  // Numeric fields
+  market_value?: number;
+  coupon?: number;
+  cpn_spread?: number;
+  libor_floor?: number;
+  index_cap?: number;
+  amount_issued?: number;
+  pik_amount?: number;
+  unfunded_amount?: number;
+  mdy_recovery_rate?: number;
+  fair_value?: number;
+  commit_fee?: number;
+  facility_size?: number;
+  wal?: number;
+  
+  // Integer fields
+  payment_freq?: number;
+  discount_curve_id?: number;
+  pricing_spread_bps?: number;
+  
+  // Boolean fields
+  payment_eom?: boolean;
+  piking?: boolean;
+  
+  // Date fields
+  dated_date?: string;
+  issue_date?: string;
+  first_payment_date?: string;
+  date_of_default?: string;
+  rating_derivation_date?: string;
+  fair_value_date?: string;
+  mdy_credit_est_date?: string;
+  created_at?: string;
+  updated_at?: string;
+  
+  // Text fields
+  rating_source_hierarchy?: string;
+  analyst_opinion?: string;
+  
+  // JSON fields
+  flags?: Record<string, any>;
+  
+  // Legacy API compatibility fields (aliases)
+  id?: string; // Alias for blkrock_id
+  cusip?: string; // May not be in DB
+  isin?: string; // May not be in DB
+  asset_name?: string; // Alias for issue_name
+  asset_description?: string;
+  asset_type?: string; // Alias for bond_loan
+  issuer?: string; // Alias for issuer_name
+  industry?: string; // Alias for mdy_industry
+  sector?: string; // Alias for sp_industry
+  current_balance?: number; // Alias for par_amount
+  original_balance?: number; // Alias for facility_size
+  coupon_rate?: number; // Alias for coupon
+  maturity_date?: string; // Alias for maturity
+  rating?: string; // Primary rating
+  spread?: number; // Alias for cpn_spread
+  duration?: number; // Alias for wal
+  recovery_rate?: number; // Alias for mdy_recovery_rate
+  current_price?: number; // Alias for market_value
+  final_maturity?: string; // Alias for maturity
+  current_rating?: string; // Current primary rating
+  last_updated?: string; // Alias for updated_at
+  status?: 'active' | 'inactive' | 'matured' | 'defaulted'; // Computed status field
+  is_active?: boolean; // Computed active status
+  
+  // Computed fields for frontend compatibility
   days_to_maturity?: number;
   yield_to_maturity?: number;
-  duration?: number;
   convexity?: number;
   default_probability?: number;
-  recovery_rate?: number;
   lgd?: number;
   ead?: number;
   performance_1d?: number;
   performance_30d?: number;
   performance_ytd?: number;
-  status: 'active' | 'inactive' | 'matured' | 'defaulted';
-  last_updated?: string;
-  created_at: string;
-  updated_at: string;
+  purchase_price?: number;
+  purchase_date?: string;
 }
 
 export interface AssetCorrelation {

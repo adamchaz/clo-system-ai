@@ -106,7 +106,8 @@
       "Bash(copy:*)",
       "Bash(move:*)",
       "Bash(scriptsstop-dev.bat)",
-      "Bash(PORT=3002 timeout 15 npm start)"
+      "Bash(PORT=3002 timeout 15 npm start)",
+      "Bash(npm run:*)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits"

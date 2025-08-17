@@ -380,26 +380,132 @@ class DataIntegrationService:
                 for row in result:
                     row_dict = dict(row._mapping) if hasattr(row, '_mapping') else dict(row)
                     
-                    # Map database fields to API schema fields
+                    # Map database fields to comprehensive API schema (70 fields)
                     asset_dict = {
+                        # Required fields (non-nullable in database)
+                        'blkrock_id': row_dict.get('blkrock_id'),
+                        'issue_name': row_dict.get('issue_name'),
+                        'issuer_name': row_dict.get('issuer_name'),
+                        'par_amount': row_dict.get('par_amount'),
+                        'maturity': row_dict.get('maturity'),
+                        
+                        # Optional string fields
+                        'issuer_id': row_dict.get('issuer_id'),
+                        'tranche': row_dict.get('tranche'),
+                        'bond_loan': row_dict.get('bond_loan'),
+                        'currency': row_dict.get('currency'),
+                        'coupon_type': row_dict.get('coupon_type'),
+                        'index_name': row_dict.get('index_name'),
+                        'amortization_type': row_dict.get('amortization_type'),
+                        'day_count': row_dict.get('day_count'),
+                        'business_day_conv': row_dict.get('business_day_conv'),
+                        
+                        # Rating fields
+                        'mdy_rating': row_dict.get('mdy_rating'),
+                        'mdy_dp_rating': row_dict.get('mdy_dp_rating'),
+                        'mdy_dp_rating_warf': row_dict.get('mdy_dp_rating_warf'),
+                        'sp_rating': row_dict.get('sp_rating'),
+                        'derived_mdy_rating': row_dict.get('derived_mdy_rating'),
+                        'derived_sp_rating': row_dict.get('derived_sp_rating'),
+                        'mdy_facility_rating': row_dict.get('mdy_facility_rating'),
+                        'mdy_facility_outlook': row_dict.get('mdy_facility_outlook'),
+                        'mdy_issuer_rating': row_dict.get('mdy_issuer_rating'),
+                        'mdy_issuer_outlook': row_dict.get('mdy_issuer_outlook'),
+                        'mdy_snr_sec_rating': row_dict.get('mdy_snr_sec_rating'),
+                        'mdy_snr_unsec_rating': row_dict.get('mdy_snr_unsec_rating'),
+                        'mdy_sub_rating': row_dict.get('mdy_sub_rating'),
+                        'mdy_credit_est_rating': row_dict.get('mdy_credit_est_rating'),
+                        'sandp_facility_rating': row_dict.get('sandp_facility_rating'),
+                        'sandp_issuer_rating': row_dict.get('sandp_issuer_rating'),
+                        'sandp_snr_sec_rating': row_dict.get('sandp_snr_sec_rating'),
+                        'sandp_subordinate': row_dict.get('sandp_subordinate'),
+                        'sandp_rec_rating': row_dict.get('sandp_rec_rating'),
+                        
+                        # Industry and classification fields
+                        'mdy_industry': row_dict.get('mdy_industry'),
+                        'sp_industry': row_dict.get('sp_industry'),
+                        'country': row_dict.get('country'),
+                        'seniority': row_dict.get('seniority'),
+                        'mdy_asset_category': row_dict.get('mdy_asset_category'),
+                        'sp_priority_category': row_dict.get('sp_priority_category'),
+                        'discount_curve_name': row_dict.get('discount_curve_name'),
+                        
+                        # Numeric fields
+                        'market_value': row_dict.get('market_value'),
+                        'coupon': row_dict.get('coupon'),
+                        'cpn_spread': row_dict.get('cpn_spread'),
+                        'libor_floor': row_dict.get('libor_floor'),
+                        'index_cap': row_dict.get('index_cap'),
+                        'amount_issued': row_dict.get('amount_issued'),
+                        'pik_amount': row_dict.get('pik_amount'),
+                        'unfunded_amount': row_dict.get('unfunded_amount'),
+                        'mdy_recovery_rate': row_dict.get('mdy_recovery_rate'),
+                        'fair_value': row_dict.get('fair_value'),
+                        'commit_fee': row_dict.get('commit_fee'),
+                        'facility_size': row_dict.get('facility_size'),
+                        'wal': row_dict.get('wal'),
+                        
+                        # Integer fields
+                        'payment_freq': row_dict.get('payment_freq'),
+                        'discount_curve_id': row_dict.get('discount_curve_id'),
+                        'pricing_spread_bps': row_dict.get('pricing_spread_bps'),
+                        
+                        # Boolean fields
+                        'payment_eom': row_dict.get('payment_eom'),
+                        'piking': row_dict.get('piking'),
+                        
+                        # Date fields
+                        'dated_date': row_dict.get('dated_date'),
+                        'issue_date': row_dict.get('issue_date'),
+                        'first_payment_date': row_dict.get('first_payment_date'),
+                        'date_of_default': row_dict.get('date_of_default'),
+                        'rating_derivation_date': row_dict.get('rating_derivation_date'),
+                        'fair_value_date': row_dict.get('fair_value_date'),
+                        'mdy_credit_est_date': row_dict.get('mdy_credit_est_date'),
+                        'created_at': row_dict.get('created_at'),
+                        'updated_at': row_dict.get('updated_at'),
+                        
+                        # Text fields
+                        'rating_source_hierarchy': row_dict.get('rating_source_hierarchy'),
+                        'analyst_opinion': row_dict.get('analyst_opinion'),
+                        
+                        # JSON fields
+                        'flags': row_dict.get('flags'),
+                        
+                        # Legacy API compatibility fields (aliases)
                         'id': row_dict.get('blkrock_id'),
-                        'cusip': row_dict.get('cusip'),  # Will be None if not in DB
-                        'isin': row_dict.get('isin'),    # Will be None if not in DB
                         'asset_name': row_dict.get('issue_name'),
                         'asset_type': row_dict.get('bond_loan'),
+                        'issuer': row_dict.get('issuer_name'),
                         'industry': row_dict.get('mdy_industry'),
-                        'sector': row_dict.get('sp_industry'), 
+                        'sector': row_dict.get('sp_industry'),
                         'current_balance': row_dict.get('par_amount'),
                         'original_balance': row_dict.get('facility_size'),
                         'coupon_rate': row_dict.get('coupon'),
                         'maturity_date': row_dict.get('maturity'),
                         'rating': row_dict.get('mdy_rating') or row_dict.get('sp_rating'),
-                        'created_at': row_dict.get('created_at'),
-                        'updated_at': row_dict.get('updated_at'),
-                        'is_active': True,  # Default to active
-                        'days_to_maturity': None,  # Could calculate this
-                        'yield_to_maturity': None,  # Not available yet
-                        'duration': row_dict.get('wal')  # Weighted Average Life as proxy
+                        'spread': row_dict.get('cpn_spread'),
+                        'duration': row_dict.get('wal'),
+                        'recovery_rate': row_dict.get('mdy_recovery_rate'),
+                        'current_price': row_dict.get('market_value'),
+                        'final_maturity': row_dict.get('maturity'),
+                        'current_rating': row_dict.get('mdy_rating') or row_dict.get('sp_rating'),
+                        'last_updated': row_dict.get('updated_at'),
+                        'status': 'active',
+                        'is_active': True,
+                        
+                        # Computed fields for frontend compatibility (default to None)
+                        'days_to_maturity': None,
+                        'yield_to_maturity': None,
+                        'convexity': None,
+                        'default_probability': None,
+                        'lgd': None,
+                        'ead': None,
+                        'performance_1d': None,
+                        'performance_30d': None,
+                        'performance_ytd': None,
+                        'purchase_price': None,
+                        'purchase_date': None
                     }
                     assets.append(asset_dict)
                 
@@ -447,26 +553,134 @@ class DataIntegrationService:
                 if result:
                     row_dict = dict(result._mapping) if hasattr(result, '_mapping') else dict(result)
                     
-                    # Map database fields to API schema fields
+                    # Map database fields to comprehensive API schema (70 fields)
                     asset_dict = {
+                        # Required fields (non-nullable in database)
+                        'blkrock_id': row_dict.get('blkrock_id'),
+                        'issue_name': row_dict.get('issue_name'),
+                        'issuer_name': row_dict.get('issuer_name'),
+                        'par_amount': row_dict.get('par_amount'),
+                        'maturity': row_dict.get('maturity'),
+                        
+                        # Optional string fields
+                        'issuer_id': row_dict.get('issuer_id'),
+                        'tranche': row_dict.get('tranche'),
+                        'bond_loan': row_dict.get('bond_loan'),
+                        'currency': row_dict.get('currency'),
+                        'coupon_type': row_dict.get('coupon_type'),
+                        'index_name': row_dict.get('index_name'),
+                        'amortization_type': row_dict.get('amortization_type'),
+                        'day_count': row_dict.get('day_count'),
+                        'business_day_conv': row_dict.get('business_day_conv'),
+                        
+                        # Rating fields
+                        'mdy_rating': row_dict.get('mdy_rating'),
+                        'mdy_dp_rating': row_dict.get('mdy_dp_rating'),
+                        'mdy_dp_rating_warf': row_dict.get('mdy_dp_rating_warf'),
+                        'sp_rating': row_dict.get('sp_rating'),
+                        'derived_mdy_rating': row_dict.get('derived_mdy_rating'),
+                        'derived_sp_rating': row_dict.get('derived_sp_rating'),
+                        'mdy_facility_rating': row_dict.get('mdy_facility_rating'),
+                        'mdy_facility_outlook': row_dict.get('mdy_facility_outlook'),
+                        'mdy_issuer_rating': row_dict.get('mdy_issuer_rating'),
+                        'mdy_issuer_outlook': row_dict.get('mdy_issuer_outlook'),
+                        'mdy_snr_sec_rating': row_dict.get('mdy_snr_sec_rating'),
+                        'mdy_snr_unsec_rating': row_dict.get('mdy_snr_unsec_rating'),
+                        'mdy_sub_rating': row_dict.get('mdy_sub_rating'),
+                        'mdy_credit_est_rating': row_dict.get('mdy_credit_est_rating'),
+                        'sandp_facility_rating': row_dict.get('sandp_facility_rating'),
+                        'sandp_issuer_rating': row_dict.get('sandp_issuer_rating'),
+                        'sandp_snr_sec_rating': row_dict.get('sandp_snr_sec_rating'),
+                        'sandp_subordinate': row_dict.get('sandp_subordinate'),
+                        'sandp_rec_rating': row_dict.get('sandp_rec_rating'),
+                        
+                        # Industry and classification fields
+                        'mdy_industry': row_dict.get('mdy_industry'),
+                        'sp_industry': row_dict.get('sp_industry'),
+                        'country': row_dict.get('country'),
+                        'seniority': row_dict.get('seniority'),
+                        'mdy_asset_category': row_dict.get('mdy_asset_category'),
+                        'sp_priority_category': row_dict.get('sp_priority_category'),
+                        'discount_curve_name': row_dict.get('discount_curve_name'),
+                        
+                        # Numeric fields
+                        'market_value': row_dict.get('market_value'),
+                        'coupon': row_dict.get('coupon'),
+                        'cpn_spread': row_dict.get('cpn_spread'),
+                        'libor_floor': row_dict.get('libor_floor'),
+                        'index_cap': row_dict.get('index_cap'),
+                        'amount_issued': row_dict.get('amount_issued'),
+                        'pik_amount': row_dict.get('pik_amount'),
+                        'unfunded_amount': row_dict.get('unfunded_amount'),
+                        'mdy_recovery_rate': row_dict.get('mdy_recovery_rate'),
+                        'fair_value': row_dict.get('fair_value'),
+                        'commit_fee': row_dict.get('commit_fee'),
+                        'facility_size': row_dict.get('facility_size'),
+                        'wal': row_dict.get('wal'),
+                        
+                        # Integer fields
+                        'payment_freq': row_dict.get('payment_freq'),
+                        'discount_curve_id': row_dict.get('discount_curve_id'),
+                        'pricing_spread_bps': row_dict.get('pricing_spread_bps'),
+                        
+                        # Boolean fields
+                        'payment_eom': row_dict.get('payment_eom'),
+                        'piking': row_dict.get('piking'),
+                        
+                        # Date fields
+                        'dated_date': row_dict.get('dated_date'),
+                        'issue_date': row_dict.get('issue_date'),
+                        'first_payment_date': row_dict.get('first_payment_date'),
+                        'date_of_default': row_dict.get('date_of_default'),
+                        'rating_derivation_date': row_dict.get('rating_derivation_date'),
+                        'fair_value_date': row_dict.get('fair_value_date'),
+                        'mdy_credit_est_date': row_dict.get('mdy_credit_est_date'),
+                        'created_at': row_dict.get('created_at'),
+                        'updated_at': row_dict.get('updated_at'),
+                        
+                        # Text fields
+                        'rating_source_hierarchy': row_dict.get('rating_source_hierarchy'),
+                        'analyst_opinion': row_dict.get('analyst_opinion'),
+                        
+                        # JSON fields
+                        'flags': row_dict.get('flags'),
+                        
+                        # Legacy API compatibility fields (aliases)
                         'id': row_dict.get('blkrock_id'),
                         'cusip': row_dict.get('cusip'),  # Will be None if not in DB
                         'isin': row_dict.get('isin'),    # Will be None if not in DB
                         'asset_name': row_dict.get('issue_name'),
                         'asset_type': row_dict.get('bond_loan'),
+                        'issuer': row_dict.get('issuer_name'),
                         'industry': row_dict.get('mdy_industry'),
-                        'sector': row_dict.get('sp_industry'), 
+                        'sector': row_dict.get('sp_industry'),
                         'current_balance': row_dict.get('par_amount'),
                         'original_balance': row_dict.get('facility_size'),
                         'coupon_rate': row_dict.get('coupon'),
                         'maturity_date': row_dict.get('maturity'),
                         'rating': row_dict.get('mdy_rating') or row_dict.get('sp_rating'),
-                        'created_at': row_dict.get('created_at'),
-                        'updated_at': row_dict.get('updated_at'),
-                        'is_active': True,  # Default to active
-                        'days_to_maturity': None,  # Could calculate this
-                        'yield_to_maturity': None,  # Not available yet
-                        'duration': row_dict.get('wal')  # Weighted Average Life as proxy
+                        'spread': row_dict.get('cpn_spread'),
+                        'duration': row_dict.get('wal'),
+                        'recovery_rate': row_dict.get('mdy_recovery_rate'),
+                        'current_price': row_dict.get('market_value'),
+                        'final_maturity': row_dict.get('maturity'),
+                        'current_rating': row_dict.get('mdy_rating') or row_dict.get('sp_rating'),
+                        'last_updated': row_dict.get('updated_at'),
+                        'status': 'active',
+                        'is_active': True,
+                        
+                        # Computed fields for frontend compatibility (default to None)
+                        'days_to_maturity': None,
+                        'yield_to_maturity': None,
+                        'convexity': None,
+                        'default_probability': None,
+                        'lgd': None,
+                        'ead': None,
+                        'performance_1d': None,
+                        'performance_30d': None,
+                        'performance_ytd': None,
+                        'purchase_price': None,
+                        'purchase_date': None
                     }
                     return asset_dict
                 return None

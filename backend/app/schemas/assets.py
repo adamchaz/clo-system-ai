@@ -38,16 +38,132 @@ class AssetUpdate(BaseModel):
     # Add other updatable fields as needed
     
 class AssetResponse(AssetBase):
-    """Schema for asset API responses"""
-    id: str = Field(..., description="Internal asset ID")
+    """Schema for asset API responses - Complete 70-field database schema"""
+    
+    # Required fields (non-nullable in database)
+    blkrock_id: str = Field(..., description="BlackRock asset identifier")
+    issue_name: str = Field(..., description="Asset issue name") 
+    issuer_name: str = Field(..., description="Issuer company name")
+    par_amount: Decimal = Field(..., description="Principal amount outstanding")
+    maturity: date = Field(..., description="Asset maturity date")
+    
+    # Optional string fields
+    issuer_id: Optional[str] = None
+    tranche: Optional[str] = None
+    bond_loan: Optional[str] = None
+    currency: Optional[str] = None
+    coupon_type: Optional[str] = None
+    index_name: Optional[str] = None
+    amortization_type: Optional[str] = None
+    day_count: Optional[str] = None
+    business_day_conv: Optional[str] = None
+    
+    # Rating fields
+    mdy_rating: Optional[str] = None
+    mdy_dp_rating: Optional[str] = None
+    mdy_dp_rating_warf: Optional[str] = None
+    sp_rating: Optional[str] = None
+    derived_mdy_rating: Optional[str] = None
+    derived_sp_rating: Optional[str] = None
+    mdy_facility_rating: Optional[str] = None
+    mdy_facility_outlook: Optional[str] = None
+    mdy_issuer_rating: Optional[str] = None
+    mdy_issuer_outlook: Optional[str] = None
+    mdy_snr_sec_rating: Optional[str] = None
+    mdy_snr_unsec_rating: Optional[str] = None
+    mdy_sub_rating: Optional[str] = None
+    mdy_credit_est_rating: Optional[str] = None
+    sandp_facility_rating: Optional[str] = None
+    sandp_issuer_rating: Optional[str] = None
+    sandp_snr_sec_rating: Optional[str] = None
+    sandp_subordinate: Optional[str] = None
+    sandp_rec_rating: Optional[str] = None
+    
+    # Industry and classification fields
+    mdy_industry: Optional[str] = None
+    sp_industry: Optional[str] = None
+    country: Optional[str] = None
+    seniority: Optional[str] = None
+    mdy_asset_category: Optional[str] = None
+    sp_priority_category: Optional[str] = None
+    discount_curve_name: Optional[str] = None
+    
+    # Numeric fields
+    market_value: Optional[Decimal] = None
+    coupon: Optional[Decimal] = None
+    cpn_spread: Optional[Decimal] = None
+    libor_floor: Optional[Decimal] = None
+    index_cap: Optional[Decimal] = None
+    amount_issued: Optional[Decimal] = None
+    pik_amount: Optional[Decimal] = None
+    unfunded_amount: Optional[Decimal] = None
+    mdy_recovery_rate: Optional[Decimal] = None
+    fair_value: Optional[Decimal] = None
+    commit_fee: Optional[Decimal] = None
+    facility_size: Optional[Decimal] = None
+    wal: Optional[Decimal] = None
+    
+    # Integer fields
+    payment_freq: Optional[int] = None
+    discount_curve_id: Optional[int] = None
+    pricing_spread_bps: Optional[int] = None
+    
+    # Boolean fields
+    payment_eom: Optional[bool] = None
+    piking: Optional[bool] = None
+    
+    # Date fields
+    dated_date: Optional[date] = None
+    issue_date: Optional[date] = None
+    first_payment_date: Optional[date] = None
+    date_of_default: Optional[date] = None
+    rating_derivation_date: Optional[date] = None
+    fair_value_date: Optional[date] = None
+    mdy_credit_est_date: Optional[date] = None
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
-    is_active: bool = True
     
-    # Additional computed fields
+    # Text fields
+    rating_source_hierarchy: Optional[str] = None
+    analyst_opinion: Optional[str] = None
+    
+    # JSON fields
+    flags: Optional[Dict[str, Any]] = None
+    
+    # Legacy API compatibility fields (aliases and computed)
+    id: Optional[str] = Field(default=None, description="Alias for blkrock_id")
+    asset_name: Optional[str] = Field(default=None, description="Alias for issue_name")
+    asset_type: Optional[str] = Field(default=None, description="Alias for bond_loan") 
+    issuer: Optional[str] = Field(default=None, description="Alias for issuer_name")
+    industry: Optional[str] = Field(default=None, description="Alias for mdy_industry")
+    sector: Optional[str] = Field(default=None, description="Alias for sp_industry")
+    current_balance: Optional[Decimal] = Field(default=None, description="Alias for par_amount")
+    original_balance: Optional[Decimal] = Field(default=None, description="Alias for facility_size")
+    coupon_rate: Optional[Decimal] = Field(default=None, description="Alias for coupon")
+    maturity_date: Optional[date] = Field(default=None, description="Alias for maturity")
+    rating: Optional[str] = Field(default=None, description="Primary rating")
+    spread: Optional[Decimal] = Field(default=None, description="Alias for cpn_spread")
+    duration: Optional[Decimal] = Field(default=None, description="Alias for wal")
+    recovery_rate: Optional[Decimal] = Field(default=None, description="Alias for mdy_recovery_rate")
+    current_price: Optional[Decimal] = Field(default=None, description="Alias for market_value")
+    final_maturity: Optional[date] = Field(default=None, description="Alias for maturity")
+    current_rating: Optional[str] = Field(default=None, description="Current primary rating")
+    last_updated: Optional[datetime] = Field(default=None, description="Alias for updated_at")
+    status: Optional[str] = Field(default=None, description="Computed status field")
+    is_active: Optional[bool] = Field(default=None, description="Computed active status")
+    
+    # Computed fields for frontend compatibility
     days_to_maturity: Optional[int] = None
     yield_to_maturity: Optional[Decimal] = None
-    duration: Optional[Decimal] = None
+    convexity: Optional[Decimal] = None
+    default_probability: Optional[Decimal] = None
+    lgd: Optional[Decimal] = None
+    ead: Optional[Decimal] = None
+    performance_1d: Optional[Decimal] = None
+    performance_30d: Optional[Decimal] = None
+    performance_ytd: Optional[Decimal] = None
+    purchase_price: Optional[Decimal] = None
+    purchase_date: Optional[date] = None
     
     class Config:
         from_attributes = True
