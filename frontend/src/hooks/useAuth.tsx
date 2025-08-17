@@ -121,20 +121,20 @@ export const useAuth = () => {
   }, [user]);
 
   // Convenience role checks
-  const isAdmin = useCallback(() => hasRole('system_admin'), [hasRole]);
-  const isManager = useCallback(() => hasRole('portfolio_manager'), [hasRole]);
-  const isAnalyst = useCallback(() => hasRole('financial_analyst'), [hasRole]);
+  const isAdmin = useCallback(() => hasRole('admin'), [hasRole]);
+  const isManager = useCallback(() => hasRole('manager'), [hasRole]);
+  const isAnalyst = useCallback(() => hasRole('analyst'), [hasRole]);
   const isViewer = useCallback(() => hasRole('viewer'), [hasRole]);
 
   // Check if user has elevated privileges (manager or admin)
   const hasElevatedAccess = useCallback(() => 
-    hasAnyRole(['portfolio_manager', 'system_admin']), 
+    hasAnyRole(['manager', 'admin']), 
     [hasAnyRole]
   );
 
   // Check if user can write/modify data
   const canWrite = useCallback(() => 
-    hasAnyRole(['financial_analyst', 'portfolio_manager', 'system_admin']), 
+    hasAnyRole(['analyst', 'manager', 'admin']), 
     [hasAnyRole]
   );
 

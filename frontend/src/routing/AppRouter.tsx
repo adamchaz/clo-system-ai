@@ -37,6 +37,9 @@ import {
   CorrelationAnalysis,
   CLOStructuring,
 } from '../components/analytics';
+import YieldCurves from '../pages/YieldCurves';
+import YieldCurveForm from '../pages/YieldCurveForm';
+import YieldCurveVisualization from '../pages/YieldCurveVisualization';
 
 // Legacy ProtectedRoute wrapper for existing route configuration
 // This will be replaced in future tasks with the new ProtectedRoute component
@@ -54,9 +57,9 @@ const LegacyProtectedRoute: React.FC<{
   // Convert legacy role names to new role names
   const convertLegacyRoles = (roles: string[]) => {
     const roleMap: Record<string, string> = {
-      'admin': 'system_admin',
-      'manager': 'portfolio_manager',
-      'analyst': 'financial_analyst',
+      'admin': 'admin',
+      'manager': 'manager',
+      'analyst': 'analyst',
       'viewer': 'viewer',
     };
     return roles.map(role => roleMap[role] || role);
@@ -90,15 +93,15 @@ const PublicRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 // Role-based route configurations
 const getRoleBasedDefaultRoute = (role: string): string => {
   switch (role) {
-    case 'system_admin':
+    case 'admin':
       return '/monitoring';
     case 'admin':
       return '/monitoring';
     case 'manager':
-    case 'portfolio_manager':
+    case 'manager':
       return '/portfolios';
     case 'analyst':
-    case 'financial_analyst':
+    case 'analyst':
       return '/analytics';
     case 'viewer':
       return '/reports';
@@ -130,13 +133,13 @@ const SmartDashboard: React.FC = () => {
   const userRole = currentUser.roles?.[0]?.name;
   
   switch (userRole) {
-    case 'system_admin':
+    case 'admin':
     case 'admin':
       return <SystemAdminDashboard />;
-    case 'portfolio_manager':
+    case 'manager':
     case 'manager':
       return <PortfolioManagerDashboard />;
-    case 'financial_analyst':
+    case 'analyst':
     case 'analyst':
       return <FinancialAnalystDashboard />;
     case 'viewer':
@@ -197,7 +200,7 @@ const router = createBrowserRouter([
           {
             index: true,
             element: (
-              <ProtectedRoute requiredRoles={['system_admin', 'portfolio_manager', 'financial_analyst', 'viewer']}>
+              <ProtectedRoute requiredRoles={['admin', 'manager', 'analyst', 'viewer']}>
                 <Portfolios />
               </ProtectedRoute>
             ),
@@ -205,7 +208,7 @@ const router = createBrowserRouter([
           {
             path: 'list',
             element: (
-              <ProtectedRoute requiredRoles={['system_admin', 'portfolio_manager', 'financial_analyst', 'viewer']}>
+              <ProtectedRoute requiredRoles={['admin', 'manager', 'analyst', 'viewer']}>
                 <PortfolioListPage />
               </ProtectedRoute>
             ),
@@ -213,7 +216,7 @@ const router = createBrowserRouter([
           {
             path: 'details/:portfolioId',
             element: (
-              <ProtectedRoute requiredRoles={['system_admin', 'portfolio_manager', 'financial_analyst', 'viewer']}>
+              <ProtectedRoute requiredRoles={['admin', 'manager', 'analyst', 'viewer']}>
                 <PortfolioDetailPage />
               </ProtectedRoute>
             ),
@@ -221,7 +224,7 @@ const router = createBrowserRouter([
           {
             path: 'risk',
             element: (
-              <ProtectedRoute requiredRoles={['system_admin', 'portfolio_manager', 'financial_analyst']}>
+              <ProtectedRoute requiredRoles={['admin', 'manager', 'analyst']}>
                 <RiskDashboardPage />
               </ProtectedRoute>
             ),
@@ -229,7 +232,7 @@ const router = createBrowserRouter([
           {
             path: 'performance',
             element: (
-              <ProtectedRoute requiredRoles={['system_admin', 'portfolio_manager', 'financial_analyst']}>
+              <ProtectedRoute requiredRoles={['admin', 'manager', 'analyst']}>
                 <PerformanceTracker />
               </ProtectedRoute>
             ),
@@ -242,7 +245,7 @@ const router = createBrowserRouter([
           {
             index: true,
             element: (
-              <ProtectedRoute requiredRoles={['system_admin', 'portfolio_manager', 'financial_analyst']}>
+              <ProtectedRoute requiredRoles={['admin', 'manager', 'analyst']}>
                 <AssetDashboard />
               </ProtectedRoute>
             ),
@@ -250,7 +253,7 @@ const router = createBrowserRouter([
           {
             path: 'list',
             element: (
-              <ProtectedRoute requiredRoles={['system_admin', 'portfolio_manager', 'financial_analyst', 'viewer']}>
+              <ProtectedRoute requiredRoles={['admin', 'manager', 'analyst', 'viewer']}>
                 <AssetList />
               </ProtectedRoute>
             ),
@@ -258,7 +261,7 @@ const router = createBrowserRouter([
           {
             path: 'create',
             element: (
-              <ProtectedRoute requiredRoles={['system_admin', 'portfolio_manager']}>
+              <ProtectedRoute requiredRoles={['admin', 'manager']}>
                 <AssetCreateForm />
               </ProtectedRoute>
             ),
@@ -266,7 +269,7 @@ const router = createBrowserRouter([
           {
             path: ':assetId',
             element: (
-              <ProtectedRoute requiredRoles={['system_admin', 'portfolio_manager', 'financial_analyst', 'viewer']}>
+              <ProtectedRoute requiredRoles={['admin', 'manager', 'analyst', 'viewer']}>
                 <AssetDetail />
               </ProtectedRoute>
             ),
@@ -274,7 +277,7 @@ const router = createBrowserRouter([
           {
             path: ':assetId/edit',
             element: (
-              <ProtectedRoute requiredRoles={['system_admin', 'portfolio_manager', 'financial_analyst']}>
+              <ProtectedRoute requiredRoles={['admin', 'manager', 'analyst']}>
                 <AssetEditForm />
               </ProtectedRoute>
             ),
@@ -282,7 +285,7 @@ const router = createBrowserRouter([
           {
             path: ':assetId/analysis',
             element: (
-              <ProtectedRoute requiredRoles={['system_admin', 'portfolio_manager', 'financial_analyst']}>
+              <ProtectedRoute requiredRoles={['admin', 'manager', 'analyst']}>
                 <AssetAnalysis />
               </ProtectedRoute>
             ),
@@ -290,7 +293,7 @@ const router = createBrowserRouter([
           {
             path: 'portfolio/:portfolioId',
             element: (
-              <ProtectedRoute requiredRoles={['system_admin', 'portfolio_manager', 'financial_analyst']}>
+              <ProtectedRoute requiredRoles={['admin', 'manager', 'analyst']}>
                 <AssetManagement />
               </ProtectedRoute>
             ),
@@ -298,7 +301,7 @@ const router = createBrowserRouter([
           {
             path: 'analysis',
             element: (
-              <ProtectedRoute requiredRoles={['system_admin', 'portfolio_manager', 'financial_analyst']}>
+              <ProtectedRoute requiredRoles={['admin', 'manager', 'analyst']}>
                 <AssetDashboard />
               </ProtectedRoute>
             ),
@@ -311,7 +314,7 @@ const router = createBrowserRouter([
           {
             index: true,
             element: (
-              <ProtectedRoute requiredRoles={['system_admin', 'portfolio_manager', 'financial_analyst']}>
+              <ProtectedRoute requiredRoles={['admin', 'manager', 'analyst']}>
                 <RiskDashboardPage />
               </ProtectedRoute>
             ),
@@ -319,7 +322,7 @@ const router = createBrowserRouter([
           {
             path: 'risk',
             element: (
-              <ProtectedRoute requiredRoles={['system_admin', 'portfolio_manager', 'financial_analyst']}>
+              <ProtectedRoute requiredRoles={['admin', 'manager', 'analyst']}>
                 <RiskDashboardPage />
               </ProtectedRoute>
             ),
@@ -327,7 +330,7 @@ const router = createBrowserRouter([
           {
             path: 'scenarios',
             element: (
-              <ProtectedRoute requiredRoles={['system_admin', 'portfolio_manager', 'financial_analyst']}>
+              <ProtectedRoute requiredRoles={['admin', 'manager', 'analyst']}>
                 <ScenarioModeling />
               </ProtectedRoute>
             ),
@@ -335,7 +338,7 @@ const router = createBrowserRouter([
           {
             path: 'correlation',
             element: (
-              <ProtectedRoute requiredRoles={['system_admin', 'portfolio_manager', 'financial_analyst']}>
+              <ProtectedRoute requiredRoles={['admin', 'manager', 'analyst']}>
                 <CorrelationAnalysis />
               </ProtectedRoute>
             ),
@@ -343,7 +346,7 @@ const router = createBrowserRouter([
           {
             path: 'structuring',
             element: (
-              <ProtectedRoute requiredRoles={['system_admin', 'portfolio_manager', 'financial_analyst']}>
+              <ProtectedRoute requiredRoles={['admin', 'manager', 'analyst']}>
                 <CLOStructuring />
               </ProtectedRoute>
             ),
@@ -353,10 +356,55 @@ const router = createBrowserRouter([
       {
         path: 'waterfall',
         element: (
-          <ProtectedRoute requiredRoles={['system_admin', 'portfolio_manager', 'financial_analyst']}>
+          <ProtectedRoute requiredRoles={['admin', 'manager', 'analyst']}>
             <WaterfallAnalysis />
           </ProtectedRoute>
         ),
+      },
+      {
+        path: 'yield-curves',
+        children: [
+          {
+            index: true,
+            element: (
+              <ProtectedRoute requiredRoles={['admin', 'manager', 'analyst']}>
+                <YieldCurves />
+              </ProtectedRoute>
+            ),
+          },
+          {
+            path: 'visualization',
+            element: (
+              <ProtectedRoute requiredRoles={['admin', 'manager', 'analyst']}>
+                <YieldCurveVisualization />
+              </ProtectedRoute>
+            ),
+          },
+          {
+            path: 'create',
+            element: (
+              <ProtectedRoute requiredRoles={['admin', 'manager']}>
+                <YieldCurveForm mode="create" />
+              </ProtectedRoute>
+            ),
+          },
+          {
+            path: ':id',
+            element: (
+              <ProtectedRoute requiredRoles={['admin', 'manager', 'analyst']}>
+                <YieldCurveForm mode="view" />
+              </ProtectedRoute>
+            ),
+          },
+          {
+            path: ':id/edit',
+            element: (
+              <ProtectedRoute requiredRoles={['admin', 'manager', 'analyst']}>
+                <YieldCurveForm mode="edit" />
+              </ProtectedRoute>
+            ),
+          },
+        ],
       },
       {
         path: 'reports',
@@ -368,7 +416,7 @@ const router = createBrowserRouter([
           {
             path: 'builder',
             element: (
-              <ProtectedRoute requiredRoles={['system_admin', 'portfolio_manager', 'financial_analyst']}>
+              <ProtectedRoute requiredRoles={['admin', 'manager', 'analyst']}>
                 <PlaceholderPage title="Report Builder" />
               </ProtectedRoute>
             ),
@@ -382,7 +430,7 @@ const router = createBrowserRouter([
       {
         path: 'users',
         element: (
-          <ProtectedRoute requiredRoles={['system_admin']}>
+          <ProtectedRoute requiredRoles={['admin']}>
             <UserManagement />
           </ProtectedRoute>
         ),
@@ -390,7 +438,7 @@ const router = createBrowserRouter([
       {
         path: 'monitoring',
         element: (
-          <ProtectedRoute requiredRoles={['system_admin']}>
+          <ProtectedRoute requiredRoles={['admin']}>
             <SystemAdminDashboard />
           </ProtectedRoute>
         ),
@@ -398,7 +446,7 @@ const router = createBrowserRouter([
       {
         path: 'security',
         element: (
-          <ProtectedRoute requiredRoles={['system_admin']}>
+          <ProtectedRoute requiredRoles={['admin']}>
             <PlaceholderPage title="Security Center" />
           </ProtectedRoute>
         ),
@@ -406,7 +454,7 @@ const router = createBrowserRouter([
       {
         path: 'settings',
         element: (
-          <ProtectedRoute requiredRoles={['system_admin', 'portfolio_manager']}>
+          <ProtectedRoute requiredRoles={['admin', 'manager']}>
             <PlaceholderPage title="Settings" />
           </ProtectedRoute>
         ),

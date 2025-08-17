@@ -205,7 +205,7 @@ const RiskDashboard: React.FC = () => {
     }
   );
 
-  const {} = useGetRiskHistoryQuery({
+  useGetRiskHistoryQuery({
     dealId: selectedPortfolio !== 'all' ? selectedPortfolio : portfoliosData?.data?.[0]?.id || '',
     limit: 30,
   }, {
@@ -325,10 +325,10 @@ const RiskDashboard: React.FC = () => {
       </Box>
 
       {/* Alert Summary */}
-      {portfolioSummary?.compliance_status && !portfolioSummary.compliance_status.oc_tests_passing && (
+      {portfolioSummary?.compliance_status && !portfolioSummary.compliance_status?.oc_tests_passing && (
         <Alert severity="error" sx={{ mb: 3 }}>
           <Typography variant="body2">
-            <strong>Risk Alert:</strong> OC tests are failing for {portfolioSummary.portfolio.deal_name}. 
+            <strong>Risk Alert:</strong> OC tests are failing for {portfolioSummary.portfolio?.deal_name}. 
             Immediate attention required.
           </Typography>
         </Alert>
@@ -415,7 +415,9 @@ const RiskDashboard: React.FC = () => {
                         <TableRow>
                           <TableCell>Portfolio Value</TableCell>
                           <TableCell align="right">
-                            ${(portfolioSummary.risk_metrics.portfolio_value / 1000000).toFixed(1)}M
+                            {typeof portfolioSummary.risk_metrics?.portfolio_value === 'number'
+                              ? `$${(portfolioSummary.risk_metrics.portfolio_value / 1000000).toFixed(1)}M`
+                              : 'N/A'}
                           </TableCell>
                           <TableCell align="right">-</TableCell>
                           <TableCell align="right">
@@ -425,11 +427,14 @@ const RiskDashboard: React.FC = () => {
                         <TableRow>
                           <TableCell>Weighted Average Life</TableCell>
                           <TableCell align="right">
-                            {portfolioSummary.risk_metrics.weighted_average_life.toFixed(2)} years
+                            {typeof portfolioSummary.risk_metrics?.weighted_average_life === 'number' 
+                              ? portfolioSummary.risk_metrics.weighted_average_life.toFixed(2) 
+                              : 'N/A'} years
                           </TableCell>
                           <TableCell align="right">4.5 years</TableCell>
                           <TableCell align="right">
-                            {portfolioSummary.risk_metrics.weighted_average_life > 5 ? (
+                            {typeof portfolioSummary.risk_metrics?.weighted_average_life === 'number' && 
+                             portfolioSummary.risk_metrics.weighted_average_life > 5 ? (
                               <Warning color="warning" fontSize="small" />
                             ) : (
                               <CheckCircle color="success" fontSize="small" />
@@ -446,17 +451,17 @@ const RiskDashboard: React.FC = () => {
                             <CheckCircle color="success" fontSize="small" />
                           </TableCell>
                         </TableRow>
-                        {Object.entries(portfolioSummary.risk_metrics.oc_ratios).slice(0, 3).map(([test, ratio]) => (
+                        {portfolioSummary.risk_metrics?.oc_ratios && Object.entries(portfolioSummary.risk_metrics.oc_ratios).slice(0, 3).map(([test, ratio]) => (
                           <TableRow key={test}>
                             <TableCell>OC Ratio - {test}</TableCell>
                             <TableCell align="right">
-                              {(ratio as number).toFixed(2)}x
+                              {typeof ratio === 'number' ? ratio.toFixed(2) : '0.00'}x
                             </TableCell>
                             <TableCell align="right">
                               {test === 'Class A' ? '1.15x' : test === 'Class B' ? '1.10x' : '1.05x'}
                             </TableCell>
                             <TableCell align="right">
-                              {(ratio as number) > 1.1 ? (
+                              {typeof ratio === 'number' && ratio > 1.1 ? (
                                 <CheckCircle color="success" fontSize="small" />
                               ) : (
                                 <Warning color="warning" fontSize="small" />
@@ -498,8 +503,8 @@ const RiskDashboard: React.FC = () => {
                 </Typography>
                 {portfolioSummary?.compliance_status ? (
                   <List>
-                    {portfolioSummary.compliance_status.failed_tests.length === 0 &&
-                     portfolioSummary.compliance_status.warnings.length === 0 ? (
+                    {(portfolioSummary.compliance_status?.failed_tests?.length || 0) === 0 &&
+                     (portfolioSummary.compliance_status?.warnings?.length || 0) === 0 ? (
                       <ListItem>
                         <ListItemIcon>
                           <CheckCircle color="success" />
@@ -511,7 +516,7 @@ const RiskDashboard: React.FC = () => {
                       </ListItem>
                     ) : (
                       <>
-                        {portfolioSummary.compliance_status.failed_tests.map((test, index) => (
+                        {portfolioSummary.compliance_status?.failed_tests?.map((test, index) => (
                           <ListItem key={`failed-${index}`}>
                             <ListItemIcon>
                               <Error color="error" />
@@ -522,7 +527,7 @@ const RiskDashboard: React.FC = () => {
                             />
                           </ListItem>
                         ))}
-                        {portfolioSummary.compliance_status.warnings.map((warning, index) => (
+                        {portfolioSummary.compliance_status?.warnings?.map((warning, index) => (
                           <ListItem key={`warning-${index}`}>
                             <ListItemIcon>
                               <Warning color="warning" />
@@ -565,13 +570,13 @@ const RiskDashboard: React.FC = () => {
                         Overcollateralization Tests
                       </Typography>
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        {portfolioSummary.compliance_status.oc_tests_passing ? (
+                        {portfolioSummary.compliance_status?.oc_tests_passing ? (
                           <CheckCircle color="success" />
                         ) : (
                           <Error color="error" />
                         )}
                         <Typography variant="body2" fontWeight={600}>
-                          {portfolioSummary.compliance_status.oc_tests_passing ? 'Passing' : 'Failed'}
+                          {portfolioSummary.compliance_status?.oc_tests_passing ? 'Passing' : 'Failed'}
                         </Typography>
                       </Box>
                     </Box>
@@ -581,13 +586,13 @@ const RiskDashboard: React.FC = () => {
                         Interest Coverage Tests
                       </Typography>
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        {portfolioSummary.compliance_status.ic_tests_passing ? (
+                        {portfolioSummary.compliance_status?.ic_tests_passing ? (
                           <CheckCircle color="success" />
                         ) : (
                           <Error color="error" />
                         )}
                         <Typography variant="body2" fontWeight={600}>
-                          {portfolioSummary.compliance_status.ic_tests_passing ? 'Passing' : 'Failed'}
+                          {portfolioSummary.compliance_status?.ic_tests_passing ? 'Passing' : 'Failed'}
                         </Typography>
                       </Box>
                     </Box>
@@ -597,13 +602,13 @@ const RiskDashboard: React.FC = () => {
                         Concentration Tests
                       </Typography>
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        {portfolioSummary.compliance_status.concentration_tests_passing ? (
+                        {portfolioSummary.compliance_status?.concentration_tests_passing ? (
                           <CheckCircle color="success" />
                         ) : (
                           <Error color="error" />
                         )}
                         <Typography variant="body2" fontWeight={600}>
-                          {portfolioSummary.compliance_status.concentration_tests_passing ? 'Passing' : 'Failed'}
+                          {portfolioSummary.compliance_status?.concentration_tests_passing ? 'Passing' : 'Failed'}
                         </Typography>
                       </Box>
                     </Box>

@@ -28,7 +28,7 @@ const UserManagement: React.FC = () => {
   const [formMode, setFormMode] = useState<'create' | 'edit'>('create');
 
   // Check if user has admin access
-  const hasAdminAccess = hasRole('system_admin');
+  const hasAdminAccess = hasRole('admin');
 
   // Handlers
   const handleCreateUser = useCallback(() => {

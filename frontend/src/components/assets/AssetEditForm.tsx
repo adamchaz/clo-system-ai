@@ -229,9 +229,9 @@ const AssetEditForm: React.FC<AssetEditFormProps> = ({
     if (!asset || !user) return {};
 
     const permissions: FieldPermissions = {};
-    const isAdmin = hasRole('system_admin');
-    const isManager = hasRole('portfolio_manager');
-    const isAnalyst = hasRole('financial_analyst');
+    const isAdmin = hasRole('admin');
+    const isManager = hasRole('manager');
+    const isAnalyst = hasRole('analyst');
 
     // Base permissions - administrators can edit most fields
     const baseEditableFields = isAdmin || isManager;

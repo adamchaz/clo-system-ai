@@ -65,17 +65,17 @@ const roleOptions: { value: UserRoleType; label: string; description: string }[]
     description: 'Read-only access to reports and portfolios'
   },
   {
-    value: 'financial_analyst',
+    value: 'analyst',
     label: 'Financial Analyst',
     description: 'Asset analysis and scenario modeling capabilities'
   },
   {
-    value: 'portfolio_manager',
+    value: 'manager',
     label: 'Portfolio Manager',
     description: 'Full portfolio management and risk analytics'
   },
   {
-    value: 'system_admin',
+    value: 'admin',
     label: 'System Administrator',
     description: 'Full system access and user management'
   },

@@ -191,6 +191,120 @@ export interface AssetRiskMetrics {
   calculated_at: string;
 }
 
+// Yield Curve interfaces
+export interface YieldCurveRate {
+  rate_id: number;
+  maturity_month: number;
+  maturity_date?: string;
+  spot_rate: number;
+  is_interpolated: boolean;
+  source?: string;
+}
+
+export interface ForwardRate {
+  forward_id: number;
+  forward_date: string;
+  period_start_date: string;
+  period_months: number;
+  forward_rate: number;
+  calculation_method: string;
+}
+
+export interface YieldCurve {
+  curve_id: number;
+  curve_name: string;
+  curve_type: string;
+  currency: string;
+  analysis_date: string;
+  base_date: string;
+  last_month: number;
+  description?: string;
+  is_active: boolean;
+  created_date?: string;
+  updated_date?: string;
+  rates: YieldCurveRate[];
+  forward_rates?: ForwardRate[];
+}
+
+export interface YieldCurveSummary {
+  curve_id: number;
+  curve_name: string;
+  curve_type: string;
+  currency: string;
+  analysis_date: string;
+  description?: string;
+  is_active: boolean;
+  rate_count: number;
+  maturity_range: string;
+}
+
+export interface YieldCurveCreateRequest {
+  curve_name: string;
+  curve_type?: string;
+  currency?: string;
+  analysis_date: string;
+  description?: string;
+  rates: Array<{
+    maturity_month: number;
+    spot_rate: number;
+  }>;
+}
+
+export interface YieldCurveUpdateRequest {
+  curve_name?: string;
+  curve_type?: string;
+  currency?: string;
+  analysis_date?: string;
+  description?: string;
+  rates?: Array<{
+    maturity_month: number;
+    spot_rate: number;
+  }>;
+  is_active?: boolean;
+}
+
+export interface YieldCurveListResponse {
+  curves: YieldCurveSummary[];
+  total_count: number;
+  page: number;
+  per_page: number;
+  has_next: boolean;
+  has_prev: boolean;
+}
+
+export interface RateCalculationRequest {
+  curve_id: number;
+  calculation_date: string;
+  maturity_months: number;
+}
+
+export interface RateCalculationResponse {
+  curve_id: number;
+  curve_name: string;
+  calculation_date: string;
+  maturity_months: number;
+  spot_rate: number;
+  is_interpolated: boolean;
+  calculation_method: string;
+}
+
+export interface BulkRateCalculationRequest {
+  curve_id: number;
+  calculation_date: string;
+  maturity_months_list: number[];
+}
+
+export interface BulkRateCalculationResponse {
+  curve_id: number;
+  curve_name: string;
+  calculation_date: string;
+  rates: Array<{
+    maturity_months: number;
+    spot_rate: number;
+    is_interpolated: boolean;
+  }>;
+}
+
 export interface ApiResponse<T> {
   data: T;
   message?: string;
@@ -452,7 +566,8 @@ export const cloApi = createApi({
     'UserPreferences',
     'Alert',
     'MarketData',
-    'Price'
+    'Price',
+    'YieldCurve'
   ],
   endpoints: (builder) => ({
     // Authentication endpoints
@@ -1706,6 +1821,88 @@ export const cloApi = createApi({
       query: () => 'websocket/channels',
       providesTags: ['WebSocket'],
     }),
+
+    // Yield Curve endpoints
+    getYieldCurves: builder.query<YieldCurveListResponse, { 
+      skip?: number; 
+      limit?: number; 
+      currency?: string; 
+      curve_type?: string; 
+      is_active?: boolean; 
+      search?: string;
+    }>({
+      query: ({ skip = 0, limit = 50, currency, curve_type, is_active, search }) => ({
+        url: 'yield-curves',
+        params: { skip, limit, currency, curve_type, is_active, search },
+      }),
+      providesTags: ['YieldCurve'],
+    }),
+
+    getYieldCurve: builder.query<ApiResponse<YieldCurve>, { curveId: number; includeForwards?: boolean }>({
+      query: ({ curveId, includeForwards = true }) => ({
+        url: `yield-curves/${curveId}`,
+        params: { include_forwards: includeForwards },
+      }),
+      providesTags: (result, error, { curveId }) => [{ type: 'YieldCurve', id: curveId }],
+    }),
+
+    createYieldCurve: builder.mutation<ApiResponse<YieldCurve>, YieldCurveCreateRequest>({
+      query: (curveData) => ({
+        url: 'yield-curves',
+        method: 'POST',
+        body: curveData,
+      }),
+      invalidatesTags: ['YieldCurve'],
+    }),
+
+    updateYieldCurve: builder.mutation<ApiResponse<YieldCurve>, { curveId: number; updates: YieldCurveUpdateRequest }>({
+      query: ({ curveId, updates }) => ({
+        url: `yield-curves/${curveId}`,
+        method: 'PUT',
+        body: updates,
+      }),
+      invalidatesTags: (result, error, { curveId }) => [
+        { type: 'YieldCurve', id: curveId },
+        'YieldCurve',
+      ],
+    }),
+
+    deleteYieldCurve: builder.mutation<void, number>({
+      query: (curveId) => ({
+        url: `yield-curves/${curveId}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: (result, error, curveId) => [
+        { type: 'YieldCurve', id: curveId },
+        'YieldCurve',
+      ],
+    }),
+
+    calculateSpotRate: builder.mutation<RateCalculationResponse, RateCalculationRequest>({
+      query: (request) => ({
+        url: 'yield-curves/calculate-rate',
+        method: 'POST',
+        body: request,
+      }),
+    }),
+
+    calculateBulkRates: builder.mutation<BulkRateCalculationResponse, BulkRateCalculationRequest>({
+      query: (request) => ({
+        url: 'yield-curves/calculate-bulk-rates',
+        method: 'POST',
+        body: request,
+      }),
+    }),
+
+    getAvailableCurrencies: builder.query<string[], void>({
+      query: () => 'yield-curves/currencies',
+      providesTags: ['YieldCurve'],
+    }),
+
+    getAvailableCurveTypes: builder.query<string[], void>({
+      query: () => 'yield-curves/curve-types',
+      providesTags: ['YieldCurve'],
+    }),
   }),
 });
 
@@ -1885,6 +2082,17 @@ export const {
   useUpdateCalculationProgressMutation,
   useSendRiskAlertMutation,
   useGetWebSocketChannelsQuery,
+  
+  // Yield Curve hooks
+  useGetYieldCurvesQuery,
+  useGetYieldCurveQuery,
+  useCreateYieldCurveMutation,
+  useUpdateYieldCurveMutation,
+  useDeleteYieldCurveMutation,
+  useCalculateSpotRateMutation,
+  useCalculateBulkRatesMutation,
+  useGetAvailableCurrenciesQuery,
+  useGetAvailableCurveTypesQuery,
 } = cloApi;
 
 // Selector helpers for complex data transformations

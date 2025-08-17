@@ -172,7 +172,7 @@ const PortfolioManagerDashboard: React.FC = () => {
     refetchOnMountOrArgChange: true,
   });
 
-  const {} = useGetSystemHealthQuery(undefined, {
+  useGetSystemHealthQuery(undefined, {
     refetchOnMountOrArgChange: true,
   });
 
@@ -474,12 +474,12 @@ const PortfolioManagerDashboard: React.FC = () => {
                       <TableRow>
                         <TableCell>OC Tests</TableCell>
                         <TableCell align="right">
-                          {Object.keys(portfolioSummary.risk_metrics.oc_ratios).length}
+                          {portfolioSummary.risk_metrics?.oc_ratios ? Object.keys(portfolioSummary.risk_metrics.oc_ratios).length : 0}
                         </TableCell>
                         <TableCell align="right">
                           <Chip
-                            label={portfolioSummary.compliance_status.oc_tests_passing ? 'Passing' : 'Failed'}
-                            color={portfolioSummary.compliance_status.oc_tests_passing ? 'success' : 'error'}
+                            label={portfolioSummary.compliance_status?.oc_tests_passing ? 'Passing' : 'Failed'}
+                            color={portfolioSummary.compliance_status?.oc_tests_passing ? 'success' : 'error'}
                             size="small"
                           />
                         </TableCell>
@@ -487,12 +487,12 @@ const PortfolioManagerDashboard: React.FC = () => {
                       <TableRow>
                         <TableCell>IC Tests</TableCell>
                         <TableCell align="right">
-                          {Object.keys(portfolioSummary.risk_metrics.ic_ratios).length}
+                          {portfolioSummary.risk_metrics?.ic_ratios ? Object.keys(portfolioSummary.risk_metrics.ic_ratios).length : 0}
                         </TableCell>
                         <TableCell align="right">
                           <Chip
-                            label={portfolioSummary.compliance_status.ic_tests_passing ? 'Passing' : 'Failed'}
-                            color={portfolioSummary.compliance_status.ic_tests_passing ? 'success' : 'error'}
+                            label={portfolioSummary.compliance_status?.ic_tests_passing ? 'Passing' : 'Failed'}
+                            color={portfolioSummary.compliance_status?.ic_tests_passing ? 'success' : 'error'}
                             size="small"
                           />
                         </TableCell>
@@ -500,12 +500,12 @@ const PortfolioManagerDashboard: React.FC = () => {
                       <TableRow>
                         <TableCell>Concentration</TableCell>
                         <TableCell align="right">
-                          {Object.keys(portfolioSummary.risk_metrics.concentration_metrics).length}
+                          {portfolioSummary.risk_metrics?.concentration_metrics ? Object.keys(portfolioSummary.risk_metrics.concentration_metrics).length : 0}
                         </TableCell>
                         <TableCell align="right">
                           <Chip
-                            label={portfolioSummary.compliance_status.concentration_tests_passing ? 'Passing' : 'Failed'}
-                            color={portfolioSummary.compliance_status.concentration_tests_passing ? 'success' : 'error'}
+                            label={portfolioSummary.compliance_status?.concentration_tests_passing ? 'Passing' : 'Failed'}
+                            color={portfolioSummary.compliance_status?.concentration_tests_passing ? 'success' : 'error'}
                             size="small"
                           />
                         </TableCell>
@@ -513,7 +513,9 @@ const PortfolioManagerDashboard: React.FC = () => {
                       <TableRow>
                         <TableCell>WAL</TableCell>
                         <TableCell align="right">
-                          {portfolioSummary.risk_metrics.weighted_average_life?.toFixed(2) ?? 'N/A'} years
+                          {typeof portfolioSummary.risk_metrics?.weighted_average_life === 'number' 
+                            ? portfolioSummary.risk_metrics.weighted_average_life.toFixed(2) 
+                            : 'N/A'} years
                         </TableCell>
                         <TableCell align="right">
                           <Chip
@@ -593,10 +595,10 @@ const PortfolioManagerDashboard: React.FC = () => {
                   </Box>
                 </Box>
 
-                {portfolioSummary?.compliance_status.warnings.length && (
+                {portfolioSummary?.compliance_status?.warnings?.length && (
                   <Alert severity="warning" sx={{ mt: 2 }}>
                     <Typography variant="caption">
-                      {portfolioSummary.compliance_status.warnings.length} portfolio warning(s) require attention
+                      {portfolioSummary.compliance_status?.warnings?.length} portfolio warning(s) require attention
                     </Typography>
                   </Alert>
                 )}

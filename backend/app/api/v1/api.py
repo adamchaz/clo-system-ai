@@ -20,7 +20,8 @@ from .endpoints import (
     portfolio_analytics,
     user_management,
     websocket,
-    admin
+    admin,
+    yield_curves
 )
 
 api_router = APIRouter()
@@ -120,4 +121,10 @@ api_router.include_router(
     admin.router, 
     prefix="/admin", 
     tags=["Administration"]
+)
+
+api_router.include_router(
+    yield_curves.router, 
+    prefix="/yield-curves", 
+    tags=["Yield Curves"]
 )

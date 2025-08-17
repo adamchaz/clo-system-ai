@@ -45,7 +45,7 @@ export interface AuthState {
   error: string | null;
 }
 
-export type UserRoleType = 'system_admin' | 'portfolio_manager' | 'financial_analyst' | 'viewer';
+export type UserRoleType = 'admin' | 'manager' | 'analyst' | 'viewer';
 
 export interface ProtectedRouteProps {
   children: React.ReactNode;

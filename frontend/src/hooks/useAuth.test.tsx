@@ -14,9 +14,9 @@ jest.mock('../services/auth', () => ({
     clearTokens: jest.fn(),
     hasPermission: jest.fn((roles: string[], permission: string) => {
       const rolePermissions: Record<string, string[]> = {
-        'system_admin': ['system:read', 'system:write', 'user:read', 'portfolio:write'],
-        'portfolio_manager': ['portfolio:read', 'portfolio:write'],
-        'financial_analyst': ['portfolio:read', 'analytics:read'],
+        'admin': ['system:read', 'system:write', 'user:read', 'portfolio:write'],
+        'manager': ['portfolio:read', 'portfolio:write'],
+        'analyst': ['portfolio:read', 'analytics:read'],
         'viewer': ['portfolio:read'],
       };
       return roles.some(role => rolePermissions[role]?.includes(permission));
@@ -73,7 +73,7 @@ describe('useAuth', () => {
       lastName: 'User',
       roles: [{
         id: '1',
-        name: 'portfolio_manager',
+        name: 'manager',
         displayName: 'Portfolio Manager',
         description: 'Manages portfolios',
         permissions: ['portfolio:read', 'portfolio:write'],
@@ -109,7 +109,7 @@ describe('useAuth', () => {
       lastName: 'User',
       roles: [{
         id: '1',
-        name: 'portfolio_manager',
+        name: 'manager',
         displayName: 'Portfolio Manager',
         description: 'Manages portfolios',
         permissions: ['portfolio:read', 'portfolio:write'],
@@ -126,8 +126,8 @@ describe('useAuth', () => {
 
     const { result } = renderHook(() => useAuth(), { wrapper: wrapper(store) });
 
-    expect(result.current.hasRole('portfolio_manager')).toBe(true);
-    expect(result.current.hasRole('system_admin')).toBe(false);
+    expect(result.current.hasRole('manager')).toBe(true);
+    expect(result.current.hasRole('admin')).toBe(false);
     expect(result.current.isManager()).toBe(true);
     expect(result.current.isAdmin()).toBe(false);
     expect(result.current.hasElevatedAccess()).toBe(true);
@@ -142,7 +142,7 @@ describe('useAuth', () => {
       lastName: 'User',
       roles: [{
         id: '1',
-        name: 'portfolio_manager',
+        name: 'manager',
         displayName: 'Portfolio Manager',
         description: 'Manages portfolios',
         permissions: ['portfolio:read', 'portfolio:write'],
@@ -169,8 +169,8 @@ describe('useAuth', () => {
     const hasSystemWrite = result.current.hasPermission('system:write');
     
     // Verify the mock was called with correct arguments
-    expect(mockAuthService.hasPermission).toHaveBeenCalledWith(['portfolio_manager'], 'portfolio:write');
-    expect(mockAuthService.hasPermission).toHaveBeenCalledWith(['portfolio_manager'], 'system:write');
+    expect(mockAuthService.hasPermission).toHaveBeenCalledWith(['manager'], 'portfolio:write');
+    expect(mockAuthService.hasPermission).toHaveBeenCalledWith(['manager'], 'system:write');
     
     // Test the permission results
     expect(typeof result.current.hasPermission).toBe('function');
@@ -186,7 +186,7 @@ describe('useAuth', () => {
       lastName: 'Doe',
       roles: [{
         id: '1',
-        name: 'portfolio_manager',
+        name: 'manager',
         displayName: 'Portfolio Manager',
         description: 'Manages portfolios',
         permissions: ['portfolio:read', 'portfolio:write'],
@@ -212,7 +212,7 @@ describe('useAuth', () => {
     const store = createMockStore();
     const { result } = renderHook(() => useAuth(), { wrapper: wrapper(store) });
 
-    expect(result.current.hasRole('portfolio_manager')).toBe(false);
+    expect(result.current.hasRole('manager')).toBe(false);
     expect(result.current.hasPermission('portfolio:read')).toBe(false);
     expect(result.current.getDisplayName()).toBe('');
     expect(result.current.getPrimaryRole()).toBe('');
@@ -228,14 +228,14 @@ describe('useAuth', () => {
       roles: [
         {
           id: '1',
-          name: 'financial_analyst',
+          name: 'analyst',
           displayName: 'Financial Analyst',
           description: 'Analyzes finances',
           permissions: ['portfolio:read', 'analytics:read'],
         },
         {
           id: '2',
-          name: 'portfolio_manager',
+          name: 'manager',
           displayName: 'Portfolio Manager',
           description: 'Manages portfolios',
           permissions: ['portfolio:read', 'portfolio:write'],
@@ -253,8 +253,8 @@ describe('useAuth', () => {
 
     const { result } = renderHook(() => useAuth(), { wrapper: wrapper(store) });
 
-    expect(result.current.hasAnyRole(['financial_analyst', 'viewer'])).toBe(true);
-    expect(result.current.hasAnyRole(['system_admin', 'viewer'])).toBe(false);
+    expect(result.current.hasAnyRole(['analyst', 'viewer'])).toBe(true);
+    expect(result.current.hasAnyRole(['admin', 'viewer'])).toBe(false);
     expect(result.current.getPrimaryRole()).toBe('Financial Analyst'); // Returns first role
   });
 });

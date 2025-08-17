@@ -87,17 +87,17 @@ const PermissionGate: React.FC<PermissionGateProps> = ({
 
 // Convenience components for common permission patterns
 export const AdminOnly: React.FC<Omit<PermissionGateProps, 'requiredRoles'>> = (props) => (
-  <PermissionGate {...props} requiredRoles={['system_admin']} />
+  <PermissionGate {...props} requiredRoles={['admin']} />
 );
 
 export const ManagerOrAdmin: React.FC<Omit<PermissionGateProps, 'requiredRoles'>> = (props) => (
-  <PermissionGate {...props} requiredRoles={['portfolio_manager', 'system_admin']} />
+  <PermissionGate {...props} requiredRoles={['manager', 'admin']} />
 );
 
 export const AnalystAndAbove: React.FC<Omit<PermissionGateProps, 'requiredRoles'>> = (props) => (
   <PermissionGate 
     {...props} 
-    requiredRoles={['financial_analyst', 'portfolio_manager', 'system_admin']} 
+    requiredRoles={['analyst', 'manager', 'admin']} 
   />
 );
 
