@@ -156,6 +156,9 @@ This index provides a comprehensive overview of all documentation available for 
 ## 📋 **Specialized Documentation**
 
 ### **Business Logic Conversion**
+- **[VBA Archive](archive/vba_source/)** - Complete VBA source code and conversion documentation
+- **[VBA Conversion Summary](archive/vba_source/VBA_CONVERSION_SUMMARY.md)** - 99% conversion overview
+- **[Conversion Methodology](archive/vba_source/CONVERSION_METHODOLOGY.md)** - Technical conversion framework
 - **[VBA Migration Guide](docs/vba_migration_guide.md)** - Complete VBA to Python conversion
 - **[Asset System](docs/asset_system.md)** - Asset management implementation
 - **[Waterfall Implementations](docs/waterfall_implementations.md)** - CLO waterfall engines

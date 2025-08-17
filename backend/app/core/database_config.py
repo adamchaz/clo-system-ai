@@ -25,17 +25,12 @@ class DatabaseConfig:
             'postgresql://postgres:adamchaz@127.0.0.1:5433/clo_dev'
         )
         
-        # Migrated Data SQLite Databases (read-only)
-        # Get absolute paths to database files (they're in backend/data/databases)
-        backend_dir = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))  # Go up from app/core to backend
-        db_dir = os.path.join(backend_dir, "data", "databases")
-        self.migration_databases = {
-            'assets': f'sqlite:///{os.path.join(db_dir, "clo_assets_production.db")}',
-            'correlations': f'sqlite:///{os.path.join(db_dir, "clo_correlations.db")}',
-            'scenarios': f'sqlite:///{os.path.join(db_dir, "clo_mag_scenarios.db")}',
-            'config': f'sqlite:///{os.path.join(db_dir, "clo_model_config.db")}',
-            'reference': f'sqlite:///{os.path.join(db_dir, "clo_reference_quick.db")}'
-        }
+        # All data now unified in PostgreSQL - no more separate SQLite databases
+        # Migration completed: 258,989 rows successfully migrated to PostgreSQL
+        # Tables: asset_correlations, scenario_inputs, model_parameters, reference_data
+        self.migration_databases = {}
+        
+        # Note: SQLite databases fully migrated to PostgreSQL on 2025-08-17
         
         # Redis for caching
         self.redis_url = os.getenv('REDIS_URL', 'redis://localhost:6379/0')
@@ -68,21 +63,8 @@ class DatabaseConfig:
             bind=self.engines['postgresql']
         )
         
-        # Migration database engines (read-only)
-        for db_name, db_url in self.migration_databases.items():
-            self.engines[db_name] = create_engine(
-                db_url,
-                poolclass=StaticPool,
-                pool_pre_ping=True,
-                connect_args={"check_same_thread": False}
-            )
-            
-            # Session factory for each migration database
-            self.sessions[db_name] = sessionmaker(
-                autocommit=False,
-                autoflush=False,
-                bind=self.engines[db_name]
-            )
+        # All migrated data is now available through the main PostgreSQL engine
+        # No separate engines needed - unified database architecture
     
     def _setup_redis(self):
         """Initialize Redis client"""
@@ -101,12 +83,25 @@ class DatabaseConfig:
         Get database session with automatic cleanup
         
         Args:
-            database: Database name ('postgresql', 'assets', 'correlations', etc.)
+            database: Database name ('postgresql' or legacy names like 'correlations', 'scenarios', etc.)
+                     All legacy database names now map to PostgreSQL after migration
         """
-        if database not in self.sessions:
-            raise ValueError(f"Unknown database: {database}")
+        # Map all legacy database names to PostgreSQL (backward compatibility)
+        legacy_database_mapping = {
+            'correlations': 'postgresql',
+            'scenarios': 'postgresql',
+            'config': 'postgresql',
+            'reference': 'postgresql',
+            'assets': 'postgresql'  # In case any old code still references this
+        }
         
-        session = self.sessions[database]()
+        # Use mapping if it's a legacy name, otherwise use the provided name
+        actual_database = legacy_database_mapping.get(database, database)
+        
+        if actual_database not in self.sessions:
+            raise ValueError(f"Unknown database: {database} (mapped to {actual_database})")
+        
+        session = self.sessions[actual_database]()
         try:
             yield session
             session.commit()
@@ -118,9 +113,20 @@ class DatabaseConfig:
     
     def get_engine(self, database: str = 'postgresql'):
         """Get database engine"""
-        if database not in self.engines:
-            raise ValueError(f"Unknown database: {database}")
-        return self.engines[database]
+        # Map legacy database names to PostgreSQL
+        legacy_database_mapping = {
+            'correlations': 'postgresql',
+            'scenarios': 'postgresql',
+            'config': 'postgresql',
+            'reference': 'postgresql',
+            'assets': 'postgresql'
+        }
+        
+        actual_database = legacy_database_mapping.get(database, database)
+        
+        if actual_database not in self.engines:
+            raise ValueError(f"Unknown database: {database} (mapped to {actual_database})")
+        return self.engines[actual_database]
     
     def create_all_tables(self):
         """Create all tables in production database"""

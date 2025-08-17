@@ -28,6 +28,7 @@ A comprehensive Collateralized Loan Obligation (CLO) Portfolio Management System
 
 ### **Legacy Integration**
 - **Source System**: Excel VBA (69 modules, 15,000+ lines) - **FULLY CONVERTED** ✅
+- **VBA Archive**: Complete source code archived in `archive/vba_source/` with conversion documentation ✅
 - **VBA Extraction**: Complete source code analysis and conversion
 - **Functional Parity**: 100% VBA logic preservation with Python enhancements
 

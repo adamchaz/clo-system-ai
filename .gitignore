@@ -60,6 +60,13 @@ mag_deals_insert.sql
 # Temporary null files (Windows)
 nul
 
+# Migration runtime files
+migration_results.json
+validation_results.json
+sqlite_analysis_results.json
+migration.log
+validation.log
+
 # ==============================================================================
 # STANDARD DEVELOPMENT FILES
 # ==============================================================================

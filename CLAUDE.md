@@ -120,11 +120,12 @@ GET /api/v1/portfolios/{id}/summary?analysis_date=2016-06-30  # Custom date
 - `scripts/` - Development automation scripts
 - `data/` - Data files (gitignored)
 - `docs/` - Documentation
-- `vba_extracted/` - Extracted VBA source code (69 modules)
-  - `classes/` - 32 business logic classes
-  - `modules/` - 16 calculation and utility modules
-  - `forms/` - 2 user interface forms
-  - `sheets/` - 15 worksheet event handlers
+- `archive/` - Historical files and VBA source code
+  - `vba_source/` - Complete VBA archive (69 modules, conversion documentation)
+    - `extracted_files/classes/` - 32 business logic classes
+    - `extracted_files/modules/` - 16 calculation and utility modules  
+    - `extracted_files/forms/` - 2 user interface forms
+    - `extracted_files/sheets/` - 15 worksheet event handlers
 
 ## Analysis Documentation
 
