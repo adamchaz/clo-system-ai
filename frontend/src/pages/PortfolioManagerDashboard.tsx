@@ -415,7 +415,7 @@ const PortfolioManagerDashboard: React.FC = () => {
                         secondary={
                           <Box>
                             <Typography variant="caption" display="block">
-                              ${(portfolio.current_portfolio_balance / 1000000).toFixed(1)}M
+                              ${((portfolio.current_portfolio_balance || 0) / 1000000).toFixed(1)}M
                             </Typography>
                             <Box sx={{ display: 'flex', alignItems: 'center', mt: 0.5 }}>
                               <Chip
@@ -513,7 +513,7 @@ const PortfolioManagerDashboard: React.FC = () => {
                       <TableRow>
                         <TableCell>WAL</TableCell>
                         <TableCell align="right">
-                          {portfolioSummary.risk_metrics.weighted_average_life.toFixed(2)} years
+                          {portfolioSummary.risk_metrics.weighted_average_life?.toFixed(2) ?? 'N/A'} years
                         </TableCell>
                         <TableCell align="right">
                           <Chip

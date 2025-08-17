@@ -104,7 +104,8 @@
       "Bash(set REACT_APP_API_URL=http://localhost:8000)",
       "Bash(xcopy:*)",
       "Bash(copy:*)",
-      "Bash(move:*)"
+      "Bash(move:*)",
+      "Bash(scriptsstop-dev.bat)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits"

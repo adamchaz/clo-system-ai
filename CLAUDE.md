@@ -171,6 +171,19 @@ This system handles sensitive financial data:
 - Use environment variables for sensitive configuration
 - Follow secure coding practices for financial data
 
+## Test Credentials
+
+**Development/Testing User Accounts** (Available at http://localhost:3002):
+
+| Role | Email | Password | Name | Permissions |
+|------|-------|----------|------|-------------|
+| **ADMIN** | admin@clo-system.com | admin123 | System Administrator | Full system access, user management |
+| **MANAGER** | manager@clo-system.com | manager123 | Portfolio Manager | Deal management, risk analytics |
+| **ANALYST** | analyst@clo-system.com | analyst123 | Risk Analyst | Risk analysis, calculations, scenarios |
+| **VIEWER** | demo@clo-system.com | demo12345 | Demo User | Read-only access, basic analytics |
+
+**⚠️ Important**: These are test credentials for development only. Production systems should use secure authentication with proper password policies.
+
 ## Current Status
 
 **🎉 TESTING COMPLETED SUCCESSFULLY**

@@ -96,6 +96,23 @@ class DealAssetResponse(BaseModel):
     asset_type: Optional[str] = None
     rating: Optional[str] = None
     
+class RiskMetrics(BaseModel):
+    """Schema for risk metrics data"""
+    portfolio_value: Decimal = Field(default=Decimal('0'))
+    weighted_average_life: Optional[Decimal] = None
+    average_rating: str = "NR"
+    concentration_metrics: Dict[str, Decimal] = Field(default_factory=dict)
+    oc_ratios: Dict[str, Decimal] = Field(default_factory=dict)
+    ic_ratios: Dict[str, Decimal] = Field(default_factory=dict)
+
+class ComplianceStatus(BaseModel):
+    """Schema for compliance status"""
+    oc_tests_passing: bool = True
+    ic_tests_passing: bool = True
+    concentration_tests_passing: bool = True
+    failed_tests: List[str] = Field(default_factory=list)
+    warnings: List[str] = Field(default_factory=list)
+
 class PortfolioSummaryResponse(BaseModel):
     """Schema for portfolio summary statistics"""
     deal_id: str
@@ -114,6 +131,8 @@ class PortfolioSummaryResponse(BaseModel):
     average_spread: Optional[Decimal] = None
     duration: Optional[Decimal] = None
     convexity: Optional[Decimal] = None
+    risk_metrics: RiskMetrics = Field(default_factory=RiskMetrics)
+    compliance_status: ComplianceStatus = Field(default_factory=ComplianceStatus)
     
     # Top holdings
     top_holdings: List[Dict[str, Any]] = Field(default_factory=list)
