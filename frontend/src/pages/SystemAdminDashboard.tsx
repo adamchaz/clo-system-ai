@@ -160,6 +160,7 @@ const SystemHealthIndicator: React.FC<SystemHealthIndicatorProps> = ({
   diskUsage,
 }) => {
   const getStatusColor = (status: string) => {
+    if (!status) return 'info';
     switch (status.toLowerCase()) {
       case 'healthy':
         return 'success';
@@ -425,8 +426,8 @@ const SystemAdminDashboard: React.FC = () => {
         <Grid size={{ xs: 12, lg: 6 }}>
           {systemHealth && (
             <SystemHealthIndicator
-              status={systemHealth.status}
-              uptime={systemHealth.uptime}
+              status={systemHealth.status || 'unknown'}
+              uptime={systemHealth.uptime || 0}
               cpuUsage={systemStats?.cpuUsage || 0}
               memoryUsage={systemStats?.memoryUsage || 0}
               diskUsage={systemStats?.diskUsage || 0}

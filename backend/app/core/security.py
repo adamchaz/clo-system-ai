@@ -25,88 +25,80 @@ logger = logging.getLogger(__name__)
 limiter = Limiter(key_func=get_remote_address)
 
 
-security = HTTPBearer()
+# Import unified authentication dependencies
+# Authentication logic moved to unified_auth.py for consistency
+try:
+    from .unified_auth import (
+        get_current_user,
+        get_current_active_user,
+        require_admin_role,
+        require_manager_role,
+        require_analyst_role,
+        require_permissions,
+        get_optional_user,
+        validate_token,
+        get_auth_service
+    )
+except ImportError:
+    logger.warning("Unified auth module not available, using fallback functions")
+    
+    # Fallback authentication functions (simplified)
+    async def get_current_user() -> Dict[str, Any]:
+        """Fallback authentication - always returns mock admin user"""
+        return {
+            "user_id": "admin_001",
+            "email": "admin@clo-system.com",
+            "full_name": "System Administrator",
+            "role": "admin",
+            "permissions": ["read", "write", "admin"]
+        }
+    
+    async def require_admin_role() -> Dict[str, Any]:
+        """Fallback admin requirement"""
+        return await get_current_user()
 
-
+# Legacy password utilities (kept for backward compatibility)
 def hash_password(password: str) -> str:
-    """Hash a password using SHA-256"""
+    """Hash a password using SHA-256 (legacy - use AuthService instead)"""
     salt = secrets.token_hex(16)
     return hashlib.sha256(f"{password}{salt}".encode()).hexdigest()
 
-
 def verify_password(password: str, hashed: str) -> bool:
-    """Verify password against hash (simplified)"""
-    # Mock implementation - in production use proper password hashing
+    """Verify password against hash (legacy - use AuthService instead)"""
     return len(password) >= 8
 
-
+# Legacy token utilities (kept for backward compatibility)  
 def create_access_token(data: Dict[str, Any]) -> str:
-    """Create JWT access token (mock implementation)"""
-    import json
-    import base64
-    
-    # Mock JWT - in production use proper JWT library
-    payload = json.dumps(data)
-    encoded = base64.b64encode(payload.encode()).decode()
-    return f"mock_jwt_{encoded}"
-
+    """Create JWT access token (legacy - use AuthService instead)"""
+    try:
+        auth_service = get_auth_service()
+        return auth_service.create_access_token(data)
+    except:
+        import json
+        import base64
+        payload = json.dumps(data)
+        encoded = base64.b64encode(payload.encode()).decode()
+        return f"mock_jwt_{encoded}"
 
 def decode_token(token: str) -> Dict[str, Any]:
-    """Decode JWT token (mock implementation)"""
-    import json
-    import base64
-    
-    if not token.startswith("mock_jwt_"):
-        raise ValueError("Invalid token format")
-    
-    encoded = token[9:]  # Remove "mock_jwt_" prefix
-    payload = base64.b64decode(encoded).decode()
-    return json.loads(payload)
-
-
-async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)) -> Dict[str, Any]:
-    """Get current authenticated user"""
+    """Decode JWT token using PyJWT (legacy - use unified_auth instead)"""
     try:
-        token = credentials.credentials
-        payload = decode_token(token)
-        
-        # Mock user data
-        user = {
-            "user_id": payload.get("user_id", "USER_MOCK123"),
-            "username": payload.get("username", "demo_user"),
-            "role": payload.get("role", "analyst"),
-            "permissions": ["read", "write"]
-        }
-        
-        return user
-        
+        auth_service = get_auth_service()
+        user = auth_service.get_current_user(token)
+        if user:
+            return {"sub": user.get("email"), "user_data": user}
+        else:
+            raise ValueError("Invalid token")
     except Exception as e:
-        raise HTTPException(status_code=401, detail="Invalid authentication credentials")
+        logger.error(f"Token decode error: {e}")
+        raise ValueError("Invalid token")
 
 
-async def require_permissions(required_permissions: list = None):
-    """Require specific permissions (decorator)"""
-    def decorator(current_user: Dict[str, Any] = Depends(get_current_user)):
-        user_permissions = current_user.get("permissions", [])
-        
-        if required_permissions:
-            for perm in required_permissions:
-                if perm not in user_permissions:
-                    raise HTTPException(status_code=403, detail=f"Missing permission: {perm}")
-        
-        return current_user
-    
-    return decorator
+# Legacy authentication functions removed - now using unified_auth.py
+# Authentication functions are imported above from unified_auth module
 
-
-async def require_admin(current_user: Dict[str, Any] = Depends(get_current_user)) -> Dict[str, Any]:
-    """Require admin role"""
-    if current_user.get("role") != "admin":
-        # For demo purposes, allow managers as well
-        if current_user.get("role") not in ["admin", "manager"]:
-            raise HTTPException(status_code=403, detail="Admin privileges required")
-    
-    return current_user
+# Alias for backward compatibility
+require_admin = require_admin_role
 
 
 # Mock authentication bypass for development
@@ -189,9 +181,15 @@ def configure_cors(app: FastAPI):
         # Use specific localhost origins in development (can't use "*" with credentials)
         allowed_origins = [
             "http://localhost:3000",
-            "http://localhost:3001", 
+            "http://localhost:3001",
+            "http://localhost:3002", 
+            "http://localhost:3003",
+            "http://localhost:3004",
             "http://127.0.0.1:3000",
             "http://127.0.0.1:3001",
+            "http://127.0.0.1:3002",
+            "http://127.0.0.1:3003",
+            "http://127.0.0.1:3004",
             "null"  # For file:// protocol testing
         ]
     

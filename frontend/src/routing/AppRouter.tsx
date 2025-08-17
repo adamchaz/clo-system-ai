@@ -17,7 +17,7 @@ import UserManagement from '../pages/UserManagement';
 import PortfolioManagerDashboard from '../pages/PortfolioManagerDashboard';
 import FinancialAnalystDashboard from '../pages/FinancialAnalystDashboard';
 import ViewerDashboard from '../pages/ViewerDashboard';
-import PortfolioList from '../components/portfolio/PortfolioList';
+import PortfolioListPage from '../pages/PortfolioListPage';
 import PortfolioDetail from '../components/portfolio/PortfolioDetail';
 import { useParams } from 'react-router-dom';
 import AssetManagement from '../components/portfolio/AssetManagement';
@@ -206,7 +206,7 @@ const router = createBrowserRouter([
             path: 'list',
             element: (
               <ProtectedRoute requiredRoles={['system_admin', 'portfolio_manager', 'financial_analyst', 'viewer']}>
-                <PortfolioList />
+                <PortfolioListPage />
               </ProtectedRoute>
             ),
           },

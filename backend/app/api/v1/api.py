@@ -19,7 +19,8 @@ from .endpoints import (
     documents,
     portfolio_analytics,
     user_management,
-    websocket
+    websocket,
+    admin
 )
 
 api_router = APIRouter()
@@ -107,4 +108,16 @@ api_router.include_router(
     websocket.router, 
     prefix="/websocket", 
     tags=["Real-time Communication"]
+)
+
+# Test endpoint to diagnose authentication issue  
+@api_router.get("/test")
+async def test_endpoint():
+    """Simple test endpoint with no dependencies"""
+    return {"message": "Test endpoint working", "status": "success"}
+
+api_router.include_router(
+    admin.router, 
+    prefix="/admin", 
+    tags=["Administration"]
 )

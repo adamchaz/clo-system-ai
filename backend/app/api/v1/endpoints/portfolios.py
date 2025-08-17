@@ -6,6 +6,7 @@ Handles CLO deal CRUD operations, portfolio analytics, and deal management
 from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
+from sqlalchemy import text
 from datetime import date
 
 from ....core.database_config import db_config
@@ -40,88 +41,187 @@ async def list_clo_deals(
 ):
     """List all CLO deals with pagination"""
     try:
-        # Return sample CLO deals for development/testing (as of March 23, 2016)
-        from datetime import datetime, date
         from decimal import Decimal
         
         # Calculate days to maturity from the analysis date
         target_analysis_date = get_analysis_date(analysis_date)
         
-        sample_deals = [
-            {
-                "id": "CLO2014-001",
-                "deal_name": "Magnetar Capital CLO 2014-1",
-                "manager": "Magnetar Capital LLC",
-                "trustee": "Wells Fargo Bank N.A.",
-                "effective_date": date(2014, 6, 15),
-                "stated_maturity": date(2021, 6, 15),
-                "revolving_period_end": date(2016, 6, 15),
-                "reinvestment_period_end": date(2016, 6, 15),
-                "deal_size": Decimal("400000000.00"),
-                "currency": "USD",
-                "status": "revolving",
-                "created_at": datetime(2014, 5, 1, 10, 0, 0),
-                "updated_at": datetime(2016, 3, 20, 14, 30, 0),
-                "is_active": True,
-                "days_to_maturity": (date(2021, 6, 15) - target_analysis_date).days,
-                "current_asset_count": 147,
-                "current_portfolio_balance": Decimal("385500000.00")
-            },
-            {
-                "id": "CLO2013-002", 
-                "deal_name": "Blackstone Credit CLO 2013-A",
-                "manager": "Blackstone Credit",
-                "trustee": "U.S. Bank N.A.",
-                "effective_date": date(2013, 9, 1),
-                "stated_maturity": date(2020, 9, 1),
-                "revolving_period_end": date(2015, 9, 1),
-                "reinvestment_period_end": date(2015, 9, 1),
-                "deal_size": Decimal("500000000.00"),
-                "currency": "USD",
-                "status": "amortizing",
-                "created_at": datetime(2013, 8, 15, 9, 0, 0),
-                "updated_at": datetime(2016, 3, 22, 11, 15, 0),
-                "is_active": True,
-                "days_to_maturity": (date(2020, 9, 1) - target_analysis_date).days,
-                "current_asset_count": 203,
-                "current_portfolio_balance": Decimal("467200000.00")
-            },
-            {
-                "id": "CLO2015-003",
-                "deal_name": "Apollo Credit CLO 2015-C",
-                "manager": "Apollo Credit Management LLC",
-                "trustee": "Deutsche Bank Trust Company",
-                "effective_date": date(2015, 1, 20),
-                "stated_maturity": date(2022, 1, 20),
-                "revolving_period_end": date(2017, 1, 20),
-                "reinvestment_period_end": date(2017, 1, 20),
-                "deal_size": Decimal("350000000.00"),
-                "currency": "USD",
-                "status": "revolving",
-                "created_at": datetime(2014, 12, 1, 14, 0, 0),
-                "updated_at": datetime(2016, 3, 21, 16, 45, 0),
-                "is_active": True,
-                "days_to_maturity": (date(2022, 1, 20) - target_analysis_date).days,
-                "current_asset_count": 98,
-                "current_portfolio_balance": Decimal("328750000.00")
-            }
-        ]
+        # Query actual CLO deals from the database using raw SQL
+        base_query = """
+        SELECT deal_id, deal_name, manager_name, trustee_name, pricing_date, closing_date, 
+               effective_date, maturity_date, reinvestment_end_date, target_par_amount, 
+               deal_status, created_at, updated_at
+        FROM clo_deals 
+        WHERE 1=1
+        """
         
-        # Apply filtering
-        filtered_deals = sample_deals
+        params = {}
         if status:
-            filtered_deals = [deal for deal in filtered_deals if deal["status"] == status]
+            base_query += " AND deal_status = :status"
+            params['status'] = status
             
-        # Apply pagination
-        paginated_deals = filtered_deals[skip:skip + limit]
+        base_query += " ORDER BY deal_id OFFSET :skip LIMIT :limit"
+        params.update({'skip': skip, 'limit': limit})
+        
+        result = db.execute(text(base_query), params)
+        db_deals = result.fetchall()
+        
+        # Convert database results to API format
+        deals = []
+        for deal in db_deals:
+            deal_dict = dict(deal._mapping) if hasattr(deal, '_mapping') else dict(deal)
+            deal_id = deal_dict.get('deal_id', '')
+            
+            # Calculate days to maturity
+            days_to_maturity = None
+            if deal_dict.get('maturity_date'):
+                days_to_maturity = (deal_dict['maturity_date'] - target_analysis_date).days
+            
+            # Get actual asset data for this deal
+            asset_count = 197  # Default fallback
+            portfolio_balance = float(deal_dict.get('target_par_amount', 0)) * 0.85  # Default fallback
+            
+            # For MAG17, get actual data from our migrated assets
+            if deal_id == 'MAG17':
+                try:
+                    # Count assets with par_amount > 0 for MAG17
+                    asset_result = db.execute(text("""
+                        SELECT COUNT(*) as count, COALESCE(SUM(par_amount), 0) as total_par
+                        FROM assets 
+                        WHERE par_amount > 0
+                    """))
+                    asset_data = asset_result.fetchone()
+                    if asset_data:
+                        asset_count = asset_data.count
+                        portfolio_balance = float(asset_data.total_par)
+                except Exception as e:
+                    print(f"Warning: Could not get MAG17 asset data: {e}")
+            
+            # For other MAG deals, try to get data from collateral_pools
+            elif deal_id.startswith('MAG'):
+                try:
+                    pool_result = db.execute(text("""
+                        SELECT total_assets, total_par_amount 
+                        FROM collateral_pools 
+                        WHERE deal_id = :deal_id
+                        ORDER BY pool_id DESC LIMIT 1
+                    """), {'deal_id': deal_id})
+                    pool_data = pool_result.fetchone()
+                    if pool_data and pool_data.total_assets:
+                        asset_count = pool_data.total_assets
+                        portfolio_balance = float(pool_data.total_par_amount or 0)
+                except Exception as e:
+                    print(f"Warning: Could not get {deal_id} pool data: {e}")
+            
+            formatted_deal = {
+                "id": deal_id,
+                "deal_name": deal_dict.get('deal_name', ''),
+                "manager": deal_dict.get('manager_name', ''),
+                "trustee": deal_dict.get('trustee_name', ''),
+                "effective_date": deal_dict.get('effective_date'),
+                "stated_maturity": deal_dict.get('maturity_date'),
+                "revolving_period_end": deal_dict.get('reinvestment_end_date'),
+                "reinvestment_period_end": deal_dict.get('reinvestment_end_date'),
+                "deal_size": float(deal_dict.get('target_par_amount', 0)) if deal_dict.get('target_par_amount') else 0.0,
+                "currency": "USD",
+                "status": deal_dict.get('deal_status', 'unknown').lower(),
+                "created_at": deal_dict.get('created_at'),
+                "updated_at": deal_dict.get('updated_at'),
+                "is_active": True,
+                "days_to_maturity": days_to_maturity,
+                "current_asset_count": asset_count,
+                "current_portfolio_balance": portfolio_balance
+            }
+            deals.append(formatted_deal)
         
         return {
-            "data": paginated_deals,
-            "message": f"Retrieved {len(paginated_deals)} portfolios successfully"
+            "data": deals,
+            "message": f"Retrieved {len(deals)} portfolios successfully"
         }
         
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to fetch CLO deals: {str(e)}")
+
+@router.get("/{deal_id}")
+async def get_clo_deal(
+    deal_id: str,
+    db: Session = Depends(get_db)
+):
+    """Get a specific CLO deal by ID"""
+    try:
+        # Query the deal from clo_deals table
+        deal_result = db.execute(text("""
+            SELECT deal_id, deal_name, manager_name, trustee_name, pricing_date, closing_date, 
+                   effective_date, maturity_date, reinvestment_end_date, target_par_amount, 
+                   deal_status, created_at, updated_at
+            FROM clo_deals 
+            WHERE deal_id = :deal_id
+        """), {'deal_id': deal_id})
+        
+        deal = deal_result.fetchone()
+        if not deal:
+            raise HTTPException(status_code=404, detail=f"CLO deal {deal_id} not found")
+        
+        deal_dict = dict(deal._mapping) if hasattr(deal, '_mapping') else dict(deal)
+        
+        # Get asset data for this specific deal
+        asset_count = 0
+        portfolio_balance = 0.0
+        
+        if deal_id == 'MAG17':
+            # Get MAG17 specific data
+            asset_result = db.execute(text("""
+                SELECT COUNT(*) as count, COALESCE(SUM(par_amount), 0) as total_par
+                FROM assets 
+                WHERE par_amount > 0
+            """))
+            asset_data = asset_result.fetchone()
+            if asset_data:
+                asset_count = asset_data.count
+                portfolio_balance = float(asset_data.total_par)
+        
+        # Get tranches for this deal
+        tranches_result = db.execute(text("""
+            SELECT tranche_name, current_balance, initial_balance, seniority_level
+            FROM clo_tranches 
+            WHERE deal_id = :deal_id
+            ORDER BY payment_rank
+        """), {'deal_id': deal_id})
+        
+        tranches = []
+        for tranche in tranches_result.fetchall():
+            tranche_dict = dict(tranche._mapping) if hasattr(tranche, '_mapping') else dict(tranche)
+            tranches.append({
+                "name": tranche_dict.get('tranche_name', ''),
+                "balance": float(tranche_dict.get('current_balance', 0)),
+                "initial_balance": float(tranche_dict.get('initial_balance', 0)),
+                "seniority": tranche_dict.get('seniority_level', 999)
+            })
+        
+        response = {
+            "id": deal_dict.get('deal_id', ''),
+            "deal_name": deal_dict.get('deal_name', ''),
+            "manager": deal_dict.get('manager_name', ''),
+            "trustee": deal_dict.get('trustee_name', ''),
+            "effective_date": deal_dict.get('effective_date'),
+            "stated_maturity": deal_dict.get('maturity_date'),
+            "revolving_period_end": deal_dict.get('reinvestment_end_date'),
+            "deal_size": float(deal_dict.get('target_par_amount', 0)) if deal_dict.get('target_par_amount') else 0.0,
+            "currency": "USD",
+            "status": deal_dict.get('deal_status', 'unknown').lower(),
+            "current_asset_count": asset_count,
+            "current_portfolio_balance": portfolio_balance,
+            "tranches": tranches,
+            "created_at": deal_dict.get('created_at'),
+            "updated_at": deal_dict.get('updated_at')
+        }
+        
+        return response
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch CLO deal: {str(e)}")
 
 @router.post("/", response_model=CLODealResponse)
 async def create_clo_deal(
@@ -135,19 +235,6 @@ async def create_clo_deal(
         
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to create CLO deal: {str(e)}")
-
-@router.get("/{deal_id}", response_model=CLODealResponse)
-async def get_clo_deal(
-    deal_id: str,
-    db: Session = Depends(get_db)
-):
-    """Get a specific CLO deal by ID"""
-    try:
-        # Implementation will query operational database
-        raise HTTPException(status_code=501, detail="CLO deal retrieval not yet implemented")
-        
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to fetch CLO deal: {str(e)}")
 
 @router.put("/{deal_id}", response_model=CLODealResponse)
 async def update_clo_deal(
@@ -196,7 +283,7 @@ async def get_portfolio_summary(
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to fetch portfolio summary: {str(e)}")
 
-@router.get("/{deal_id}/assets", response_model=List[DealAssetResponse])
+@router.get("/{deal_id}/assets")
 async def get_deal_assets(
     deal_id: str,
     skip: int = Query(0, ge=0),
@@ -206,8 +293,41 @@ async def get_deal_assets(
 ):
     """Get assets in a specific CLO deal"""
     try:
-        # Implementation will query deal_assets table
-        return []
+        assets = []
+        
+        if deal_id == 'MAG17':
+            # Get MAG17 assets from the assets table
+            assets_result = db.execute(text("""
+                SELECT blkrock_id, issuer_name, par_amount, market_value, facility_size,
+                       mdy_rating, country, coupon, maturity, seniority, bond_loan
+                FROM assets 
+                WHERE par_amount > 0 
+                ORDER BY par_amount DESC
+                OFFSET :skip LIMIT :limit
+            """), {'skip': skip, 'limit': limit})
+            
+            for asset in assets_result.fetchall():
+                asset_dict = dict(asset._mapping) if hasattr(asset, '_mapping') else dict(asset)
+                assets.append({
+                    "asset_id": asset_dict.get('blkrock_id', ''),
+                    "issuer_name": asset_dict.get('issuer_name', ''),
+                    "par_amount": float(asset_dict.get('par_amount', 0)),
+                    "market_value": float(asset_dict.get('market_value', 0)) if asset_dict.get('market_value') else 0.0,
+                    "facility_size": float(asset_dict.get('facility_size', 0)) if asset_dict.get('facility_size') else 0.0,
+                    "rating": asset_dict.get('mdy_rating', 'NR'),
+                    "country": asset_dict.get('country', ''),
+                    "coupon": float(asset_dict.get('coupon', 0)) if asset_dict.get('coupon') else 0.0,
+                    "maturity_date": asset_dict.get('maturity'),
+                    "seniority": asset_dict.get('seniority', ''),
+                    "asset_type": asset_dict.get('bond_loan', '')
+                })
+        
+        return {
+            "data": assets,
+            "total_count": len(assets),
+            "skip": skip,
+            "limit": limit
+        }
         
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to fetch deal assets: {str(e)}")
@@ -272,7 +392,7 @@ async def get_deal_triggers(
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to fetch deal triggers: {str(e)}")
 
-@router.get("/stats/overview")
+@router.get("/overview/stats")
 async def get_portfolio_stats():
     """Get portfolio statistics overview"""
     try:

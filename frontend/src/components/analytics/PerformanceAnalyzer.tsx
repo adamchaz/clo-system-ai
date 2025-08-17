@@ -40,10 +40,7 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
-  IconButton,
-  Tooltip,
   Stack,
-  Divider,
   LinearProgress,
   Switch,
   FormControlLabel,
@@ -53,18 +50,15 @@ import {
   TrendingDown,
   Assessment,
   ShowChart,
-  Download,
   Refresh,
-  DateRange,
   CompareArrows,
   Analytics,
   Speed,
   Security,
   PieChart,
-  BarChart,
   Timeline,
 } from '@mui/icons-material';
-import { format, subDays, subMonths, subYears } from 'date-fns';
+import { format, subDays, subMonths } from 'date-fns';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend, ResponsiveContainer, BarChart as RechartsBarChart, Bar, PieChart as RechartsPieChart, Pie, Cell } from 'recharts';
 
 // Import API hooks
@@ -134,8 +128,8 @@ const PerformanceAnalyzer: React.FC<PerformanceAnalyzerProps> = ({ portfolioId }
   const [isAnalyzing, setIsAnalyzing] = useState(false);
 
   // API hooks
-  const { data: portfolioData } = useGetPortfolioQuery(portfolioId);
-  const { data: benchmarkData } = useGetBenchmarkDataQuery({ benchmarkType });
+  const { data: _portfolioData } = useGetPortfolioQuery(portfolioId);
+  const { data: _benchmarkData } = useGetBenchmarkDataQuery({ benchmarkType });
   const [analyzePerformance, { isLoading }] = useAnalyzePerformanceMutation();
 
   // Mock performance data for demonstration
@@ -366,7 +360,7 @@ const PerformanceAnalyzer: React.FC<PerformanceAnalyzerProps> = ({ portfolioId }
           <Grid container spacing={3}>
             <Grid size={{ xs: 12, md: 6 }}>
               <Typography variant="h6" gutterBottom>
-                Performance Summary
+                Performance Summary {analysisResult ? '(Live Data)' : '(Demo Data)'}
               </Typography>
               
               <TableContainer component={Paper} variant="outlined">

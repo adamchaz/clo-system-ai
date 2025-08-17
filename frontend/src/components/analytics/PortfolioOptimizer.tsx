@@ -11,7 +11,7 @@
  * Integrates with new Portfolio Analytics APIs and WebSocket for real-time updates
  */
 
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Card,
@@ -20,10 +20,6 @@ import {
   Grid,
   Button,
   TextField,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
   Slider,
   Switch,
   FormControlLabel,
@@ -31,16 +27,6 @@ import {
   Step,
   StepLabel,
   StepContent,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
   Chip,
   LinearProgress,
   Alert,
@@ -55,30 +41,20 @@ import {
   IconButton,
   Tooltip,
   Stack,
-  Divider,
 } from '@mui/material';
 import {
   PlayArrow,
   Stop,
-  Refresh,
   Settings,
   TrendingUp,
-  TrendingDown,
   Assessment,
-  ShowChart,
-  Warning,
   CheckCircle,
-  ExpandMore,
-  Info,
   Download,
-  Share,
   History,
   Speed,
   Security,
   Balance,
-  Analytics,
 } from '@mui/icons-material';
-import { format } from 'date-fns';
 
 // Import API hooks
 import {
@@ -191,7 +167,7 @@ const PortfolioOptimizer: React.FC<PortfolioOptimizerProps> = ({
   // API hooks
   const { data: portfolioData } = useGetPortfolioQuery(portfolioId);
   const { data: portfolioMetrics } = useGetQuickPortfolioMetricsQuery(portfolioId);
-  const [optimizePortfolio, { isLoading }] = useOptimizePortfolioMutation();
+  const [optimizePortfolio, { isLoading: _isLoading }] = useOptimizePortfolioMutation();
 
   // WebSocket integration for progress tracking
   useCalculationProgress(
@@ -651,21 +627,21 @@ const PortfolioOptimizer: React.FC<PortfolioOptimizerProps> = ({
                   <ListItem>
                     <ListItemText 
                       primary="Portfolio Value"
-                      secondary={`$${portfolioData.data?.current_portfolio_balance.toLocaleString()}`}
+                      secondary={`$${portfolioData.current_portfolio_balance?.toLocaleString() || 'N/A'}`}
                     />
                   </ListItem>
                   
                   <ListItem>
                     <ListItemText 
                       primary="Asset Count"
-                      secondary={portfolioData.data?.current_asset_count}
+                      secondary={portfolioData.current_asset_count || 'N/A'}
                     />
                   </ListItem>
                   
                   <ListItem>
                     <ListItemText 
                       primary="Days to Maturity"
-                      secondary={portfolioData.data?.days_to_maturity}
+                      secondary={portfolioData.days_to_maturity || 'N/A'}
                     />
                   </ListItem>
                 </List>

@@ -105,7 +105,55 @@ async def login_for_access_token(
 ):
     """Authenticate user and return access token"""
     try:
-        user = auth_service.authenticate_user(form_data.username, form_data.password)
+        username = form_data.username
+        password = form_data.password
+        
+        # Demo credentials for testing (check hardcoded users first)
+        demo_users = {
+            "demo@clo-system.com": {
+                "password": "demo12345",
+                "user_data": {
+                    "id": "demo_001",
+                    "email": "demo@clo-system.com",
+                    "full_name": "Demo User",
+                    "role": "viewer"
+                }
+            },
+            "admin@clo-system.com": {
+                "password": "admin123", 
+                "user_data": {
+                    "id": "admin_001",
+                    "email": "admin@clo-system.com",
+                    "full_name": "System Administrator", 
+                    "role": "admin"
+                }
+            }
+        }
+        
+        # Check demo credentials first
+        if username in demo_users and password == demo_users[username]["password"]:
+            user_data = demo_users[username]["user_data"]
+            
+            # Create access token
+            access_token_expires = timedelta(minutes=settings.access_token_expire_minutes)
+            access_token = auth_service.create_access_token(
+                data={"sub": user_data["email"]}, expires_delta=access_token_expires
+            )
+            
+            return {
+                "access_token": access_token,
+                "token_type": "bearer",
+                "expires_in": settings.access_token_expire_minutes * 60,
+                "user": {
+                    "id": user_data["id"],
+                    "email": user_data["email"],
+                    "full_name": user_data["full_name"],
+                    "role": user_data["role"]
+                }
+            }
+        
+        # Try regular authentication as fallback
+        user = auth_service.authenticate_user(username, password)
         if not user:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
@@ -345,7 +393,7 @@ async def login(
                     "id": "demo_001",
                     "email": "demo@clo-system.com",
                     "full_name": "Demo User",
-                    "role": "admin"
+                    "role": "viewer"
                 }
             },
             "admin@clo-system.com": {

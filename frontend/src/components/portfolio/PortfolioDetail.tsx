@@ -108,7 +108,7 @@ const PortfolioDetail: React.FC<PortfolioDetailProps> = ({
     refetchOnMountOrArgChange: true,
   });
 
-  const portfolio = portfolioData?.data;
+  const portfolio = portfolioData;
   const summary = portfolioSummary;
 
   const handleTabChange = useCallback((event: React.SyntheticEvent, newValue: number) => {

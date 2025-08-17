@@ -49,7 +49,7 @@ class Settings(BaseSettings):
     max_requests_jitter: int = 100
     
     # CORS Configuration
-    cors_origins: List[str] = ["http://localhost:3000", "http://localhost:3001", "http://127.0.0.1:3000", "http://127.0.0.1:3001"]
+    cors_origins: List[str] = ["http://localhost:3000", "http://localhost:3001", "http://localhost:3002", "http://localhost:3003", "http://localhost:3004", "http://127.0.0.1:3000", "http://127.0.0.1:3001", "http://127.0.0.1:3002", "http://127.0.0.1:3003", "http://127.0.0.1:3004"]
     cors_allow_credentials: bool = True
     cors_max_age: int = 3600
     
