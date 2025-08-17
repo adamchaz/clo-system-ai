@@ -131,7 +131,7 @@ async def get_admin_users(
                 "id": "demo_001", 
                 "email": "demo@clo-system.com",
                 "full_name": "Demo User",
-                "role": "admin",
+                "role": "viewer",
                 "status": "active",
                 "last_login": (datetime.utcnow() - timedelta(hours=1)).isoformat(),
                 "created_at": (datetime.utcnow() - timedelta(days=60)).isoformat(),

@@ -1,0 +1,312 @@
+[
+  {
+    "deal_name": "MAG6",
+    "basic_info": {
+      "analysis_date": "2016-03-23 00:00:00",
+      "next_payment_date": "2016-06-15 00:00:00",
+      "beginning_collection": "2016-03-03 00:00:00",
+      "end_collection": "2016-06-03 00:00:00",
+      "last_payment_date": "2016-03-15 00:00:00",
+      "closing_date": "2012-09-13 00:00:00",
+      "stated_maturity": "2023-09-15 00:00:00",
+      "days_to_maturity": 2732,
+      "deal_status": "Revolving",
+      "issue_date": "2012-09-13 00:00:00",
+      "maturity_date": "2023-09-15 00:00:00"
+    },
+    "financial_data": {
+      "reinvestment_target_balance": 400000000,
+      "weighted_average_spread": 0.044,
+      "warf_factor": 64,
+      "warf_threshold": 2720,
+      "jr_oc_denominator": 367750000,
+      "total_deal_size": 367750000
+    },
+    "collateral_info": {
+      "total_collateral_balance": 250964364.97954997,
+      "number_of_assets": 197,
+      "average_asset_size": 1273930.7866982233
+    },
+    "structure_info": {},
+    "extracted_at": "2025-08-16T21:26:59.409366"
+  },
+  {
+    "deal_name": "MAG7",
+    "basic_info": {
+      "analysis_date": "2016-03-23 00:00:00",
+      "next_payment_date": "2016-04-15 00:00:00",
+      "beginning_collection": "2016-01-05 00:00:00",
+      "end_collection": "2016-04-05 00:00:00",
+      "last_payment_date": "2016-01-15 00:00:00",
+      "closing_date": "2012-12-20 00:00:00",
+      "stated_maturity": "2025-01-15 00:00:00",
+      "days_to_maturity": 3220,
+      "deal_status": "Revolving",
+      "issue_date": "2012-12-20 00:00:00",
+      "maturity_date": "2025-01-15 00:00:00"
+    },
+    "financial_data": {
+      "reinvestment_target_balance": 600000000,
+      "weighted_average_spread": 0.0415,
+      "warf_factor": 75,
+      "warf_threshold": 2910,
+      "jr_oc_denominator": 552000000,
+      "total_deal_size": 552000000
+    },
+    "collateral_info": {
+      "total_collateral_balance": 396689506.2443998,
+      "number_of_assets": 197,
+      "average_asset_size": 2013652.3159614203
+    },
+    "structure_info": {},
+    "extracted_at": "2025-08-16T21:26:59.461879"
+  },
+  {
+    "deal_name": "MAG8",
+    "basic_info": {
+      "analysis_date": "2016-03-23 00:00:00",
+      "next_payment_date": "2016-04-15 00:00:00",
+      "beginning_collection": "2016-01-05 00:00:00",
+      "end_collection": "2016-04-05 00:00:00",
+      "last_payment_date": "2016-01-15 00:00:00",
+      "closing_date": "2014-05-15 00:00:00",
+      "stated_maturity": "2026-04-15 00:00:00",
+      "days_to_maturity": 3675,
+      "deal_status": "Revolving",
+      "issue_date": "2014-05-15 00:00:00",
+      "maturity_date": "2026-04-15 00:00:00"
+    },
+    "financial_data": {
+      "reinvestment_target_balance": 600000000,
+      "weighted_average_spread": 0.0395,
+      "warf_factor": 70,
+      "warf_threshold": 2935,
+      "jr_oc_denominator": 558720000,
+      "total_deal_size": 558720000
+    },
+    "collateral_info": {
+      "total_collateral_balance": 353991206.59560007,
+      "number_of_assets": 197,
+      "average_asset_size": 1796909.678150254
+    },
+    "structure_info": {},
+    "extracted_at": "2025-08-16T21:26:59.515827"
+  },
+  {
+    "deal_name": "MAG9",
+    "basic_info": {
+      "analysis_date": "2016-03-23 00:00:00",
+      "next_payment_date": "2016-04-25 00:00:00",
+      "beginning_collection": "2016-01-15 00:00:00",
+      "end_collection": "2016-04-18 00:00:00",
+      "last_payment_date": "2016-01-25 00:00:00",
+      "closing_date": "2014-07-17 00:00:00",
+      "stated_maturity": "2026-07-25 00:00:00",
+      "days_to_maturity": 3776,
+      "deal_status": "Revolving",
+      "issue_date": "2014-07-17 00:00:00",
+      "maturity_date": "2026-07-25 00:00:00"
+    },
+    "financial_data": {
+      "reinvestment_target_balance": 400000000,
+      "weighted_average_spread": 0.0405,
+      "warf_factor": 64,
+      "warf_threshold": 2835,
+      "jr_oc_denominator": 373200000,
+      "total_deal_size": 373200000
+    },
+    "collateral_info": {
+      "total_collateral_balance": 269868422.32368004,
+      "number_of_assets": 197,
+      "average_asset_size": 1369890.4686481222
+    },
+    "structure_info": {},
+    "extracted_at": "2025-08-16T21:26:59.559477"
+  },
+  {
+    "deal_name": "MAG11",
+    "basic_info": {
+      "analysis_date": "2016-03-23 00:00:00",
+      "next_payment_date": "2016-04-18 00:00:00",
+      "beginning_collection": "2016-01-06 00:00:00",
+      "end_collection": "2016-04-06 00:00:00",
+      "last_payment_date": "2016-01-19 00:00:00",
+      "closing_date": "2014-12-18 00:00:00",
+      "stated_maturity": "2027-01-18 00:00:00",
+      "days_to_maturity": 3953,
+      "deal_status": "Revolving",
+      "issue_date": "2014-12-18 00:00:00",
+      "maturity_date": "2027-01-18 00:00:00"
+    },
+    "financial_data": {
+      "reinvestment_target_balance": 550000000,
+      "weighted_average_spread": 0.041,
+      "warf_factor": 75,
+      "warf_threshold": 2840,
+      "jr_oc_denominator": 507000000,
+      "total_deal_size": 507000000
+    },
+    "collateral_info": {
+      "total_collateral_balance": 386062387.89330006,
+      "number_of_assets": 197,
+      "average_asset_size": 1959707.5527578683
+    },
+    "structure_info": {},
+    "extracted_at": "2025-08-16T21:26:59.602756"
+  },
+  {
+    "deal_name": "MAG12",
+    "basic_info": {
+      "analysis_date": "2016-03-23 00:00:00",
+      "next_payment_date": "2016-04-15 00:00:00",
+      "beginning_collection": "2016-01-08 00:00:00",
+      "end_collection": "2016-04-08 00:00:00",
+      "last_payment_date": "2016-01-15 00:00:00",
+      "closing_date": "2015-03-12 00:00:00",
+      "stated_maturity": "2027-04-15 00:00:00",
+      "days_to_maturity": 4040,
+      "deal_status": "Revolving",
+      "issue_date": "2015-03-12 00:00:00",
+      "maturity_date": "2027-04-15 00:00:00"
+    },
+    "financial_data": {
+      "reinvestment_target_balance": 600000000,
+      "weighted_average_spread": 0.042,
+      "warf_factor": 63,
+      "warf_threshold": 2645,
+      "jr_oc_denominator": 564000000,
+      "total_deal_size": 564000000
+    },
+    "collateral_info": {
+      "total_collateral_balance": 442218734.7655001,
+      "number_of_assets": 197,
+      "average_asset_size": 2244765.151093909
+    },
+    "structure_info": {},
+    "extracted_at": "2025-08-16T21:26:59.645126"
+  },
+  {
+    "deal_name": "MAG14",
+    "basic_info": {
+      "analysis_date": "2016-03-23 00:00:00",
+      "next_payment_date": "2016-04-18 00:00:00",
+      "beginning_collection": "2016-01-06 00:00:00",
+      "end_collection": "2016-04-06 00:00:00",
+      "last_payment_date": "2016-01-19 00:00:00",
+      "closing_date": "2015-06-25 00:00:00",
+      "stated_maturity": "2028-07-18 00:00:00",
+      "days_to_maturity": 4500,
+      "deal_status": "Revolving",
+      "issue_date": "2015-06-25 00:00:00",
+      "maturity_date": "2028-07-18 00:00:00"
+    },
+    "financial_data": {
+      "reinvestment_target_balance": 600000000,
+      "weighted_average_spread": 0.044,
+      "warf_factor": 63,
+      "warf_threshold": 2695,
+      "jr_oc_denominator": 493500000,
+      "total_deal_size": 493500000
+    },
+    "collateral_info": {
+      "total_collateral_balance": 386382654.4875,
+      "number_of_assets": 197,
+      "average_asset_size": 1961333.2715101524
+    },
+    "structure_info": {},
+    "extracted_at": "2025-08-16T21:26:59.686306"
+  },
+  {
+    "deal_name": "MAG15",
+    "basic_info": {
+      "analysis_date": "2016-03-23 00:00:00",
+      "next_payment_date": "2016-04-25 00:00:00",
+      "beginning_collection": "2015-11-18 00:00:00",
+      "end_collection": "2016-04-13 00:00:00",
+      "last_payment_date": "2015-11-18 00:00:00",
+      "closing_date": "2015-11-18 00:00:00",
+      "stated_maturity": "2027-10-25 00:00:00",
+      "days_to_maturity": 4233,
+      "deal_status": "Revolving",
+      "issue_date": "2015-11-18 00:00:00",
+      "maturity_date": "2027-10-25 00:00:00"
+    },
+    "financial_data": {
+      "reinvestment_target_balance": 606000000,
+      "weighted_average_spread": 0.044,
+      "warf_factor": 67,
+      "warf_threshold": 2740,
+      "jr_oc_denominator": 559400000,
+      "total_deal_size": 559400000
+    },
+    "collateral_info": {
+      "total_collateral_balance": 499272434.8507998,
+      "number_of_assets": 197,
+      "average_asset_size": 2534377.8418822326
+    },
+    "structure_info": {},
+    "extracted_at": "2025-08-16T21:26:59.727617"
+  },
+  {
+    "deal_name": "MAG16",
+    "basic_info": {
+      "analysis_date": "2016-03-23 00:00:00",
+      "next_payment_date": "2016-07-18 00:00:00",
+      "beginning_collection": "2015-12-18 00:00:00",
+      "end_collection": "2016-07-06 00:00:00",
+      "last_payment_date": "2015-12-18 00:00:00",
+      "closing_date": "2015-12-18 00:00:00",
+      "stated_maturity": "2028-01-18 00:00:00",
+      "days_to_maturity": 4318,
+      "deal_status": "Revolving",
+      "issue_date": "2015-12-18 00:00:00",
+      "maturity_date": "2028-01-18 00:00:00"
+    },
+    "financial_data": {
+      "reinvestment_target_balance": 500000000,
+      "weighted_average_spread": 0.0365,
+      "warf_factor": 60,
+      "warf_threshold": 2470,
+      "jr_oc_denominator": 460000000,
+      "total_deal_size": 460000000
+    },
+    "collateral_info": {
+      "total_collateral_balance": 435070886.06020015,
+      "number_of_assets": 197,
+      "average_asset_size": 2208481.6551279197
+    },
+    "structure_info": {},
+    "extracted_at": "2025-08-16T21:26:59.766977"
+  },
+  {
+    "deal_name": "MAG17",
+    "basic_info": {
+      "analysis_date": "2016-03-23 00:00:00",
+      "next_payment_date": "2016-07-20 00:00:00",
+      "beginning_collection": "00:00:00",
+      "end_collection": "2016-07-08 00:00:00",
+      "last_payment_date": "2016-03-31 00:00:00",
+      "closing_date": "2016-03-31 00:00:00",
+      "stated_maturity": "2028-04-20 00:00:00",
+      "days_to_maturity": 4411,
+      "deal_status": "Revolving",
+      "issue_date": "2016-03-31 00:00:00",
+      "maturity_date": "2028-04-20 00:00:00"
+    },
+    "financial_data": {
+      "reinvestment_target_balance": 490000000,
+      "weighted_average_spread": 0.044,
+      "warf_factor": 67,
+      "warf_threshold": 2740,
+      "jr_oc_denominator": 462400000,
+      "total_deal_size": 462400000
+    },
+    "collateral_info": {
+      "total_collateral_balance": 431157604.91528994,
+      "number_of_assets": 195,
+      "average_asset_size": 2211064.6405912302
+    },
+    "structure_info": {},
+    "extracted_at": "2025-08-16T21:26:59.806020"
+  }
+]

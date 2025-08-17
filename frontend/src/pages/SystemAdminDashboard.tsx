@@ -298,7 +298,7 @@ const SystemAdminDashboard: React.FC = () => {
     try {
       await acknowledgeAlert(alertId).unwrap();
     } catch (error) {
-      console.error('Failed to acknowledge alert:', error);
+      // Handle error silently or show user notification
     }
   };
 
@@ -306,7 +306,7 @@ const SystemAdminDashboard: React.FC = () => {
     try {
       await dismissAlert(alertId).unwrap();
     } catch (error) {
-      console.error('Failed to dismiss alert:', error);
+      // Handle error silently or show user notification
     }
   };
 
@@ -452,50 +452,53 @@ const SystemAdminDashboard: React.FC = () => {
               </Box>
               
               <List dense>
-                {alertsData?.data?.slice(0, 5).map((alert) => (
-                  <ListItem key={alert.id} divider>
-                    <Box sx={{ display: 'flex', alignItems: 'flex-start', width: '100%' }}>
-                      {getAlertIcon(alert.type)}
-                      <Box sx={{ ml: 1, flexGrow: 1 }}>
-                        <Typography variant="body2" fontWeight={600}>
-                          {alert.title}
-                        </Typography>
-                        <Typography variant="caption" color="text.secondary">
-                          {alert.message}
-                        </Typography>
-                        <Box sx={{ mt: 0.5 }}>
-                          <Chip
-                            label={alert.type}
-                            size="small"
-                            variant="outlined"
-                            sx={{ mr: 1 }}
-                          />
-                          <Typography variant="caption" color="text.secondary">
-                            {new Date(alert.timestamp).toLocaleString()}
+                {alertsData?.data && Array.isArray(alertsData.data) ? 
+                  alertsData.data.slice(0, 5).map((alert) => (
+                    <ListItem key={alert.id || Math.random().toString()} divider>
+                      <Box sx={{ display: 'flex', alignItems: 'flex-start', width: '100%' }}>
+                        {getAlertIcon(alert.type)}
+                        <Box sx={{ ml: 1, flexGrow: 1 }}>
+                          <Typography variant="body2" fontWeight={600}>
+                            {alert.title || 'Alert'}
                           </Typography>
+                          <Typography variant="caption" color="text.secondary">
+                            {alert.message || 'No message available'}
+                          </Typography>
+                          <Box sx={{ mt: 0.5 }}>
+                            <Chip
+                              label={alert.type || 'info'}
+                              size="small"
+                              variant="outlined"
+                              sx={{ mr: 1 }}
+                            />
+                            <Typography variant="caption" color="text.secondary">
+                              {alert.timestamp ? new Date(alert.timestamp).toLocaleString() : 'Unknown time'}
+                            </Typography>
+                          </Box>
+                        </Box>
+                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
+                          <Tooltip title="Acknowledge">
+                            <IconButton
+                              size="small"
+                              onClick={() => handleAcknowledgeAlert(alert.id)}
+                              disabled={!alert.id}
+                            >
+                              <CheckCircle color="success" fontSize="small" />
+                            </IconButton>
+                          </Tooltip>
+                          <Tooltip title="Dismiss">
+                            <IconButton
+                              size="small"
+                              onClick={() => handleDismissAlert(alert.id)}
+                              disabled={!alert.id}
+                            >
+                              <Delete color="error" fontSize="small" />
+                            </IconButton>
+                          </Tooltip>
                         </Box>
                       </Box>
-                      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
-                        <Tooltip title="Acknowledge">
-                          <IconButton
-                            size="small"
-                            onClick={() => handleAcknowledgeAlert(alert.id)}
-                          >
-                            <CheckCircle color="success" fontSize="small" />
-                          </IconButton>
-                        </Tooltip>
-                        <Tooltip title="Dismiss">
-                          <IconButton
-                            size="small"
-                            onClick={() => handleDismissAlert(alert.id)}
-                          >
-                            <Delete color="error" fontSize="small" />
-                          </IconButton>
-                        </Tooltip>
-                      </Box>
-                    </Box>
-                  </ListItem>
-                )) || (
+                    </ListItem>
+                  )) : (
                   <ListItem>
                     <ListItemText
                       primary="No active alerts"
@@ -535,40 +538,41 @@ const SystemAdminDashboard: React.FC = () => {
               </Box>
               
               <List dense>
-                {recentUsersData?.data?.map((user) => (
-                  <ListItem key={user.id} divider>
-                    <Avatar sx={{ mr: 2, bgcolor: 'primary.main' }}>
-                      {user.firstName[0]}{user.lastName[0]}
-                    </Avatar>
-                    <ListItemText
-                      primary={`${user.firstName} ${user.lastName}`}
-                      secondary={
-                        <Box>
-                          <Typography variant="caption" display="block">
-                            {user.email}
-                          </Typography>
-                          <Chip
-                            label={user.role}
-                            size="small"
-                            variant="outlined"
-                            sx={{ mt: 0.5 }}
-                          />
-                        </Box>
-                      }
-                    />
-                    <ListItemSecondaryAction>
-                      <Chip
-                        label={user.isActive ? 'Active' : 'Inactive'}
-                        color={user.isActive ? 'success' : 'default'}
-                        size="small"
+                {recentUsersData?.data && Array.isArray(recentUsersData.data) ? 
+                  recentUsersData.data.map((user) => (
+                    <ListItem key={user.id} divider>
+                      <Avatar sx={{ mr: 2, bgcolor: 'primary.main' }}>
+                        {(user.firstName?.[0] || '').toUpperCase()}{(user.lastName?.[0] || '').toUpperCase()}
+                      </Avatar>
+                      <ListItemText
+                        primary={`${user.firstName || ''} ${user.lastName || ''}`.trim() || user.email}
+                        secondary={
+                          <Box>
+                            <Typography variant="caption" display="block">
+                              {user.email}
+                            </Typography>
+                            <Chip
+                              label={user.role || 'User'}
+                              size="small"
+                              variant="outlined"
+                              sx={{ mt: 0.5 }}
+                            />
+                          </Box>
+                        }
                       />
-                    </ListItemSecondaryAction>
-                  </ListItem>
-                )) || (
-                  <ListItem>
-                    <ListItemText primary="No users found" />
-                  </ListItem>
-                )}
+                      <ListItemSecondaryAction>
+                        <Chip
+                          label={user.isActive ? 'Active' : 'Inactive'}
+                          color={user.isActive ? 'success' : 'default'}
+                          size="small"
+                        />
+                      </ListItemSecondaryAction>
+                    </ListItem>
+                  )) : (
+                    <ListItem>
+                      <ListItemText primary="No users found" />
+                    </ListItem>
+                  )}
               </List>
               
               <Box sx={{ textAlign: 'center', mt: 2 }}>

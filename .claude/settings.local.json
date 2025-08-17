@@ -92,7 +92,16 @@
       "Bash(.\\venv\\Scripts\\python.exe -m uvicorn:*)",
       "Bash(sqlite3:*)",
       "Bash(venv/Scripts/python.exe:*)",
-      "Bash(\"venv\\Scripts\\python.exe\":*)"
+      "Bash(\"venv\\Scripts\\python.exe\":*)",
+      "Bash(\"venv\\Scripts\\activate\")",
+      "Bash(set REACT_APP_API_URL=http://localhost:8002)",
+      "Bash(PORT=3003 REACT_APP_API_URL=http://localhost:8002 npm start)",
+      "Bash(PORT=3004 REACT_APP_API_URL=http://localhost:8002 timeout 30 npm start)",
+      "Bash(PORT=3004 REACT_APP_API_URL=http://localhost:8002 npm start)",
+      "Bash(rd:*)",
+      "Bash(\"./venv/Scripts/python.exe\" -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000)",
+      "Bash(.scriptsstart-dev.bat)",
+      "Bash(set REACT_APP_API_URL=http://localhost:8000)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits"

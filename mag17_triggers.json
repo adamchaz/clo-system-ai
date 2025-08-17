@@ -1,0 +1,434 @@
+{
+  "concentration_limits": [
+    {
+      "test_number": 1,
+      "test_name": "Limitation on Senior Secured Loans",
+      "threshold": 0.9,
+      "current_result": 0.97164,
+      "pass_fail": true,
+      "hypo_result": 0.97166,
+      "hypo_pass_fail": true,
+      "test_type": "concentration_limit"
+    },
+    {
+      "test_number": 2,
+      "test_name": "Limitation on non Senior Secured Loans",
+      "threshold": 0.1,
+      "current_result": 0.02836,
+      "pass_fail": true,
+      "hypo_result": 0.02834,
+      "hypo_pass_fail": true,
+      "test_type": "concentration_limit"
+    },
+    {
+      "test_number": 3,
+      "test_name": "Limitaton on the 6th largest obligor",
+      "threshold": 0.02,
+      "current_result": 0.012,
+      "pass_fail": true,
+      "hypo_result": 0.01199,
+      "hypo_pass_fail": true,
+      "test_type": "concentration_limit"
+    },
+    {
+      "test_number": 4,
+      "test_name": "Limitaton on the 1st largest obligor",
+      "threshold": 0.025,
+      "current_result": 0.01796,
+      "pass_fail": true,
+      "hypo_result": 0.01795,
+      "hypo_pass_fail": true,
+      "test_type": "concentration_limit"
+    },
+    {
+      "test_number": 5,
+      "test_name": "Limitaton on the 1st largest obligor for DIP",
+      "threshold": 0.02,
+      "current_result": 0.015,
+      "pass_fail": true,
+      "hypo_result": 0.01499,
+      "hypo_pass_fail": true,
+      "test_type": "concentration_limit"
+    },
+    {
+      "test_number": 6,
+      "test_name": "Limitaton on the 1st largest obligor of non Senior Secured Loans",
+      "threshold": 0.02,
+      "current_result": 0.0045,
+      "pass_fail": true,
+      "hypo_result": 0.0045,
+      "hypo_pass_fail": true,
+      "test_type": "concentration_limit"
+    },
+    {
+      "test_number": 7,
+      "test_name": "Limitation on Caa Loans",
+      "threshold": 0.075,
+      "current_result": 0.02736,
+      "pass_fail": true,
+      "hypo_result": 0.03234,
+      "hypo_pass_fail": true,
+      "test_type": "concentration_limit"
+    },
+    {
+      "test_number": 8,
+      "test_name": "Limitation on Collateral Obligations that pay interest less frequently than quarterly",
+      "threshold": 0.05,
+      "current_result": 0.01119,
+      "pass_fail": true,
+      "hypo_result": 0.01119,
+      "hypo_pass_fail": true,
+      "test_type": "concentration_limit"
+    },
+    {
+      "test_number": 9,
+      "test_name": "Limitation on Fixed Rate Obligations",
+      "threshold": 0.025,
+      "current_result": 0,
+      "pass_fail": true,
+      "hypo_result": 0,
+      "hypo_pass_fail": true,
+      "test_type": "concentration_limit"
+    },
+    {
+      "test_number": 10,
+      "test_name": "Limitation on Current Pay Obligations",
+      "threshold": 0.025,
+      "current_result": 0,
+      "pass_fail": true,
+      "hypo_result": 0,
+      "hypo_pass_fail": true,
+      "test_type": "concentration_limit"
+    },
+    {
+      "test_number": 11,
+      "test_name": "Limitation on DIP Obligations",
+      "threshold": 0.025,
+      "current_result": 0.025,
+      "pass_fail": true,
+      "hypo_result": 0.02498,
+      "hypo_pass_fail": true,
+      "test_type": "concentration_limit"
+    },
+    {
+      "test_number": 13,
+      "test_name": "Limitation on Participation Interest",
+      "threshold": 0.15,
+      "current_result": 0,
+      "pass_fail": true,
+      "hypo_result": 0,
+      "hypo_pass_fail": true,
+      "test_type": "concentration_limit"
+    },
+    {
+      "test_number": 14,
+      "test_name": "Limitation on countries other then the United States",
+      "threshold": 0.2,
+      "current_result": 0.10925,
+      "pass_fail": true,
+      "hypo_result": 0.10918,
+      "hypo_pass_fail": true,
+      "test_type": "concentration_limit"
+    },
+    {
+      "test_number": 15,
+      "test_name": "Limitation on countries that are Tax Jurisdictions or Canada",
+      "threshold": 0.125,
+      "current_result": 0.04178,
+      "pass_fail": true,
+      "hypo_result": 0.04175,
+      "hypo_pass_fail": true,
+      "test_type": "concentration_limit"
+    },
+    {
+      "test_number": 16,
+      "test_name": "Limitation on countries other that are not USA, Canada, or UK",
+      "threshold": 0.1,
+      "current_result": 0.07397,
+      "pass_fail": true,
+      "hypo_result": 0.07392,
+      "hypo_pass_fail": true,
+      "test_type": "concentration_limit"
+    },
+    {
+      "test_number": 17,
+      "test_name": "Limitation on Group Countries",
+      "threshold": 0.15,
+      "current_result": 0.06747,
+      "pass_fail": true,
+      "hypo_result": 0.06743,
+      "hypo_pass_fail": true,
+      "test_type": "concentration_limit"
+    },
+    {
+      "test_number": 18,
+      "test_name": "Limitaton on Group I Countries",
+      "threshold": 0.15,
+      "current_result": 0.03469,
+      "pass_fail": true,
+      "hypo_result": 0.03467,
+      "hypo_pass_fail": true,
+      "test_type": "concentration_limit"
+    },
+    {
+      "test_number": 19,
+      "test_name": "Limitaton on individual Group I Countries",
+      "threshold": 0.05,
+      "current_result": 0.02619,
+      "pass_fail": true,
+      "hypo_result": 0.02618,
+      "hypo_pass_fail": true,
+      "test_type": "concentration_limit"
+    },
+    {
+      "test_number": 20,
+      "test_name": "Limitaton on Group II Countries",
+      "threshold": 0.1,
+      "current_result": 0.0012,
+      "pass_fail": true,
+      "hypo_result": 0.0012,
+      "hypo_pass_fail": true,
+      "test_type": "concentration_limit"
+    },
+    {
+      "test_number": 21,
+      "test_name": "Limitaton on individual Group II Countries",
+      "threshold": 0.05,
+      "current_result": 0.0012,
+      "pass_fail": true,
+      "hypo_result": 0.0012,
+      "hypo_pass_fail": true,
+      "test_type": "concentration_limit"
+    },
+    {
+      "test_number": 22,
+      "test_name": "Limitaton on Group III Countries",
+      "threshold": 0.075,
+      "current_result": 0.03158,
+      "pass_fail": true,
+      "hypo_result": 0.03156,
+      "hypo_pass_fail": true,
+      "test_type": "concentration_limit"
+    },
+    {
+      "test_number": 23,
+      "test_name": "Limitaton on individual Group III Countries",
+      "threshold": 0.05,
+      "current_result": 0.02908,
+      "pass_fail": true,
+      "hypo_result": 0.02906,
+      "hypo_pass_fail": true,
+      "test_type": "concentration_limit"
+    },
+    {
+      "test_number": 24,
+      "test_name": "Limitation on Tax Jurisdictions",
+      "threshold": 0.075,
+      "current_result": 0.015,
+      "pass_fail": true,
+      "hypo_result": 0.01499,
+      "hypo_pass_fail": true,
+      "test_type": "concentration_limit"
+    },
+    {
+      "test_number": 25,
+      "test_name": "Limitaton on the 4th largest S&P Industry Classification",
+      "threshold": 0.1,
+      "current_result": 0.05853,
+      "pass_fail": true,
+      "hypo_result": 0.0585,
+      "hypo_pass_fail": true,
+      "test_type": "concentration_limit"
+    },
+    {
+      "test_number": 26,
+      "test_name": "Limitaton on the 2nd largest Industry Classification",
+      "threshold": 0.12,
+      "current_result": 0.09242,
+      "pass_fail": true,
+      "hypo_result": 0.09236,
+      "hypo_pass_fail": true,
+      "test_type": "concentration_limit"
+    },
+    {
+      "test_number": 27,
+      "test_name": "Limitaton on the 1st largest S&P Industry Classification",
+      "threshold": 0.15,
+      "current_result": 0.10469,
+      "pass_fail": true,
+      "hypo_result": 0.10562,
+      "hypo_pass_fail": true,
+      "test_type": "concentration_limit"
+    },
+    {
+      "test_number": 28,
+      "test_name": "Limitation on Bridge Loan Obligations",
+      "threshold": 0.05,
+      "current_result": 0,
+      "pass_fail": true,
+      "hypo_result": 0,
+      "hypo_pass_fail": true,
+      "test_type": "concentration_limit"
+    },
+    {
+      "test_number": 29,
+      "test_name": "Limitation on Cov-Lite Loans",
+      "threshold": 0.6,
+      "current_result": 0.20466,
+      "pass_fail": true,
+      "hypo_result": 0.20803,
+      "hypo_pass_fail": true,
+      "test_type": "concentration_limit"
+    },
+    {
+      "test_number": 30,
+      "test_name": "Limitation on Deferabble Securities",
+      "threshold": 0.05,
+      "current_result": 0,
+      "pass_fail": true,
+      "hypo_result": 0,
+      "hypo_pass_fail": true,
+      "test_type": "concentration_limit"
+    },
+    {
+      "test_number": 31,
+      "test_name": "Limitation on Facility Size",
+      "threshold": 0.07,
+      "current_result": 0.00345,
+      "pass_fail": true,
+      "hypo_result": 0.00345,
+      "hypo_pass_fail": true,
+      "test_type": "concentration_limit"
+    },
+    {
+      "test_number": 33,
+      "test_name": "Minimum Weighted Average Moody\u2019s Recovery Rate Test",
+      "threshold": 0.455,
+      "current_result": 0.50137,
+      "pass_fail": true,
+      "hypo_result": 0.50064,
+      "hypo_pass_fail": true,
+      "test_type": "concentration_limit"
+    },
+    {
+      "test_number": 32,
+      "test_name": "Minimum Floating Spread Test",
+      "threshold": 0.03936,
+      "current_result": 0.04024,
+      "pass_fail": true,
+      "hypo_result": 0.0406,
+      "hypo_pass_fail": true,
+      "test_type": "concentration_limit"
+    },
+    {
+      "test_number": 36,
+      "test_name": "Maximum Moody's Rating Factor Test",
+      "threshold": 3218.21,
+      "current_result": 2575.7,
+      "pass_fail": true,
+      "hypo_result": 2608.07,
+      "hypo_pass_fail": true,
+      "test_type": "concentration_limit"
+    },
+    {
+      "test_number": 35,
+      "test_name": "Weighted Average Life Test",
+      "threshold": 6.74,
+      "current_result": 5.05,
+      "pass_fail": true,
+      "hypo_result": 5.04,
+      "hypo_pass_fail": true,
+      "test_type": "concentration_limit"
+    },
+    {
+      "test_number": 37,
+      "test_name": "Moody's Diversity Test",
+      "threshold": 55,
+      "current_result": 59.44,
+      "pass_fail": true,
+      "hypo_result": 60.52,
+      "hypo_pass_fail": true,
+      "test_type": "concentration_limit"
+    },
+    {
+      "test_number": 38,
+      "test_name": "Junior OC Test",
+      "threshold": 1.029,
+      "current_result": 1.08131,
+      "pass_fail": true,
+      "hypo_result": 1.08199,
+      "hypo_pass_fail": true,
+      "test_type": "concentration_limit"
+    },
+    {
+      "test_number": 34,
+      "test_name": "Minimum Weighted Average Coupon Test",
+      "threshold": 0.07,
+      "current_result": 0,
+      "pass_fail": true,
+      "hypo_result": 0,
+      "hypo_pass_fail": true,
+      "test_type": "concentration_limit"
+    }
+  ],
+  "oc_ic_tests": [
+    {
+      "test_name": "Class B-2 OC Test",
+      "test_type": "overcollateralization",
+      "tranche_class": "Class B-2",
+      "required_ratio": 1.243,
+      "current_ratio": null,
+      "pass_fail": null
+    },
+    {
+      "test_name": "Class B-2 IC Test",
+      "test_type": "interest_coverage",
+      "tranche_class": "Class B-2",
+      "required_ratio": 1.15,
+      "current_ratio": null,
+      "pass_fail": null
+    },
+    {
+      "test_name": "Class C OC Test",
+      "test_type": "overcollateralization",
+      "tranche_class": "Class C",
+      "required_ratio": 1.152,
+      "current_ratio": null,
+      "pass_fail": null
+    },
+    {
+      "test_name": "Class C IC Test",
+      "test_type": "interest_coverage",
+      "tranche_class": "Class C",
+      "required_ratio": 1.1,
+      "current_ratio": null,
+      "pass_fail": null
+    },
+    {
+      "test_name": "Class D OC Test",
+      "test_type": "overcollateralization",
+      "tranche_class": "Class D",
+      "required_ratio": 1.089,
+      "current_ratio": null,
+      "pass_fail": null
+    },
+    {
+      "test_name": "Class D IC Test",
+      "test_type": "interest_coverage",
+      "tranche_class": "Class D",
+      "required_ratio": 1.05,
+      "current_ratio": null,
+      "pass_fail": null
+    },
+    {
+      "test_name": "Class E OC Test",
+      "test_type": "overcollateralization",
+      "tranche_class": "Class E",
+      "required_ratio": 1.042,
+      "current_ratio": null,
+      "pass_fail": null
+    }
+  ],
+  "analysis_date": "2016-03-23",
+  "total_tests": 44
+}

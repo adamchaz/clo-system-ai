@@ -29,9 +29,9 @@ def create_login_endpoint():
                 "id": "demo_user_001",
                 "email": "demo@clo-system.com", 
                 "full_name": "Demo User",
-                "role": "admin",
-                "roles": [{"name": "admin"}],
-                "permissions": ["system:read", "system:write", "portfolio:read", "portfolio:write"]
+                "role": "viewer",
+                "roles": [{"name": "viewer"}],
+                "permissions": ["deal_viewing", "basic_analytics"]
             },
             "access_token": "demo_access_token_123456",
             "refresh_token": "demo_refresh_token_123456"

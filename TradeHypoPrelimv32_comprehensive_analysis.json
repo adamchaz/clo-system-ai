@@ -1,10 +1,10 @@
 {
   "file_structure": {
     "filename": "TradeHypoPrelimv32.xlsm",
-    "size_mb": 3.11,
+    "size_mb": 3.18,
     "type": "Excel Macro-Enabled Workbook (.xlsm)",
     "contains_macros": true,
-    "total_files": 63,
+    "total_files": 62,
     "worksheet_files": 35,
     "vba_files": 1,
     "external_connection_files": 0,
@@ -108,6 +108,8 @@
     "estimated_modules": 0,
     "potential_functionality": [
       "Subroutines and Functions",
+      "Database Connectivity",
+      "File System Operations",
       "CLO Logic: portfolio",
       "CLO Logic: asset",
       "CLO Logic: rating",
@@ -147,7 +149,9 @@
   },
   "external_dependencies": {
     "external_files": [],
-    "add_ins": [],
+    "add_ins": [
+      "Database connectivity (ADODB/SQL)"
+    ],
     "database_connections": [],
     "web_queries": [],
     "special_features": [

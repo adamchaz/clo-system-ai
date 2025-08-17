@@ -142,6 +142,39 @@ async def list_clo_deals(
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to fetch CLO deals: {str(e)}")
 
+@router.get("/overview/stats")
+async def get_portfolio_stats_overview():
+    """Get portfolio statistics overview"""
+    try:
+        from decimal import Decimal
+        
+        return {
+            "total_deals": 10,
+            "active_deals": 10, 
+            "total_assets_under_management": Decimal("4606020000.00"),
+            "average_deal_size": Decimal("460602000.00"),
+            "deals_by_status": {
+                "revolving": 10,
+                "effective": 0,
+                "amortizing": 0
+            },
+            "deals_by_manager": {
+                "Magnetar Capital": 10
+            },
+            "portfolio_yield": Decimal("7.85"),
+            "average_rating": "B+",
+            "total_market_value": Decimal("4606020000.00")
+        }
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch portfolio stats: {str(e)}")
+
+# Frontend compatibility endpoint - must come before /{deal_id} route
+@router.get("/stats/overview") 
+async def get_portfolio_stats_overview_alias():
+    """Get portfolio statistics overview - frontend compatibility"""
+    return await get_portfolio_stats_overview()
+
 @router.get("/{deal_id}")
 async def get_clo_deal(
     deal_id: str,
@@ -391,32 +424,3 @@ async def get_deal_triggers(
         
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to fetch deal triggers: {str(e)}")
-
-@router.get("/overview/stats")
-async def get_portfolio_stats():
-    """Get portfolio statistics overview"""
-    try:
-        from decimal import Decimal
-        
-        return {
-            "total_deals": 3,
-            "active_deals": 3,
-            "total_assets_under_management": Decimal("1171450000.00"),
-            "average_deal_size": Decimal("416666666.67"),
-            "deals_by_status": {
-                "effective": 1,
-                "revolving": 1,
-                "amortizing": 1
-            },
-            "deals_by_manager": {
-                "Magnetar Capital LLC": 1,
-                "Blackstone Credit": 1,
-                "Apollo Credit Management LLC": 1
-            },
-            "portfolio_yield": Decimal("7.85"),
-            "average_rating": "B+",
-            "total_market_value": Decimal("1171450000.00")
-        }
-        
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to fetch portfolio stats: {str(e)}")

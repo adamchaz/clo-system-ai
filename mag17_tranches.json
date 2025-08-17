@@ -1,0 +1,138 @@
+[
+  {
+    "class_name": "Class X",
+    "tranche_number": 1,
+    "column_letter": "AK",
+    "properties": {
+      "Original_Balance": 2400000,
+      "Price": 1,
+      "Current_Balance": 2400000,
+      "Defaulted_Deferred": 0,
+      "Spread_bps": 0.0155,
+      "Discount_Margin": 0.0155,
+      "PIKable": 0,
+      "OC_Test": "NA",
+      "IC_Test": "NA",
+      "DayCount": "Actual/360"
+    }
+  },
+  {
+    "class_name": "Class A",
+    "tranche_number": 2,
+    "column_letter": "AL",
+    "properties": {
+      "Original_Balance": 320000000,
+      "Price": 1,
+      "Current_Balance": 320000000,
+      "Defaulted_Deferred": 0,
+      "Spread_bps": 0.0155,
+      "Discount_Margin": 0.0155,
+      "PIKable": 0,
+      "OC_Test": "NA",
+      "IC_Test": "NA",
+      "DayCount": "Actual/360"
+    }
+  },
+  {
+    "class_name": "Class B-1",
+    "tranche_number": 3,
+    "column_letter": "AM",
+    "properties": {
+      "Original_Balance": 45000000,
+      "Price": 1,
+      "Current_Balance": 45000000,
+      "Defaulted_Deferred": 0,
+      "Spread_bps": 0.0235,
+      "Discount_Margin": 0.0235,
+      "PIKable": 0,
+      "OC_Test": "NA",
+      "IC_Test": "NA",
+      "DayCount": "Actual/360"
+    }
+  },
+  {
+    "class_name": "Class B-2",
+    "tranche_number": 4,
+    "column_letter": "AN",
+    "properties": {
+      "Original_Balance": 15000000,
+      "Price": 1,
+      "Current_Balance": 15000000,
+      "Defaulted_Deferred": 0,
+      "Spread_bps": 0.037,
+      "Discount_Margin": 0.037,
+      "PIKable": 1,
+      "OC_Test": 1.243,
+      "IC_Test": 1.15,
+      "DayCount": "Actual/360"
+    }
+  },
+  {
+    "class_name": "Class C",
+    "tranche_number": 5,
+    "column_letter": "AO",
+    "properties": {
+      "Original_Balance": 27000000,
+      "Price": 1,
+      "Current_Balance": 27000000,
+      "Defaulted_Deferred": 0,
+      "Spread_bps": 0.0345,
+      "Discount_Margin": 0.0345,
+      "PIKable": 1,
+      "OC_Test": 1.152,
+      "IC_Test": 1.1,
+      "DayCount": "Actual/360"
+    }
+  },
+  {
+    "class_name": "Class D",
+    "tranche_number": 6,
+    "column_letter": "AP",
+    "properties": {
+      "Original_Balance": 28000000,
+      "Price": 0.9494,
+      "Current_Balance": 28000000,
+      "Defaulted_Deferred": 0,
+      "Spread_bps": 0.0515,
+      "Discount_Margin": 0.0575,
+      "PIKable": 1,
+      "OC_Test": 1.089,
+      "IC_Test": 1.05,
+      "DayCount": "Actual/360"
+    }
+  },
+  {
+    "class_name": "Class E",
+    "tranche_number": 7,
+    "column_letter": "AQ",
+    "properties": {
+      "Original_Balance": 25000000,
+      "Price": 0.9185,
+      "Current_Balance": 25000000,
+      "Defaulted_Deferred": 0,
+      "Spread_bps": 0.0815,
+      "Discount_Margin": 0.095,
+      "PIKable": 1,
+      "OC_Test": 1.042,
+      "IC_Test": "NA",
+      "DayCount": "Actual/360"
+    }
+  },
+  {
+    "class_name": "Sub Notes",
+    "tranche_number": 8,
+    "column_letter": "AR",
+    "properties": {
+      "Original_Balance": 38750000,
+      "Price": 0.0543,
+      "Current_Balance": 38750000,
+      "Defaulted_Deferred": 0,
+      "Spread_bps": 0,
+      "Discount_Margin": 0.135,
+      "PIKable": "NA",
+      "OC_Test": "NA",
+      "IC_Test": "NA",
+      "DayCount": "Actual/360"
+    }
+  }
+]
