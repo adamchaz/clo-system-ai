@@ -21,6 +21,12 @@
 .env.development.local
 .env.test.local
 .env.production.local
+.env.testing
+.env.staging
+
+# Allow environment templates and development config
+!.env.template
+!.env.development
 
 # Configuration files with sensitive data
 config/local.py

@@ -24,7 +24,7 @@ class Settings(BaseSettings):
     postgres_user: str = "postgres"
     postgres_password: str = "adamchaz"
     postgres_db: str = "clo_dev"
-    postgres_ssl_mode: str = "prefer"
+    postgres_ssl_mode: str = "disable"
     
     # Database Connection Pool
     db_pool_size: int = 20

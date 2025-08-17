@@ -8,23 +8,22 @@ This index provides a comprehensive overview of all documentation available for 
 
 ### **New Users**
 - **[README.md](README.md)** - Project overview and quick start guide
-- **[User Guide](docs/USER_GUIDE.md)** - Comprehensive user manual for all system roles
-- **[User Manuals](docs/USER_MANUALS.md)** - Role-specific training materials
+- **[User Guide](docs/user_guides/USER_GUIDE.md)** - Comprehensive user manual for all system roles
 
 ### **System Administrators**
-- **[System Administration Guide](docs/SYSTEM_ADMINISTRATION_GUIDE.md)** - Complete admin procedures
-- **[Operations Manual](docs/OPERATIONS_MANUAL.md)** - Daily operations and maintenance
-- **[Troubleshooting Guide](docs/TROUBLESHOOTING_GUIDE.md)** - Common issues and solutions
+- **[System Administration Guide](docs/operations/SYSTEM_ADMINISTRATION_GUIDE.md)** - Complete admin procedures
+- **[Operations Manual](docs/operations/OPERATIONS_MANUAL.md)** - Daily operations and maintenance
+- **[Troubleshooting & Maintenance](docs/operations/TROUBLESHOOTING_MAINTENANCE.md)** - Common issues and solutions
 
 ### **Developers**
-- **[Technical Architecture](docs/TECHNICAL_ARCHITECTURE.md)** - System design and architecture
-- **[Complete API Reference](docs/COMPLETE_API_REFERENCE.md)** - REST API documentation
-- **[Frontend Progress](docs/FRONTEND_PROGRESS.md)** - React component development
+- **[Technical Architecture](docs/technical/TECHNICAL_ARCHITECTURE.md)** - System design and architecture
+- **[Complete API Reference](docs/technical/COMPLETE_API_REFERENCE.md)** - REST API documentation
+- **[Frontend Progress](docs/technical/FRONTEND_PROGRESS.md)** - React component development
 
 ### **DevOps & Deployment**
-- **[Production Deployment Guide](PRODUCTION_DEPLOYMENT_GUIDE.md)** - Step-by-step deployment procedures
+- **[Deployment Guide](docs/operations/DEPLOYMENT_GUIDE.md)** - Step-by-step deployment procedures
+- **[Configuration Guide](CONFIGURATION_GUIDE.md)** - Environment configuration management
 - **[Secrets Management Guide](SECRETS_MANAGEMENT_GUIDE.md)** - Enterprise security procedures
-- **[Integration Test Results](INTEGRATION_TEST_RESULTS.md)** - Comprehensive test validation
 
 ## 👥 **Documentation by User Role**
 
@@ -159,18 +158,18 @@ This index provides a comprehensive overview of all documentation available for 
 - **[VBA Archive](archive/vba_source/)** - Complete VBA source code and conversion documentation
 - **[VBA Conversion Summary](archive/vba_source/VBA_CONVERSION_SUMMARY.md)** - 99% conversion overview
 - **[Conversion Methodology](archive/vba_source/CONVERSION_METHODOLOGY.md)** - Technical conversion framework
-- **[VBA Migration Guide](docs/vba_migration_guide.md)** - Complete VBA to Python conversion
-- **[Asset System](docs/asset_system.md)** - Asset management implementation
-- **[Waterfall Implementations](docs/waterfall_implementations.md)** - CLO waterfall engines
-- **[Portfolio Optimization](docs/MAIN_BAS_CONVERSION.md)** - Optimization algorithms
-- **[Risk Management](docs/concentration_test_conversion.md)** - Risk and compliance testing
+- **[VBA Migration Guide](docs/business_logic/vba_migration_guide.md)** - Complete VBA to Python conversion
+- **[Asset System](docs/business_logic/asset_system.md)** - Asset management implementation
+- **[Waterfall Implementations](docs/business_logic/waterfall_implementations.md)** - CLO waterfall engines
+- **[Portfolio Optimization](docs/business_logic/MAIN_BAS_CONVERSION.md)** - Optimization algorithms
+- **[Risk Management](docs/business_logic/concentration_test_conversion.md)** - Risk and compliance testing
 
 ### **Component-Specific Guides**
-- **[CLO Deal Engine](docs/CLODEAL_CONVERSION.md)** - CLO deal management
-- **[Liability System](docs/LIABILITY_CONVERSION.md)** - Liability management
-- **[Fee Management](docs/fee_management_system.md)** - Fee calculation system
-- **[Incentive Fees](docs/incentive_fee_system.md)** - Manager incentive fees
-- **[Yield Curves](docs/yield_curve_system.md)** - Interest rate management
+- **[CLO Deal Engine](docs/business_logic/CLODEAL_CONVERSION.md)** - CLO deal management
+- **[Liability System](docs/business_logic/LIABILITY_CONVERSION.md)** - Liability management
+- **[Fee Management](docs/business_logic/fee_management_system.md)** - Fee calculation system
+- **[Incentive Fees](docs/business_logic/incentive_fee_system.md)** - Manager incentive fees
+- **[Yield Curves](docs/business_logic/yield_curve_system.md)** - Interest rate management
 
 ### **Advanced Features**
 - **[Correlation Analysis](docs/correlation_analysis.md)** - Asset correlation matrices
