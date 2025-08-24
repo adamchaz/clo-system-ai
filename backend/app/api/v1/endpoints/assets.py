@@ -34,11 +34,170 @@ async def list_assets(
     limit: int = Query(100, ge=1, le=1000),
     asset_type: Optional[str] = Query(None),
     rating: Optional[str] = Query(None),
+    portfolio_id: Optional[str] = Query(None),
+    search: Optional[str] = Query(None),
     db: Session = Depends(get_db)
 ):
     """List all assets with pagination and filtering"""
-    # Implementation will query operational database
-    # For now, return migrated data
+    # Test if this endpoint is being called
+    if portfolio_id == 'TEST_BREAK':
+        raise HTTPException(status_code=999, detail="Test endpoint is working")
+    # Handle portfolio filtering directly in the API for now
+    # until proper deal_assets mapping is implemented
+    print(f"DEBUG: portfolio_id received: {portfolio_id}")
+    if portfolio_id and portfolio_id == 'MAG17':
+        # For MAG17, use the dedicated portfolio assets query
+        print(f"DEBUG: Entering MAG17 filtering logic")
+        try:
+            from sqlalchemy import text
+            
+            # Build query with filters for MAG17 (par_amount > 0)
+            query = "SELECT * FROM assets WHERE par_amount > 0"
+            count_query = "SELECT COUNT(*) FROM assets WHERE par_amount > 0"
+            params = {}
+            
+            # Add additional filters
+            if asset_type:
+                query += " AND bond_loan = :asset_type"
+                count_query += " AND bond_loan = :asset_type"
+                params['asset_type'] = asset_type
+                
+            if rating:
+                query += " AND (mdy_rating = :rating OR sp_rating = :rating)"
+                count_query += " AND (mdy_rating = :rating OR sp_rating = :rating)"
+                params['rating'] = rating
+                
+            if search:
+                query += " AND (LOWER(issue_name) LIKE LOWER(:search) OR LOWER(issuer_name) LIKE LOWER(:search) OR LOWER(blkrock_id) LIKE LOWER(:search))"
+                count_query += " AND (LOWER(issue_name) LIKE LOWER(:search) OR LOWER(issuer_name) LIKE LOWER(:search) OR LOWER(blkrock_id) LIKE LOWER(:search))"
+                params['search'] = f'%{search}%'
+            
+            query += " ORDER BY par_amount DESC LIMIT :limit OFFSET :skip"
+            params.update({'skip': skip, 'limit': limit})
+            
+            # Get total count
+            total_result = db.execute(text(count_query), {k: v for k, v in params.items() if k not in ['skip', 'limit']})
+            total_count = total_result.scalar()
+            
+            # Get paginated results
+            result = db.execute(text(query), params).fetchall()
+            
+            # Convert to API format
+            assets = []
+            for row in result:
+                row_dict = dict(row._mapping) if hasattr(row, '_mapping') else dict(row)
+                from decimal import Decimal
+                
+                # Complete mapping matching AssetResponse schema
+                asset_dict = {
+                        # Required fields
+                        "blkrock_id": row_dict.get('blkrock_id', ''),
+                        "issue_name": row_dict.get('issue_name', ''),
+                        "issuer_name": row_dict.get('issuer_name', ''),
+                        "par_amount": float(row_dict.get('par_amount', 0)),
+                        "maturity": row_dict.get('maturity'),
+                        
+                        # Optional string fields
+                        "issuer_id": row_dict.get('issuer_id'),
+                        "tranche": row_dict.get('tranche'),
+                        "bond_loan": row_dict.get('bond_loan'),
+                        "currency": row_dict.get('currency', 'USD'),
+                        "coupon_type": row_dict.get('coupon_type'),
+                        "index_name": row_dict.get('index_name'),
+                        "amortization_type": row_dict.get('amortization_type'),
+                        "day_count": row_dict.get('day_count'),
+                        "business_day_conv": row_dict.get('business_day_conv'),
+                        
+                        # Rating fields
+                        "mdy_rating": row_dict.get('mdy_rating'),
+                        "mdy_dp_rating": row_dict.get('mdy_dp_rating'),
+                        "mdy_dp_rating_warf": row_dict.get('mdy_dp_rating_warf'),
+                        "sp_rating": row_dict.get('sp_rating'),
+                        "derived_mdy_rating": row_dict.get('derived_mdy_rating'),
+                        "derived_sp_rating": row_dict.get('derived_sp_rating'),
+                        "mdy_facility_rating": row_dict.get('mdy_facility_rating'),
+                        "mdy_facility_outlook": row_dict.get('mdy_facility_outlook'),
+                        "mdy_issuer_rating": row_dict.get('mdy_issuer_rating'),
+                        "mdy_issuer_outlook": row_dict.get('mdy_issuer_outlook'),
+                        "mdy_snr_sec_rating": row_dict.get('mdy_snr_sec_rating'),
+                        "mdy_snr_unsec_rating": row_dict.get('mdy_snr_unsec_rating'),
+                        "mdy_sub_rating": row_dict.get('mdy_sub_rating'),
+                        "mdy_credit_est_rating": row_dict.get('mdy_credit_est_rating'),
+                        "sandp_facility_rating": row_dict.get('sandp_facility_rating'),
+                        "sandp_issuer_rating": row_dict.get('sandp_issuer_rating'),
+                        "sandp_snr_sec_rating": row_dict.get('sandp_snr_sec_rating'),
+                        "sandp_subordinate": row_dict.get('sandp_subordinate'),
+                        "sandp_rec_rating": row_dict.get('sandp_rec_rating'),
+                        
+                        # Industry and classification
+                        "mdy_industry": row_dict.get('mdy_industry'),
+                        "sp_industry": row_dict.get('sp_industry'),
+                        "country": row_dict.get('country'),
+                        "seniority": row_dict.get('seniority'),
+                        "mdy_asset_category": row_dict.get('mdy_asset_category'),
+                        "sp_priority_category": row_dict.get('sp_priority_category'),
+                        "discount_curve_name": row_dict.get('discount_curve_name'),
+                        
+                        # Numeric fields
+                        "market_value": float(row_dict.get('market_value', 0)) if row_dict.get('market_value') else None,
+                        "coupon": float(row_dict.get('coupon', 0)) if row_dict.get('coupon') else None,
+                        "cpn_spread": float(row_dict.get('cpn_spread', 0)) if row_dict.get('cpn_spread') else None,
+                        "libor_floor": float(row_dict.get('libor_floor', 0)) if row_dict.get('libor_floor') else None,
+                        "index_cap": float(row_dict.get('index_cap', 0)) if row_dict.get('index_cap') else None,
+                        "amount_issued": float(row_dict.get('amount_issued', 0)) if row_dict.get('amount_issued') else None,
+                        "pik_amount": float(row_dict.get('pik_amount', 0)) if row_dict.get('pik_amount') else None,
+                        "unfunded_amount": float(row_dict.get('unfunded_amount', 0)) if row_dict.get('unfunded_amount') else None,
+                        "mdy_recovery_rate": float(row_dict.get('mdy_recovery_rate', 0)) if row_dict.get('mdy_recovery_rate') else None,
+                        "fair_value": float(row_dict.get('fair_value', 0)) if row_dict.get('fair_value') else None,
+                        "commit_fee": float(row_dict.get('commit_fee', 0)) if row_dict.get('commit_fee') else None,
+                        "facility_size": float(row_dict.get('facility_size', 0)) if row_dict.get('facility_size') else None,
+                        "wal": float(row_dict.get('wal', 0)) if row_dict.get('wal') else None,
+                        
+                        # Integer fields
+                        "payment_freq": row_dict.get('payment_freq'),
+                        "discount_curve_id": row_dict.get('discount_curve_id'),
+                        "pricing_spread_bps": row_dict.get('pricing_spread_bps'),
+                        
+                        # Boolean fields
+                        "payment_eom": row_dict.get('payment_eom'),
+                        "piking": row_dict.get('piking'),
+                        
+                        # Date fields
+                        "dated_date": row_dict.get('dated_date'),
+                        "issue_date": row_dict.get('issue_date'),
+                        "first_payment_date": row_dict.get('first_payment_date'),
+                        "date_of_default": row_dict.get('date_of_default'),
+                        "rating_derivation_date": row_dict.get('rating_derivation_date'),
+                        "fair_value_date": row_dict.get('fair_value_date'),
+                        "mdy_credit_est_date": row_dict.get('mdy_credit_est_date'),
+                        "created_at": row_dict.get('created_at'),
+                        "updated_at": row_dict.get('updated_at'),
+                        
+                        # Text fields
+                        "rating_source_hierarchy": row_dict.get('rating_source_hierarchy'),
+                        "analyst_opinion": row_dict.get('analyst_opinion'),
+                        
+                        # JSON fields
+                        "flags": row_dict.get('flags')
+                }
+                assets.append(asset_dict)
+            
+            # Convert to AssetResponse objects
+            asset_responses = [AssetResponse(**asset) for asset in assets]
+            
+            return AssetListResponse(
+                assets=asset_responses,
+                total_count=total_count,
+                skip=skip,
+                limit=limit
+            )
+            
+        except Exception as e:
+            # If portfolio filtering fails, log the error and fall back to regular filtering
+            print(f"Portfolio filtering error for {portfolio_id}: {str(e)}")
+            raise HTTPException(status_code=500, detail=f"Portfolio filtering failed: {str(e)}")
+    
+    # No portfolio filter - use existing logic
     integration_service = get_integration_service()
     
     try:
