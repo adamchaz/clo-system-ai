@@ -7,7 +7,7 @@ from typing import List, Dict, Any
 from fastapi import APIRouter, Depends, HTTPException, Query
 from starlette.status import HTTP_200_OK
 
-from ....core.security import get_current_user, require_permissions
+from ....core.security import get_current_user
 from ....schemas.portfolio_analytics import (
     PortfolioOptimizationRequest, PortfolioOptimizationResult,
     PortfolioPerformanceAnalysisRequest, PortfolioPerformanceResult,
@@ -46,7 +46,7 @@ async def optimize_portfolio(
         # Set portfolio_id in request
         request.portfolio_id = portfolio_id
         
-        result = analytics_service.optimize_portfolio(request, current_user["user_id"])
+        result = analytics_service.optimize_portfolio(request, current_user["id"])
         return result
         
     except (CLOBusinessError, CLOValidationError) as e:
@@ -77,7 +77,7 @@ async def analyze_performance(
         # Set portfolio_id in request
         request.portfolio_id = portfolio_id
         
-        result = analytics_service.analyze_portfolio_performance(request, current_user["user_id"])
+        result = analytics_service.analyze_portfolio_performance(request, current_user["id"])
         return result
         
     except (CLOBusinessError, CLOValidationError) as e:
@@ -109,7 +109,7 @@ async def analyze_risk(
         # Set portfolio_id in request
         request.portfolio_id = portfolio_id
         
-        result = analytics_service.analyze_portfolio_risk(request, current_user["user_id"])
+        result = analytics_service.analyze_portfolio_risk(request, current_user["id"])
         return result
         
     except (CLOBusinessError, CLOValidationError) as e:
@@ -118,31 +118,137 @@ async def analyze_risk(
         raise HTTPException(status_code=500, detail=f"Risk analysis failed: {str(e)}")
 
 
-@router.post("/{portfolio_id}/concentration", response_model=ConcentrationAnalysisResult)
+@router.get("/test-debug")
+async def test_debug_endpoint():
+    """Debug endpoint to test if portfolio_analytics router is working"""
+    print("DEBUG: Test endpoint called successfully")
+    return {"message": "portfolio_analytics router is working", "endpoint": "test-debug"}
+
+@router.post("/{portfolio_id}/concentration")
 async def analyze_concentration(
     portfolio_id: str,
     request: ConcentrationAnalysisRequest,
     current_user: Dict[str, Any] = Depends(get_current_user)
 ):
     """
-    Analyze portfolio concentration across various dimensions
+    Analyze portfolio concentration with CLO-specific concentration tests
     
-    - **portfolio_id**: Portfolio identifier
-    - **request**: Concentration analysis parameters including dimensions and limits
+    - **portfolio_id**: Portfolio identifier (CLO Deal ID)
+    - **request**: Concentration analysis parameters including analysis_date
     
-    Analysis includes:
-    - Concentration metrics by sector, industry, rating, geography, and issuer
-    - Herfindahl-Hirschman Index (HHI) calculations
-    - Concentration limit breach detection
-    - Diversification recommendations
-    - Risk-adjusted concentration measures
+    For CLO deals, returns database-driven concentration test results with proper thresholds.
+    For other portfolios, uses general concentration analysis.
     """
+    print(f"DEBUG: CONCENTRATION ENDPOINT CALLED for portfolio_id: {portfolio_id}")
+    print(f"DEBUG: Request method and URL reached portfolio_analytics.py successfully")
     try:
-        # Set portfolio_id in request
-        request.portfolio_id = portfolio_id
+        # Check if this is a CLO deal (starts with MAG, CLO, etc.)
+        if portfolio_id.startswith(('MAG', 'CLO')):
+            # Use CLO concentration test system with database-driven thresholds
+            from datetime import date
+            from ....core.database import get_db
+            
+            # Get analysis date from request or use default
+            analysis_date = getattr(request, 'analysis_date', None)
+            if not analysis_date:
+                analysis_date = date(2016, 3, 23)  # Default CLO analysis date
+            
+            try:
+                # Use a simple query to get MAG17 thresholds directly
+                db = next(get_db())
+                from ....models.database.concentration_threshold_models import ConcentrationTestDefinition, DealConcentrationThreshold
+                from sqlalchemy import and_
+                
+                # Get thresholds for this deal
+                thresholds_query = db.query(
+                    ConcentrationTestDefinition.test_number,
+                    ConcentrationTestDefinition.test_name,  
+                    DealConcentrationThreshold.threshold_value,
+                    ConcentrationTestDefinition.result_type
+                ).join(
+                    DealConcentrationThreshold, 
+                    ConcentrationTestDefinition.test_id == DealConcentrationThreshold.test_id
+                ).filter(
+                    and_(
+                        DealConcentrationThreshold.deal_id == portfolio_id,
+                        DealConcentrationThreshold.effective_date <= analysis_date,
+                        (DealConcentrationThreshold.expiry_date.is_(None) | (DealConcentrationThreshold.expiry_date > analysis_date))
+                    )
+                ).order_by(ConcentrationTestDefinition.test_number)
+                
+                thresholds = thresholds_query.all()
+                
+                # Format as concentration test results
+                concentration_tests = []
+                for test_number, test_name, threshold_value, result_type in thresholds:
+                    concentration_tests.append({
+                        "test_number": test_number,
+                        "test_name": test_name,
+                        "threshold": float(threshold_value),
+                        "result": 0.0,  # Would need actual calculation
+                        "pass_fail": "N/A",  # Would need actual calculation 
+                        "threshold_source": "database"
+                    })
+                
+                result = {
+                    "analysis_date": analysis_date.isoformat(),
+                    "test_results": concentration_tests,
+                    "summary": {
+                        "total_tests": len(concentration_tests),
+                        "passed_tests": 0,
+                        "failed_tests": 0,
+                        "na_tests": len(concentration_tests)
+                    }
+                }
+                
+                # Return in format expected by frontend
+                return {
+                    "portfolio_id": portfolio_id,
+                    "analysis_date": result['analysis_date'],
+                    "concentration_tests": result['test_results'],
+                    "summary": result['summary'],
+                    "total_tests": result['summary'].get('total_tests', 0),
+                    "passed_tests": result['summary'].get('passed_tests', 0),
+                    "failed_tests": result['summary'].get('failed_tests', 0)
+                }
+                
+            except Exception as e:
+                # Fallback to general analysis if concentration test fails
+                print(f"CLO concentration test failed, falling back to general analysis: {e}")
+                import traceback
+                traceback.print_exc()
         
-        result = analytics_service.analyze_concentration(request, current_user["user_id"])
-        return result
+        # Original general portfolio concentration analysis
+        request.portfolio_id = portfolio_id
+        result = analytics_service.analyze_concentration(request, current_user["id"])
+        
+        # Convert to dictionary and ensure all numeric values are properly typed
+        result_dict = {
+            "portfolio_id": result.portfolio_id,
+            "analysis_date": result.analysis_date.isoformat(),
+            "concentration_metrics": {},
+            "herfindahl_indices": {},
+            "concentration_levels": result.concentration_levels,
+            "limit_violations": result.limit_violations,
+            "concentration_warnings": result.concentration_warnings,
+            "diversification_opportunities": result.diversification_opportunities,
+            "recommended_adjustments": result.recommended_adjustments
+        }
+        
+        # Convert concentration metrics to proper floats
+        for dimension, metrics in result.concentration_metrics.items():
+            result_dict["concentration_metrics"][dimension] = {}
+            for key, value in metrics.items():
+                if key == "total_positions":
+                    result_dict["concentration_metrics"][dimension][key] = int(value)
+                else:
+                    result_dict["concentration_metrics"][dimension][key] = float(value) if isinstance(value, (str, int)) else value
+        
+        # Convert HHI to floats
+        for dimension, value in result.herfindahl_indices.items():
+            result_dict["herfindahl_indices"][dimension] = float(value) if isinstance(value, str) else value
+        
+        return result_dict
         
     except (CLOBusinessError, CLOValidationError) as e:
         raise HTTPException(status_code=400, detail=str(e))

@@ -136,7 +136,7 @@ async def get_websocket_stats(
             basic_stats = ws_manager.get_connection_stats()
             return {
                 "total_connections": basic_stats["total_connections"],
-                "your_connections": basic_stats["connections_by_user"].get(current_user["user_id"], 0)
+                "your_connections": basic_stats["connections_by_user"].get(current_user["id"], 0)
             }
         
         # Full stats for managers and admins
@@ -182,7 +182,7 @@ async def broadcast_message(
         return {
             "message": "Broadcast sent successfully",
             "recipients": len(ws_manager.connections),
-            "sent_by": current_user["user_id"]
+            "sent_by": current_user["id"]
         }
         
     except Exception as e:
@@ -216,7 +216,7 @@ async def send_user_notification(
                 "title": notification_data.get("title", "Notification"),
                 "message": notification_data.get("message", ""),
                 "severity": notification_data.get("severity", "info"),
-                "from_user": current_user["user_id"],
+                "from_user": current_user["id"],
                 "actions": notification_data.get("actions", [])
             }
         )
@@ -224,7 +224,7 @@ async def send_user_notification(
         return {
             "message": "Notification sent successfully",
             "recipient": user_id,
-            "sent_by": current_user["user_id"]
+            "sent_by": current_user["id"]
         }
         
     except Exception as e:
@@ -259,7 +259,7 @@ async def notify_portfolio_subscribers(
             "message": "Portfolio update sent successfully",
             "portfolio_id": portfolio_id,
             "update_type": update_type,
-            "sent_by": current_user["user_id"]
+            "sent_by": current_user["id"]
         }
         
     except Exception as e:
@@ -283,7 +283,7 @@ async def update_calculation_progress(
     try:
         progress = progress_data.get("progress", 0.0)
         status = progress_data.get("status", "processing")
-        user_id = progress_data.get("user_id", current_user["user_id"])
+        user_id = progress_data.get("user_id", current_user["id"])
         
         await websocket_service.notify_calculation_progress(
             user_id=user_id,
@@ -338,7 +338,7 @@ async def send_risk_alert(
             "portfolio_id": portfolio_id,
             "alert_type": alert_type,
             "severity": severity,
-            "sent_by": current_user["user_id"]
+            "sent_by": current_user["id"]
         }
         
     except Exception as e:
@@ -357,7 +357,7 @@ async def list_websocket_channels(
     try:
         # Get user's available channels based on role
         user_role = current_user.get("role", "viewer")
-        user_id = current_user["user_id"]
+        user_id = current_user["id"]
         
         channels = {
             "personal": [f"user:{user_id}"],

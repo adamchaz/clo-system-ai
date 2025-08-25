@@ -79,7 +79,7 @@ async def upload_document(
             file.file, 
             file.filename, 
             upload_request,
-            current_user["user_id"]
+            current_user["id"]
         )
         
         return result
@@ -101,7 +101,7 @@ async def get_document(
     - **document_id**: Document identifier
     """
     try:
-        result = document_service.get_document(document_id, current_user["user_id"])
+        result = document_service.get_document(document_id, current_user["id"])
         return result
         
     except CLOValidationError as e:
@@ -124,7 +124,7 @@ async def download_document(
     """
     try:
         file_data, filename, mime_type = document_service.download_document(
-            document_id, current_user["user_id"]
+            document_id, current_user["id"]
         )
         
         return StreamingResponse(
@@ -155,7 +155,7 @@ async def update_document(
     """
     try:
         result = document_service.update_document(
-            document_id, request, current_user["user_id"]
+            document_id, request, current_user["id"]
         )
         return result
         
@@ -178,7 +178,7 @@ async def delete_document(
     - **document_id**: Document identifier
     """
     try:
-        document_service.delete_document(document_id, current_user["user_id"])
+        document_service.delete_document(document_id, current_user["id"])
         return Response(status_code=HTTP_204_NO_CONTENT)
         
     except CLOValidationError as e:
@@ -219,7 +219,7 @@ async def list_documents(
             owner_id=owner_id
         )
         
-        documents = document_service.search_documents(search_request, current_user["user_id"])
+        documents = document_service.search_documents(search_request, current_user["id"])
         
         # For pagination, we need total count - this is simplified
         total_count = len(documents)  # In real implementation, do separate count query
@@ -249,7 +249,7 @@ async def search_documents(
     - **request**: Search parameters including query, filters, date ranges, etc.
     """
     try:
-        results = document_service.search_documents(request, current_user["user_id"])
+        results = document_service.search_documents(request, current_user["id"])
         return results
         
     except CLOBusinessError as e:
@@ -268,7 +268,7 @@ async def get_document_statistics(
     Returns counts by type, status, access level, total size, and recent activity
     """
     try:
-        stats = document_service.get_document_statistics(current_user["user_id"])
+        stats = document_service.get_document_statistics(current_user["id"])
         return stats
         
     except CLOBusinessError as e:
@@ -303,7 +303,7 @@ async def bulk_document_operation(
         for doc_id in request.document_ids:
             try:
                 if request.operation == "delete":
-                    document_service.delete_document(doc_id, current_user["user_id"])
+                    document_service.delete_document(doc_id, current_user["id"])
                     successful += 1
                     processed_ids.append(doc_id)
                 # Add other operations as needed
@@ -415,7 +415,7 @@ async def create_folder(
             access_level=request.access_level,
             tags=request.tags,
             level=0,
-            owner_id=current_user["user_id"],
+            owner_id=current_user["id"],
             created_at=datetime.utcnow(),
             updated_at=datetime.utcnow()
         )

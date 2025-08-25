@@ -37,7 +37,7 @@ async def create_user(
     Requires admin privileges. Creates user account with specified role and sends welcome email if requested.
     """
     try:
-        result = user_service.create_user(request, current_user["user_id"])
+        result = user_service.create_user(request, current_user["id"])
         return result
         
     except (CLOBusinessError, CLOValidationError) as e:
@@ -60,10 +60,10 @@ async def get_user(
     """
     try:
         # Check permissions - users can view themselves, admins can view anyone
-        if user_id != current_user["user_id"] and current_user["role"] not in ["admin", "manager"]:
+        if user_id != current_user["id"] and current_user["role"] not in ["admin", "manager"]:
             raise HTTPException(status_code=403, detail="Insufficient permissions")
         
-        result = user_service.get_user(user_id, current_user["user_id"])
+        result = user_service.get_user(user_id, current_user["id"])
         return result
         
     except CLOValidationError as e:
@@ -90,14 +90,14 @@ async def update_user(
     """
     try:
         # Check permissions
-        if user_id != current_user["user_id"] and current_user["role"] not in ["admin", "manager"]:
+        if user_id != current_user["id"] and current_user["role"] not in ["admin", "manager"]:
             raise HTTPException(status_code=403, detail="Insufficient permissions")
         
         # Only admins can change roles and status
         if (request.role or request.status) and current_user["role"] != "admin":
             raise HTTPException(status_code=403, detail="Only administrators can change user roles and status")
         
-        result = user_service.update_user(user_id, request, current_user["user_id"])
+        result = user_service.update_user(user_id, request, current_user["id"])
         return result
         
     except CLOValidationError as e:
@@ -122,10 +122,10 @@ async def delete_user(
     """
     try:
         # Prevent self-deletion
-        if user_id == current_user["user_id"]:
+        if user_id == current_user["id"]:
             raise HTTPException(status_code=400, detail="Cannot delete your own account")
         
-        user_service.delete_user(user_id, current_user["user_id"])
+        user_service.delete_user(user_id, current_user["id"])
         return Response(status_code=HTTP_204_NO_CONTENT)
         
     except CLOValidationError as e:
@@ -171,7 +171,7 @@ async def list_users(
             department=department
         )
         
-        result = user_service.search_users(search_request, current_user["user_id"])
+        result = user_service.search_users(search_request, current_user["id"])
         return result
         
     except CLOBusinessError as e:
@@ -196,7 +196,7 @@ async def search_users(
         if current_user["role"] not in ["admin", "manager"]:
             raise HTTPException(status_code=403, detail="Insufficient permissions")
         
-        result = user_service.search_users(request, current_user["user_id"])
+        result = user_service.search_users(request, current_user["id"])
         return result
         
     except CLOBusinessError as e:
@@ -218,7 +218,7 @@ async def change_password(
     Users can only change their own passwords.
     """
     try:
-        success = user_service.change_password(current_user["user_id"], request)
+        success = user_service.change_password(current_user["id"], request)
         return {"message": "Password changed successfully"}
         
     except (CLOBusinessError, CLOValidationError) as e:
@@ -259,10 +259,10 @@ async def get_user_permissions(
     """
     try:
         # Check permissions
-        if user_id != current_user["user_id"] and current_user["role"] not in ["admin", "manager"]:
+        if user_id != current_user["id"] and current_user["role"] not in ["admin", "manager"]:
             raise HTTPException(status_code=403, detail="Insufficient permissions")
         
-        result = user_service.get_user_permissions(user_id, current_user["user_id"])
+        result = user_service.get_user_permissions(user_id, current_user["id"])
         return result
         
     except CLOValidationError as e:
@@ -284,7 +284,7 @@ async def get_user_statistics(
     Requires admin privileges.
     """
     try:
-        result = user_service.get_user_statistics(current_user["user_id"])
+        result = user_service.get_user_statistics(current_user["id"])
         return result
         
     except CLOBusinessError as e:
@@ -314,7 +314,7 @@ async def bulk_user_operation(
     """
     try:
         # Prevent operations on self
-        if current_user["user_id"] in request.user_ids:
+        if current_user["id"] in request.user_ids:
             raise HTTPException(status_code=400, detail="Cannot perform bulk operations on your own account")
         
         successful = 0
@@ -333,7 +333,7 @@ async def bulk_user_operation(
                     successful += 1
                     processed_ids.append(user_id)
                 elif request.operation == "delete":
-                    user_service.delete_user(user_id, current_user["user_id"])
+                    user_service.delete_user(user_id, current_user["id"])
                     successful += 1
                     processed_ids.append(user_id)
                 else:
@@ -370,7 +370,7 @@ async def get_user_sessions(
     """
     try:
         # Check permissions
-        if user_id != current_user["user_id"] and current_user["role"] not in ["admin"]:
+        if user_id != current_user["id"] and current_user["role"] not in ["admin"]:
             raise HTTPException(status_code=403, detail="Insufficient permissions")
         
         # Mock sessions
@@ -410,7 +410,7 @@ async def get_user_activity(
     """
     try:
         # Check permissions
-        if user_id != current_user["user_id"] and current_user["role"] not in ["admin", "manager"]:
+        if user_id != current_user["id"] and current_user["role"] not in ["admin", "manager"]:
             raise HTTPException(status_code=403, detail="Insufficient permissions")
         
         # Mock activity
@@ -455,7 +455,7 @@ async def get_user_preferences(
     """
     try:
         # Check permissions
-        if user_id != current_user["user_id"] and current_user["role"] not in ["admin"]:
+        if user_id != current_user["id"] and current_user["role"] not in ["admin"]:
             raise HTTPException(status_code=403, detail="Insufficient permissions")
         
         # Mock preferences
@@ -498,7 +498,7 @@ async def update_user_preferences(
     """
     try:
         # Check permissions
-        if user_id != current_user["user_id"]:
+        if user_id != current_user["id"]:
             raise HTTPException(status_code=403, detail="Can only update your own preferences")
         
         # Mock update
@@ -585,7 +585,7 @@ async def impersonate_user(
     """
     try:
         # Get target user
-        target_user = user_service.get_user(user_id, current_user["user_id"])
+        target_user = user_service.get_user(user_id, current_user["id"])
         
         # Log impersonation
         logger.info(f"Admin {current_user['user_id']} impersonating user {user_id}")
@@ -597,14 +597,14 @@ async def impersonate_user(
             "user_id": user_id,
             "username": target_user.username,
             "role": target_user.role.value,
-            "impersonated_by": current_user["user_id"],
+            "impersonated_by": current_user["id"],
             "impersonation_started": datetime.utcnow().isoformat()
         })
         
         return {
             "impersonation_token": impersonation_token,
             "target_user": target_user,
-            "impersonated_by": current_user["user_id"],
+            "impersonated_by": current_user["id"],
             "message": "Impersonation session created. Use this token for API calls."
         }
         

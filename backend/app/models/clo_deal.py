@@ -53,6 +53,7 @@ class CLODeal(Base):
     ic_triggers = relationship("ICTrigger", back_populates="deal", cascade="all, delete-orphan")
     fees = relationship("Fee", back_populates="deal", cascade="all, delete-orphan")
     collateral_pools = relationship("CollateralPool", back_populates="deal", cascade="all, delete-orphan")
+    concentration_thresholds = relationship("DealConcentrationThreshold", back_populates="deal", cascade="all, delete-orphan")
     
     def __repr__(self):
         return f"<CLODeal({self.deal_id}: {self.deal_name})>"
