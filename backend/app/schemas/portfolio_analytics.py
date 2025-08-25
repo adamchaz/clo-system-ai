@@ -41,7 +41,7 @@ class BenchmarkType(str, Enum):
 
 class PortfolioOptimizationRequest(BaseModel):
     """Schema for portfolio optimization requests"""
-    portfolio_id: str
+    portfolio_id: Optional[str] = None
     optimization_type: OptimizationType = OptimizationType.RISK_MINIMIZATION
     constraints: Dict[str, Any] = Field(default_factory=dict)
     
@@ -65,7 +65,7 @@ class PortfolioOptimizationRequest(BaseModel):
 
 class PortfolioOptimizationResult(BaseModel):
     """Schema for portfolio optimization results"""
-    portfolio_id: str
+    portfolio_id: Optional[str] = None
     optimization_date: datetime
     optimization_type: OptimizationType
     
@@ -95,7 +95,7 @@ class PortfolioOptimizationResult(BaseModel):
 
 class PortfolioPerformanceAnalysisRequest(BaseModel):
     """Schema for portfolio performance analysis requests"""
-    portfolio_id: str
+    portfolio_id: Optional[str] = None
     analysis_period: AnalysisPeriod = AnalysisPeriod.ONE_YEAR
     start_date: Optional[date] = None
     end_date: Optional[date] = None
@@ -113,7 +113,7 @@ class PortfolioPerformanceAnalysisRequest(BaseModel):
 
 class PortfolioPerformanceResult(BaseModel):
     """Schema for portfolio performance analysis results"""
-    portfolio_id: str
+    portfolio_id: Optional[str] = None
     analysis_date: datetime
     analysis_period: str
     start_date: date
@@ -146,7 +146,7 @@ class PortfolioPerformanceResult(BaseModel):
 
 class PortfolioRiskAnalysisRequest(BaseModel):
     """Schema for portfolio risk analysis requests"""
-    portfolio_id: str
+    portfolio_id: Optional[str] = None
     confidence_levels: List[float] = Field(default=[0.95, 0.99])
     time_horizons: List[int] = Field(default=[1, 5, 10], description="Days")
     
@@ -161,7 +161,7 @@ class PortfolioRiskAnalysisRequest(BaseModel):
 
 class PortfolioRiskAnalysisResult(BaseModel):
     """Schema for portfolio risk analysis results"""
-    portfolio_id: str
+    portfolio_id: Optional[str] = None
     analysis_date: datetime
     
     # VaR analysis
@@ -186,34 +186,34 @@ class PortfolioRiskAnalysisResult(BaseModel):
 
 class ConcentrationAnalysisRequest(BaseModel):
     """Schema for concentration analysis requests"""
-    portfolio_id: str
+    portfolio_id: Optional[str] = None
     analysis_dimensions: List[str] = Field(
         default=["sector", "industry", "rating", "geography", "issuer"],
         description="Dimensions to analyze concentration"
     )
     
     # Concentration limits
-    single_asset_limit: Decimal = Field(default=Decimal("0.05"))
-    sector_limit: Decimal = Field(default=Decimal("0.25"))
-    rating_limits: Optional[Dict[str, Decimal]] = None
+    single_asset_limit: float = Field(default=0.05)
+    sector_limit: float = Field(default=0.25)
+    rating_limits: Optional[Dict[str, float]] = None
     
     # Herfindahl-Hirschman Index
     calculate_hhi: bool = True
-    hhi_thresholds: Dict[str, Decimal] = Field(
-        default={"low": Decimal("0.15"), "moderate": Decimal("0.25"), "high": Decimal("0.35")}
+    hhi_thresholds: Dict[str, float] = Field(
+        default={"low": 0.15, "moderate": 0.25, "high": 0.35}
     )
 
 
 class ConcentrationAnalysisResult(BaseModel):
     """Schema for concentration analysis results"""
-    portfolio_id: str
+    portfolio_id: Optional[str] = None
     analysis_date: datetime
     
     # Concentration metrics by dimension
     concentration_metrics: Dict[str, Dict[str, Any]]  # dimension -> metrics
     
     # HHI analysis
-    herfindahl_indices: Dict[str, Decimal]
+    herfindahl_indices: Dict[str, float]
     concentration_levels: Dict[str, str]  # dimension -> level (low/moderate/high)
     
     # Limit breaches
@@ -227,7 +227,7 @@ class ConcentrationAnalysisResult(BaseModel):
 
 class PortfolioScenarioAnalysisRequest(BaseModel):
     """Schema for portfolio scenario analysis requests"""
-    portfolio_id: str
+    portfolio_id: Optional[str] = None
     scenarios: List[str] = Field(default_factory=list)
     custom_scenarios: Optional[List[Dict[str, Any]]] = None
     
@@ -242,7 +242,7 @@ class PortfolioScenarioAnalysisRequest(BaseModel):
 
 class PortfolioScenarioAnalysisResult(BaseModel):
     """Schema for portfolio scenario analysis results"""
-    portfolio_id: str
+    portfolio_id: Optional[str] = None
     analysis_date: datetime
     scenarios_analyzed: List[str]
     

@@ -31,6 +31,13 @@ from .concentration_test_enhanced import (
     EnhancedConcentrationTest, TestNum, TestThreshold, EnhancedTestResult,
     GeographicGroup, IndustryClassification
 )
+from .database.concentration_threshold_models import (
+    ConcentrationTestDefinition, DealConcentrationThreshold, ConcentrationTestExecution,
+    ConcentrationTestSummary
+)
+from .database_driven_concentration_test import (
+    DatabaseDrivenConcentrationTest, DatabaseTestResult
+)
 from .reports import (
     Report, ReportTemplate, ReportSchedule, 
     ReportType, ReportStatus, ReportFormat
@@ -133,6 +140,14 @@ __all__ = [
     'EnhancedTestResult',
     'GeographicGroup',
     'IndustryClassification',
+    
+    # Database-Driven Concentration Testing
+    'ConcentrationTestDefinition',
+    'DealConcentrationThreshold', 
+    'ConcentrationTestExecution',
+    'ConcentrationTestSummary',
+    'DatabaseDrivenConcentrationTest',
+    'DatabaseTestResult',
     
     # Reports System
     'Report',

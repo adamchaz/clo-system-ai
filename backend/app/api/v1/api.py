@@ -21,7 +21,8 @@ from .endpoints import (
     user_management,
     websocket,
     admin,
-    yield_curves
+    yield_curves,
+    concentration_thresholds
 )
 
 api_router = APIRouter()
@@ -127,4 +128,10 @@ api_router.include_router(
     yield_curves.router, 
     prefix="/yield-curves", 
     tags=["Yield Curves"]
+)
+
+api_router.include_router(
+    concentration_thresholds.router, 
+    prefix="/concentration-thresholds", 
+    tags=["Concentration Test Thresholds"]
 )

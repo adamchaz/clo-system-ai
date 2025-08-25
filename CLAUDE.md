@@ -452,3 +452,5 @@ This system handles sensitive financial data:
 - **System Testing**: All integration issues resolved, production-ready
 - **Asset Display**: All known display issues resolved and verified
 - this is project is being devloped on windows
+- to start CLO system can run ./scripts/start-dev.bat
+- this is a windows development environment
