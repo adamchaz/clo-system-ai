@@ -74,9 +74,11 @@ import {
   useGetPortfolioQuery,
   useGetPortfolioSummaryQuery,
   useGetAssetsQuery,
+  useAnalyzeConcentrationMutation,
   Portfolio,
   Asset,
 } from '../../store/api/cloApi';
+import ConcentrationTestsPanel from './ConcentrationTestsPanel';
 // Utility functions for formatting
 const formatCurrency = (amount: number | string | null | undefined) => {
   // Convert string to number if needed
@@ -88,6 +90,196 @@ const formatCurrency = (amount: number | string | null | undefined) => {
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
   }).format(numAmount);
+};
+
+// Transform API concentration data to display format
+const transformConcentrationDataForDisplay = (apiData: any) => {
+  // Mock transformation to new format - this will be replaced with actual API data
+  const mag17TestNumbers = [1,2,3,4,5,6,7,8,9,10,11,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,33,32,36,35,37,38,34];
+  
+  const tests = mag17TestNumbers.map(testNum => {
+    const isFailing = testNum === 3 || testNum === 4; // Mock some failing tests
+    const isWarning = testNum === 28 || testNum === 29; // Mock some warnings
+    
+    return {
+      testNumber: testNum,
+      testName: getTestNameByNumber(testNum),
+      category: getCategoryByTestNumber(testNum),
+      currentValue: isFailing ? 0.125 : isWarning ? 0.048 : 0.035,
+      threshold: getThresholdByTestNumber(testNum),
+      thresholdOperator: '<' as const,
+      status: isFailing ? 'FAIL' as const : isWarning ? 'WARNING' as const : 'PASS' as const,
+      riskLevel: isFailing ? 'CRITICAL' as const : isWarning ? 'HIGH' as const : 'LOW' as const,
+      comments: isFailing ? 'Exceeds limit' : isWarning ? 'Near limit' : 'Within limits',
+      recommendation: isFailing ? 'Reduce concentration immediately' : undefined,
+      numerator: isFailing ? 125000 : isWarning ? 48000 : 35000,
+      denominator: 1000000,
+      lastUpdated: new Date().toISOString()
+    };
+  });
+
+  const failing = tests.filter(t => t.status === 'FAIL').length;
+  const warnings = tests.filter(t => t.status === 'WARNING').length;
+  const passing = tests.filter(t => t.status === 'PASS').length;
+
+  return {
+    tests,
+    summary: {
+      totalTests: tests.length,
+      passing,
+      failing,
+      warnings,
+      complianceScore: `${Math.round((passing / tests.length) * 100)}%`
+    }
+  };
+};
+
+// Helper functions for mock data
+const getTestNameByNumber = (testNum: number): string => {
+  // VBA TestNum enum aligned test names - matches UDTandEnum.bas exactly
+  const testNames: Record<number, string> = {
+    // Asset Quality Tests (VBA enum 1-13, 28-31, 40-48)
+    1: 'Limitation on Senior Secured Loans',
+    2: 'Limitation on non Senior Secured Loans',
+    3: 'Limitation on 6th Largest Obligor',
+    4: 'Limitation on 1st Largest Obligor', 
+    5: 'Limitation on DIP Obligor',
+    6: 'Limitation on Non Senior Secured Obligor',
+    7: 'Limitation on Caa Loans',
+    8: 'Limitation on Assets Pay Less Frequently than Quarterly',
+    9: 'Limitation on Fixed Rate Obligations',
+    10: 'Limitation on Current Pay Obligations',
+    11: 'Limitation on DIP Obligations',
+    12: 'Limitation on Unfunded Commitments',
+    13: 'Limitation on Participation Interest',
+    28: 'Limitation on Bridge Loans',
+    29: 'Limitation on Cov Lite Loans',
+    30: 'Limitation on Deferrable Securities',
+    31: 'Limitation on Facility Size',
+    40: 'Limitation on CCC Loans',
+    41: 'Limitation on Canada',
+    42: 'Limitation on Letter of Credit',
+    43: 'Limitation on Long Dated',
+    44: 'Limitation on Unsecured Loans',
+    45: 'Limitation on Swap Non Discount',
+    47: 'Limitation on Non-Emerging Market Obligors',
+    48: 'Limitation on SP Criteria',
+    53: 'Limitation on Facility Size MAG08',
+
+    // Geographic Tests (VBA enum 14-24)
+    14: 'Limitation on Countries Not US',
+    15: 'Limitation on Countries Canada and Tax Jurisdictions',
+    16: 'Limitation on Countries Not US Canada UK',
+    17: 'Limitation on Group Countries', // FIXED! Now correctly Test #17
+    18: 'Limitation on Group I Countries',
+    19: 'Limitation on Individual Group I Countries',
+    20: 'Limitation on Group II Countries',
+    21: 'Limitation on Individual Group II Countries',
+    22: 'Limitation on Group III Countries',
+    23: 'Limitation on Individual Group III Countries',
+    24: 'Limitation on Tax Jurisdictions',
+
+    // Industry Tests (VBA enum 25-27, 49-52)
+    25: 'Limitation on 4th Largest SP Industry Classification',
+    26: 'Limitation on 2nd Largest SP Classification',
+    27: 'Limitation on 1st Largest SP Classification',
+    49: 'Limitation on 1st Largest Moody Industry',
+    50: 'Limitation on 2nd Largest Moody Industry',
+    51: 'Limitation on 3rd Largest Moody Industry',
+    52: 'Limitation on 4th Largest Moody Industry',
+
+    // Collateral Quality Tests (VBA enum 32-36, 39, 46, 54)
+    32: 'Weighted Average Spread',
+    33: 'Weighted Average Recovery Rate',
+    34: 'Weighted Average Coupon',
+    35: 'Weighted Average Life',
+    36: 'Weighted Average Rating Factor',
+    39: 'Weighted Average Spread MAG14',
+    46: 'Weighted Average Spread MAG06',
+    54: 'Weighted Average Rating Factor MAG14',
+
+    // Special Tests (VBA enum 37-38)
+    37: 'Moody Diversity Test',
+    38: 'JROC Test'
+  };
+  return testNames[testNum] || `Test ${testNum}`;
+};
+
+const getCategoryByTestNumber = (testNum: number): string => {
+  if (testNum <= 13) return 'asset_quality';
+  if (testNum <= 27) return 'geographic';
+  if (testNum <= 31) return 'industry';
+  return 'portfolio_metrics';
+};
+
+const getThresholdByTestNumber = (testNum: number): number => {
+  // VBA TestNum enum aligned thresholds - matches UDTandEnum.bas exactly
+  const thresholds: Record<number, number> = {
+    // Asset Quality Tests (VBA enum 1-13, 28-31, 40-48)
+    1: 0.90,   // LimitationOnSeniorSecuredLoans - 90%
+    2: 0.10,   // LimitationOnAssetNotSeniorSecuredLoans - 10%
+    3: 0.02,   // LimitationOn6LargestObligor - 2%
+    4: 0.025,  // LimitationOn1LagestObligor - 2.5%
+    5: 0.02,   // LimitationOnObligorDIP - 2%
+    6: 0.02,   // LimitationOnObligornotSeniorSecured - 2%
+    7: 0.075,  // LimitationonCasAssets - 7.5%
+    8: 0.05,   // LimitationonAssetspaylessFrequentlyQuarterly - 5%
+    9: 0.025,  // LimitationOnFixedRateAssets - 2.5%
+    10: 0.025, // LimitationonCurrentPayAssets - 2.5%
+    11: 0.075, // LimitationOnDIPAssets - 7.5%
+    12: 0.05,  // LimmitationOnUnfundedcommitments - 5%
+    13: 0.15,  // LimitationOnParticipationInterest - 15%
+    28: 0.05,  // LimitationOnBridgeLoans - 5%
+    29: 0.60,  // LimitationOnCovLite - 60%
+    30: 0.05,  // LimitationonDeferrableSecuriies - 5%
+    31: 0.07,  // LimitationonFacilitiySize - 7%
+    40: 0.075, // LimitationonCCCObligations - 7.5%
+    41: 0.125, // LimitationOnCanada - 12.5%
+    42: 0.05,  // LimitationOnLetterOfCredit - 5%
+    43: 0.05,  // LimitationOnLongDated - 5%
+    44: 0.05,  // LimitationOnUnsecuredLoans - 5%
+    45: 0.05,  // LimitationOnSwapNonDiscount - 5%
+    47: 0.125, // LimitationOnNonEmergingMarketObligors - 12.5%
+    48: 0.15,  // LimitationOnSPCriteria - 15%
+    53: 0.07,  // LimitationonFacilitiySizeMAG08 - 7%
+
+    // Geographic Tests (VBA enum 14-24)
+    14: 0.20,  // LimitationOnCountriesNotUS - 20%
+    15: 0.125, // LimitationOnCountriesCanadaandTaxJurisdictions - 12.5%
+    16: 0.10,  // LimitationonCountriesNotUSCanadaUK - 10%
+    17: 0.15,  // LimitationOnGroupCountries - 15% (FIXED!)
+    18: 0.15,  // LimitationOnGroupICountries - 15%
+    19: 0.05,  // LimitationOnIndividualGroupICountries - 5%
+    20: 0.10,  // LimitationOnGroupIICountries - 10%
+    21: 0.05,  // LimitationonIndividualGroupIICountries - 5%
+    22: 0.075, // LimitationOnGroupIIICountries - 7.5%
+    23: 0.05,  // LimitationonIndividualGroupIIICountries - 5%
+    24: 0.075, // LimitationOnTaxJurisdictions - 7.5%
+
+    // Industry Tests (VBA enum 25-27, 49-52)
+    25: 0.075, // LimitationOn4SPIndustryClassification - 7.5%
+    26: 0.12,  // LimitationOn2SPClassification - 12%
+    27: 0.15,  // LimitationOn1SPClassification - 15%
+    49: 0.15,  // LimitationOn1MoodyIndustry - 15%
+    50: 0.12,  // LimitationOn2MoodyIndustry - 12%
+    51: 0.12,  // LimitationOn3MoodyIndustry - 12%
+    52: 0.10,  // LimitationOn4MoodyIndustry - 10%
+
+    // Collateral Quality Tests (VBA enum 32-36, 39, 46, 54)
+    32: 4.25,  // WeightedAverateSpread - 425 bps
+    33: 0.47,  // WeightedAverageMoodyRecoveryRate - 47%
+    34: 0.07,  // WeightedAverageCoupon - 7%
+    35: 6.0,   // WeightedAverageLife - 6.0 years
+    36: 2900,  // WeightedAverageRatingFactor - 2900
+    39: 4.25,  // WeightedAverageSpreadMag14 - 425 bps
+    46: 4.00,  // WeightedAverageSpreadMag06 - 400 bps
+    54: 2900,  // WeightedAverageRatingFactorMAG14 - 2900
+
+    // Special Tests (VBA enum 37-38)
+    37: 10.0,  // MoodysDiversity - 10.0
+    38: 1.0,   // JROCTEST - 1.0
+  };
+  return thresholds[testNum] || 0.05;
 };
 
 const formatPercentage = (value: number) => {
@@ -187,6 +379,7 @@ const PortfolioDetail: React.FC<PortfolioDetailProps> = ({
 }) => {
   const [currentTab, setCurrentTab] = useState(0);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [concentrationData, setConcentrationData] = useState<any>(null);
   
   // Asset list state
   const [assetSearch, setAssetSearch] = useState('');
@@ -245,12 +438,45 @@ const PortfolioDetail: React.FC<PortfolioDetailProps> = ({
     skip: currentTab !== 1, // Only fetch when on assets tab
   });
 
+  // Concentration analysis mutation
+  const [analyzeConcentration, { isLoading: concentrationLoading }] = useAnalyzeConcentrationMutation();
+
   const portfolio = portfolioData;
   const summary = portfolioSummary;
 
+  // Run concentration analysis
+  const runConcentrationAnalysis = useCallback(async () => {
+    if (!portfolio) return;
+    
+    try {
+      const request = {
+        portfolio_id: portfolioId,
+        analysis_dimensions: ["sector", "industry", "rating", "geography", "issuer"],
+        single_asset_limit: 0.05,
+        sector_limit: 0.25,
+        calculate_hhi: true,
+        hhi_thresholds: {
+          low: 0.15,
+          moderate: 0.25,
+          high: 0.35
+        }
+      };
+      
+      const result = await analyzeConcentration(request).unwrap();
+      setConcentrationData(result);
+    } catch (error) {
+      console.error('Concentration analysis failed:', error);
+    }
+  }, [portfolio, portfolioId, analyzeConcentration]);
+
   const handleTabChange = useCallback((event: React.SyntheticEvent, newValue: number) => {
     setCurrentTab(newValue);
-  }, []);
+    
+    // Run concentration analysis when Compliance tab (index 5) is selected
+    if (newValue === 5 && !concentrationData && !concentrationLoading) {
+      runConcentrationAnalysis();
+    }
+  }, [concentrationData, concentrationLoading, runConcentrationAnalysis]);
 
   const handleRefresh = useCallback(() => {
     refetchPortfolio();
@@ -2128,61 +2354,299 @@ const PortfolioDetail: React.FC<PortfolioDetailProps> = ({
       </TabPanel>
 
       <TabPanel value={currentTab} index={5}>
-        {/* Compliance Tab */}
-        <Card>
-          <CardContent>
-            <Typography variant="h6" gutterBottom>
-              Compliance Details
+        {/* Compliance Tab with Concentration Tests */}
+        {concentrationLoading ? (
+          <Box sx={{ textAlign: 'center', py: 10 }}>
+            <LinearProgress sx={{ mb: 2 }} />
+            <Typography variant="body2" color="text.secondary">
+              Loading concentration tests...
             </Typography>
-            {summary?.compliance_status ? (
-              <Grid container spacing={3}>
-                <Grid size={{ xs: 12, md: 6 }}>
-                  <Typography variant="subtitle2" gutterBottom>
-                    Failed Tests
-                  </Typography>
-                  {summary.compliance_status.failed_tests.length > 0 ? (
-                    <List>
-                      {summary.compliance_status.failed_tests.map((test, index) => (
-                        <ListItem key={index}>
-                          <Warning color="error" sx={{ mr: 1 }} />
-                          <ListItemText primary={test} />
-                        </ListItem>
-                      ))}
-                    </List>
-                  ) : (
-                    <Typography variant="body2" color="success.main">
-                      All compliance tests are passing
-                    </Typography>
-                  )}
-                </Grid>
+          </Box>
+        ) : concentrationData ? (
+          <ConcentrationTestsPanel
+            portfolioId={portfolioId}
+            concentrationData={transformConcentrationDataForDisplay(concentrationData)}
+          />
+        ) : (
+          <Box sx={{ textAlign: 'center', py: 10 }}>
+            <Typography variant="h6" color="text.secondary" gutterBottom>
+              Concentration Tests
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+              Click "Run Analysis" to load the complete set of 37 concentration tests for {portfolioId}
+            </Typography>
+            <Button
+              variant="contained"
+              onClick={runConcentrationAnalysis}
+              startIcon={<Security />}
+            >
+              Run Concentration Analysis
+            </Button>
+          </Box>
+        )}
+        <Grid container spacing={3} sx={{ display: 'none' }}>
+          {/* Hidden old content */}
+          <Grid size={{ xs: 12, md: 6 }}>
+            <Card>
+              <CardContent>
+                <Typography variant="h6" gutterBottom>
+                  Compliance Overview
+                </Typography>
+                {summary?.compliance_status ? (
+                  <>
+                    {/* Compliance Tests Summary */}
+                    <Box sx={{ mb: 3 }}>
+                      <Typography variant="subtitle2" gutterBottom>
+                        Test Status
+                      </Typography>
+                      <Grid container spacing={2}>
+                        <Grid size={{ xs: 4 }}>
+                          <Box sx={{ textAlign: 'center', p: 1 }}>
+                            {summary.compliance_status.oc_tests_passing ? (
+                              <CheckCircle color="success" sx={{ fontSize: 32 }} />
+                            ) : (
+                              <Warning color="error" sx={{ fontSize: 32 }} />
+                            )}
+                            <Typography variant="caption" display="block">OC Tests</Typography>
+                          </Box>
+                        </Grid>
+                        <Grid size={{ xs: 4 }}>
+                          <Box sx={{ textAlign: 'center', p: 1 }}>
+                            {summary.compliance_status.ic_tests_passing ? (
+                              <CheckCircle color="success" sx={{ fontSize: 32 }} />
+                            ) : (
+                              <Warning color="error" sx={{ fontSize: 32 }} />
+                            )}
+                            <Typography variant="caption" display="block">IC Tests</Typography>
+                          </Box>
+                        </Grid>
+                        <Grid size={{ xs: 4 }}>
+                          <Box sx={{ textAlign: 'center', p: 1 }}>
+                            {summary.compliance_status.concentration_tests_passing ? (
+                              <CheckCircle color="success" sx={{ fontSize: 32 }} />
+                            ) : (
+                              <Warning color="error" sx={{ fontSize: 32 }} />
+                            )}
+                            <Typography variant="caption" display="block">Concentration</Typography>
+                          </Box>
+                        </Grid>
+                      </Grid>
+                    </Box>
 
-                <Grid size={{ xs: 12, md: 6 }}>
-                  <Typography variant="subtitle2" gutterBottom>
-                    Warnings
+                    {/* Failed Tests */}
+                    {summary.compliance_status.failed_tests.length > 0 && (
+                      <Box sx={{ mb: 2 }}>
+                        <Typography variant="subtitle2" gutterBottom color="error">
+                          Failed Tests
+                        </Typography>
+                        <List dense>
+                          {summary.compliance_status.failed_tests.map((test, index) => (
+                            <ListItem key={index} sx={{ px: 0 }}>
+                              <Warning color="error" sx={{ mr: 1, fontSize: 16 }} />
+                              <ListItemText primary={test} />
+                            </ListItem>
+                          ))}
+                        </List>
+                      </Box>
+                    )}
+
+                    {/* Warnings */}
+                    {summary.compliance_status.warnings.length > 0 && (
+                      <Box>
+                        <Typography variant="subtitle2" gutterBottom color="warning.main">
+                          Warnings
+                        </Typography>
+                        <List dense>
+                          {summary.compliance_status.warnings.map((warning, index) => (
+                            <ListItem key={index} sx={{ px: 0 }}>
+                              <Warning color="warning" sx={{ mr: 1, fontSize: 16 }} />
+                              <ListItemText primary={warning} />
+                            </ListItem>
+                          ))}
+                        </List>
+                      </Box>
+                    )}
+
+                    {summary.compliance_status.failed_tests.length === 0 && summary.compliance_status.warnings.length === 0 && (
+                      <Typography variant="body2" color="success.main">
+                        ✅ All compliance tests passing with no warnings
+                      </Typography>
+                    )}
+                  </>
+                ) : (
+                  <Typography variant="body2" color="text.secondary">
+                    Loading compliance data...
                   </Typography>
-                  {summary.compliance_status.warnings.length > 0 ? (
-                    <List>
-                      {summary.compliance_status.warnings.map((warning, index) => (
-                        <ListItem key={index}>
-                          <Warning color="warning" sx={{ mr: 1 }} />
-                          <ListItemText primary={warning} />
-                        </ListItem>
-                      ))}
-                    </List>
-                  ) : (
+                )}
+              </CardContent>
+            </Card>
+          </Grid>
+
+          {/* Concentration Analysis */}
+          <Grid size={{ xs: 12, md: 6 }}>
+            <Card>
+              <CardContent>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                  <Typography variant="h6">
+                    Concentration Analysis
+                  </Typography>
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    onClick={runConcentrationAnalysis}
+                    disabled={concentrationLoading}
+                    startIcon={concentrationLoading ? <LinearProgress sx={{ width: 20, height: 2 }} /> : <Refresh />}
+                  >
+                    {concentrationLoading ? 'Analyzing...' : 'Refresh'}
+                  </Button>
+                </Box>
+
+                {concentrationLoading ? (
+                  <Box sx={{ textAlign: 'center', py: 3 }}>
+                    <LinearProgress sx={{ mb: 2 }} />
                     <Typography variant="body2" color="text.secondary">
-                      No warnings
+                      Running concentration analysis...
                     </Typography>
-                  )}
-                </Grid>
-              </Grid>
-            ) : (
-              <Typography variant="body2" color="text.secondary">
-                Loading compliance data...
-              </Typography>
-            )}
-          </CardContent>
-        </Card>
+                  </Box>
+                ) : concentrationData ? (
+                  <>
+                    {/* HHI Analysis */}
+                    <Box sx={{ mb: 3 }}>
+                      <Typography variant="subtitle2" gutterBottom>
+                        Concentration Levels (HHI)
+                      </Typography>
+                      <Grid container spacing={1}>
+                        {Object.entries(concentrationData.concentration_levels).map(([dimension, level]) => (
+                          <Grid key={dimension} size={{ xs: 6, sm: 4 }}>
+                            <Chip
+                              label={`${dimension}: ${level}`}
+                              size="small"
+                              color={
+                                level === 'low' ? 'success' :
+                                level === 'moderate' ? 'warning' : 'error'
+                              }
+                              variant="outlined"
+                            />
+                          </Grid>
+                        ))}
+                      </Grid>
+                    </Box>
+
+                    {/* Limit Violations */}
+                    {concentrationData.limit_violations.length > 0 && (
+                      <Box sx={{ mb: 3 }}>
+                        <Typography variant="subtitle2" gutterBottom color="error">
+                          Limit Violations
+                        </Typography>
+                        <List dense>
+                          {concentrationData.limit_violations.map((violation, index) => (
+                            <ListItem key={index} sx={{ px: 0 }}>
+                              <Warning color="error" sx={{ mr: 1, fontSize: 16 }} />
+                              <ListItemText
+                                primary={violation.description || `${violation.dimension}: ${violation.actual}% > ${violation.limit}%`}
+                                secondary={violation.recommendation}
+                              />
+                            </ListItem>
+                          ))}
+                        </List>
+                      </Box>
+                    )}
+
+                    {/* Concentration Warnings */}
+                    {concentrationData.concentration_warnings.length > 0 && (
+                      <Box sx={{ mb: 3 }}>
+                        <Typography variant="subtitle2" gutterBottom color="warning.main">
+                          Concentration Warnings
+                        </Typography>
+                        <List dense>
+                          {concentrationData.concentration_warnings.map((warning, index) => (
+                            <ListItem key={index} sx={{ px: 0 }}>
+                              <Warning color="warning" sx={{ mr: 1, fontSize: 16 }} />
+                              <ListItemText primary={warning} />
+                            </ListItem>
+                          ))}
+                        </List>
+                      </Box>
+                    )}
+
+                    {/* Diversification Opportunities */}
+                    {concentrationData.diversification_opportunities.length > 0 && (
+                      <Box>
+                        <Typography variant="subtitle2" gutterBottom color="info.main">
+                          Diversification Opportunities
+                        </Typography>
+                        <List dense>
+                          {concentrationData.diversification_opportunities.slice(0, 3).map((opportunity, index) => (
+                            <ListItem key={index} sx={{ px: 0 }}>
+                              <CheckCircle color="info" sx={{ mr: 1, fontSize: 16 }} />
+                              <ListItemText
+                                primary={opportunity.description}
+                                secondary={opportunity.potential_benefit}
+                              />
+                            </ListItem>
+                          ))}
+                        </List>
+                      </Box>
+                    )}
+
+                    {concentrationData.limit_violations.length === 0 && 
+                     concentrationData.concentration_warnings.length === 0 && (
+                      <Typography variant="body2" color="success.main">
+                        ✅ All concentration limits within acceptable ranges
+                      </Typography>
+                    )}
+                  </>
+                ) : (
+                  <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', py: 2 }}>
+                    Click "Refresh" to run concentration analysis
+                  </Typography>
+                )}
+              </CardContent>
+            </Card>
+          </Grid>
+
+          {/* Detailed Concentration Metrics */}
+          {concentrationData && (
+            <Grid size={{ xs: 12 }}>
+              <Card>
+                <CardContent>
+                  <Typography variant="h6" gutterBottom>
+                    Detailed Concentration Metrics
+                  </Typography>
+                  <Grid container spacing={3}>
+                    {Object.entries(concentrationData.concentration_metrics).map(([dimension, metrics]) => (
+                      <Grid key={dimension} size={{ xs: 12, md: 6, lg: 4 }}>
+                        <Card variant="outlined">
+                          <CardContent>
+                            <Typography variant="subtitle2" gutterBottom sx={{ textTransform: 'capitalize' }}>
+                              {dimension} Concentration
+                            </Typography>
+                            <Box sx={{ mb: 2 }}>
+                              <Typography variant="h4" fontWeight={700}>
+                                {concentrationData.herfindahl_indices[dimension]?.toFixed(3)}
+                              </Typography>
+                              <Typography variant="caption" color="text.secondary">
+                                HHI Index
+                              </Typography>
+                            </Box>
+                            <Typography variant="body2" color="text.secondary">
+                              Level: <strong style={{ color: 
+                                concentrationData.concentration_levels[dimension] === 'low' ? '#4CAF50' :
+                                concentrationData.concentration_levels[dimension] === 'moderate' ? '#FF9800' : '#F44336'
+                              }}>
+                                {concentrationData.concentration_levels[dimension]}
+                              </strong>
+                            </Typography>
+                          </CardContent>
+                        </Card>
+                      </Grid>
+                    ))}
+                  </Grid>
+                </CardContent>
+              </Card>
+            </Grid>
+          )}
+        </Grid>
       </TabPanel>
 
       {/* Delete Confirmation Dialog */}

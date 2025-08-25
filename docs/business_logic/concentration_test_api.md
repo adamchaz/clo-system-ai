@@ -135,7 +135,7 @@ class TestNum(int, Enum):
     LimitationonDeferrableSecuriies = 30
     LimitationonFacilitiySize = 31
     
-    # Portfolio Metrics (32-46)
+    # Collateral Quality Tests (32-46)
     WeightedAverateSpread = 32
     WeightedAverageMoodyRecoveryRate = 33
     WeightedAverageCoupon = 34
@@ -284,7 +284,7 @@ def _limitation_on_country_canada(self) -> None:
 - **Logic**: Sum assets where Country = "CANADA" vs collateral_principal_amount
 - **Pass Condition**: result < 0.125
 
-### Portfolio Metrics Tests
+### Collateral Quality Tests
 
 #### WARF Test
 
@@ -536,7 +536,7 @@ print(f"Numerator: {result.numerator}, Denominator: {result.denominator}")
 - **Enhanced Objective Function**: Fixed calculation returning 0, now uses default weights
 - **Improved Test Reliability**: Better individual test execution with proper portfolio state setup
 - **Geographic Group Enhancements**: Fixed mapping tests with VBA-exact name validation
-- **Portfolio Metrics Improvements**: Enhanced accuracy tests with zero denominator handling
+- **Collateral Quality Tests Improvements**: Enhanced accuracy tests with zero denominator handling
 - **Code Quality**: Removed duplicate methods, improved Mock object handling
 - **Test Coverage**: 18/18 comprehensive tests passing with 100% success rate
 

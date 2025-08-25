@@ -427,7 +427,7 @@ def get_collateral_cf(self) -> List[List[str]]:
     return output_data
 ```
 
-### 4. Portfolio Metrics and Analytics
+### 4. Collateral Quality Tests and Analytics
 
 ```python
 class PoolCalculator:
@@ -845,7 +845,7 @@ for i, row in enumerate(cf_report):
 # Calculate comprehensive metrics
 metrics = PoolCalculator.calculate_portfolio_metrics(assets_dict)
 
-print("Portfolio Metrics:")
+print("Collateral Quality Metrics:")
 print(f"Total Par Amount: ${metrics['total_par_amount']:,.2f}")
 print(f"Weighted Average Coupon: {metrics['weighted_avg_coupon']:.2%}")
 print(f"Weighted Average Spread: {metrics['weighted_avg_spread']:.2%}")

@@ -628,7 +628,7 @@ const CorrelationAnalysis: React.FC<CorrelationAnalysisProps> = ({
             <Card>
               <CardContent>
                 <Typography variant="h6" gutterBottom>
-                  Portfolio Metrics
+                  Collateral Quality Tests
                 </Typography>
                 <Stack spacing={2}>
                   <Box>

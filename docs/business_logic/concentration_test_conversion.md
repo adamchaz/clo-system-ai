@@ -119,7 +119,7 @@ If country not in ["USA", "US", "UNITED STATES"] and not asset.default_asset:
     numerator += asset.par_amount
 ```
 
-### 3. Portfolio Metrics Tests
+### 3. Collateral Quality Tests
 
 | Metric | VBA Threshold | VBA Method | Description |
 |--------|---------------|------------|-------------|
@@ -451,7 +451,7 @@ backend/
 - **Enhancement**: Fixed test assertions to match VBA-exact names including typos ("Limitaton")
 - **Validation**: Enhanced geographic group validation logic for better coverage
 
-**3. Portfolio Metrics Accuracy Tests Improved**
+**3. Collateral Quality Tests Accuracy Improved**
 - **Issue Resolved**: Zero denominator errors in portfolio calculations
 - **Solution**: Added comprehensive portfolio state initialization
 - **Enhancement**: Special handling for weighted average spread test with zero denominator case
