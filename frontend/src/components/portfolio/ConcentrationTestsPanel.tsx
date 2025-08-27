@@ -37,37 +37,20 @@ import {
   FileDownload,
   FilterList,
   Edit as EditIcon,
-  Info as InfoIcon
 } from '@mui/icons-material';
-
-// Types
-interface ConcentrationTestResult {
-  testNumber: number;
-  testName: string;
-  category: string;
-  currentValue: number;
-  threshold: number;
-  thresholdOperator: '<' | '>' | '≤' | '≥';
-  status: 'PASS' | 'FAIL' | 'WARNING' | 'N/A';
-  riskLevel: 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW';
-  comments: string;
-  recommendation?: string;
-  numerator: number;
-  denominator: number;
-  lastUpdated: string;
-  // Enhanced threshold properties
-  thresholdSource?: 'deal' | 'default' | 'template';
-  isCustomOverride?: boolean;
-  effectiveDate?: string;
-  magVersion?: string;
-  defaultThreshold?: number;
-  excessAmount?: number;
-}
+import { ConcentrationTestItem } from '../../store/api/newApiTypes';
+import { 
+  getTestDefinition, 
+  getTestName, 
+  getTestCategory,
+  formatTestValue,
+  getThresholdSymbol 
+} from '../../utils/concentrationTestMappings';
 
 interface ConcentrationTestsPanelProps {
   portfolioId: string;
   concentrationData: {
-    tests: ConcentrationTestResult[];
+    tests: ConcentrationTestItem[];
     summary: {
       totalTests: number;
       passing: number;
@@ -78,12 +61,26 @@ interface ConcentrationTestsPanelProps {
   };
 }
 
-// Category mapping
+// Category mapping - get from test definitions based on test number
+const getCategoryFromTestName = (testName: string | undefined | null, testNumber?: number): string => {
+  // Always use test number to get category from definitions
+  if (testNumber !== undefined) {
+    return getTestCategory(testNumber);
+  }
+  // Fallback to name-based categorization if no test number
+  if (!testName) return 'collateral_quality';
+  const lowerName = testName.toLowerCase();
+  if (lowerName.includes('asset') || lowerName.includes('quality')) return 'asset_quality';
+  if (lowerName.includes('geographic') || lowerName.includes('country')) return 'geographic';
+  if (lowerName.includes('industry') || lowerName.includes('sector')) return 'industry';
+  return 'collateral_quality';
+};
+
 const categoryLabels = {
   asset_quality: 'Asset Quality Tests',
   geographic: 'Geographic Tests', 
   industry: 'Industry Tests',
-  portfolio_metrics: 'Collateral Quality Tests'
+  collateral_quality: 'Collateral Quality Tests'
 };
 
 // Status colors and icons
@@ -115,10 +112,13 @@ const ConcentrationTestsPanel: React.FC<ConcentrationTestsPanelProps> = ({
   // Filter and search tests
   const filteredTests = useMemo(() => {
     return concentrationData.tests.filter(test => {
-      const matchesCategory = filterCategory === 'all' || test.category === filterCategory;
-      const matchesStatus = filterStatus === 'all' || test.status === filterStatus;
-      const matchesSearch = test.testName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           test.testNumber.toString().includes(searchTerm);
+      const testCategory = getCategoryFromTestName(test.test_name, test.test_number);
+      const matchesCategory = filterCategory === 'all' || testCategory === filterCategory;
+      const matchesStatus = filterStatus === 'all' || test.pass_fail === filterStatus;
+      // Use the proper test name from data or mappings
+      const displayName = test.test_name || getTestName(test.test_number);
+      const matchesSearch = displayName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                           test.test_number.toString().includes(searchTerm);
       
       return matchesCategory && matchesStatus && matchesSearch;
     });
@@ -129,10 +129,11 @@ const ConcentrationTestsPanel: React.FC<ConcentrationTestsPanelProps> = ({
     if (!groupByCategory) return { all: filteredTests };
     
     return filteredTests.reduce((acc, test) => {
-      if (!acc[test.category]) acc[test.category] = [];
-      acc[test.category].push(test);
+      const category = getCategoryFromTestName(test.test_name, test.test_number);
+      if (!acc[category]) acc[category] = [];
+      acc[category].push(test);
       return acc;
-    }, {} as Record<string, ConcentrationTestResult[]>);
+    }, {} as Record<string, ConcentrationTestItem[]>);
   }, [filteredTests, groupByCategory]);
 
   const toggleRowExpansion = (testNumber: number) => {
@@ -152,20 +153,27 @@ const ConcentrationTestsPanel: React.FC<ConcentrationTestsPanelProps> = ({
     return value.toFixed(2);
   };
 
-  const getThresholdDisplay = (test: ConcentrationTestResult) => {
-    const formattedThreshold = formatValue(test.threshold);
-    return `${test.thresholdOperator} ${formattedThreshold}`;
+  const getThresholdDisplay = (test: ConcentrationTestItem) => {
+    const testDef = getTestDefinition(test.test_number);
+    const symbol = getThresholdSymbol(test.test_number);
+    const formattedThreshold = testDef?.displayFormat === 'percentage' 
+      ? `${(test.threshold * 100).toFixed(1)}%`
+      : testDef?.displayFormat === 'ratio' 
+        ? `${test.threshold.toFixed(2)}x`
+        : test.threshold.toFixed(2);
+    return `${symbol} ${formattedThreshold}`;
   };
 
   const StatusIcon = ({ status }: { status: string }) => {
-    const config = statusConfig[status as keyof typeof statusConfig];
+    const config = statusConfig[status as keyof typeof statusConfig] || statusConfig['N/A'];
     const IconComponent = config.icon;
     return IconComponent ? <IconComponent fontSize="small" color={config.color as any} /> : null;
   };
 
-  const TestRow = ({ test }: { test: ConcentrationTestResult }) => {
-    const isExpanded = expandedRows.has(test.testNumber);
-    const config = statusConfig[test.status];
+  const TestRow = ({ test }: { test: ConcentrationTestItem }) => {
+    const isExpanded = expandedRows.has(test.test_number);
+    // Default to N/A config if pass_fail doesn't match known statuses
+    const config = statusConfig[test.pass_fail as keyof typeof statusConfig] || statusConfig['N/A'];
     
     return (
       <>
@@ -179,18 +187,18 @@ const ConcentrationTestsPanel: React.FC<ConcentrationTestsPanelProps> = ({
             <Box display="flex" alignItems="center" gap={1}>
               <IconButton
                 size="small"
-                onClick={() => toggleRowExpansion(test.testNumber)}
+                onClick={() => toggleRowExpansion(test.test_number)}
               >
                 {isExpanded ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
               </IconButton>
-              {test.testNumber}
+              {test.test_number}
             </Box>
           </TableCell>
           <TableCell>
             <Box display="flex" alignItems="center" gap={1}>
-              <StatusIcon status={test.status} />
+              <StatusIcon status={test.pass_fail} />
               <Chip 
-                label={test.status} 
+                label={test.pass_fail} 
                 size="small" 
                 color={config.color as any}
                 variant="outlined"
@@ -198,17 +206,17 @@ const ConcentrationTestsPanel: React.FC<ConcentrationTestsPanelProps> = ({
             </Box>
           </TableCell>
           <TableCell>
-            <Typography variant="body2" fontWeight={test.status === 'FAIL' ? 'bold' : 'normal'}>
-              {test.testName}
+            <Typography variant="body2" fontWeight={test.pass_fail === 'FAIL' ? 'bold' : 'normal'}>
+              {test.test_name || getTestName(test.test_number)}
             </Typography>
           </TableCell>
           <TableCell align="right">
             <Typography 
               variant="body2" 
-              color={test.status === 'FAIL' ? 'error' : 'text.primary'}
-              fontWeight={test.status === 'FAIL' ? 'bold' : 'normal'}
+              color={test.pass_fail === 'FAIL' ? 'error' : 'text.primary'}
+              fontWeight={test.pass_fail === 'FAIL' ? 'bold' : 'normal'}
             >
-              {formatValue(test.currentValue)}
+              {formatTestValue(test.result, test.test_number)}
             </Typography>
           </TableCell>
           <TableCell align="right">
@@ -216,7 +224,7 @@ const ConcentrationTestsPanel: React.FC<ConcentrationTestsPanelProps> = ({
               <Typography variant="body2">
                 {getThresholdDisplay(test)}
               </Typography>
-              {test.isCustomOverride && (
+              {test.threshold_source === 'deal' && (
                 <Chip 
                   size="small" 
                   label="Custom" 
@@ -230,30 +238,18 @@ const ConcentrationTestsPanel: React.FC<ConcentrationTestsPanelProps> = ({
             <Box display="flex" alignItems="center" gap={1}>
               <Chip 
                 size="small" 
-                label={test.thresholdSource?.toUpperCase() || 'DEFAULT'}
-                color={test.thresholdSource === 'deal' ? 'primary' : 'default'}
+                label={test.threshold_source?.toUpperCase() || 'DEFAULT'}
+                color={test.threshold_source === 'deal' ? 'primary' : 'default'}
                 variant="outlined"
               />
-              {test.magVersion && (
-                <Chip 
-                  size="small" 
-                  label={test.magVersion} 
-                  variant="outlined"
-                />
-              )}
             </Box>
-            {test.effectiveDate && (
-              <Typography variant="caption" color="text.secondary" display="block">
-                Since: {new Date(test.effectiveDate).toLocaleDateString()}
-              </Typography>
-            )}
           </TableCell>
           <TableCell>
             <Chip 
-              label={test.riskLevel} 
+              label={test.pass_fail === 'FAIL' ? 'HIGH' : 'LOW'} 
               size="small"
               sx={{ 
-                backgroundColor: riskColors[test.riskLevel],
+                backgroundColor: test.pass_fail === 'FAIL' ? riskColors.HIGH : riskColors.LOW,
                 color: 'white',
                 fontWeight: 'bold'
               }}
@@ -266,19 +262,12 @@ const ConcentrationTestsPanel: React.FC<ConcentrationTestsPanelProps> = ({
                 color="primary"
                 onClick={() => {
                   // Would navigate to threshold editor or open dialog
-                  // TODO: Open threshold editor dialog for test: test.testNumber
+                  // TODO: Open threshold editor dialog for test: test.test_number
                 }}
               >
                 <EditIcon />
               </IconButton>
             </Tooltip>
-            {test.isCustomOverride && (
-              <Tooltip title="Custom threshold in use">
-                <IconButton size="small" color="info">
-                  <InfoIcon />
-                </IconButton>
-              </Tooltip>
-            )}
           </TableCell>
           <TableCell>
             <Typography variant="body2" color="text.secondary">
@@ -295,7 +284,7 @@ const ConcentrationTestsPanel: React.FC<ConcentrationTestsPanelProps> = ({
                 <Card variant="outlined">
                   <CardContent>
                     <Typography variant="h6" gutterBottom>
-                      Test Details - {test.testName}
+                      Test Details - {test.test_name || 'Unnamed Test'}
                     </Typography>
                     <Box display="flex" flexWrap="wrap" gap={2}>
                       <Box flexGrow={1} minWidth={300}>
@@ -309,22 +298,15 @@ const ConcentrationTestsPanel: React.FC<ConcentrationTestsPanelProps> = ({
                           Denominator: {test.denominator.toLocaleString()}
                         </Typography>
                         <Typography variant="body2">
-                          Result: {test.numerator.toLocaleString()} ÷ {test.denominator.toLocaleString()} = {formatValue(test.currentValue)}
+                          Result: {test.numerator.toLocaleString()} ÷ {test.denominator.toLocaleString()} = {formatValue(test.result)}
                         </Typography>
                       </Box>
                       <Box flexGrow={1} minWidth={300}>
-                        {test.recommendation && (
-                          <>
-                            <Typography variant="body2" color="text.secondary">
-                              <strong>Recommendation:</strong>
-                            </Typography>
-                            <Typography variant="body2">
-                              {test.recommendation}
-                            </Typography>
-                          </>
-                        )}
+                        <Typography variant="body2" color="text.secondary">
+                          <strong>Threshold Source:</strong> {test.threshold_source || 'Default'}
+                        </Typography>
                         <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                          <strong>Last Updated:</strong> {new Date(test.lastUpdated).toLocaleDateString()}
+                          <strong>Status:</strong> {test.pass_fail}
                         </Typography>
                       </Box>
                     </Box>
@@ -515,7 +497,7 @@ const ConcentrationTestsPanel: React.FC<ConcentrationTestsPanelProps> = ({
                     </TableHead>
                     <TableBody>
                       {tests.map((test) => (
-                        <TestRow key={test.testNumber} test={test} />
+                        <TestRow key={test.test_number} test={test} />
                       ))}
                     </TableBody>
                   </Table>
@@ -543,7 +525,7 @@ const ConcentrationTestsPanel: React.FC<ConcentrationTestsPanelProps> = ({
             </TableHead>
             <TableBody>
               {filteredTests.map((test) => (
-                <TestRow key={test.testNumber} test={test} />
+                <TestRow key={test.test_number} test={test} />
               ))}
             </TableBody>
           </Table>
