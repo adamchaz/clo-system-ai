@@ -12,7 +12,7 @@ The Collateral Pool System provides comprehensive portfolio aggregation and mana
 2. **CollateralPoolForCLO Class** - Deal-integrated cash flow aggregation and coordination
 3. **PoolCalculator** - Portfolio metrics and analytics calculations
 4. **PoolService** - Database operations and persistence
-5. **ConcentrationTest Integration** - Complete 94+ test integration with objective function optimization
+5. **Database-Driven Concentration Test Integration** - Dynamic threshold loading and portfolio-level test execution
 
 ### Key Architectural Distinction
 

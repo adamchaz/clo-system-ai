@@ -26,11 +26,9 @@ import {
   Wifi,
   WifiOff,
   Sync,
-  Error,
   Refresh,
   PowerSettingsNew,
   SignalWifiStatusbar4Bar,
-  SignalWifi1Bar,
   Info,
 } from '@mui/icons-material';
 import { format } from 'date-fns';

@@ -14,7 +14,8 @@ from ..models.collateral_pool import (
     CollateralPoolCalculator, CollateralPoolForCLOCalculator,
     TransactionType, AnalysisType
 )
-from ..models.concentration_test import ConcentrationTest, RatingDerivations, TestSettings
+# NOTE: Old VBA-based concentration test imports removed - now using database-driven approach
+# from ..models.concentration_test import ConcentrationTest, RatingDerivations, TestSettings
 from ..models.asset import Asset
 from ..models.clo_deal_engine import Account, AccountType, CashType
 
@@ -96,9 +97,11 @@ class CollateralPoolService:
             calculator.accounts_dict[account_type] = account
         
         # Initialize supporting components
-        calculator.concentration_test = ConcentrationTest()
-        calculator.ratings_derivation = RatingDerivations()
-        calculator.test_settings = TestSettings()
+        # NOTE: Old VBA-based concentration test initialization removed
+        # Now using database-driven concentration test approach
+        # calculator.concentration_test = ConcentrationTest()
+        # calculator.ratings_derivation = RatingDerivations()
+        # calculator.test_settings = TestSettings()
         
         return calculator
     
@@ -120,7 +123,8 @@ class CollateralPoolService:
                 calculator.assets_dict[asset.blkrock_id] = asset
         
         # Initialize supporting components
-        calculator.ratings_derivation = RatingDerivations()
+        # NOTE: Old VBA-based rating derivation removed - now using database-driven approach
+        # calculator.ratings_derivation = RatingDerivations()
         
         return calculator
     
@@ -497,12 +501,13 @@ class CollateralPoolService:
                                 -Decimal(str(purchase_amount)))
     
     def _save_concentration_results(self, pool_id: int, test_results) -> None:
-        """Save concentration test results to database"""
+        """Save concentration test results to database - now uses database-driven approach"""
+        # NOTE: This method has been updated to work with database-driven concentration tests
         # Clear previous results
         self.db_session.query(ConcentrationTestResult)\
             .filter_by(pool_id=pool_id).delete()
         
-        # Save new results
+        # Save new results from database-driven concentration tests
         for result in test_results:
             db_result = ConcentrationTestResult(
                 pool_id=pool_id,
@@ -512,6 +517,6 @@ class CollateralPoolService:
                 threshold_value=result.threshold,
                 result_value=result.result,
                 pass_fail=result.pass_fail,
-                pass_fail_comment=result.pass_fail_comment
+                pass_fail_comment=result.comments  # Updated field name
             )
             self.db_session.add(db_result)
