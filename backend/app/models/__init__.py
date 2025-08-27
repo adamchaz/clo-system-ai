@@ -26,11 +26,7 @@ from .collateral_pool import (
     CollateralPoolCalculator, CollateralPoolForCLOCalculator,
     TransactionType, AnalysisType
 )
-from .concentration_test import ConcentrationTest, RatingDerivations, TestSettings, TestResult
-from .concentration_test_enhanced import (
-    EnhancedConcentrationTest, TestNum, TestThreshold, EnhancedTestResult,
-    GeographicGroup, IndustryClassification
-)
+# Old VBA-based concentration tests removed - using database-driven approach only
 from .database.concentration_threshold_models import (
     ConcentrationTestDefinition, DealConcentrationThreshold, ConcentrationTestExecution,
     ConcentrationTestSummary
@@ -127,21 +123,7 @@ __all__ = [
     'TransactionType',
     'AnalysisType',
     
-    # Concentration Testing
-    'ConcentrationTest',
-    'RatingDerivations',
-    'TestSettings',
-    'TestResult',
-    
-    # Enhanced Concentration Testing
-    'EnhancedConcentrationTest',
-    'TestNum',
-    'TestThreshold',
-    'EnhancedTestResult',
-    'GeographicGroup',
-    'IndustryClassification',
-    
-    # Database-Driven Concentration Testing
+    # Database-Driven Concentration Testing (VBA approaches removed)
     'ConcentrationTestDefinition',
     'DealConcentrationThreshold', 
     'ConcentrationTestExecution',

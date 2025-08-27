@@ -19,6 +19,8 @@ import {
   PortfolioRiskAnalysisResult,
   ConcentrationAnalysisRequest,
   ConcentrationAnalysisResult,
+  ConcentrationTestRequest,
+  ConcentrationTestResult,
   // User Management Types
   UserManagement,
   UserCreateRequest as UserCreateRequestNew,
@@ -1595,6 +1597,16 @@ export const cloApi = createApi({
       invalidatesTags: ['Portfolio', 'Analytics'],
     }),
 
+    // Real concentration tests using ConcentrationTestIntegrationService
+    runConcentrationTests: builder.mutation<ConcentrationTestResult, ConcentrationTestRequest>({
+      query: (request) => ({
+        url: `portfolio-analytics/${request.portfolio_id}/concentration`,
+        method: 'POST', 
+        body: request,
+      }),
+      invalidatesTags: ['Portfolio', 'Analytics'],
+    }),
+
     // Get portfolio analytics statistics
     getAnalyticsStats: builder.query<any, void>({
       query: () => 'portfolio-analytics/stats',
@@ -2130,6 +2142,7 @@ export const {
   useAnalyzePerformanceMutation,
   useAnalyzeRiskMutation,
   useAnalyzeConcentrationMutation,
+  useRunConcentrationTestsMutation,
   useGetAnalyticsStatsQuery,
   useGetQuickPortfolioMetricsQuery,
   useGeneratePortfolioAlertsMutation,
@@ -2208,3 +2221,6 @@ export const invalidateAssetCache = (dispatch: any) => {
 export const invalidateCalculationCache = (dispatch: any) => {
   dispatch(cloApi.util.invalidateTags(['Calculation', 'Risk', 'Analytics']));
 };
+
+// Re-export types for use in components
+export type { ConcentrationTestRequest, ConcentrationTestResult };

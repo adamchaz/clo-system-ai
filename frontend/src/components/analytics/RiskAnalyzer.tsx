@@ -22,10 +22,6 @@ import {
   Grid,
   Button,
   TextField,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
   Tabs,
   Tab,
   Table,
@@ -41,37 +37,17 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
-  IconButton,
-  Tooltip,
   Stack,
   Slider,
   Switch,
   FormControlLabel,
   LinearProgress,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
 } from '@mui/material';
 import {
   Security,
   Warning,
-  TrendingDown,
-  Assessment,
-  ShowChart,
-  Download,
   Refresh,
-  PlayArrow,
-  Stop,
-  ExpandMore,
-  Info,
   Analytics,
-  Speed,
-  Timeline,
-  AccountBalance,
   PieChart,
   ScatterPlot,
 } from '@mui/icons-material';
@@ -87,8 +63,6 @@ import {
   ResponsiveContainer,
   BarChart,
   Bar,
-  ScatterChart,
-  Scatter,
   Cell,
   PieChart as RechartsPieChart,
   Pie,
@@ -145,17 +119,17 @@ const RiskAnalyzer: React.FC<RiskAnalyzerProps> = ({ portfolioId }) => {
   const [confidenceLevels, setConfidenceLevels] = useState<number[]>([95, 99]);
   const [timeHorizons, setTimeHorizons] = useState<number[]>([1, 10, 21]);
   const [selectedStressScenarios, setSelectedStressScenarios] = useState<string[]>(['recession', 'rate_shock']);
-  const [customShocks, setCustomShocks] = useState<Record<string, number>>({});
+  const [customShocks] = useState<Record<string, number>>({});
   const [includeCorrelationBreakdown, setIncludeCorrelationBreakdown] = useState(true);
   const [correlationThreshold, setCorrelationThreshold] = useState(0.7);
   const [monteCarloRuns, setMonteCarloRuns] = useState(10000);
 
-  const [analysisResult, setAnalysisResult] = useState<PortfolioRiskAnalysisResult | null>(null);
+  const [, setAnalysisResult] = useState<PortfolioRiskAnalysisResult | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [riskAlerts, setRiskAlerts] = useState<any[]>([]);
 
   // API hooks
-  const { data: portfolioData } = useGetPortfolioQuery(portfolioId);
+  useGetPortfolioQuery(portfolioId);
   const [analyzeRisk, { isLoading }] = useAnalyzeRiskMutation();
 
   // WebSocket integration for real-time risk alerts
@@ -225,7 +199,6 @@ const RiskAnalyzer: React.FC<RiskAnalyzerProps> = ({ portfolioId }) => {
   };
 
   const formatPercent = (value: number) => `${value.toFixed(2)}%`;
-  const formatNumber = (value: number) => value.toFixed(4);
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setCurrentTab(newValue);

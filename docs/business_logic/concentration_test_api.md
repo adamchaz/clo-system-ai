@@ -1,6 +1,25 @@
 # ConcentrationTest API Reference
 
-## Overview
+## ⚠️ **SYSTEM UPDATE - August 26, 2025**
+
+**This documentation describes the historical VBA-based API that has been superseded.**
+
+**New Implementation**: The system now uses a **database-driven concentration test API** instead of hardcoded VBA classes. Current API endpoints:
+
+### Database-Driven Concentration Test Endpoints
+
+- `POST /api/v1/portfolios/{portfolio_id}/concentration-tests` - Run concentration tests
+- `GET /api/v1/concentration-thresholds/{deal_id}` - Get deal-specific thresholds  
+- `POST /api/v1/portfolio-analytics/{portfolio_id}/concentration` - Portfolio concentration analysis
+
+### Implementation Files
+- `backend/app/services/concentration_test_integration_service.py` - Main service
+- `backend/app/models/database_driven_concentration_test.py` - Core engine
+- `backend/app/api/v1/endpoints/portfolio_analytics.py` - API endpoints
+
+---
+
+## Historical Overview (Legacy)
 
 This document provides complete API reference for the VBA-accurate ConcentrationTest system with **94+ test variations**, including all classes, methods, and data structures with multi-result generation capabilities.
 

@@ -1,6 +1,19 @@
 # CLO ConcentrationTest VBA-to-Python Conversion
 
-## Overview
+## ⚠️ **SYSTEM UPDATE - August 26, 2025**
+
+**This documentation describes the historical VBA-to-Python conversion approach that has been superseded.**
+
+**New Implementation**: The system now uses a **database-driven concentration test approach** instead of hardcoded VBA conversions. See:
+- `backend/app/models/database_driven_concentration_test.py` - Current implementation
+- `backend/app/services/concentration_threshold_service.py` - Dynamic threshold management
+- `test_mag17_concentration_results.py` - Validation of database-driven approach
+
+**Legacy Status**: The VBA-based `concentration_test_enhanced.py` model has been removed and replaced with database-driven concentration tests that load thresholds dynamically from PostgreSQL.
+
+---
+
+## Historical Overview (Legacy)
 
 This document describes the **completed** conversion of the VBA ConcentrationTest.cls (2,742 lines) to a Python SQLAlchemy implementation, achieving **94+ test variations** with exact functional parity to the original VBA system.
 

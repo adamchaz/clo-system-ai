@@ -1,6 +1,28 @@
 # VBA ConcentrationTest Migration Guide
 
-## Overview
+## ⚠️ **SYSTEM UPDATE - August 26, 2025**
+
+**This migration guide describes the historical VBA-to-Python conversion that has been superseded.**
+
+**New Implementation**: The system now uses a **database-driven concentration test approach** that dynamically loads thresholds from PostgreSQL instead of hardcoded VBA values.
+
+### Current Database-Driven Architecture
+
+- **Dynamic Thresholds**: Loaded from `concentration_test_definitions` and `deal_concentration_thresholds` tables
+- **Deal-Specific Configuration**: MAG17, MAG16, etc. have specific threshold overrides
+- **Test-ID Alignment**: Database `test_id = test_number` for consistency
+- **Real-time Configuration**: No code changes required for threshold updates
+
+### Migration Path (August 2025)
+
+Users migrating from VBA-based concentration tests should now use:
+1. `DatabaseDrivenConcentrationTest` class instead of `EnhancedConcentrationTest`
+2. `ConcentrationTestIntegrationService` for portfolio-level testing
+3. Database threshold management via `ConcentrationThresholdService`
+
+---
+
+## Historical Migration Guide (Legacy)
 
 This guide helps developers migrate from the original configurable concentration test system to the new VBA-accurate implementation. This migration ensures exact functional parity with the original VBA ConcentrationTest.cls.
 

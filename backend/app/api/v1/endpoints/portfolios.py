@@ -500,3 +500,70 @@ async def get_deal_triggers(
         
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to fetch deal triggers: {str(e)}")
+
+@router.post("/{deal_id}/concentration-tests")
+async def run_concentration_tests_direct(
+    deal_id: str,
+    request: dict,
+    db: Session = Depends(get_db)
+):
+    """
+    Database-driven concentration tests endpoint for portfolios
+    Uses the integrated concentration test system with real portfolio data
+    """
+    print(f"🎯 Running database-driven concentration tests for {deal_id}")
+    
+    try:
+        # Get analysis date from request or use CLO system default
+        from datetime import date
+        analysis_date = request.get('analysis_date')
+        if analysis_date:
+            from datetime import datetime
+            analysis_date = datetime.fromisoformat(analysis_date.replace('Z', '+00:00')).date()
+        else:
+            analysis_date = date(2016, 3, 23)  # Default CLO analysis date
+        
+        # Use the database-driven concentration test integration service
+        from ....services.concentration_test_integration_service import get_concentration_integration_service
+        
+        integration_service = get_concentration_integration_service(db)
+        result = integration_service.run_portfolio_concentration_tests(
+            deal_id, 
+            analysis_date
+        )
+        
+        print(f"✅ Database-driven tests completed: {len(result.get('concentration_tests', []))} tests")
+        
+        return {
+            "portfolio_id": deal_id,
+            "analysis_date": result['analysis_date'],
+            "concentration_tests": result['concentration_tests'],
+            "summary": result['summary'],
+            "total_tests": result.get('total_tests', 0),
+            "passed_tests": result.get('passed_tests', 0),
+            "failed_tests": result.get('failed_tests', 0)
+        }
+        
+    except Exception as e:
+        print(f"❌ Database-driven concentration tests failed: {e}")
+        import traceback
+        traceback.print_exc()
+        
+        # Return error response
+        from datetime import date
+        return {
+            "portfolio_id": deal_id,
+            "analysis_date": date.today().isoformat(),
+            "concentration_tests": [],
+            "summary": {
+                "total_tests": 0,
+                "passed_tests": 0,
+                "failed_tests": 0,
+                "warning_tests": 0,
+                "compliance_score": "N/A"
+            },
+            "total_tests": 0,
+            "passed_tests": 0,
+            "failed_tests": 0,
+            "error": str(e)
+        }
