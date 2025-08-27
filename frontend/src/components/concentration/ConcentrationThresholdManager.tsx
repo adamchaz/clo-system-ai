@@ -1,4 +1,11 @@
-import React, { useState } from 'react';
+/**
+ * ConcentrationThresholdManager - UI Component for Managing Database-Driven Concentration Test Thresholds
+ * 
+ * NOTE: Currently uses mock data for demonstration purposes.
+ * TODO: Integrate with backend ConcentrationTestIntegrationService and concentration_thresholds table
+ * for production use with the database-driven concentration test system.
+ */
+import React, { useState, useEffect } from 'react';
 import {
   Card,
   CardHeader,
@@ -130,7 +137,8 @@ const ConcentrationThresholdManager: React.FC<ConcentrationThresholdManagerProps
   const [sourceFilter, setSourceFilter] = useState<string>('all');
   const [showCustomOnly, setShowCustomOnly] = useState(false);
 
-  // Mock API functions (would be replaced with actual API calls)
+  // TODO: Replace mock data with database-driven API calls
+  // Should use concentration_thresholds table and ConcentrationTestIntegrationService
   const fetchThresholds = async () => {
     setLoading(true);
     setError(null);

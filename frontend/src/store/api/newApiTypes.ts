@@ -213,8 +213,6 @@ export interface ConcentrationAnalysisRequest {
   single_asset_limit: number;
   sector_limit: number;
   rating_limits?: Record<string, number>;
-  calculate_hhi: boolean;
-  hhi_thresholds: Record<string, number>;
 }
 
 export interface ConcentrationAnalysisResult {
@@ -227,6 +225,42 @@ export interface ConcentrationAnalysisResult {
   concentration_warnings: string[];
   diversification_opportunities: Array<Record<string, any>>;
   recommended_adjustments: Array<Record<string, any>>;
+}
+
+// Real Concentration Test Types (matching backend implementation)
+export interface ConcentrationTestRequest {
+  portfolio_id: string;
+  analysis_dimensions: string[];
+  single_asset_limit: number;
+  sector_limit: number;
+}
+
+export interface ConcentrationTestResult {
+  portfolio_id: string;
+  analysis_date: string;
+  concentration_tests: ConcentrationTestItem[];
+  summary: {
+    total_tests: number;
+    passed_tests: number;
+    failed_tests: number;
+    warning_tests: number;
+    compliance_score: string;
+  };
+  total_tests: number;
+  passed_tests: number;
+  failed_tests: number;
+}
+
+export interface ConcentrationTestItem {
+  test_number: number;
+  test_name: string;
+  threshold: number;
+  result: number;
+  numerator: number;
+  denominator: number;
+  pass_fail: 'PASS' | 'FAIL' | 'WARNING';
+  comments: string;
+  threshold_source: string;
 }
 
 // User Management Types

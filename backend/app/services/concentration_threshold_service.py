@@ -237,6 +237,37 @@ class ConcentrationThresholdService:
         
         return threshold_configs
     
+    async def get_deal_specific_thresholds(self, 
+                                deal_id: str, 
+                                analysis_date: Optional[date] = None) -> List[ThresholdConfiguration]:
+        """Get ONLY the threshold configurations that are explicitly configured for this deal"""
+        analysis_date = analysis_date or self.default_analysis_date
+        
+        # Get ONLY deal-specific configurations from database (not all test definitions)
+        deal_specific = await self.repository.get_deal_specific_thresholds_only(deal_id, analysis_date)
+        
+        threshold_configs = []
+        for test_def, deal_threshold in deal_specific:
+            if deal_threshold:  # Only return tests that have deal-specific thresholds
+                config = ThresholdConfiguration(
+                    deal_id=deal_id,
+                    test_id=test_def.test_id,
+                    test_number=test_def.test_number,
+                    test_name=test_def.test_name,
+                    threshold_value=float(deal_threshold.threshold_value),
+                    effective_date=deal_threshold.effective_date.isoformat(),
+                    expiry_date=deal_threshold.expiry_date.isoformat() if deal_threshold.expiry_date else None,
+                    mag_version=deal_threshold.mag_version,
+                    threshold_source='deal',
+                    is_custom_override=True,
+                    test_category=test_def.test_category,
+                    result_type=test_def.result_type
+                )
+                threshold_configs.append(config)
+        
+        logger.info(f"Retrieved {len(threshold_configs)} deal-specific thresholds for {deal_id}")
+        return threshold_configs
+    
     # ========================================
     # Threshold Management
     # ========================================

@@ -21,6 +21,8 @@ import {
   PortfolioRiskAnalysisResult,
   ConcentrationAnalysisRequest,
   ConcentrationAnalysisResult,
+  ConcentrationTestRequest,
+  ConcentrationTestResult,
   // User Management Types
   UserManagement,
   UserCreateRequest,
@@ -189,6 +191,16 @@ export const newApiEndpoints = (builder: EndpointBuilder<any, any, any>) => ({
 
   // Concentration analysis
   analyzeConcentration: builder.mutation<ConcentrationAnalysisResult, ConcentrationAnalysisRequest>({
+    query: (request) => ({
+      url: `portfolio-analytics/${request.portfolio_id}/concentration`,
+      method: 'POST',
+      body: request,
+    }),
+    invalidatesTags: ['Portfolio', 'Analytics'],
+  }),
+
+  // Real Concentration Tests (using backend ConcentrationTestIntegrationService)
+  runConcentrationTests: builder.mutation<ConcentrationTestResult, ConcentrationTestRequest>({
     query: (request) => ({
       url: `portfolio-analytics/${request.portfolio_id}/concentration`,
       method: 'POST',

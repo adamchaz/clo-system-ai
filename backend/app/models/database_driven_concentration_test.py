@@ -10,7 +10,6 @@ from dataclasses import dataclass
 import logging
 
 from ..services.concentration_threshold_service import ConcentrationThresholdService, ThresholdConfiguration
-from .concentration_test_enhanced import TestNum, EnhancedTestResult
 from .asset import Asset
 
 
@@ -54,12 +53,13 @@ class DatabaseDrivenConcentrationTest:
         self.deal_id = deal_id
         self.analysis_date = analysis_date
         
-        # Load all threshold configurations for this deal
-        configs = await self.threshold_service.get_deal_thresholds(deal_id, analysis_date)
+        # Load ONLY the threshold configurations that are actually configured for this deal
+        # This ensures we only run tests that have been explicitly set up for the deal
+        configs = await self.threshold_service.get_deal_specific_thresholds(deal_id, analysis_date)
         self.threshold_configs = {config.test_id: config for config in configs}
         
         logger.info(f"Initialized concentration test engine for deal {deal_id} on {analysis_date}")
-        logger.info(f"Loaded {len(self.threshold_configs)} threshold configurations")
+        logger.info(f"Loaded {len(self.threshold_configs)} deal-specific threshold configurations")
     
     async def run_all_tests(self, assets_dict: Dict[str, Asset]) -> List[DatabaseTestResult]:
         """Run all concentration tests with database-driven thresholds"""
