@@ -118,20 +118,28 @@ class DatabaseDrivenConcentrationTest:
         # Route to specific test implementation based on test number
         if test_number == 1:  # Senior Secured Loans Minimum
             return await self._test_senior_secured_minimum(config, assets_dict, total_par, threshold)
+        elif test_number == 2:  # Non Senior Secured Loans Maximum
+            return await self._test_non_senior_secured_maximum(config, assets_dict, total_par, threshold)
+        elif test_number == 3:  # 6th Largest Obligor Maximum
+            return await self._test_sixth_largest_obligor_maximum(config, assets_dict, total_par, threshold)
         elif test_number == 4:  # Single Obligor Maximum
             return await self._test_single_obligor_maximum(config, assets_dict, total_par, threshold)
+        elif test_number == 5:  # DIP Obligor Maximum
+            return await self._test_dip_obligor_maximum(config, assets_dict, total_par, threshold)
+        elif test_number == 6:  # Non-Senior Secured Obligor Maximum
+            return await self._test_non_senior_secured_obligor_maximum(config, assets_dict, total_par, threshold)
         elif test_number == 7:  # Caa-Rated Assets Maximum
             return await self._test_caa_rated_maximum(config, assets_dict, total_par, threshold)
-        elif test_number == 29:  # Covenant-Lite Maximum
-            return await self._test_covenant_lite_maximum(config, assets_dict, total_par, threshold)
-        elif test_number == 40:  # CCC-Rated Obligations Maximum
-            return await self._test_ccc_rated_maximum(config, assets_dict, total_par, threshold)
-        elif test_number == 27:  # Single Industry Maximum
-            return await self._test_single_industry_maximum(config, assets_dict, total_par, threshold)
-        elif test_number == 36:  # WARF Maximum
-            return await self._test_warf_maximum(config, assets_dict, total_par, threshold)
-        elif test_number == 35:  # WAL Maximum
-            return await self._test_wal_maximum(config, assets_dict, total_par, threshold)
+        elif test_number == 8:  # Assets Paying Less Frequently than Quarterly
+            return await self._test_assets_paying_less_frequently_quarterly(config, assets_dict, total_par, threshold)
+        elif test_number == 9:  # Fixed Rate Obligations Maximum
+            return await self._test_fixed_rate_obligations_maximum(config, assets_dict, total_par, threshold)
+        elif test_number == 10:  # Current Pay Obligations Maximum
+            return await self._test_current_pay_obligations_maximum(config, assets_dict, total_par, threshold)
+        elif test_number == 11:  # DIP Obligations Maximum
+            return await self._test_dip_obligations_maximum(config, assets_dict, total_par, threshold)
+        elif test_number == 13:  # Participation Interest Maximum
+            return await self._test_participation_interest_maximum(config, assets_dict, total_par, threshold)
         elif test_number == 19:  # Limitation on Individual Group I Countries
             return await self._test_individual_group_i_countries(config, assets_dict, total_par, threshold)
         elif test_number == 20:  # Limitation on Group II Countries
@@ -144,6 +152,22 @@ class DatabaseDrivenConcentrationTest:
             return await self._test_individual_group_iii_countries(config, assets_dict, total_par, threshold)
         elif test_number == 24:  # Limitation on Tax Jurisdictions
             return await self._test_tax_jurisdictions(config, assets_dict, total_par, threshold)
+        elif test_number == 27:  # Single Industry Maximum
+            return await self._test_single_industry_maximum(config, assets_dict, total_par, threshold)
+        elif test_number == 28:  # Bridge Loans Maximum
+            return await self._test_bridge_loans_maximum(config, assets_dict, total_par, threshold)
+        elif test_number == 29:  # Covenant-Lite Maximum
+            return await self._test_covenant_lite_maximum(config, assets_dict, total_par, threshold)
+        elif test_number == 30:  # Deferrable Securities Maximum
+            return await self._test_deferrable_securities_maximum(config, assets_dict, total_par, threshold)
+        elif test_number == 31:  # Facility Size Maximum
+            return await self._test_facility_size_maximum(config, assets_dict, total_par, threshold)
+        elif test_number == 35:  # WAL Maximum
+            return await self._test_wal_maximum(config, assets_dict, total_par, threshold)
+        elif test_number == 36:  # WARF Maximum
+            return await self._test_warf_maximum(config, assets_dict, total_par, threshold)
+        elif test_number == 40:  # CCC-Rated Obligations Maximum
+            return await self._test_ccc_rated_maximum(config, assets_dict, total_par, threshold)
         else:
             # For unimplemented tests, create placeholder result
             return DatabaseTestResult(
@@ -210,8 +234,11 @@ class DatabaseDrivenConcentrationTest:
         
         obligor_exposures = {}
         for asset in assets_dict.values():
-            obligor = asset.issuer_name or asset.obligor_name or "Unknown"
-            obligor_exposures[obligor] = obligor_exposures.get(obligor, Decimal('0')) + asset.par_amount
+            # Match VBA logic: exclude defaulted and DIP assets
+            if not getattr(asset, 'default_asset', False) and not asset.dip:
+                # Use issuer_id as primary identifier, fallback to issuer_name
+                obligor = getattr(asset, 'issuer_id', None) or asset.issuer_name or asset.obligor_name or "Unknown"
+                obligor_exposures[obligor] = obligor_exposures.get(obligor, Decimal('0')) + asset.par_amount
         
         max_exposure = max(obligor_exposures.values()) if obligor_exposures else Decimal('0')
         max_obligor = max(obligor_exposures, key=obligor_exposures.get) if obligor_exposures else "None"
@@ -719,6 +746,454 @@ class DatabaseDrivenConcentrationTest:
             effective_date=config.effective_date,
             mag_version=config.mag_version,
             comments=f"Tax jurisdiction exposure: {result*100:.2f}%"
+        )
+    
+    # ========================================
+    # Asset Quality Tests - Additional Implementations
+    # ========================================
+    
+    async def _test_non_senior_secured_maximum(self,
+                                             config: ThresholdConfiguration,
+                                             assets_dict: Dict[str, Asset],
+                                             total_par: Decimal,
+                                             threshold: Decimal) -> DatabaseTestResult:
+        """Test 2: Limitation on Non Senior Secured Loans"""
+        
+        non_senior_exposure = Decimal('0')
+        for asset in assets_dict.values():
+            # Match VBA logic exactly: include anything that is NOT (SENIOR SECURED AND LOAN)
+            # Use case-insensitive comparison for seniority to match database values
+            seniority_upper = (asset.seniority or "").upper()
+            bond_loan_upper = (asset.bond_loan or "").upper()
+            
+            if not (seniority_upper == 'SENIOR SECURED' and bond_loan_upper == 'LOAN'):
+                non_senior_exposure += asset.par_amount
+            elif asset.sp_priority_category == 'SENIOR UNSECURED LOAN/SECOND LIEN LOAN':
+                # This ElseIf mirrors the VBA but will never execute due to the logic above
+                non_senior_exposure += asset.par_amount
+        
+        ratio = (non_senior_exposure / total_par) if total_par > 0 else Decimal('0')
+        percentage = ratio * 100
+        pass_fail = 'PASS' if ratio <= threshold else 'FAIL'
+        excess_amount = max(Decimal('0'), ratio - threshold)
+        
+        return DatabaseTestResult(
+            test_id=config.test_id,
+            test_number=config.test_number,
+            test_name=config.test_name,
+            threshold=threshold,
+            result=ratio,
+            numerator=non_senior_exposure,
+            denominator=total_par,
+            pass_fail=pass_fail,
+            excess_amount=excess_amount,
+            threshold_source=config.threshold_source,
+            is_custom_override=config.is_custom_override,
+            effective_date=config.effective_date,
+            mag_version=config.mag_version,
+            comments=f"Non senior secured loans: ${non_senior_exposure:,.2f} ({percentage:.2f}%)"
+        )
+    
+    async def _test_sixth_largest_obligor_maximum(self,
+                                                config: ThresholdConfiguration,
+                                                assets_dict: Dict[str, Asset],
+                                                total_par: Decimal,
+                                                threshold: Decimal) -> DatabaseTestResult:
+        """Test 3: Limitation on 6th Largest Obligor"""
+        
+        obligor_exposures = {}
+        for asset in assets_dict.values():
+            # Match VBA logic exactly: exclude defaulted and DIP assets
+            if not getattr(asset, 'default_asset', False) and not asset.dip:
+                # Use issuer_id as primary identifier, fallback to issuer_name
+                obligor = getattr(asset, 'issuer_id', None) or asset.issuer_name or asset.obligor_name or "Unknown"
+                obligor_exposures[obligor] = obligor_exposures.get(obligor, Decimal('0')) + asset.par_amount
+        
+        # Sort obligors by exposure descending
+        sorted_exposures = sorted(obligor_exposures.items(), key=lambda x: x[1], reverse=True)
+        
+        # Get 6th largest exposure (index 5)
+        sixth_exposure = sorted_exposures[5][1] if len(sorted_exposures) > 5 else Decimal('0')
+        sixth_obligor = sorted_exposures[5][0] if len(sorted_exposures) > 5 else "None"
+        
+        ratio = (sixth_exposure / total_par) if total_par > 0 else Decimal('0')
+        percentage = ratio * 100
+        pass_fail = 'PASS' if ratio <= threshold else 'FAIL'
+        excess_amount = max(Decimal('0'), ratio - threshold)
+        
+        return DatabaseTestResult(
+            test_id=config.test_id,
+            test_number=config.test_number,
+            test_name=config.test_name,
+            threshold=threshold,
+            result=ratio,
+            numerator=sixth_exposure,
+            denominator=total_par,
+            pass_fail=pass_fail,
+            excess_amount=excess_amount,
+            threshold_source=config.threshold_source,
+            is_custom_override=config.is_custom_override,
+            effective_date=config.effective_date,
+            mag_version=config.mag_version,
+            comments=f"6th largest obligor '{sixth_obligor}': ${sixth_exposure:,.2f} ({percentage:.2f}%)"
+        )
+    
+    async def _test_dip_obligor_maximum(self,
+                                      config: ThresholdConfiguration,
+                                      assets_dict: Dict[str, Asset],
+                                      total_par: Decimal,
+                                      threshold: Decimal) -> DatabaseTestResult:
+        """Test 5: Limitation on DIP Obligor"""
+        
+        dip_obligor_exposures = {}
+        for asset in assets_dict.values():
+            # Match VBA logic: exclude defaulted assets, include only DIP assets
+            if not getattr(asset, 'default_asset', False) and asset.dip:
+                # Use issuer_id as primary identifier, fallback to issuer_name
+                obligor = getattr(asset, 'issuer_id', None) or asset.issuer_name or asset.obligor_name or "Unknown"
+                dip_obligor_exposures[obligor] = dip_obligor_exposures.get(obligor, Decimal('0')) + asset.par_amount
+        
+        max_exposure = max(dip_obligor_exposures.values()) if dip_obligor_exposures else Decimal('0')
+        max_obligor = max(dip_obligor_exposures, key=dip_obligor_exposures.get) if dip_obligor_exposures else "None"
+        
+        ratio = (max_exposure / total_par) if total_par > 0 else Decimal('0')
+        percentage = ratio * 100
+        pass_fail = 'PASS' if ratio <= threshold else 'FAIL'
+        excess_amount = max(Decimal('0'), ratio - threshold)
+        
+        return DatabaseTestResult(
+            test_id=config.test_id,
+            test_number=config.test_number,
+            test_name=config.test_name,
+            threshold=threshold,
+            result=ratio,
+            numerator=max_exposure,
+            denominator=total_par,
+            pass_fail=pass_fail,
+            excess_amount=excess_amount,
+            threshold_source=config.threshold_source,
+            is_custom_override=config.is_custom_override,
+            effective_date=config.effective_date,
+            mag_version=config.mag_version,
+            comments=f"Largest DIP obligor '{max_obligor}': ${max_exposure:,.2f} ({percentage:.2f}%)"
+        )
+    
+    async def _test_non_senior_secured_obligor_maximum(self,
+                                                     config: ThresholdConfiguration,
+                                                     assets_dict: Dict[str, Asset],
+                                                     total_par: Decimal,
+                                                     threshold: Decimal) -> DatabaseTestResult:
+        """Test 6: Limitation on Non-Senior Secured Obligor"""
+        
+        non_senior_obligor_exposures = {}
+        for asset in assets_dict.values():
+            # Match VBA logic: exclude defaulted assets, include only non-senior secured assets
+            if not getattr(asset, 'default_asset', False) and asset.sp_priority_category == 'SENIOR UNSECURED LOAN/SECOND LIEN LOAN':
+                # Use issuer_id as primary identifier, fallback to issuer_name
+                obligor = getattr(asset, 'issuer_id', None) or asset.issuer_name or asset.obligor_name or "Unknown"
+                non_senior_obligor_exposures[obligor] = non_senior_obligor_exposures.get(obligor, Decimal('0')) + asset.par_amount
+        
+        max_exposure = max(non_senior_obligor_exposures.values()) if non_senior_obligor_exposures else Decimal('0')
+        max_obligor = max(non_senior_obligor_exposures, key=non_senior_obligor_exposures.get) if non_senior_obligor_exposures else "None"
+        
+        ratio = (max_exposure / total_par) if total_par > 0 else Decimal('0')
+        percentage = ratio * 100
+        pass_fail = 'PASS' if ratio <= threshold else 'FAIL'
+        excess_amount = max(Decimal('0'), ratio - threshold)
+        
+        return DatabaseTestResult(
+            test_id=config.test_id,
+            test_number=config.test_number,
+            test_name=config.test_name,
+            threshold=threshold,
+            result=ratio,
+            numerator=max_exposure,
+            denominator=total_par,
+            pass_fail=pass_fail,
+            excess_amount=excess_amount,
+            threshold_source=config.threshold_source,
+            is_custom_override=config.is_custom_override,
+            effective_date=config.effective_date,
+            mag_version=config.mag_version,
+            comments=f"Largest non-senior secured obligor '{max_obligor}': ${max_exposure:,.2f} ({percentage:.2f}%)"
+        )
+    
+    async def _test_assets_paying_less_frequently_quarterly(self,
+                                                          config: ThresholdConfiguration,
+                                                          assets_dict: Dict[str, Asset],
+                                                          total_par: Decimal,
+                                                          threshold: Decimal) -> DatabaseTestResult:
+        """Test 8: Limitation on Assets Paying Less Frequently than Quarterly"""
+        
+        less_frequent_exposure = Decimal('0')
+        for asset in assets_dict.values():
+            # Payment frequency < 4 means less frequent than quarterly
+            if hasattr(asset, 'payment_frequency') and asset.payment_frequency and asset.payment_frequency < 4:
+                less_frequent_exposure += asset.par_amount
+        
+        ratio = (less_frequent_exposure / total_par) if total_par > 0 else Decimal('0')
+        percentage = ratio * 100
+        pass_fail = 'PASS' if ratio <= threshold else 'FAIL'
+        excess_amount = max(Decimal('0'), ratio - threshold)
+        
+        return DatabaseTestResult(
+            test_id=config.test_id,
+            test_number=config.test_number,
+            test_name=config.test_name,
+            threshold=threshold,
+            result=ratio,
+            numerator=less_frequent_exposure,
+            denominator=total_par,
+            pass_fail=pass_fail,
+            excess_amount=excess_amount,
+            threshold_source=config.threshold_source,
+            is_custom_override=config.is_custom_override,
+            effective_date=config.effective_date,
+            mag_version=config.mag_version,
+            comments=f"Assets paying less frequently than quarterly: ${less_frequent_exposure:,.2f} ({percentage:.2f}%)"
+        )
+    
+    async def _test_fixed_rate_obligations_maximum(self,
+                                                 config: ThresholdConfiguration,
+                                                 assets_dict: Dict[str, Asset],
+                                                 total_par: Decimal,
+                                                 threshold: Decimal) -> DatabaseTestResult:
+        """Test 9: Limitation on Fixed Rate Obligations"""
+        
+        fixed_rate_exposure = Decimal('0')
+        for asset in assets_dict.values():
+            if asset.coupon_type == 'FIXED':
+                fixed_rate_exposure += asset.par_amount
+        
+        ratio = (fixed_rate_exposure / total_par) if total_par > 0 else Decimal('0')
+        percentage = ratio * 100
+        pass_fail = 'PASS' if ratio <= threshold else 'FAIL'
+        excess_amount = max(Decimal('0'), ratio - threshold)
+        
+        return DatabaseTestResult(
+            test_id=config.test_id,
+            test_number=config.test_number,
+            test_name=config.test_name,
+            threshold=threshold,
+            result=ratio,
+            numerator=fixed_rate_exposure,
+            denominator=total_par,
+            pass_fail=pass_fail,
+            excess_amount=excess_amount,
+            threshold_source=config.threshold_source,
+            is_custom_override=config.is_custom_override,
+            effective_date=config.effective_date,
+            mag_version=config.mag_version,
+            comments=f"Fixed rate obligations: ${fixed_rate_exposure:,.2f} ({percentage:.2f}%)"
+        )
+    
+    async def _test_current_pay_obligations_maximum(self,
+                                                  config: ThresholdConfiguration,
+                                                  assets_dict: Dict[str, Asset],
+                                                  total_par: Decimal,
+                                                  threshold: Decimal) -> DatabaseTestResult:
+        """Test 10: Limitation on Current Pay Obligations"""
+        
+        current_pay_exposure = Decimal('0')
+        for asset in assets_dict.values():
+            if hasattr(asset, 'current_pay') and asset.current_pay:
+                current_pay_exposure += asset.par_amount
+        
+        ratio = (current_pay_exposure / total_par) if total_par > 0 else Decimal('0')
+        percentage = ratio * 100
+        pass_fail = 'PASS' if ratio <= threshold else 'FAIL'
+        excess_amount = max(Decimal('0'), ratio - threshold)
+        
+        return DatabaseTestResult(
+            test_id=config.test_id,
+            test_number=config.test_number,
+            test_name=config.test_name,
+            threshold=threshold,
+            result=ratio,
+            numerator=current_pay_exposure,
+            denominator=total_par,
+            pass_fail=pass_fail,
+            excess_amount=excess_amount,
+            threshold_source=config.threshold_source,
+            is_custom_override=config.is_custom_override,
+            effective_date=config.effective_date,
+            mag_version=config.mag_version,
+            comments=f"Current pay obligations: ${current_pay_exposure:,.2f} ({percentage:.2f}%)"
+        )
+    
+    async def _test_dip_obligations_maximum(self,
+                                          config: ThresholdConfiguration,
+                                          assets_dict: Dict[str, Asset],
+                                          total_par: Decimal,
+                                          threshold: Decimal) -> DatabaseTestResult:
+        """Test 11: Limitation on DIP Obligations"""
+        
+        dip_exposure = Decimal('0')
+        for asset in assets_dict.values():
+            if asset.dip:
+                dip_exposure += asset.par_amount
+        
+        ratio = (dip_exposure / total_par) if total_par > 0 else Decimal('0')
+        percentage = ratio * 100
+        pass_fail = 'PASS' if ratio <= threshold else 'FAIL'
+        excess_amount = max(Decimal('0'), ratio - threshold)
+        
+        return DatabaseTestResult(
+            test_id=config.test_id,
+            test_number=config.test_number,
+            test_name=config.test_name,
+            threshold=threshold,
+            result=ratio,
+            numerator=dip_exposure,
+            denominator=total_par,
+            pass_fail=pass_fail,
+            excess_amount=excess_amount,
+            threshold_source=config.threshold_source,
+            is_custom_override=config.is_custom_override,
+            effective_date=config.effective_date,
+            mag_version=config.mag_version,
+            comments=f"DIP obligations: ${dip_exposure:,.2f} ({percentage:.2f}%)"
+        )
+    
+    async def _test_participation_interest_maximum(self,
+                                                 config: ThresholdConfiguration,
+                                                 assets_dict: Dict[str, Asset],
+                                                 total_par: Decimal,
+                                                 threshold: Decimal) -> DatabaseTestResult:
+        """Test 13: Limitation on Participation Interest"""
+        
+        participation_exposure = Decimal('0')
+        for asset in assets_dict.values():
+            if hasattr(asset, 'participation') and asset.participation:
+                participation_exposure += asset.par_amount
+        
+        ratio = (participation_exposure / total_par) if total_par > 0 else Decimal('0')
+        percentage = ratio * 100
+        pass_fail = 'PASS' if ratio <= threshold else 'FAIL'
+        excess_amount = max(Decimal('0'), ratio - threshold)
+        
+        return DatabaseTestResult(
+            test_id=config.test_id,
+            test_number=config.test_number,
+            test_name=config.test_name,
+            threshold=threshold,
+            result=ratio,
+            numerator=participation_exposure,
+            denominator=total_par,
+            pass_fail=pass_fail,
+            excess_amount=excess_amount,
+            threshold_source=config.threshold_source,
+            is_custom_override=config.is_custom_override,
+            effective_date=config.effective_date,
+            mag_version=config.mag_version,
+            comments=f"Participation interest: ${participation_exposure:,.2f} ({percentage:.2f}%)"
+        )
+    
+    async def _test_bridge_loans_maximum(self,
+                                       config: ThresholdConfiguration,
+                                       assets_dict: Dict[str, Asset],
+                                       total_par: Decimal,
+                                       threshold: Decimal) -> DatabaseTestResult:
+        """Test 28: Limitation on Bridge Loans"""
+        
+        bridge_loan_exposure = Decimal('0')
+        for asset in assets_dict.values():
+            if hasattr(asset, 'bridge_loan') and asset.bridge_loan:
+                bridge_loan_exposure += asset.par_amount
+        
+        ratio = (bridge_loan_exposure / total_par) if total_par > 0 else Decimal('0')
+        percentage = ratio * 100
+        pass_fail = 'PASS' if ratio <= threshold else 'FAIL'
+        excess_amount = max(Decimal('0'), ratio - threshold)
+        
+        return DatabaseTestResult(
+            test_id=config.test_id,
+            test_number=config.test_number,
+            test_name=config.test_name,
+            threshold=threshold,
+            result=ratio,
+            numerator=bridge_loan_exposure,
+            denominator=total_par,
+            pass_fail=pass_fail,
+            excess_amount=excess_amount,
+            threshold_source=config.threshold_source,
+            is_custom_override=config.is_custom_override,
+            effective_date=config.effective_date,
+            mag_version=config.mag_version,
+            comments=f"Bridge loans: ${bridge_loan_exposure:,.2f} ({percentage:.2f}%)"
+        )
+    
+    async def _test_deferrable_securities_maximum(self,
+                                                config: ThresholdConfiguration,
+                                                assets_dict: Dict[str, Asset],
+                                                total_par: Decimal,
+                                                threshold: Decimal) -> DatabaseTestResult:
+        """Test 30: Limitation on Deferrable Securities"""
+        
+        deferrable_exposure = Decimal('0')
+        for asset in assets_dict.values():
+            if hasattr(asset, 'pik_asset') and asset.pik_asset:
+                deferrable_exposure += asset.par_amount
+        
+        ratio = (deferrable_exposure / total_par) if total_par > 0 else Decimal('0')
+        percentage = ratio * 100
+        pass_fail = 'PASS' if ratio <= threshold else 'FAIL'
+        excess_amount = max(Decimal('0'), ratio - threshold)
+        
+        return DatabaseTestResult(
+            test_id=config.test_id,
+            test_number=config.test_number,
+            test_name=config.test_name,
+            threshold=threshold,
+            result=ratio,
+            numerator=deferrable_exposure,
+            denominator=total_par,
+            pass_fail=pass_fail,
+            excess_amount=excess_amount,
+            threshold_source=config.threshold_source,
+            is_custom_override=config.is_custom_override,
+            effective_date=config.effective_date,
+            mag_version=config.mag_version,
+            comments=f"Deferrable securities: ${deferrable_exposure:,.2f} ({percentage:.2f}%)"
+        )
+    
+    async def _test_facility_size_maximum(self,
+                                        config: ThresholdConfiguration,
+                                        assets_dict: Dict[str, Asset],
+                                        total_par: Decimal,
+                                        threshold: Decimal) -> DatabaseTestResult:
+        """Test 31: Limitation on Facility Size"""
+        
+        small_facility_exposure = Decimal('0')
+        for asset in assets_dict.values():
+            facility_size = getattr(asset, 'facility_size', 0)
+            if facility_size:
+                # USA: < $150M, Other countries: < $250M
+                if asset.country == 'USA' and facility_size < 150000000:
+                    small_facility_exposure += asset.par_amount
+                elif asset.country != 'USA' and facility_size < 250000000:
+                    small_facility_exposure += asset.par_amount
+        
+        ratio = (small_facility_exposure / total_par) if total_par > 0 else Decimal('0')
+        percentage = ratio * 100
+        pass_fail = 'PASS' if ratio <= threshold else 'FAIL'
+        excess_amount = max(Decimal('0'), ratio - threshold)
+        
+        return DatabaseTestResult(
+            test_id=config.test_id,
+            test_number=config.test_number,
+            test_name=config.test_name,
+            threshold=threshold,
+            result=ratio,
+            numerator=small_facility_exposure,
+            denominator=total_par,
+            pass_fail=pass_fail,
+            excess_amount=excess_amount,
+            threshold_source=config.threshold_source,
+            is_custom_override=config.is_custom_override,
+            effective_date=config.effective_date,
+            mag_version=config.mag_version,
+            comments=f"Small facility size assets: ${small_facility_exposure:,.2f} ({percentage:.2f}%)"
         )
     
     # ========================================

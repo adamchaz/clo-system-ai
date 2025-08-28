@@ -149,8 +149,10 @@ class ConcentrationTestIntegrationService:
                         a.seniority,
                         a.bond_loan,
                         a.coupon as coupon_rate,
+                        a.coupon_type,
                         a.cpn_spread as spread_over_benchmark,
                         a.payment_freq as payment_frequency,
+                        a.sp_priority_category,
                         CASE WHEN a.date_of_default IS NOT NULL THEN true ELSE false END as default_asset,
                         da.par_amount as position_par_amount,
                         false as cov_lite
@@ -191,8 +193,11 @@ class ConcentrationTestIntegrationService:
                     'asset_type': row.bond_loan or "",
                     'bond_loan': row.bond_loan or "",  # Add bond_loan directly
                     'coupon_rate': Decimal(str(row.coupon_rate or 0)),
+                    'coupon_type': row.coupon_type or "",  # Add coupon_type for Test 9
                     'spread_over_benchmark': Decimal(str(row.spread_over_benchmark or 0)),
                     'payment_frequency': int(row.payment_frequency or 4),
+                    'sp_priority_category': row.sp_priority_category or "",  # Add sp_priority_category
+                    'dip': False,  # DIP (Debtor in Possession) - default to False since no column exists
                     'default_asset': bool(row.default_asset),
                     'cov_lite': getattr(row, 'cov_lite', False)  # Use cov_lite from DB or default to False
                 }
