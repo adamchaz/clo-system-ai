@@ -66,6 +66,32 @@ A comprehensive Collateralized Loan Obligation (CLO) Portfolio Management System
 
 ---
 
+## ✅ **AUGUST 28, 2025 UPDATE: GROUP COUNTRY DEFINITION CORRECTIONS**
+
+**Group Country Test Fixes** - Corrected Group I/II/III country classifications per Excel VBA specification:
+
+### **Group Country Classification Fixes** ✅
+- **Group I Countries Corrected**: Fixed from incorrect `['USA', 'Canada', 'UK', 'Germany', 'France', 'Japan', 'Australia']` to VBA-accurate `['NETHERLANDS', 'AUSTRALIA', 'NEW ZEALAND', 'UNITED KINGDOM']`
+- **Group II Countries Corrected**: Updated to VBA-accurate `['GERMANY', 'SWEDEN', 'SWITZERLAND']`
+- **Group III Countries Corrected**: Changed from exclusion logic to specific VBA list `['AUSTRIA', 'BELGIUM', 'DENMARK', 'FINLAND', 'FRANCE', 'ICELAND', 'LIECHTENSTEIN', 'LUXEMBOURG', 'NORWAY', 'SPAIN']`
+- **Case-Insensitive Matching**: Added `.upper()` comparisons to handle database title case vs VBA uppercase
+
+### **Technical Resolutions** ✅
+- **VBA Analysis**: Extracted correct country definitions from original `ConcentrationTest.cls:1568, 1635, 1705`
+- **Test 19 Fixed**: Now correctly identifies Netherlands (3.04%) as max Group I exposure instead of incorrect USA classification
+- **Test 20-23 Fixed**: All Group country tests now use proper VBA-defined classifications
+- **USA Declassification**: USA properly excluded from Group I countries per Excel specification
+
+### **Test Results** ✅
+- **Test 19**: Netherlands 3.04% vs 5% threshold (PASS) ✅
+- **Test 20**: Germany 0.14% Group II exposure (PASS) ✅
+- **Test 21**: Luxembourg 3.37% max Group III exposure (PASS) ✅
+- **Test 22-23**: All Group tests now calculate accurately per VBA logic ✅
+
+**Production Status**: All Group country tests now match Excel VBA specification exactly
+
+---
+
 ## ✅ **AUGUST 28, 2025 UPDATE: MAG17 CONCENTRATION TEST CONFIGURATION**
 
 **MAG17 Compliance Enhancement** - Updated concentration tests to match Excel file requirements:

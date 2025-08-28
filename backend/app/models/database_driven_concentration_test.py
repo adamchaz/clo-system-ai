@@ -508,13 +508,14 @@ class DatabaseDrivenConcentrationTest:
                                                 total_par: Decimal,
                                                 threshold: Decimal) -> DatabaseTestResult:
         """Test 19: Limitation on Individual Group I Countries"""
-        # Group I countries typically include major developed markets
-        group_i_countries = ['USA', 'Canada', 'UK', 'Germany', 'France', 'Japan', 'Australia']
+        # Group I countries per VBA ConcentrationTest.cls:1568
+        group_i_countries = ['NETHERLANDS', 'AUSTRALIA', 'NEW ZEALAND', 'UNITED KINGDOM']
         
         # Find the maximum exposure to any single Group I country
         country_exposures = {}
         for asset in assets_dict.values():
-            if asset.country in group_i_countries:
+            # Use case-insensitive comparison
+            if (asset.country or "").upper() in group_i_countries:
                 if asset.country not in country_exposures:
                     country_exposures[asset.country] = Decimal('0')
                 country_exposures[asset.country] += Decimal(str(asset.par_amount))
@@ -551,14 +552,14 @@ class DatabaseDrivenConcentrationTest:
                                       total_par: Decimal,
                                       threshold: Decimal) -> DatabaseTestResult:
         """Test 20: Limitation on Group II Countries"""
-        # Group II countries typically include other developed markets and stable emerging markets
-        group_ii_countries = ['Italy', 'Spain', 'Netherlands', 'Belgium', 'Switzerland', 
-                            'Sweden', 'Norway', 'Denmark', 'Austria', 'Ireland']
+        # Group II countries per VBA ConcentrationTest.cls:1635
+        group_ii_countries = ['GERMANY', 'SWEDEN', 'SWITZERLAND']
         
         # Calculate total exposure to all Group II countries
         group_ii_exposure = Decimal('0')
         for asset in assets_dict.values():
-            if asset.country in group_ii_countries:
+            # Use case-insensitive comparison
+            if (asset.country or "").upper() in group_ii_countries:
                 group_ii_exposure += Decimal(str(asset.par_amount))
         
         result = group_ii_exposure / total_par if total_par > 0 else Decimal('0')
@@ -589,13 +590,13 @@ class DatabaseDrivenConcentrationTest:
                                                  total_par: Decimal,
                                                  threshold: Decimal) -> DatabaseTestResult:
         """Test 21: Limitation on Individual Group II Countries"""
-        group_ii_countries = ['Italy', 'Spain', 'Netherlands', 'Belgium', 'Switzerland', 
-                            'Sweden', 'Norway', 'Denmark', 'Austria', 'Ireland']
+        group_ii_countries = ['GERMANY', 'SWEDEN', 'SWITZERLAND']
         
         # Find the maximum exposure to any single Group II country
         country_exposures = {}
         for asset in assets_dict.values():
-            if asset.country in group_ii_countries:
+            # Use case-insensitive comparison
+            if (asset.country or "").upper() in group_ii_countries:
                 if asset.country not in country_exposures:
                     country_exposures[asset.country] = Decimal('0')
                 country_exposures[asset.country] += Decimal(str(asset.par_amount))
@@ -632,16 +633,15 @@ class DatabaseDrivenConcentrationTest:
                                        total_par: Decimal,
                                        threshold: Decimal) -> DatabaseTestResult:
         """Test 22: Limitation on Group III Countries"""
-        # Group III countries typically include emerging markets and higher-risk jurisdictions
-        # Define based on exclusion from Group I and II
-        group_i_countries = ['USA', 'Canada', 'UK', 'Germany', 'France', 'Japan', 'Australia']
-        group_ii_countries = ['Italy', 'Spain', 'Netherlands', 'Belgium', 'Switzerland', 
-                            'Sweden', 'Norway', 'Denmark', 'Austria', 'Ireland']
+        # Group III countries per VBA ConcentrationTest.cls:1705
+        group_iii_countries = ['AUSTRIA', 'BELGIUM', 'DENMARK', 'FINLAND', 'FRANCE', 
+                              'ICELAND', 'LIECHTENSTEIN', 'LUXEMBOURG', 'NORWAY', 'SPAIN']
         
-        # Calculate total exposure to all Group III countries (everything else)
+        # Calculate total exposure to all Group III countries
         group_iii_exposure = Decimal('0')
         for asset in assets_dict.values():
-            if asset.country and asset.country not in group_i_countries and asset.country not in group_ii_countries:
+            # Use case-insensitive comparison
+            if (asset.country or "").upper() in group_iii_countries:
                 group_iii_exposure += Decimal(str(asset.par_amount))
         
         result = group_iii_exposure / total_par if total_par > 0 else Decimal('0')
@@ -672,14 +672,14 @@ class DatabaseDrivenConcentrationTest:
                                                   total_par: Decimal,
                                                   threshold: Decimal) -> DatabaseTestResult:
         """Test 23: Limitation on Individual Group III Countries"""
-        group_i_countries = ['USA', 'Canada', 'UK', 'Germany', 'France', 'Japan', 'Australia']
-        group_ii_countries = ['Italy', 'Spain', 'Netherlands', 'Belgium', 'Switzerland', 
-                            'Sweden', 'Norway', 'Denmark', 'Austria', 'Ireland']
+        group_iii_countries = ['AUSTRIA', 'BELGIUM', 'DENMARK', 'FINLAND', 'FRANCE', 
+                              'ICELAND', 'LIECHTENSTEIN', 'LUXEMBOURG', 'NORWAY', 'SPAIN']
         
         # Find the maximum exposure to any single Group III country
         country_exposures = {}
         for asset in assets_dict.values():
-            if asset.country and asset.country not in group_i_countries and asset.country not in group_ii_countries:
+            # Use case-insensitive comparison
+            if (asset.country or "").upper() in group_iii_countries:
                 if asset.country not in country_exposures:
                     country_exposures[asset.country] = Decimal('0')
                 country_exposures[asset.country] += Decimal(str(asset.par_amount))
