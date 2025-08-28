@@ -127,6 +127,11 @@ coverage/
 .hypothesis/
 .cache
 
+# Development/Debug Scripts
+backend/compare_asset_sources.py
+backend/populate_mag17_assets.py
+mag17_assets.json
+
 # Build outputs
 build/
 dist/
