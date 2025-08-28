@@ -48,6 +48,16 @@ logs/
 # Debug and temporary files
 debug_*.py
 simple_*.py
+test_*.py
+!backend/tests/test_*.py  # Allow test files in tests directory
+backend/check_*.py
+backend/fix_*.py
+backend/fix_*.sql
+*.backup
+*.py.backup
+
+# Local IDE settings
+.claude/settings.local.json
 test_*_auth.py
 *_debug*.py
 migration_report_*.json
