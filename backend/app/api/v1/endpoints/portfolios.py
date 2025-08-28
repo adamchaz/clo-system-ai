@@ -404,32 +404,32 @@ async def get_deal_assets(
     try:
         assets = []
         
-        if deal_id == 'MAG17':
-            # Get MAG17 assets from the assets table
-            assets_result = db.execute(text("""
-                SELECT blkrock_id, issuer_name, par_amount, market_value, facility_size,
-                       mdy_rating, country, coupon, maturity, seniority, bond_loan
-                FROM assets 
-                WHERE par_amount > 0 
-                ORDER BY par_amount DESC
-                OFFSET :skip LIMIT :limit
-            """), {'skip': skip, 'limit': limit})
-            
-            for asset in assets_result.fetchall():
-                asset_dict = dict(asset._mapping) if hasattr(asset, '_mapping') else dict(asset)
-                assets.append({
-                    "asset_id": asset_dict.get('blkrock_id', ''),
-                    "issuer_name": asset_dict.get('issuer_name', ''),
-                    "par_amount": float(asset_dict.get('par_amount', 0)),
-                    "market_value": float(asset_dict.get('market_value', 0)) if asset_dict.get('market_value') else 0.0,
-                    "facility_size": float(asset_dict.get('facility_size', 0)) if asset_dict.get('facility_size') else 0.0,
-                    "rating": asset_dict.get('mdy_rating', 'NR'),
-                    "country": asset_dict.get('country', ''),
-                    "coupon": float(asset_dict.get('coupon', 0)) if asset_dict.get('coupon') else 0.0,
-                    "maturity_date": asset_dict.get('maturity'),
-                    "seniority": asset_dict.get('seniority', ''),
-                    "asset_type": asset_dict.get('bond_loan', '')
-                })
+        # Get assets properly linked to the deal through deal_assets table
+        assets_result = db.execute(text("""
+            SELECT a.blkrock_id, a.issuer_name, da.par_amount, a.market_value, a.facility_size,
+                   a.mdy_rating, a.country, a.coupon, a.maturity, a.seniority, a.bond_loan
+            FROM assets a
+            JOIN deal_assets da ON a.blkrock_id = da.blkrock_id
+            WHERE da.deal_id = :deal_id
+            ORDER BY da.par_amount DESC
+            OFFSET :skip LIMIT :limit
+        """), {'deal_id': deal_id, 'skip': skip, 'limit': limit})
+        
+        for asset in assets_result.fetchall():
+            asset_dict = dict(asset._mapping) if hasattr(asset, '_mapping') else dict(asset)
+            assets.append({
+                "asset_id": asset_dict.get('blkrock_id', ''),
+                "issuer_name": asset_dict.get('issuer_name', ''),
+                "par_amount": float(asset_dict.get('par_amount', 0)),
+                "market_value": float(asset_dict.get('market_value', 0)) if asset_dict.get('market_value') else 0.0,
+                "facility_size": float(asset_dict.get('facility_size', 0)) if asset_dict.get('facility_size') else 0.0,
+                "rating": asset_dict.get('mdy_rating', 'NR'),
+                "country": asset_dict.get('country', ''),
+                "coupon": float(asset_dict.get('coupon', 0)) if asset_dict.get('coupon') else 0.0,
+                "maturity_date": asset_dict.get('maturity'),
+                "seniority": asset_dict.get('seniority', ''),
+                "asset_type": asset_dict.get('bond_loan', '')
+            })
         
         return {
             "data": assets,

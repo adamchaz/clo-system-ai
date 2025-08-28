@@ -130,11 +130,8 @@ class ConcentrationTestIntegrationService:
     def _load_portfolio_assets(self, portfolio_id: str) -> Dict[str, Asset]:
         """Load all assets for a portfolio from database"""
         try:
-            # For now, since deal_assets linking is not set up, use all assets for MAG17
-            # This allows testing of the concentration test engine with real data
-            if portfolio_id == 'MAG17':
-                print(f"Loading all 384 assets for {portfolio_id} testing (no asset linking configured yet)")
-                query = text("""
+            # Use the proper join with deal_assets table for all portfolios
+            query = text("""
                     SELECT 
                         a.blkrock_id,
                         a.issue_name,
@@ -155,46 +152,19 @@ class ConcentrationTestIntegrationService:
                         a.cpn_spread as spread_over_benchmark,
                         a.payment_freq as payment_frequency,
                         CASE WHEN a.date_of_default IS NOT NULL THEN true ELSE false END as default_asset,
-                        a.par_amount as position_par_amount,
+                        da.par_amount as position_par_amount,
                         false as cov_lite
-                    FROM assets a
-                    WHERE a.par_amount > 0
-                    ORDER BY a.blkrock_id
-                """)
-                
-                result = self.db.execute(query)
-            else:
-                # For other portfolios, try the proper join (when linking is available)
-                query = text("""
-                    SELECT 
-                        a.blkrock_id,
-                        a.issue_name,
-                        a.issuer_name,
-                        a.par_amount,
-                        a.market_value,
-                        a.maturity,
-                        a.mdy_industry as sector,
-                        a.sp_industry as industry,
-                        COALESCE(a.mdy_rating, a.sp_rating, a.derived_mdy_rating, a.derived_sp_rating) as rating,
-                        a.country,
-                        a.currency,
-                        a.seniority,
-                        a.bond_loan,
-                        a.coupon as coupon_rate,
-                        a.cpn_spread as spread_over_benchmark,
-                        a.payment_freq as payment_frequency,
-                        CASE WHEN a.date_of_default IS NOT NULL THEN true ELSE false END as default_asset,
-                        da.par_amount as position_par_amount
                     FROM assets a
                     JOIN deal_assets da ON a.blkrock_id = da.blkrock_id
                     WHERE da.deal_id = :portfolio_id
                       AND (da.sale_date IS NULL OR da.sale_date > :analysis_date)
+                    ORDER BY a.blkrock_id
                 """)
-                
-                result = self.db.execute(query, {
-                    'portfolio_id': portfolio_id,
-                    'analysis_date': date(2016, 3, 23)
-                })
+            
+            result = self.db.execute(query, {
+                'portfolio_id': portfolio_id,
+                'analysis_date': date(2016, 3, 23)
+            })
             
             assets_dict = {}
             from decimal import Decimal

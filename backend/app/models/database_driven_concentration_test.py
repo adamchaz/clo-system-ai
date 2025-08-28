@@ -132,6 +132,18 @@ class DatabaseDrivenConcentrationTest:
             return await self._test_warf_maximum(config, assets_dict, total_par, threshold)
         elif test_number == 35:  # WAL Maximum
             return await self._test_wal_maximum(config, assets_dict, total_par, threshold)
+        elif test_number == 19:  # Limitation on Individual Group I Countries
+            return await self._test_individual_group_i_countries(config, assets_dict, total_par, threshold)
+        elif test_number == 20:  # Limitation on Group II Countries
+            return await self._test_group_ii_countries(config, assets_dict, total_par, threshold)
+        elif test_number == 21:  # Limitation on Individual Group II Countries
+            return await self._test_individual_group_ii_countries(config, assets_dict, total_par, threshold)
+        elif test_number == 22:  # Limitation on Group III Countries
+            return await self._test_group_iii_countries(config, assets_dict, total_par, threshold)
+        elif test_number == 23:  # Limitation on Individual Group III Countries
+            return await self._test_individual_group_iii_countries(config, assets_dict, total_par, threshold)
+        elif test_number == 24:  # Limitation on Tax Jurisdictions
+            return await self._test_tax_jurisdictions(config, assets_dict, total_par, threshold)
         else:
             # For unimplemented tests, create placeholder result
             return DatabaseTestResult(
@@ -167,16 +179,17 @@ class DatabaseDrivenConcentrationTest:
             if asset.seniority and asset.seniority.lower() in ['senior', 'senior secured']:
                 senior_secured_par += asset.par_amount
         
-        percentage = (senior_secured_par / total_par * 100) if total_par > 0 else Decimal('0')
-        pass_fail = 'PASS' if percentage >= threshold else 'FAIL'
-        excess_amount = max(Decimal('0'), threshold - percentage)
+        ratio = (senior_secured_par / total_par) if total_par > 0 else Decimal('0')
+        percentage = ratio * 100
+        pass_fail = 'PASS' if ratio >= threshold else 'FAIL'
+        excess_amount = max(Decimal('0'), threshold - ratio)
         
         return DatabaseTestResult(
             test_id=config.test_id,
             test_number=config.test_number,
             test_name=config.test_name,
             threshold=threshold,
-            result=percentage,
+            result=ratio,
             numerator=senior_secured_par,
             denominator=total_par,
             pass_fail=pass_fail,
@@ -202,17 +215,18 @@ class DatabaseDrivenConcentrationTest:
         
         max_exposure = max(obligor_exposures.values()) if obligor_exposures else Decimal('0')
         max_obligor = max(obligor_exposures, key=obligor_exposures.get) if obligor_exposures else "None"
-        percentage = (max_exposure / total_par * 100) if total_par > 0 else Decimal('0')
+        ratio = (max_exposure / total_par) if total_par > 0 else Decimal('0')
+        percentage = ratio * 100
         
-        pass_fail = 'PASS' if percentage <= threshold else 'FAIL'
-        excess_amount = max(Decimal('0'), percentage - threshold)
+        pass_fail = 'PASS' if ratio <= threshold else 'FAIL'
+        excess_amount = max(Decimal('0'), ratio - threshold)
         
         return DatabaseTestResult(
             test_id=config.test_id,
             test_number=config.test_number,
             test_name=config.test_name,
             threshold=threshold,
-            result=percentage,
+            result=ratio,
             numerator=max_exposure,
             denominator=total_par,
             pass_fail=pass_fail,
@@ -236,16 +250,17 @@ class DatabaseDrivenConcentrationTest:
             if asset.mdy_rating and asset.mdy_rating.startswith('Caa'):
                 caa_exposure += asset.par_amount
         
-        percentage = (caa_exposure / total_par * 100) if total_par > 0 else Decimal('0')
-        pass_fail = 'PASS' if percentage <= threshold else 'FAIL'
-        excess_amount = max(Decimal('0'), percentage - threshold)
+        ratio = (caa_exposure / total_par) if total_par > 0 else Decimal('0')
+        percentage = ratio * 100
+        pass_fail = 'PASS' if ratio <= threshold else 'FAIL'
+        excess_amount = max(Decimal('0'), ratio - threshold)
         
         return DatabaseTestResult(
             test_id=config.test_id,
             test_number=config.test_number,
             test_name=config.test_name,
             threshold=threshold,
-            result=percentage,
+            result=ratio,
             numerator=caa_exposure,
             denominator=total_par,
             pass_fail=pass_fail,
@@ -269,16 +284,17 @@ class DatabaseDrivenConcentrationTest:
             if asset.cov_lite:
                 cov_lite_exposure += asset.par_amount
         
-        percentage = (cov_lite_exposure / total_par * 100) if total_par > 0 else Decimal('0')
-        pass_fail = 'PASS' if percentage <= threshold else 'FAIL'
-        excess_amount = max(Decimal('0'), percentage - threshold)
+        ratio = (cov_lite_exposure / total_par) if total_par > 0 else Decimal('0')
+        percentage = ratio * 100
+        pass_fail = 'PASS' if ratio <= threshold else 'FAIL'
+        excess_amount = max(Decimal('0'), ratio - threshold)
         
         return DatabaseTestResult(
             test_id=config.test_id,
             test_number=config.test_number,
             test_name=config.test_name,
             threshold=threshold,
-            result=percentage,
+            result=ratio,
             numerator=cov_lite_exposure,
             denominator=total_par,
             pass_fail=pass_fail,
@@ -302,16 +318,17 @@ class DatabaseDrivenConcentrationTest:
             if asset.sp_rating and asset.sp_rating.startswith('CCC'):
                 ccc_exposure += asset.par_amount
         
-        percentage = (ccc_exposure / total_par * 100) if total_par > 0 else Decimal('0')
-        pass_fail = 'PASS' if percentage <= threshold else 'FAIL'
-        excess_amount = max(Decimal('0'), percentage - threshold)
+        ratio = (ccc_exposure / total_par) if total_par > 0 else Decimal('0')
+        percentage = ratio * 100
+        pass_fail = 'PASS' if ratio <= threshold else 'FAIL'
+        excess_amount = max(Decimal('0'), ratio - threshold)
         
         return DatabaseTestResult(
             test_id=config.test_id,
             test_number=config.test_number,
             test_name=config.test_name,
             threshold=threshold,
-            result=percentage,
+            result=ratio,
             numerator=ccc_exposure,
             denominator=total_par,
             pass_fail=pass_fail,
@@ -337,17 +354,18 @@ class DatabaseDrivenConcentrationTest:
         
         max_exposure = max(industry_exposures.values()) if industry_exposures else Decimal('0')
         max_industry = max(industry_exposures, key=industry_exposures.get) if industry_exposures else "None"
-        percentage = (max_exposure / total_par * 100) if total_par > 0 else Decimal('0')
+        ratio = (max_exposure / total_par) if total_par > 0 else Decimal('0')
+        percentage = ratio * 100
         
-        pass_fail = 'PASS' if percentage <= threshold else 'FAIL'
-        excess_amount = max(Decimal('0'), percentage - threshold)
+        pass_fail = 'PASS' if ratio <= threshold else 'FAIL'
+        excess_amount = max(Decimal('0'), ratio - threshold)
         
         return DatabaseTestResult(
             test_id=config.test_id,
             test_number=config.test_number,
             test_name=config.test_name,
             threshold=threshold,
-            result=percentage,
+            result=ratio,
             numerator=max_exposure,
             denominator=total_par,
             pass_fail=pass_fail,
@@ -451,6 +469,256 @@ class DatabaseDrivenConcentrationTest:
             effective_date=config.effective_date,
             mag_version=config.mag_version,
             comments=f"Weighted Average Life: {wal:.2f} years"
+        )
+    
+    # ========================================
+    # Geographic Concentration Tests
+    # ========================================
+    
+    async def _test_individual_group_i_countries(self,
+                                                config: ThresholdConfiguration,
+                                                assets_dict: Dict[str, Asset],
+                                                total_par: Decimal,
+                                                threshold: Decimal) -> DatabaseTestResult:
+        """Test 19: Limitation on Individual Group I Countries"""
+        # Group I countries typically include major developed markets
+        group_i_countries = ['USA', 'Canada', 'UK', 'Germany', 'France', 'Japan', 'Australia']
+        
+        # Find the maximum exposure to any single Group I country
+        country_exposures = {}
+        for asset in assets_dict.values():
+            if asset.country in group_i_countries:
+                if asset.country not in country_exposures:
+                    country_exposures[asset.country] = Decimal('0')
+                country_exposures[asset.country] += Decimal(str(asset.par_amount))
+        
+        # Find maximum single country exposure
+        max_exposure = max(country_exposures.values()) if country_exposures else Decimal('0')
+        result = max_exposure / total_par if total_par > 0 else Decimal('0')
+        
+        pass_fail = 'PASS' if result <= threshold else 'FAIL'
+        excess = max_exposure - (threshold * total_par) if pass_fail == 'FAIL' else Decimal('0')
+        
+        max_country = max(country_exposures, key=country_exposures.get) if country_exposures else 'None'
+        
+        return DatabaseTestResult(
+            test_id=config.test_id,
+            test_number=config.test_number,
+            test_name=config.test_name,
+            threshold=threshold,
+            result=result,
+            numerator=max_exposure,
+            denominator=total_par,
+            pass_fail=pass_fail,
+            excess_amount=excess,
+            threshold_source=config.threshold_source,
+            is_custom_override=config.is_custom_override,
+            effective_date=config.effective_date,
+            mag_version=config.mag_version,
+            comments=f"Maximum exposure: {max_country} ({result*100:.2f}%)"
+        )
+    
+    async def _test_group_ii_countries(self,
+                                      config: ThresholdConfiguration,
+                                      assets_dict: Dict[str, Asset],
+                                      total_par: Decimal,
+                                      threshold: Decimal) -> DatabaseTestResult:
+        """Test 20: Limitation on Group II Countries"""
+        # Group II countries typically include other developed markets and stable emerging markets
+        group_ii_countries = ['Italy', 'Spain', 'Netherlands', 'Belgium', 'Switzerland', 
+                            'Sweden', 'Norway', 'Denmark', 'Austria', 'Ireland']
+        
+        # Calculate total exposure to all Group II countries
+        group_ii_exposure = Decimal('0')
+        for asset in assets_dict.values():
+            if asset.country in group_ii_countries:
+                group_ii_exposure += Decimal(str(asset.par_amount))
+        
+        result = group_ii_exposure / total_par if total_par > 0 else Decimal('0')
+        
+        pass_fail = 'PASS' if result <= threshold else 'FAIL'
+        excess = group_ii_exposure - (threshold * total_par) if pass_fail == 'FAIL' else Decimal('0')
+        
+        return DatabaseTestResult(
+            test_id=config.test_id,
+            test_number=config.test_number,
+            test_name=config.test_name,
+            threshold=threshold,
+            result=result,
+            numerator=group_ii_exposure,
+            denominator=total_par,
+            pass_fail=pass_fail,
+            excess_amount=excess,
+            threshold_source=config.threshold_source,
+            is_custom_override=config.is_custom_override,
+            effective_date=config.effective_date,
+            mag_version=config.mag_version,
+            comments=f"Total Group II exposure: {result*100:.2f}%"
+        )
+    
+    async def _test_individual_group_ii_countries(self,
+                                                 config: ThresholdConfiguration,
+                                                 assets_dict: Dict[str, Asset],
+                                                 total_par: Decimal,
+                                                 threshold: Decimal) -> DatabaseTestResult:
+        """Test 21: Limitation on Individual Group II Countries"""
+        group_ii_countries = ['Italy', 'Spain', 'Netherlands', 'Belgium', 'Switzerland', 
+                            'Sweden', 'Norway', 'Denmark', 'Austria', 'Ireland']
+        
+        # Find the maximum exposure to any single Group II country
+        country_exposures = {}
+        for asset in assets_dict.values():
+            if asset.country in group_ii_countries:
+                if asset.country not in country_exposures:
+                    country_exposures[asset.country] = Decimal('0')
+                country_exposures[asset.country] += Decimal(str(asset.par_amount))
+        
+        # Find maximum single country exposure
+        max_exposure = max(country_exposures.values()) if country_exposures else Decimal('0')
+        result = max_exposure / total_par if total_par > 0 else Decimal('0')
+        
+        pass_fail = 'PASS' if result <= threshold else 'FAIL'
+        excess = max_exposure - (threshold * total_par) if pass_fail == 'FAIL' else Decimal('0')
+        
+        max_country = max(country_exposures, key=country_exposures.get) if country_exposures else 'None'
+        
+        return DatabaseTestResult(
+            test_id=config.test_id,
+            test_number=config.test_number,
+            test_name=config.test_name,
+            threshold=threshold,
+            result=result,
+            numerator=max_exposure,
+            denominator=total_par,
+            pass_fail=pass_fail,
+            excess_amount=excess,
+            threshold_source=config.threshold_source,
+            is_custom_override=config.is_custom_override,
+            effective_date=config.effective_date,
+            mag_version=config.mag_version,
+            comments=f"Maximum exposure: {max_country} ({result*100:.2f}%)"
+        )
+    
+    async def _test_group_iii_countries(self,
+                                       config: ThresholdConfiguration,
+                                       assets_dict: Dict[str, Asset],
+                                       total_par: Decimal,
+                                       threshold: Decimal) -> DatabaseTestResult:
+        """Test 22: Limitation on Group III Countries"""
+        # Group III countries typically include emerging markets and higher-risk jurisdictions
+        # Define based on exclusion from Group I and II
+        group_i_countries = ['USA', 'Canada', 'UK', 'Germany', 'France', 'Japan', 'Australia']
+        group_ii_countries = ['Italy', 'Spain', 'Netherlands', 'Belgium', 'Switzerland', 
+                            'Sweden', 'Norway', 'Denmark', 'Austria', 'Ireland']
+        
+        # Calculate total exposure to all Group III countries (everything else)
+        group_iii_exposure = Decimal('0')
+        for asset in assets_dict.values():
+            if asset.country and asset.country not in group_i_countries and asset.country not in group_ii_countries:
+                group_iii_exposure += Decimal(str(asset.par_amount))
+        
+        result = group_iii_exposure / total_par if total_par > 0 else Decimal('0')
+        
+        pass_fail = 'PASS' if result <= threshold else 'FAIL'
+        excess = group_iii_exposure - (threshold * total_par) if pass_fail == 'FAIL' else Decimal('0')
+        
+        return DatabaseTestResult(
+            test_id=config.test_id,
+            test_number=config.test_number,
+            test_name=config.test_name,
+            threshold=threshold,
+            result=result,
+            numerator=group_iii_exposure,
+            denominator=total_par,
+            pass_fail=pass_fail,
+            excess_amount=excess,
+            threshold_source=config.threshold_source,
+            is_custom_override=config.is_custom_override,
+            effective_date=config.effective_date,
+            mag_version=config.mag_version,
+            comments=f"Total Group III exposure: {result*100:.2f}%"
+        )
+    
+    async def _test_individual_group_iii_countries(self,
+                                                  config: ThresholdConfiguration,
+                                                  assets_dict: Dict[str, Asset],
+                                                  total_par: Decimal,
+                                                  threshold: Decimal) -> DatabaseTestResult:
+        """Test 23: Limitation on Individual Group III Countries"""
+        group_i_countries = ['USA', 'Canada', 'UK', 'Germany', 'France', 'Japan', 'Australia']
+        group_ii_countries = ['Italy', 'Spain', 'Netherlands', 'Belgium', 'Switzerland', 
+                            'Sweden', 'Norway', 'Denmark', 'Austria', 'Ireland']
+        
+        # Find the maximum exposure to any single Group III country
+        country_exposures = {}
+        for asset in assets_dict.values():
+            if asset.country and asset.country not in group_i_countries and asset.country not in group_ii_countries:
+                if asset.country not in country_exposures:
+                    country_exposures[asset.country] = Decimal('0')
+                country_exposures[asset.country] += Decimal(str(asset.par_amount))
+        
+        # Find maximum single country exposure
+        max_exposure = max(country_exposures.values()) if country_exposures else Decimal('0')
+        result = max_exposure / total_par if total_par > 0 else Decimal('0')
+        
+        pass_fail = 'PASS' if result <= threshold else 'FAIL'
+        excess = max_exposure - (threshold * total_par) if pass_fail == 'FAIL' else Decimal('0')
+        
+        max_country = max(country_exposures, key=country_exposures.get) if country_exposures else 'None'
+        
+        return DatabaseTestResult(
+            test_id=config.test_id,
+            test_number=config.test_number,
+            test_name=config.test_name,
+            threshold=threshold,
+            result=result,
+            numerator=max_exposure,
+            denominator=total_par,
+            pass_fail=pass_fail,
+            excess_amount=excess,
+            threshold_source=config.threshold_source,
+            is_custom_override=config.is_custom_override,
+            effective_date=config.effective_date,
+            mag_version=config.mag_version,
+            comments=f"Maximum exposure: {max_country} ({result*100:.2f}%)"
+        )
+    
+    async def _test_tax_jurisdictions(self,
+                                     config: ThresholdConfiguration,
+                                     assets_dict: Dict[str, Asset],
+                                     total_par: Decimal,
+                                     threshold: Decimal) -> DatabaseTestResult:
+        """Test 24: Limitation on Tax Jurisdictions"""
+        # Tax havens and special jurisdictions
+        tax_jurisdictions = ['Cayman Islands', 'Bermuda', 'British Virgin Islands', 'Jersey', 
+                           'Guernsey', 'Isle of Man', 'Luxembourg', 'Mauritius', 'Bahamas']
+        
+        # Calculate total exposure to tax jurisdictions
+        tax_exposure = Decimal('0')
+        for asset in assets_dict.values():
+            if asset.country in tax_jurisdictions:
+                tax_exposure += Decimal(str(asset.par_amount))
+        
+        result = tax_exposure / total_par if total_par > 0 else Decimal('0')
+        
+        pass_fail = 'PASS' if result <= threshold else 'FAIL'
+        excess = tax_exposure - (threshold * total_par) if pass_fail == 'FAIL' else Decimal('0')
+        
+        return DatabaseTestResult(
+            test_id=config.test_id,
+            test_number=config.test_number,
+            test_name=config.test_name,
+            threshold=threshold,
+            result=result,
+            numerator=tax_exposure,
+            denominator=total_par,
+            pass_fail=pass_fail,
+            excess_amount=excess,
+            threshold_source=config.threshold_source,
+            is_custom_override=config.is_custom_override,
+            effective_date=config.effective_date,
+            mag_version=config.mag_version,
+            comments=f"Tax jurisdiction exposure: {result*100:.2f}%"
         )
     
     # ========================================
