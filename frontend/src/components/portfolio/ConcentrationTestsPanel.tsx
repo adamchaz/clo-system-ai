@@ -83,6 +83,9 @@ const categoryLabels = {
   collateral_quality: 'Collateral Quality Tests'
 };
 
+// Define the display order - Asset Quality Tests before Geographic Tests
+const categoryOrder = ['asset_quality', 'geographic', 'industry', 'collateral_quality'];
+
 // Status colors and icons
 const statusConfig = {
   PASS: { color: 'success', icon: CheckCircle, bgcolor: '#e8f5e8' },
@@ -470,41 +473,46 @@ const ConcentrationTestsPanel: React.FC<ConcentrationTestsPanelProps> = ({
 
       {/* Results Table */}
       {groupByCategory ? (
-        // Grouped by category
+        // Grouped by category - use explicit order
         <Box>
-          {Object.entries(groupedTests).map(([category, tests]) => (
-            <Accordion key={category} defaultExpanded>
-              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography variant="h6">
-                  {categoryLabels[category as keyof typeof categoryLabels] || 'Other'} ({tests.length} tests)
-                </Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <TableContainer component={Paper}>
-                  <Table size="small">
-                    <TableHead>
-                      <TableRow>
-                        <TableCell>Test #</TableCell>
-                        <TableCell>Status</TableCell>
-                        <TableCell>Test Name</TableCell>
-                        <TableCell align="right">Current</TableCell>
-                        <TableCell align="right">Threshold</TableCell>
-                        <TableCell>Source</TableCell>
-                        <TableCell>Risk</TableCell>
-                        <TableCell align="center">Actions</TableCell>
-                        <TableCell>Comments</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {tests.map((test) => (
-                        <TestRow key={test.test_number} test={test} />
-                      ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              </AccordionDetails>
-            </Accordion>
-          ))}
+          {categoryOrder.map(category => {
+            const tests = groupedTests[category];
+            if (!tests || tests.length === 0) return null;
+            
+            return (
+              <Accordion key={category} defaultExpanded>
+                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                  <Typography variant="h6">
+                    {categoryLabels[category as keyof typeof categoryLabels]} ({tests.length} tests)
+                  </Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <TableContainer component={Paper}>
+                    <Table size="small">
+                      <TableHead>
+                        <TableRow>
+                          <TableCell>Test #</TableCell>
+                          <TableCell>Status</TableCell>
+                          <TableCell>Test Name</TableCell>
+                          <TableCell align="right">Current</TableCell>
+                          <TableCell align="right">Threshold</TableCell>
+                          <TableCell>Source</TableCell>
+                          <TableCell>Risk</TableCell>
+                          <TableCell align="center">Actions</TableCell>
+                          <TableCell>Comments</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {tests.map((test) => (
+                          <TestRow key={test.test_number} test={test} />
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                </AccordionDetails>
+              </Accordion>
+            );
+          })}
         </Box>
       ) : (
         // Single table view

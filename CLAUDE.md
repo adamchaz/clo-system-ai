@@ -40,6 +40,31 @@ A comprehensive Collateralized Loan Obligation (CLO) Portfolio Management System
 
 ---
 
+## ✅ **AUGUST 28, 2025 UPDATE: MAG17 CONCENTRATION TEST CONFIGURATION**
+
+**MAG17 Compliance Enhancement** - Updated concentration tests to match Excel file requirements:
+
+### **Configuration Changes** ✅
+- **Test #40 Removed**: "Limitation on CCC Loans" excluded from MAG17 per Excel specification
+- **Test #4 Added**: "Limitation on 1st Largest Obligor" with 2.5% threshold 
+- **Test #9 Added**: "Limitation on Fixed Rate Obligations" with 2.5% threshold
+- **Category Display Order**: Asset Quality Tests now appear before Geographic Tests in UI
+
+### **Final MAG17 Test Configuration** ✅
+- **Total Active Tests**: 37 concentration tests (was 35, now 37)
+- **Test Numbers**: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38]
+- **Excel Compliance**: Configuration now matches MAG17 Inputs tab requirements
+- **Database Updated**: All changes committed to `deal_concentration_thresholds` table
+
+### **Frontend Improvements** ✅
+- **Compliance Display Order**: Modified `ConcentrationTestsPanel.tsx` to show Asset Quality Tests first
+- **Category Ordering**: Explicit `categoryOrder` array ensures consistent display sequence
+- **UI Enhancement**: Better organized concentration test presentation
+
+**Production Status**: MAG17 concentration tests fully aligned with Excel specification
+
+---
+
 ## 🚀 **CURRENT OPERATIONAL STATUS** 
 
 **✅ System Fully Deployed and Running** (August 27, 2025):
