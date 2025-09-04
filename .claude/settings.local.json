@@ -16,7 +16,8 @@
       "Bash(pkill:*)",
       "mcp__ide__getDiagnostics",
       "Bash(taskkill:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(git commit:*)"
     ],
     "deny": [],
     "ask": [],
