@@ -595,10 +595,13 @@ const PortfolioList: React.FC<PortfolioListProps> = ({
                       
                       <TableCell>
                         <Typography variant="body2">
-                          {format(parseISO(portfolio.stated_maturity), 'MMM yyyy')}
+                          {portfolio.stated_maturity 
+                            ? format(parseISO(portfolio.stated_maturity), 'MMM yyyy')
+                            : 'N/A'
+                          }
                         </Typography>
                         <Typography variant="caption" color="text.secondary">
-                          {portfolio.days_to_maturity} days
+                          {portfolio.days_to_maturity || 0} days
                         </Typography>
                       </TableCell>
                       

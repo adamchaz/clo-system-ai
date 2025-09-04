@@ -330,7 +330,7 @@ const PortfolioDetail: React.FC<PortfolioDetailProps> = ({
     skip: 0,
     limit: 1000, // Get all assets (max 1000)
   }, {
-    skip: currentTab !== 1, // Only fetch when on assets tab
+    skip: false, // Always fetch for composition analysis
   });
 
   // Concentration analysis mutation (original analysis endpoint)
@@ -853,8 +853,8 @@ const PortfolioDetail: React.FC<PortfolioDetailProps> = ({
               </Typography>
             </Box>
             <Typography variant="body1" color="text.secondary">
-              Effective: {format(parseISO(portfolio.effective_date), 'PPP')} •
-              Maturity: {format(parseISO(portfolio.stated_maturity), 'PPP')}
+              Effective: {portfolio.effective_date ? format(parseISO(portfolio.effective_date), 'PPP') : 'N/A'} •
+              Maturity: {portfolio.stated_maturity ? format(parseISO(portfolio.stated_maturity), 'PPP') : 'N/A'}
             </Typography>
           </Box>
         </Box>
@@ -964,7 +964,7 @@ const PortfolioDetail: React.FC<PortfolioDetailProps> = ({
                 {portfolio.days_to_maturity}
               </Typography>
               <Typography variant="caption" color="text.secondary">
-                {formatDistanceToNow(parseISO(portfolio.stated_maturity))}
+                {portfolio.stated_maturity ? formatDistanceToNow(parseISO(portfolio.stated_maturity)) : 'N/A'}
               </Typography>
             </CardContent>
           </Card>
@@ -1014,20 +1014,20 @@ const PortfolioDetail: React.FC<PortfolioDetailProps> = ({
                     <TableRow>
                       <TableCell sx={{ fontWeight: 600, border: 0 }}>Effective Date</TableCell>
                       <TableCell sx={{ border: 0 }}>
-                        {format(parseISO(portfolio.effective_date), 'PPP')}
+                        {portfolio.effective_date ? format(parseISO(portfolio.effective_date), 'PPP') : 'N/A'}
                       </TableCell>
                     </TableRow>
                     <TableRow>
                       <TableCell sx={{ fontWeight: 600, border: 0 }}>Stated Maturity</TableCell>
                       <TableCell sx={{ border: 0 }}>
-                        {format(parseISO(portfolio.stated_maturity), 'PPP')}
+                        {portfolio.stated_maturity ? format(parseISO(portfolio.stated_maturity), 'PPP') : 'N/A'}
                       </TableCell>
                     </TableRow>
                     {portfolio.revolving_period_end && (
                       <TableRow>
                         <TableCell sx={{ fontWeight: 600, border: 0 }}>Revolving Period End</TableCell>
                         <TableCell sx={{ border: 0 }}>
-                          {format(parseISO(portfolio.revolving_period_end), 'PPP')}
+                          {portfolio.revolving_period_end ? format(parseISO(portfolio.revolving_period_end), 'PPP') : 'N/A'}
                         </TableCell>
                       </TableRow>
                     )}
@@ -1035,7 +1035,7 @@ const PortfolioDetail: React.FC<PortfolioDetailProps> = ({
                       <TableRow>
                         <TableCell sx={{ fontWeight: 600, border: 0 }}>Reinvestment Period End</TableCell>
                         <TableCell sx={{ border: 0 }}>
-                          {format(parseISO(portfolio.reinvestment_period_end), 'PPP')}
+                          {portfolio.reinvestment_period_end ? format(parseISO(portfolio.reinvestment_period_end), 'PPP') : 'N/A'}
                         </TableCell>
                       </TableRow>
                     )}
@@ -1055,13 +1055,13 @@ const PortfolioDetail: React.FC<PortfolioDetailProps> = ({
                   <ListItem>
                     <ListItemText
                       primary="Portfolio created"
-                      secondary={`${formatDistanceToNow(parseISO(portfolio.created_at))} ago`}
+                      secondary={portfolio.created_at ? `${formatDistanceToNow(parseISO(portfolio.created_at))} ago` : 'N/A'}
                     />
                   </ListItem>
                   <ListItem>
                     <ListItemText
                       primary="Last updated"
-                      secondary={`${formatDistanceToNow(parseISO(portfolio.updated_at))} ago`}
+                      secondary={portfolio.updated_at ? `${formatDistanceToNow(parseISO(portfolio.updated_at))} ago` : 'N/A'}
                     />
                   </ListItem>
                   <ListItem>

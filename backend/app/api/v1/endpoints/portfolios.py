@@ -34,7 +34,7 @@ def get_integration_service():
 @router.get("/")
 async def list_clo_deals(
     skip: int = Query(0, ge=0),
-    limit: int = Query(100, ge=1, le=500),
+    limit: int = Query(100, ge=1, le=2000),
     status: Optional[str] = Query(None),
     analysis_date: Optional[str] = Query(None, description="Analysis date (YYYY-MM-DD), defaults to March 23, 2016"),
     db: Session = Depends(get_db)
@@ -197,21 +197,18 @@ async def get_clo_deal(
         
         deal_dict = dict(deal._mapping) if hasattr(deal, '_mapping') else dict(deal)
         
-        # Get asset data for this specific deal
-        asset_count = 0
-        portfolio_balance = 0.0
+        # Get asset data for this specific deal using deal_assets table
+        asset_result = db.execute(text("""
+            SELECT COUNT(*) as count, COALESCE(SUM(da.par_amount), 0) as total_par
+            FROM deal_assets da
+            JOIN assets a ON da.blkrock_id = a.blkrock_id
+            WHERE da.deal_id = :deal_id 
+            AND (da.position_status = 'ACTIVE' OR da.position_status IS NULL)
+        """), {'deal_id': deal_id})
         
-        if deal_id == 'MAG17':
-            # Get MAG17 specific data
-            asset_result = db.execute(text("""
-                SELECT COUNT(*) as count, COALESCE(SUM(par_amount), 0) as total_par
-                FROM assets 
-                WHERE par_amount > 0
-            """))
-            asset_data = asset_result.fetchone()
-            if asset_data:
-                asset_count = asset_data.count
-                portfolio_balance = float(asset_data.total_par)
+        asset_data = asset_result.fetchone()
+        asset_count = asset_data.count if asset_data else 0
+        portfolio_balance = float(asset_data.total_par) if asset_data else 0.0
         
         # Get tranches for this deal
         tranches_result = db.execute(text("""
@@ -396,17 +393,18 @@ async def get_portfolio_summary(
 async def get_deal_assets(
     deal_id: str,
     skip: int = Query(0, ge=0),
-    limit: int = Query(100, ge=1, le=500),
+    limit: int = Query(100, ge=1, le=2000),
     analysis_date: Optional[str] = Query(None, description="Analysis date (YYYY-MM-DD), defaults to today"),
     db: Session = Depends(get_db)
 ):
     """Get assets in a specific CLO deal"""
     try:
+        # Force reload - field fix
         assets = []
         
         # Get assets properly linked to the deal through deal_assets table
         assets_result = db.execute(text("""
-            SELECT a.blkrock_id, a.issuer_name, da.par_amount, a.market_value, a.facility_size,
+            SELECT a.blkrock_id, a.issue_name, a.issuer_name, da.par_amount, a.market_value, a.facility_size,
                    a.mdy_rating, a.country, a.coupon, a.maturity, a.seniority, a.bond_loan
             FROM assets a
             JOIN deal_assets da ON a.blkrock_id = da.blkrock_id
@@ -418,22 +416,33 @@ async def get_deal_assets(
         for asset in assets_result.fetchall():
             asset_dict = dict(asset._mapping) if hasattr(asset, '_mapping') else dict(asset)
             assets.append({
-                "asset_id": asset_dict.get('blkrock_id', ''),
+                "blkrock_id": asset_dict.get('blkrock_id', ''),
+                "issue_name": asset_dict.get('issue_name', ''),
                 "issuer_name": asset_dict.get('issuer_name', ''),
                 "par_amount": float(asset_dict.get('par_amount', 0)),
                 "market_value": float(asset_dict.get('market_value', 0)) if asset_dict.get('market_value') else 0.0,
                 "facility_size": float(asset_dict.get('facility_size', 0)) if asset_dict.get('facility_size') else 0.0,
-                "rating": asset_dict.get('mdy_rating', 'NR'),
+                "mdy_rating": asset_dict.get('mdy_rating', 'NR'),
                 "country": asset_dict.get('country', ''),
                 "coupon": float(asset_dict.get('coupon', 0)) if asset_dict.get('coupon') else 0.0,
-                "maturity_date": asset_dict.get('maturity'),
+                "maturity": asset_dict.get('maturity'),
                 "seniority": asset_dict.get('seniority', ''),
-                "asset_type": asset_dict.get('bond_loan', '')
+                "bond_loan": asset_dict.get('bond_loan', '')
             })
+        
+        # Get total count for pagination
+        total_count_result = db.execute(text("""
+            SELECT COUNT(*) as total
+            FROM assets a
+            JOIN deal_assets da ON a.blkrock_id = da.blkrock_id
+            WHERE da.deal_id = :deal_id
+        """), {'deal_id': deal_id})
+        
+        total_count = total_count_result.fetchone().total
         
         return {
             "data": assets,
-            "total_count": len(assets),
+            "total_count": total_count,
             "skip": skip,
             "limit": limit
         }

@@ -587,7 +587,7 @@ export interface PaginatedResponse<T> {
 // Enhanced base query with retry and error handling
 const baseQueryWithRetry = retry(
   fetchBaseQuery({
-    baseUrl: `${process.env.REACT_APP_API_URL || 'http://localhost:8000'}/api/v1/`,
+    baseUrl: `${process.env.REACT_APP_API_URL || 'http://localhost:8001'}/api/v1/`,
     prepareHeaders: (headers, { getState }) => {
       // Get token from Redux store first, fallback to authService
       const reduxToken = (getState() as RootState).auth.tokens?.accessToken;
@@ -714,16 +714,26 @@ export const cloApi = createApi({
       portfolio_id?: string;
       search?: string;
     }>({
-      query: ({ skip = 0, limit = 100, asset_type, rating, sector, industry, deal_id, portfolio_id, search }) => ({
-        url: 'assets',
-        params: { skip, limit, asset_type, rating, sector, industry, deal_id, portfolio_id, search },
-      }),
+      query: ({ skip = 0, limit = 100, asset_type, rating, sector, industry, deal_id, portfolio_id, search }) => {
+        // If portfolio_id is provided, use the portfolio-specific assets endpoint
+        if (portfolio_id) {
+          return {
+            url: `portfolios/${portfolio_id}/assets`,
+            params: { skip, limit, asset_type, rating, sector, industry, search },
+          };
+        }
+        // Otherwise use the general assets endpoint
+        return {
+          url: 'assets',
+          params: { skip, limit, asset_type, rating, sector, industry, deal_id, search },
+        };
+      },
       transformResponse: (response: any): PaginatedResponse<Asset> => ({
-        data: (response.assets || []).map((asset: any) => ({
+        data: (response.data || response.assets || []).map((asset: any) => ({
           ...asset,
           status: asset.is_active ? 'active' : 'inactive',
         })),
-        total: response.total_count || 0,
+        total: response.total_count || response.total || (response.data || response.assets || []).length,
         skip: response.skip || 0,
         limit: response.limit || 100,
         has_more: response.has_more || false,
