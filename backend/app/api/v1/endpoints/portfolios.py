@@ -405,7 +405,8 @@ async def get_deal_assets(
         # Get assets properly linked to the deal through deal_assets table
         assets_result = db.execute(text("""
             SELECT a.blkrock_id, a.issue_name, a.issuer_name, da.par_amount, a.market_value, a.facility_size,
-                   a.mdy_rating, a.country, a.coupon, a.maturity, a.seniority, a.bond_loan
+                   a.mdy_rating, a.country, a.coupon, a.maturity, a.seniority, a.bond_loan,
+                   a.mdy_industry, a.sp_industry, a.mdy_asset_category, a.sp_priority_category
             FROM assets a
             JOIN deal_assets da ON a.blkrock_id = da.blkrock_id
             WHERE da.deal_id = :deal_id
@@ -427,7 +428,14 @@ async def get_deal_assets(
                 "coupon": float(asset_dict.get('coupon', 0)) if asset_dict.get('coupon') else 0.0,
                 "maturity": asset_dict.get('maturity'),
                 "seniority": asset_dict.get('seniority', ''),
-                "bond_loan": asset_dict.get('bond_loan', '')
+                "bond_loan": asset_dict.get('bond_loan', ''),
+                # Industry/Sector fields
+                "mdy_industry": asset_dict.get('mdy_industry', ''),
+                "sp_industry": asset_dict.get('sp_industry', ''),
+                "sector": asset_dict.get('mdy_industry', ''),  # Use Moody's industry as "sector" for frontend compatibility
+                "industry": asset_dict.get('sp_industry', ''),  # Use S&P industry as "industry" for frontend compatibility
+                "mdy_asset_category": asset_dict.get('mdy_asset_category', ''),
+                "sp_priority_category": asset_dict.get('sp_priority_category', '')
             })
         
         # Get total count for pagination

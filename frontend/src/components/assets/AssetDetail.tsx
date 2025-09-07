@@ -1322,7 +1322,7 @@ const AssetDetail: React.FC<AssetDetailProps> = ({
                         <TableBody>
                           <TableRow>
                             <TableCell><strong>WAL</strong></TableCell>
-                            <TableCell align="right">{assetData.wal ? `${assetData.wal.toFixed(2)} years` : 'N/A'}</TableCell>
+                            <TableCell align="right">{assetData.wal ? `${Number(assetData.wal).toFixed(2)} years` : 'N/A'}</TableCell>
                           </TableRow>
                           <TableRow>
                             <TableCell><strong>PIK Amount</strong></TableCell>

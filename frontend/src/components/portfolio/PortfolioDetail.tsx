@@ -310,7 +310,7 @@ const PortfolioDetail: React.FC<PortfolioDetailProps> = ({
     error: assetsError,
     refetch: refetchAssets,
   } = useGetAssetsQuery({
-    portfolio_id: portfolioId,
+    deal_id: portfolioId,
     skip: assetPage * assetRowsPerPage,
     limit: assetRowsPerPage,
     search: assetSearch || undefined,
@@ -525,9 +525,18 @@ const PortfolioDetail: React.FC<PortfolioDetailProps> = ({
     ];
   }, []);
 
+  // Filter assets with positive par amounts for composition analysis
+  const getActiveAssets = useCallback((assets: Asset[]) => {
+    if (!assets || assets.length === 0) return [];
+    
+    return assets.filter(asset => {
+      const parAmount = typeof asset.par_amount === 'string' ? parseFloat(asset.par_amount) : (asset.par_amount || 0);
+      return parAmount > 0;
+    });
+  }, []);
+
   // Enhanced asset composition analysis functions
   const getSectorDistribution = useCallback((assets: Asset[]) => {
-    
     if (!assets || assets.length === 0) {
       return [];
     }
@@ -536,16 +545,17 @@ const PortfolioDetail: React.FC<PortfolioDetailProps> = ({
       const amount = typeof asset.par_amount === 'string' ? parseFloat(asset.par_amount) : (asset.par_amount || 0);
       return sum + amount;
     }, 0);
+    
     const sectorMap = new Map<string, number>();
     
-    
-    assets.forEach((asset, index) => {
+    assets.forEach((asset) => {
       const sector = asset.mdy_industry || asset.sp_industry || 'Other';
       const amount = typeof asset.par_amount === 'string' ? parseFloat(asset.par_amount) : (asset.par_amount || 0);
       
-      if (index < 5) {
+      // Only include assets with positive par amounts
+      if (amount > 0) {
+        sectorMap.set(sector, (sectorMap.get(sector) || 0) + amount);
       }
-      sectorMap.set(sector, (sectorMap.get(sector) || 0) + amount);
     });
     
     const result = Array.from(sectorMap.entries())
@@ -1167,7 +1177,7 @@ const PortfolioDetail: React.FC<PortfolioDetailProps> = ({
             {allAssetsData?.data && allAssetsData.data.length > 0 ? (
               <Box sx={{ mb: 4 }}>
                 <Typography variant="h6" gutterBottom>
-                  Asset Composition Breakdown ({allAssetsData.data.length} assets)
+                  Asset Composition Breakdown ({getActiveAssets(allAssetsData.data).length} assets)
                 </Typography>
 
                 
@@ -1183,7 +1193,7 @@ const PortfolioDetail: React.FC<PortfolioDetailProps> = ({
                           <ResponsiveContainer>
                             <RechartsPieChart>
                               <Pie
-                                data={getRatingDistribution(allAssetsData.data)}
+                                data={getRatingDistribution(getActiveAssets(allAssetsData.data))}
                                 dataKey="value"
                                 nameKey="name"
                                 cx="50%"
@@ -1191,7 +1201,7 @@ const PortfolioDetail: React.FC<PortfolioDetailProps> = ({
                                 outerRadius={80}
                                 innerRadius={40}
                               >
-                                {getRatingDistribution(allAssetsData.data).map((entry, index) => (
+                                {getRatingDistribution(getActiveAssets(allAssetsData.data)).map((entry, index) => (
                                   <Cell key={`rating-${index}`} fill={SECTOR_COLORS[index % SECTOR_COLORS.length]} />
                                 ))}
                               </Pie>
@@ -1200,7 +1210,7 @@ const PortfolioDetail: React.FC<PortfolioDetailProps> = ({
                               />
                               <Legend 
                                 formatter={(value) => {
-                                  const item = getRatingDistribution(allAssetsData.data).find(d => d.name === value);
+                                  const item = getRatingDistribution(getActiveAssets(allAssetsData.data)).find(d => d.name === value);
                                   return `${value} (${formatPercentage(item?.percentage || 0)})`;
                                 }}
                               />
@@ -1222,7 +1232,7 @@ const PortfolioDetail: React.FC<PortfolioDetailProps> = ({
                           <ResponsiveContainer>
                             <RechartsPieChart>
                               <Pie
-                                data={getTypeDistribution(allAssetsData.data)}
+                                data={getTypeDistribution(getActiveAssets(allAssetsData.data))}
                                 dataKey="value"
                                 nameKey="name"
                                 cx="50%"
@@ -1230,7 +1240,7 @@ const PortfolioDetail: React.FC<PortfolioDetailProps> = ({
                                 outerRadius={80}
                                 innerRadius={40}
                               >
-                                {getTypeDistribution(allAssetsData.data).map((entry, index) => (
+                                {getTypeDistribution(getActiveAssets(allAssetsData.data)).map((entry, index) => (
                                   <Cell key={`type-${index}`} fill={TYPE_COLORS[entry.name as keyof typeof TYPE_COLORS] || '#607D8B'} />
                                 ))}
                               </Pie>
@@ -1239,7 +1249,7 @@ const PortfolioDetail: React.FC<PortfolioDetailProps> = ({
                               />
                               <Legend 
                                 formatter={(value) => {
-                                  const item = getTypeDistribution(allAssetsData.data).find(d => d.name === value);
+                                  const item = getTypeDistribution(getActiveAssets(allAssetsData.data)).find(d => d.name === value);
                                   return `${value} (${formatPercentage(item?.percentage || 0)})`;
                                 }}
                               />
@@ -1258,7 +1268,7 @@ const PortfolioDetail: React.FC<PortfolioDetailProps> = ({
                           Top Holdings
                         </Typography>
                         <Box sx={{ height: 250, overflow: 'auto' }}>
-                          {getTopHoldings(allAssetsData.data).map((holding, index) => (
+                          {getTopHoldings(getActiveAssets(allAssetsData.data)).map((holding, index) => (
                             <Box key={holding.name} sx={{ mb: 1 }}>
                               <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.5 }}>
                                 <Typography variant="body2" noWrap sx={{ fontSize: '0.75rem' }}>
@@ -1294,7 +1304,7 @@ const PortfolioDetail: React.FC<PortfolioDetailProps> = ({
                           <ResponsiveContainer>
                             <RechartsPieChart>
                               <Pie
-                                data={getSectorDistribution(allAssetsData.data)}
+                                data={getSectorDistribution(getActiveAssets(allAssetsData.data))}
                                 dataKey="value"
                                 nameKey="name"
                                 cx="50%"
@@ -1302,7 +1312,7 @@ const PortfolioDetail: React.FC<PortfolioDetailProps> = ({
                                 outerRadius={80}
                                 innerRadius={40}
                               >
-                                {getSectorDistribution(allAssetsData.data).map((entry, index) => (
+                                {getSectorDistribution(getActiveAssets(allAssetsData.data)).map((entry, index) => (
                                   <Cell key={`sector-${index}`} fill={SECTOR_COLORS[index % SECTOR_COLORS.length]} />
                                 ))}
                               </Pie>
@@ -1311,7 +1321,7 @@ const PortfolioDetail: React.FC<PortfolioDetailProps> = ({
                               />
                               <Legend 
                                 formatter={(value) => {
-                                  const item = getSectorDistribution(allAssetsData.data).find(d => d.name === value);
+                                  const item = getSectorDistribution(getActiveAssets(allAssetsData.data)).find(d => d.name === value);
                                   return `${value} (${formatPercentage(item?.percentage || 0)})`;
                                 }}
                               />
@@ -1333,7 +1343,7 @@ const PortfolioDetail: React.FC<PortfolioDetailProps> = ({
                           <ResponsiveContainer>
                             <RechartsPieChart>
                               <Pie
-                                data={getCountryDistribution(allAssetsData.data)}
+                                data={getCountryDistribution(getActiveAssets(allAssetsData.data))}
                                 dataKey="value"
                                 nameKey="name"
                                 cx="50%"
@@ -1341,7 +1351,7 @@ const PortfolioDetail: React.FC<PortfolioDetailProps> = ({
                                 outerRadius={80}
                                 innerRadius={40}
                               >
-                                {getCountryDistribution(allAssetsData.data).map((entry, index) => (
+                                {getCountryDistribution(getActiveAssets(allAssetsData.data)).map((entry, index) => (
                                   <Cell key={`country-${index}`} fill={SECTOR_COLORS[index % SECTOR_COLORS.length]} />
                                 ))}
                               </Pie>
@@ -1350,7 +1360,7 @@ const PortfolioDetail: React.FC<PortfolioDetailProps> = ({
                               />
                               <Legend 
                                 formatter={(value) => {
-                                  const item = getCountryDistribution(allAssetsData.data).find(d => d.name === value);
+                                  const item = getCountryDistribution(getActiveAssets(allAssetsData.data)).find(d => d.name === value);
                                   return `${value} (${formatPercentage(item?.percentage || 0)})`;
                                 }}
                               />
@@ -1411,7 +1421,7 @@ const PortfolioDetail: React.FC<PortfolioDetailProps> = ({
                           <ResponsiveContainer>
                             <RechartsPieChart>
                               <Pie
-                                data={getCouponDistribution(allAssetsData.data)}
+                                data={getCouponDistribution(getActiveAssets(allAssetsData.data))}
                                 dataKey="value"
                                 nameKey="name"
                                 cx="50%"
@@ -1419,7 +1429,7 @@ const PortfolioDetail: React.FC<PortfolioDetailProps> = ({
                                 outerRadius={80}
                                 innerRadius={40}
                               >
-                                {getCouponDistribution(allAssetsData.data).map((entry, index) => (
+                                {getCouponDistribution(getActiveAssets(allAssetsData.data)).map((entry, index) => (
                                   <Cell key={`coupon-${index}`} fill={SECTOR_COLORS[index % SECTOR_COLORS.length]} />
                                 ))}
                               </Pie>
@@ -1428,7 +1438,7 @@ const PortfolioDetail: React.FC<PortfolioDetailProps> = ({
                               />
                               <Legend 
                                 formatter={(value) => {
-                                  const item = getCouponDistribution(allAssetsData.data).find(d => d.name === value);
+                                  const item = getCouponDistribution(getActiveAssets(allAssetsData.data)).find(d => d.name === value);
                                   return `${value} (${formatPercentage(item?.percentage || 0)})`;
                                 }}
                               />
@@ -1450,7 +1460,7 @@ const PortfolioDetail: React.FC<PortfolioDetailProps> = ({
                           <ResponsiveContainer>
                             <RechartsPieChart>
                               <Pie
-                                data={getSeniorityDistribution(allAssetsData.data)}
+                                data={getSeniorityDistribution(getActiveAssets(allAssetsData.data))}
                                 dataKey="value"
                                 nameKey="name"
                                 cx="50%"
@@ -1458,7 +1468,7 @@ const PortfolioDetail: React.FC<PortfolioDetailProps> = ({
                                 outerRadius={80}
                                 innerRadius={40}
                               >
-                                {getSeniorityDistribution(allAssetsData.data).map((entry, index) => (
+                                {getSeniorityDistribution(getActiveAssets(allAssetsData.data)).map((entry, index) => (
                                   <Cell key={`seniority-${index}`} fill={SECTOR_COLORS[index % SECTOR_COLORS.length]} />
                                 ))}
                               </Pie>
@@ -1467,7 +1477,7 @@ const PortfolioDetail: React.FC<PortfolioDetailProps> = ({
                               />
                               <Legend 
                                 formatter={(value) => {
-                                  const item = getSeniorityDistribution(allAssetsData.data).find(d => d.name === value);
+                                  const item = getSeniorityDistribution(getActiveAssets(allAssetsData.data)).find(d => d.name === value);
                                   return `${value} (${formatPercentage(item?.percentage || 0)})`;
                                 }}
                               />

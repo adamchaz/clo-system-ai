@@ -35,6 +35,7 @@ async def list_assets(
     asset_type: Optional[str] = Query(None),
     rating: Optional[str] = Query(None),
     portfolio_id: Optional[str] = Query(None),
+    deal_id: Optional[str] = Query(None),
     search: Optional[str] = Query(None),
     db: Session = Depends(get_db)
 ):
@@ -42,19 +43,28 @@ async def list_assets(
     # Test if this endpoint is being called
     if portfolio_id == 'TEST_BREAK':
         raise HTTPException(status_code=999, detail="Test endpoint is working")
-    # Handle portfolio filtering directly in the API for now
-    # until proper deal_assets mapping is implemented
-    print(f"DEBUG: portfolio_id received: {portfolio_id}")
-    if portfolio_id and portfolio_id == 'MAG17':
-        # For MAG17, use the dedicated portfolio assets query
-        print(f"DEBUG: Entering MAG17 filtering logic")
+    # Handle deal-specific filtering using deal_assets join
+    effective_deal_id = deal_id or portfolio_id  # Support both parameters for compatibility
+    
+    if effective_deal_id:
+        print(f"DEBUG: Filtering assets for deal_id: {effective_deal_id}")
         try:
             from sqlalchemy import text
             
-            # Build query with filters for MAG17 (par_amount > 0)
-            query = "SELECT * FROM assets WHERE par_amount > 0"
-            count_query = "SELECT COUNT(*) FROM assets WHERE par_amount > 0"
-            params = {}
+            # Build query with JOIN to deal_assets table for deal-specific assets
+            query = """
+                SELECT a.* 
+                FROM assets a 
+                JOIN deal_assets da ON a.blkrock_id = da.blkrock_id 
+                WHERE da.deal_id = :deal_id AND da.par_amount > 0
+            """
+            count_query = """
+                SELECT COUNT(*) 
+                FROM assets a 
+                JOIN deal_assets da ON a.blkrock_id = da.blkrock_id 
+                WHERE da.deal_id = :deal_id AND da.par_amount > 0
+            """
+            params = {'deal_id': effective_deal_id}
             
             # Add additional filters
             if asset_type:
