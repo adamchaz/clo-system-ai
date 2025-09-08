@@ -268,7 +268,7 @@ cd backend && venv\Scripts\activate  # Windows - REQUIRED before Python commands
 # Start full development environment
 scripts\start-dev.bat
 
-# Stop development environment
+# Stop development environment (port-specific targeting)
 scripts\stop-dev.bat
 ```
 
