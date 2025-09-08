@@ -153,9 +153,11 @@ class ConcentrationTestIntegrationService:
                         a.cpn_spread as spread_over_benchmark,
                         a.payment_freq as payment_frequency,
                         a.sp_priority_category,
+                        a.mdy_asset_category,
                         CASE WHEN a.date_of_default IS NOT NULL THEN true ELSE false END as default_asset,
                         da.par_amount as position_par_amount,
-                        false as cov_lite
+                        false as cov_lite,
+                        a.flags
                     FROM assets a
                     JOIN deal_assets da ON a.blkrock_id = da.blkrock_id
                     WHERE da.deal_id = :portfolio_id
@@ -197,9 +199,11 @@ class ConcentrationTestIntegrationService:
                     'spread_over_benchmark': Decimal(str(row.spread_over_benchmark or 0)),
                     'payment_frequency': int(row.payment_frequency or 4),
                     'sp_priority_category': row.sp_priority_category or "",  # Add sp_priority_category
-                    'dip': False,  # DIP (Debtor in Possession) - default to False since no column exists
+                    'mdy_asset_category': row.mdy_asset_category or "",  # Add mdy_asset_category for Test 1
+                    'dip': bool(row.flags.get('dip', False)) if row.flags else False,  # DIP from flags column
                     'default_asset': bool(row.default_asset),
-                    'cov_lite': getattr(row, 'cov_lite', False)  # Use cov_lite from DB or default to False
+                    'cov_lite': getattr(row, 'cov_lite', False),  # Use cov_lite from DB or default to False
+                    'flags': row.flags or {}  # Add the complete flags object for concentration tests
                 }
                 
                 # Create a simple object that has the attributes concentration tests need
