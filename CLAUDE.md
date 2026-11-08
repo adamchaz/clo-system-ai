@@ -30,10 +30,21 @@ A comprehensive Collateralized Loan Obligation (CLO) Portfolio Management System
 - **One auth source**: every auth dependency is imported from `backend/app/core/unified_auth.py`. Missing or invalid tokens return **401** everywhere (some routes returned 403 before).
 - **Bugs fixed on the way**: `/auth/logout`, `/auth/permissions`, `/auth/sessions` returned 500; the DB health check always reported PostgreSQL down (SQLAlchemy 2.0 `text()`); detailed health/readiness always reported Redis down (call to a non-existent method); admin impersonation import error; Redis URL missing `://` when a password is set.
 
+### **Test isolation** (commit `9bbfdbb`)
+- `backend/tests/conftest.py` points the suite at a separate `clo_dev_test` database before the app is imported and refuses to run against a non-test database; `backend/pytest.ini` limits collection to `tests/`. Running `pytest` from `backend/` is safe.
+
+### **Analysis date rework** (commits `a939a4a`, `49c4338`, `62f451f`, `dfc9cea`, `c9c4fde`)
+- One configurable default (`DEFAULT_ANALYSIS_DATE`, 2016-03-23) in `app/core/analysis_date.py`; endpoints resolve the date (422 if invalid) and pass it down; service/engine entry points require it; no `date.today()` in business logic (Ruff TID251); QuantLib follows the analysis date.
+- Frontend: one global date in the top bar, mirrored to `?asOf=`, default served by public `GET /api/v1/config`.
+- `clo_deals.data_as_of` records each deal's holdings snapshot date; the UI warns when the analysis date differs.
+- Fixed along the way: long-dated tests and sold-position filtering ignored the requested date; credit-estimate recency and constraint maturity used the real date; the portfolio list's date picker never reached the API.
+- Full description: `docs/business_logic/ANALYSIS_DATE_SYSTEM.md`.
+
 ### **Known issues (not yet fixed)**
 - **Mock data**: waterfall, risk, rebalancing and portfolio-analytics services return hard-coded values; the waterfall API uses the same fake tranche structure for every deal. `CLODealEngine` (the converted VBA engine) is not reachable from any endpoint. `/users/` returns generated fake users.
 - **AuthService stubs**: `_get_user_by_id()` returns `None` and `_store_user()` persists nothing, so change-password/profile updates fail and `require_permissions` rejects every user (documents and parts of user management).
 - **Models vs schema drift**: the concentration-test models still declare 8 CHECK constraints the real schema never had; live tables `asset_correlations`, `scenario_inputs`, `model_parameters`, `reference_data`, `clo_static_parameters`, `clo_time_series_parameters` have no models; Alembic is not in use.
+- **Portfolio list shows 0 assets / $0 balance for every deal**: `GET /portfolios/` reads `current_asset_count` and `current_portfolio_balance` from the empty `collateral_pools` table instead of `deal_assets`.
 - **Broken endpoints found 2026-11-08 (pre-existing)**: `POST /risk/{deal_id}/risk-report` returns 500 (mock stress scenarios lack the `description` field `RiskReportResponse` requires); `POST /credit-migration/simulate/portfolio` and `/simulate/deal` fail (`'DealAsset' object has no attribute 'id'` in the service, then a response-validation error).
 - **Other**: concentration endpoint returns HTTP 200 with an empty result on failure; ~255 handlers put `str(e)` in HTTP error details; frontend `cloApi.ts` falls back to port 8001 while everything else uses 8000; `@types/d3-dispatch` 3.0.7 breaks `tsc` on TypeScript 4.9 (pin 3.0.6); dev credentials and `.env*` files are tracked in git (rotate the DB password).
 

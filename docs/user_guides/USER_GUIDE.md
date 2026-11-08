@@ -57,6 +57,22 @@ Use the left sidebar to navigate between sections:
 - **Reports**: Reporting and export functions
 - **Admin** (if applicable): User and system management
 
+### **4. Choosing the Analysis Date**
+
+All figures are calculated "as of" an **analysis date**, shown in the top bar as
+**As of Mar 23, 2016** (the default).
+
+- **Change it**: click the date in the top bar and pick a date, or use a quick date (quarter-ends,
+  year-ends). The date applies to **every page**.
+- **Reset**: use the reset button in the date picker to return to the default.
+- **Share or bookmark**: a non-default date appears in the address bar as `?asOf=2018-06-30`, so
+  links and bookmarks reopen the same view, and the browser's back button restores earlier dates.
+- **What it changes**: time-based measures such as days to maturity, long-dated asset tests,
+  reinvestment status and which test thresholds apply.
+- **What it doesn't change**: holdings, ratings and prices are a snapshot as of the date in the
+  source data (March 23, 2016 for all deals). Choosing a later date is **not a projection**. When
+  the analysis date differs from the snapshot date, the portfolio pages show a blue notice saying so.
+
 ## 📊 **Core Features**
 
 ### **Portfolio Management**
@@ -119,7 +135,7 @@ Each asset contains comprehensive information:
 
 #### **Waterfall Analysis**
 1. Navigate to **Analytics** → **Waterfall Analysis**
-2. Select portfolio and analysis date
+2. Select the portfolio (the analysis date comes from the top bar - see *Choosing the Analysis Date*)
 3. Choose waterfall methodology (MAG 6-17 available)
 4. Run calculation to see:
    - Payment priorities and sequences

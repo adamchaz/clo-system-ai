@@ -280,7 +280,9 @@ CREATE TABLE concentration_test_results (
 
 1. **Request Initiation**
    - Frontend calls `/api/v1/portfolios/{id}/concentration-tests`
-   - Request includes analysis date (defaults to 2016-03-23)
+   - Request includes `analysis_date` - the frontend sends the global analysis date (top bar);
+     omitted means the server default (`DEFAULT_ANALYSIS_DATE`, 2016-03-23); malformed or
+     out-of-range dates return 422. See `business_logic/ANALYSIS_DATE_SYSTEM.md`.
 
 2. **Asset Loading**
    - ConcentrationTestIntegrationService loads portfolio assets

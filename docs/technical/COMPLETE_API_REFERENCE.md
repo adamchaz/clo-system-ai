@@ -56,45 +56,88 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 A missing, invalid, or expired token returns `401`. The WebSocket endpoint takes the token as
 a query parameter instead: `/api/v1/websocket/ws?token=<access_token>`.
 
+## ⚙️ **Configuration API**
+
+### **Server Defaults** (public - no token required)
+
+```http
+GET /api/v1/config
+```
+
+**Response:**
+```json
+{
+  "analysis_date": {
+    "default": "2016-03-23",
+    "min": "2010-01-01",
+    "max": "2035-12-31"
+  }
+}
+```
+The frontend uses this instead of hard-coding the analysis date. See
+[Analysis Date System](../business_logic/ANALYSIS_DATE_SYSTEM.md).
+
+## 📅 **Analysis Date Parameter**
+
+Date-sensitive endpoints take an as-of date as `analysis_date` (`YYYY-MM-DD`) - a query
+parameter on GET endpoints, a body field on the concentration-test and credit-migration POSTs.
+`GET /risk/{deal_id}/metrics` names it `as_of_date`. When omitted, the server default
+(`DEFAULT_ANALYSIS_DATE`, 2016-03-23) applies; malformed or out-of-range dates return `422`.
+The full list of endpoints is in
+[Analysis Date System](../business_logic/ANALYSIS_DATE_SYSTEM.md#endpoints-that-accept-the-date).
+
 ## 📊 **Portfolio Management API**
 
 ### **List Portfolios**
 
 ```http
-GET /portfolios
+GET /api/v1/portfolios/
 ```
 
 **Query Parameters:**
-- `page` (optional): Page number (default: 1)
-- `limit` (optional): Results per page (default: 50, max: 1000)
-- `search` (optional): Search term
-- `manager` (optional): Filter by portfolio manager
-- `status` (optional): Filter by status (active, inactive, liquidating)
+- `skip` (optional): Records to skip (default: 0)
+- `limit` (optional): Results per page (default: 100, max: 2000)
+- `status` (optional): Filter by deal status
+- `analysis_date` (optional): As-of date for `days_to_maturity` (default: server default)
 
-**Response:**
+**Response** (actual output for MAG17 at the default date, abridged):
 ```json
 {
-  "portfolios": [
+  "data": [
     {
-      "id": "portfolio123",
-      "name": "CLO 2024-1A",
-      "manager": "Investment Manager LLC",
-      "inception_date": "2024-01-15",
-      "total_assets": 500000000,
+      "id": "MAG17",
+      "deal_name": "Magnetar MAG17 CLO",
+      "manager": "Magnetar Capital",
+      "effective_date": null,
+      "stated_maturity": "2028-04-20",
+      "reinvestment_period_end": "2020-04-20",
+      "deal_size": 499000000.0,
       "currency": "USD",
-      "status": "active",
-      "performance": {
-        "total_return": 0.085,
-        "irr": 0.092,
-        "moic": 1.12
-      }
+      "status": "revolving",
+      "days_to_maturity": 4411,
+      "data_as_of": "2016-03-23",
+      "current_asset_count": 0,
+      "current_portfolio_balance": 0.0
     }
   ],
-  "total_count": 25,
-  "page": 1,
-  "pages": 1
+  "message": "Retrieved 10 portfolios successfully"
 }
 ```
+`days_to_maturity` is measured from the analysis date (3,582 for MAG17 at 2018-06-30).
+`data_as_of` is the date the deal's holdings are a snapshot of; choosing a different analysis
+date shifts time-based measures but does not roll holdings forward.
+
+> **Known issue:** `current_asset_count` and `current_portfolio_balance` are read from the
+> `collateral_pools` table, which is empty, so they are 0 for every deal. The positions are in
+> `deal_assets` (MAG17: 195 positions, $431.16M par).
+
+### **Portfolio Summary**
+
+```http
+GET /api/v1/portfolios/{deal_id}/summary?analysis_date=2018-06-30
+```
+Returns summary figures plus `"analysis_date"` (the date used) and `"data_as_of"` (the
+holdings snapshot date).
 
 ### **Get Portfolio Details**
 

@@ -45,6 +45,7 @@ The CLO (Collateralized Loan Obligation) Management System database schema repre
 **Purpose**: CLO deal master information and key dates
 - **Primary Key**: `deal_id`
 - **Key Fields**: `deal_name`, `manager_name`, `pricing_date`, `closing_date`, `maturity_date`, `target_par_amount`
+- **`data_as_of`** (DATE): date the deal's holdings data is a snapshot of - Excel "Mag N Inputs" cell C3, 2016-03-23 for all ten deals. Added 2026-11-08 by `backend/migrations/011_clo_deals_data_as_of.sql`; used to warn when the analysis date differs
 - **Relationships**: One-to-many with tranches, assets, liabilities, triggers, fees
 
 #### **`clo_tranches`** - Note Tranches
