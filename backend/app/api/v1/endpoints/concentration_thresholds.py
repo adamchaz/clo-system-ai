@@ -4,7 +4,7 @@ RESTful API for database-driven concentration test threshold management
 """
 
 from typing import List, Optional, Dict, Any
-from datetime import date
+from datetime import date, datetime, timezone
 from decimal import Decimal
 from fastapi import APIRouter, Depends, HTTPException, Query, Path, Body, status
 from sqlalchemy.orm import Session
@@ -398,7 +398,7 @@ async def get_threshold_statistics(
         stats = await threshold_service.get_system_statistics()
         return {
             "concentration_threshold_statistics": stats,
-            "timestamp": date.today().isoformat()
+            "timestamp": datetime.now(timezone.utc).isoformat()
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to get statistics: {str(e)}")

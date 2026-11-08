@@ -328,7 +328,7 @@ async def update_yield_curve(
                 setattr(curve_model, field, value)
         
         # Update timestamp
-        curve_model.updated_date = date.today()
+        curve_model.updated_date = date.today()  # wall clock, not the analysis date (audit timestamp)
         
         service.session.commit()
         
@@ -368,7 +368,7 @@ async def delete_yield_curve(
         
         # Soft delete by setting is_active to False
         curve_model.is_active = False
-        curve_model.updated_date = date.today()
+        curve_model.updated_date = date.today()  # wall clock, not the analysis date (audit timestamp)
         
         service.session.commit()
         

@@ -20,6 +20,7 @@ from .accounts import AccountsCalculator, AccountsService, CashType as AccountsC
 from .reinvestment import Reinvest, ReinvestmentService, ReinvestInfo as ReinvestmentModelInfo, PaymentDates as ReinvestmentPaymentDates
 from .incentive_fee import IncentiveFeeStructure
 from ..services.incentive_fee import IncentiveFee, IncentiveFeeService
+from ..core.analysis_date import default_analysis_date
 
 
 class AccountType(str, Enum):
@@ -945,7 +946,7 @@ class CLODealEngine:
             calculator = self.liability_calculators[name]
             risk_measures = calculator.calculate_risk_measures(
                 self.yield_curve, 
-                self.clo_inputs.get("Analysis Date", date.today())
+                self.clo_inputs.get("Analysis Date", default_analysis_date())
             )
             
             # Update liability with calculated risk measures

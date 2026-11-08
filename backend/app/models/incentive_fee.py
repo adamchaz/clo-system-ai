@@ -26,6 +26,7 @@ from sqlalchemy.orm import relationship, Session
 from sqlalchemy.ext.declarative import declarative_base
 
 from ..core.database import Base
+from ..core.analysis_date import default_analysis_date
 
 
 class IncentiveFeeStructureModel(Base):
@@ -616,7 +617,7 @@ class IncentiveFee:
                 calc_record = IncentiveFeeCalculationModel(
                     fee_structure_id=structure.fee_structure_id,
                     period_number=i,
-                    calculation_date=self.current_date or self.analysis_date or date.today(),
+                    calculation_date=self.current_date or self.analysis_date or default_analysis_date(),
                     current_threshold=Decimal(str(self.threshold[i])),
                     threshold_reached=self.threshold_reached,
                     fee_paid_period=Decimal(str(self.fee_paid[i])),
@@ -674,7 +675,7 @@ class IncentiveFeeService:
         
         # Deal setup
         num_payments = 50  # Default number of periods
-        analysis_date = analysis_date or date.today()
+        analysis_date = analysis_date or default_analysis_date()
         incentive_fee.deal_setup(num_payments, closing_date, analysis_date)
         
         # Save to database
@@ -699,7 +700,7 @@ class IncentiveFeeService:
         # Create and setup incentive fee
         incentive_fee = IncentiveFee(self.session)
         incentive_fee.setup(float(structure.hurdle_rate), float(structure.incentive_fee_rate), payments_dict)
-        incentive_fee.deal_setup(50, structure.closing_date, structure.analysis_date or date.today())
+        incentive_fee.deal_setup(50, structure.closing_date, structure.analysis_date or default_analysis_date())
         
         # Restore state from database
         incentive_fee.fee_structure_id = structure.fee_structure_id

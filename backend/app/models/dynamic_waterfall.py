@@ -17,6 +17,7 @@ from sqlalchemy.sql import func
 from ..core.database import Base
 from .waterfall_types import BaseWaterfallStrategy, WaterfallStep, PaymentPhase
 from .clo_deal import CLOTranche
+from ..core.analysis_date import default_analysis_date
 
 
 class TrancheType(str, Enum):
@@ -580,7 +581,7 @@ class WaterfallStructureBuilder:
             is_deferrable=(payment_category == PaymentCategory.SUBORDINATED_INTEREST),
             is_pik_eligible=(payment_category in [PaymentCategory.MEZZ_INTEREST, PaymentCategory.SUBORDINATED_INTEREST]),
             supports_turbo=(payment_category != PaymentCategory.SUBORDINATED_INTEREST),
-            effective_date=date.today()
+            effective_date=default_analysis_date()
         )
     
     @classmethod

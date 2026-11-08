@@ -22,6 +22,7 @@ from ..models.asset import Asset
 from ..models.clo_deal import CLODeal
 from ..utils.math_utils import MathUtils
 from ..core.exceptions import CLOBusinessError, CLOValidationError
+from ..core.analysis_date import default_analysis_date
 
 logger = logging.getLogger(__name__)
 
@@ -71,7 +72,7 @@ class CreditMigrationService:
             collateral_pool = self._create_collateral_pool(portfolio)
             
             if analysis_date is None:
-                analysis_date = date.today()
+                analysis_date = default_analysis_date()
             
             # Setup simulation
             self.credit_migration.setup(
@@ -158,7 +159,7 @@ class CreditMigrationService:
             collateral_pool = self._create_collateral_pool(portfolio)
             
             if analysis_date is None:
-                analysis_date = date.today()
+                analysis_date = default_analysis_date()
             
             # Setup and run simulation
             self.credit_migration.setup(
@@ -333,7 +334,7 @@ class CreditMigrationService:
             
             def get_asset_maturity(self, asset_id):
                 asset = self.assets.get(asset_id)
-                return asset.maturity_date if asset else date.today()
+                return asset.maturity_date if asset else default_analysis_date()
             
             def get_last_maturity_date(self):
                 return max(asset.maturity_date for asset in self.assets.values())

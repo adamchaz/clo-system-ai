@@ -14,6 +14,7 @@ import pandas as pd
 
 from sqlalchemy.orm import Session
 from ..services.data_integration import DataIntegrationService
+from ..core.analysis_date import default_analysis_date, resolve_analysis_date
 
 logger = logging.getLogger(__name__)
 
@@ -69,7 +70,7 @@ class RiskAnalyticsService:
             
             return {
                 'deal_id': deal_id,
-                'as_of_date': as_of_date or date.today(),
+                'as_of_date': resolve_analysis_date(as_of_date),
                 'calculation_timestamp': datetime.now(),
                 **volatility_metrics,
                 **concentration_metrics,
@@ -187,7 +188,7 @@ class RiskAnalyticsService:
             return {
                 'deal_id': deal_id,
                 'dimension': dimension,
-                'analysis_date': date.today(),
+                'analysis_date': default_analysis_date(),
                 'concentrations': {k: float(v) for k, v in concentrations.items()},
                 'concentration_ratio_top5': float(concentration_ratio_top5),
                 'concentration_ratio_top10': float(concentration_ratio_top10),
@@ -469,7 +470,7 @@ class RiskAnalyticsService:
                 'deal_id': deal_id,
                 'report_type': report_type,
                 'generation_date': datetime.now(),
-                'data_as_of_date': date.today(),
+                'data_as_of_date': default_analysis_date(),
                 'report_version': "1.0"
             }
             
@@ -509,7 +510,8 @@ class RiskAnalyticsService:
                 {
                     'priority': 'High',
                     'item': 'Diversify sector exposure',
-                    'deadline': (date.today() + timedelta(days=30)).isoformat()
+                    # real-world action deadline: wall clock, not the analysis date
+                    'deadline': (date.today() + timedelta(days=30)).isoformat()  # noqa: TID251
                 }
             ]
             

@@ -15,6 +15,7 @@ from ..core.database import Base
 from .waterfall_types import BaseWaterfallStrategy, WaterfallStep, PaymentPhase
 from .dynamic_waterfall import DynamicWaterfallStrategy, TrancheMapping, WaterfallStructure, PaymentCategory
 from .clo_deal import CLOTranche
+from ..core.analysis_date import default_analysis_date
 
 
 class MagWaterfallType(str, Enum):
@@ -495,7 +496,7 @@ class MagWaterfallFactory:
         config = MagWaterfallConfiguration(
             deal_id=deal_id,
             mag_version=mag_version.value,
-            effective_date=kwargs.get('effective_date', date.today())
+            effective_date=kwargs.get('effective_date', default_analysis_date())
         )
         
         # Get default features for this version

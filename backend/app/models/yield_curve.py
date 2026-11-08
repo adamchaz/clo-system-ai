@@ -24,6 +24,7 @@ from sqlalchemy.orm import relationship, Session
 from sqlalchemy.ext.declarative import declarative_base
 
 from ..core.database import Base
+from ..core.analysis_date import default_analysis_date
 
 
 class YieldCurveModel(Base):
@@ -156,7 +157,7 @@ class YieldCurve:
         """
         # VBA exact variable names (converted from Hungarian notation)
         self.name: str = name or ""
-        self.analysis_date: date = analysis_date or date.today()
+        self.analysis_date: date = analysis_date or default_analysis_date()
         self.rate_dict: Dict[int, float] = rate_dict or {}
         
         self.last_month: int = 0  # VBA: clsLastMonth
@@ -176,7 +177,7 @@ class YieldCurve:
         
         # If rate_dict provided, setup automatically
         if rate_dict:
-            self.setup(name or "DEFAULT", analysis_date or date.today(), rate_dict)
+            self.setup(name or "DEFAULT", analysis_date or default_analysis_date(), rate_dict)
     
     def setup(self, i_name: str, i_analysis_date: date, i_rate_dict: Dict[int, float]):
         """
@@ -540,7 +541,7 @@ class YieldCurveService:
                                discount_curve_name: str, analysis_date: date = None) -> Decimal:
         """Calculate present value using yield curve discounting"""
         if not analysis_date:
-            analysis_date = date.today()
+            analysis_date = default_analysis_date()
         
         curve = self.load_yield_curve(discount_curve_name, analysis_date)
         if not curve:

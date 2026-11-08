@@ -18,6 +18,7 @@ from ..models.collateral_pool import (
 # from ..models.concentration_test import ConcentrationTest, RatingDerivations, TestSettings
 from ..models.asset import Asset
 from ..models.clo_deal_engine import Account, AccountType, CashType
+from ..core.analysis_date import default_analysis_date
 
 
 class HypoInputs:
@@ -148,7 +149,7 @@ class CollateralPoolService:
                 asset_id=asset.asset_id,
                 par_amount=asset.par_amount,
                 original_par_amount=asset.par_amount,
-                position_date=date.today(),
+                position_date=default_analysis_date(),
                 is_defaulted=asset.default_asset or False
             )
             self.db_session.add(pool_asset)
@@ -511,7 +512,7 @@ class CollateralPoolService:
         for result in test_results:
             db_result = ConcentrationTestResult(
                 pool_id=pool_id,
-                test_date=date.today(),
+                test_date=default_analysis_date(),
                 test_number=result.test_number,
                 test_name=result.test_name,
                 threshold_value=result.threshold,

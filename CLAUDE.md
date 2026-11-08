@@ -410,7 +410,8 @@ GET /api/v1/portfolios/{id}/summary?analysis_date=2016-06-30  # Custom date
 - Query parameters: `analysis_date: date = Depends(analysis_date_param)`. Request bodies: `resolve_analysis_date_or_422(body.analysis_date)`. Plain code: `resolve_analysis_date(value)`. Valid range 2010-01-01 to 2035-12-31; invalid input returns 422.
 - Pass the resolved date down explicitly; never substitute `date.today()` for a missing analysis date (wall-clock time is only for timestamps/expiry).
 - QuantLib's evaluation date defaults to the analysis date; wrap QuantLib work for a specific date in `with ql_evaluation_date(d):` (sets/restores under a lock, since QuantLib's setting is process-global).
-- Still to do (steps 3-5 of the plan): make the date a required argument through services/engines and remove remaining business uses of `date.today()` (with a Ruff `banned-api` rule); one global frontend date mirrored to `?asOf=` and served by a config endpoint; store each deal's data-snapshot date and warn when the analysis date differs.
+- Business logic (services/models/repositories) contains no `date.today()`/`datetime.today()`; enforced by Ruff rule TID251 (`cd backend && ruff check app`, config in `backend/ruff.toml`). Genuine wall-clock uses carry `# noqa: TID251` with a reason. `datetime.now()` stays allowed for timestamps.
+- Still to do: step 3 pass 2 (make `analysis_date` a required argument in the 12 service/engine/repository functions that still default it); step 4 (one global frontend date mirrored to `?asOf=`, served by a config endpoint); step 5 (store each deal's data-snapshot date and warn when the analysis date differs).
 
 **Frontend Interface**: Interactive date picker with 2016-relevant quick actions
 - Default baseline: March 23, 2016
@@ -771,6 +772,7 @@ This system handles sensitive financial data:
 - Database access: import `get_db` / `session_scope` / `get_redis` / `Base` / `engine` from `app.core.database`. Do not create engines, `declarative_base()`, or per-module `get_db()` helpers. Do not use `app.core.database_config` in app code.
 - Authentication: import dependencies from `app.core.unified_auth` only. New data routers should be included in `api/v1/api.py` with `dependencies=require_auth`.
 - Configuration: read settings from `app.core.config.settings` only.
+- Dates: business logic takes the analysis date explicitly (`app.core.analysis_date`); never `date.today()` - `ruff check app` enforces this in services/models/repositories.
 - Tests run against `clo_dev_test` via `backend/tests/conftest.py` - keep it that way: new DB tests must use the app engine (redirected by conftest) or their own SQLite engine, never a hard-coded `clo_dev` URL. Never run scripts that call `drop_all()` / `create_all()` against `clo_dev`; back up with `pg_dump` before any database-touching operation.
 
 ## Important Instruction Reminders

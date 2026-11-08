@@ -19,6 +19,7 @@ if TYPE_CHECKING:
 
 from ..core.database import Base
 from ..core.config import QuantLibConfig
+from ..core.analysis_date import default_analysis_date
 
 
 class RatingEnum(str, Enum):
@@ -241,7 +242,7 @@ class Asset(Base):
             self.mdy_dp_rating = results.get('mdy_dp_rating')
             self.mdy_dp_rating_warf = results.get('mdy_dp_rating_warf')
             self.mdy_recovery_rate = results.get('mdy_recovery_rate')
-            self.rating_derivation_date = date.today()
+            self.rating_derivation_date = date.today()  # noqa: TID251 - records when ratings were derived (wall clock)
             
             # Store rating source hierarchy for audit trail
             import json
@@ -346,7 +347,7 @@ class Asset(Base):
         # Create migration record
         migration = rating_service.create_rating_migration(
             asset_id=self.blkrock_id,
-            migration_date=date.today(),
+            migration_date=default_analysis_date(),
             previous_ratings=previous_ratings,
             new_ratings=new_ratings,
             par_amount=self.par_amount or Decimal('0'),
@@ -404,7 +405,7 @@ class Asset(Base):
             yield_curve_service = YieldCurveService(session)
         
         if not pricing_date:
-            pricing_date = date.today()
+            pricing_date = default_analysis_date()
         
         # Default curve selection based on asset characteristics
         if not curve_name:

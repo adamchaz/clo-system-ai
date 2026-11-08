@@ -631,11 +631,14 @@ class RatingDerivationEngine:
         return None
     
     def _is_recent_date(self, check_date: date, months_threshold: int) -> bool:
-        """Check if date is within specified months of current date"""
+        """Check if date is within specified months of the analysis date"""
         try:
-            from datetime import datetime, timedelta
-            today = datetime.now().date()
-            threshold_date = today - timedelta(days=months_threshold * 30)
+            from datetime import timedelta
+            from ..core.analysis_date import default_analysis_date
+            # Measured from the analysis date: against the wall clock every 2015-16 credit
+            # estimate would look years out of date.
+            as_of = default_analysis_date()
+            threshold_date = as_of - timedelta(days=months_threshold * 30)
             return check_date >= threshold_date
         except:
             return False

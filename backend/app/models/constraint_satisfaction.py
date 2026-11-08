@@ -15,6 +15,7 @@ from sqlalchemy.orm import Session
 
 from .asset import Asset
 from .clo_deal import CLODeal
+from ..core.analysis_date import default_analysis_date
 
 
 class ConstraintType(str, Enum):
@@ -107,6 +108,8 @@ class BaseConstraint(ABC):
     def __init__(self, rule: ConstraintRule):
         self.rule = rule
         self.logger = logging.getLogger(__name__)
+        # Set by ConstraintSatisfactionEngine.evaluate_all_constraints before evaluate()
+        self.evaluation_date: Optional[date] = None
     
     @abstractmethod
     def evaluate(self, portfolio: List[Asset], deal: CLODeal) -> Optional[ConstraintViolation]:
@@ -328,7 +331,7 @@ class MaturityConstraint(BaseConstraint):
         
         # Calculate weighted average maturity
         total_weighted_maturity = Decimal('0')
-        evaluation_date = date.today()
+        evaluation_date = self.evaluation_date or default_analysis_date()
         
         for asset in portfolio:
             if not asset.maturity_date:
@@ -477,7 +480,7 @@ class ConstraintSatisfactionEngine:
                                 evaluation_date: date = None) -> List[ConstraintViolation]:
         """Evaluate all constraints against portfolio"""
         if evaluation_date is None:
-            evaluation_date = date.today()
+            evaluation_date = default_analysis_date()
         
         violations = []
         
@@ -485,6 +488,7 @@ class ConstraintSatisfactionEngine:
             if not constraint.is_active(evaluation_date):
                 continue
             
+            constraint.evaluation_date = evaluation_date
             violation = constraint.evaluate(portfolio, self.deal)
             if violation:
                 violations.append(violation)

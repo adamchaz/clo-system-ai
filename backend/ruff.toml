@@ -1,0 +1,15 @@
+# Ruff configuration - currently a single targeted guardrail, not general linting.
+# Run from backend/:  ruff check app
+
+[lint]
+select = ["TID251"]
+
+[lint.flake8-tidy-imports.banned-api]
+# Business logic must use the analysis (as-of) date, never the calendar date of the machine.
+# See app/core/analysis_date.py. Wall-clock timestamps (datetime.now(...)) are still allowed.
+"datetime.date.today".msg = "Use the analysis date (app.core.analysis_date) - or add `# noqa: TID251` with a reason if this really is wall-clock time."
+"datetime.datetime.today".msg = "Use the analysis date (app.core.analysis_date) - or add `# noqa: TID251` with a reason if this really is wall-clock time."
+
+[lint.per-file-ignores]
+# The rule applies only to business logic: services, models and repositories.
+"!app/{services,models,repositories}/**" = ["TID251"]

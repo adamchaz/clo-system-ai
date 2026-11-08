@@ -26,6 +26,7 @@ from ..core.database import session_scope
 from ..models.collateral_pool import CollateralPool as Portfolio
 from ..models.asset import Asset
 from ..core.exceptions import CLOBusinessError, CLOValidationError
+from ..core.analysis_date import default_analysis_date
 
 logger = logging.getLogger(__name__)
 
@@ -385,7 +386,7 @@ class RebalancingService:
                         ratings = ['AAA', 'AA', 'A', 'BBB', 'BB', 'B']
                         self.sp_rating = random.choice(ratings)
                         from datetime import timedelta
-                        base_date = date.today()
+                        base_date = default_analysis_date()
                         self.maturity_date = base_date + timedelta(days=random.randint(365, 3650))
                         industries = ['Technology', 'Healthcare', 'Energy', 'Finance', 'Consumer']
                         self.sp_industry = random.choice(industries)

@@ -9,6 +9,7 @@ Date: 2025-01-12
 """
 
 import pytest
+from app.core.analysis_date import default_analysis_date
 from datetime import date, timedelta
 from unittest.mock import Mock, MagicMock, patch
 from typing import Dict, List
@@ -297,8 +298,8 @@ class TestPortfolioRebalancer:
         assert rebalancer._get_rating_score('UNKNOWN') == 3.0  # Default
     
     def test_get_maturity_score(self, rebalancer):
-        """Test maturity scoring"""
-        today = date.today()
+        """Test maturity scoring (measured from the analysis date, not the wall clock)"""
+        today = default_analysis_date()
         
         # Test optimal range (3-7 years)
         optimal_date = today + timedelta(days=5 * 365)

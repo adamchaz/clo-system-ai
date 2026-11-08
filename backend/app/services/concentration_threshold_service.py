@@ -5,7 +5,7 @@ Business logic layer for concentration test threshold management with caching
 
 from typing import Optional, List, Dict, Tuple, Any
 from datetime import date, datetime, timedelta
-from ..core.analysis_date import default_analysis_date
+from ..core.analysis_date import MAX_ANALYSIS_DATE, MIN_ANALYSIS_DATE, default_analysis_date
 from decimal import Decimal
 import json
 import redis
@@ -288,8 +288,12 @@ class ConcentrationThresholdService:
         await self._validate_threshold_value(test_id, threshold_value)
         
         # Validate effective date
-        if effective_date > date.today() + timedelta(days=365):
-            raise ValueError("Effective date cannot be more than 1 year in the future")
+        # Thresholds are historical; validate against the supported analysis range rather
+        # than the wall clock.
+        if not (MIN_ANALYSIS_DATE <= effective_date <= MAX_ANALYSIS_DATE):
+            raise ValueError(
+                f"Effective date must be between {MIN_ANALYSIS_DATE} and {MAX_ANALYSIS_DATE}"
+            )
         
         if expiry_date and expiry_date <= effective_date:
             raise ValueError("Expiry date must be after effective date")

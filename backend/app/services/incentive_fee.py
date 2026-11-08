@@ -14,6 +14,7 @@ import json
 import math
 from sqlalchemy.orm import Session
 
+from ..core.analysis_date import default_analysis_date
 from ..models.incentive_fee import (
     IncentiveFeeStructure,
     SubordinatedPayment, 
@@ -519,7 +520,7 @@ class IncentiveFee:
                     calc = IncentiveFeeCalculation(
                         fee_structure_id=self.fee_structure_id,
                         period_number=i,
-                        calculation_date=self.cls_curr_date or date.today(),
+                        calculation_date=self.cls_curr_date or default_analysis_date(),
                         current_threshold=Decimal(str(self.cls_threshold[i])),
                         threshold_reached=self.cls_threshold_reach,
                         fee_paid_period=Decimal(str(self.cls_fee_paid[i] if i < len(self.cls_fee_paid) else 0)),

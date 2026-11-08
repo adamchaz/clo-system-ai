@@ -8,6 +8,7 @@ from datetime import date
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
+from ....core.analysis_date import default_analysis_date
 from ....core.database import get_db
 from ....services.waterfall_service import WaterfallService
 from ....schemas.waterfall import (
@@ -58,7 +59,7 @@ async def get_payment_sequence(
         # For now, return placeholder structure
         sequence = {
             "deal_id": deal_id,
-            "payment_date": payment_date or date.today(),
+            "payment_date": payment_date or default_analysis_date(),
             "sequence": [
                 {"priority": 1, "type": "fees", "description": "Management fees"},
                 {"priority": 2, "type": "senior_interest", "description": "Senior tranche interest"},

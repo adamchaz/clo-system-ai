@@ -28,6 +28,7 @@ from ..schemas.portfolio_analytics import (
 )
 from ..utils.math_utils import MathUtils
 from ..utils.financial_utils import FinancialUtils
+from ..core.analysis_date import default_analysis_date
 
 logger = logging.getLogger(__name__)
 
@@ -141,7 +142,7 @@ class PortfolioAnalyticsService:
                 portfolio = self._get_portfolio(session, request.portfolio_id)
                 
                 # Determine analysis period
-                end_date = request.end_date or date.today()
+                end_date = request.end_date or default_analysis_date()
                 if request.start_date:
                     start_date = request.start_date
                 else:

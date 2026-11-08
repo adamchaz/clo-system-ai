@@ -26,6 +26,7 @@ import pandas as pd
 from scipy.optimize import minimize
 import logging
 from collections import defaultdict
+from ..core.analysis_date import default_analysis_date
 
 logger = logging.getLogger(__name__)
 
@@ -435,7 +436,7 @@ class PortfolioRebalancer:
             # Base score components (mock values for demo)
             spread_score = getattr(asset, 'spread', 0.05) * 100  # Spread in bp
             rating_score = self._get_rating_score(getattr(asset, 'sp_rating', 'BBB'))
-            maturity_score = self._get_maturity_score(getattr(asset, 'maturity_date', date.today()))
+            maturity_score = self._get_maturity_score(getattr(asset, 'maturity_date', default_analysis_date()))
             size_score = min(amount / 1000000, 5.0)  # Size premium up to $5M
             
             # Combine scores with weights
@@ -471,7 +472,7 @@ class PortfolioRebalancer:
     def _get_maturity_score(self, maturity_date: date) -> float:
         """Calculate maturity score (prefer 3-7 year maturities)"""
         try:
-            years_to_maturity = (maturity_date - date.today()).days / 365.25
+            years_to_maturity = (maturity_date - default_analysis_date()).days / 365.25
             
             if years_to_maturity < 1:
                 return 1.0  # Too short

@@ -11,6 +11,7 @@ Tests the complete VBA YieldCurve.cls conversion including:
 """
 
 import pytest
+from app.core.analysis_date import default_analysis_date
 import math
 from datetime import date, datetime
 from decimal import Decimal
@@ -71,7 +72,7 @@ class TestYieldCurveSetup:
         curve = YieldCurve()
         
         assert curve.name == ""
-        assert curve.analysis_date == date.today()
+        assert curve.analysis_date == default_analysis_date()  # defaults to the analysis date
         assert curve.rate_dict == {}
         assert curve.last_month == 0
         assert curve.forward_dict == {}
