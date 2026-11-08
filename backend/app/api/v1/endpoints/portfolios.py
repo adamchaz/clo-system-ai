@@ -12,6 +12,7 @@ from datetime import date
 from ....core.database import get_db
 from ....services.data_integration import DataIntegrationService
 from ....utils.date_utils import get_analysis_date, validate_analysis_date
+from ....core.analysis_date import resolve_analysis_date_or_422
 from ....schemas.portfolios import (
     CLODealResponse,
     CLODealCreate,
@@ -526,16 +527,10 @@ async def run_concentration_tests_direct(
     """
     print(f"🎯 Running database-driven concentration tests for {deal_id}")
     
+    # Invalid dates are rejected with 422 before any work starts
+    analysis_date = resolve_analysis_date_or_422(request.get('analysis_date'))
+
     try:
-        # Get analysis date from request or use CLO system default
-        from datetime import date
-        analysis_date = request.get('analysis_date')
-        if analysis_date:
-            from datetime import datetime
-            analysis_date = datetime.fromisoformat(analysis_date.replace('Z', '+00:00')).date()
-        else:
-            analysis_date = date(2016, 3, 23)  # Default CLO analysis date
-        
         # Use the database-driven concentration test integration service
         from ....services.concentration_test_integration_service import get_concentration_integration_service
         
@@ -563,10 +558,9 @@ async def run_concentration_tests_direct(
         traceback.print_exc()
         
         # Return error response
-        from datetime import date
         return {
             "portfolio_id": deal_id,
-            "analysis_date": date.today().isoformat(),
+            "analysis_date": analysis_date.isoformat(),
             "concentration_tests": [],
             "summary": {
                 "total_tests": 0,

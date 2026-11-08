@@ -8,6 +8,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from starlette.status import HTTP_200_OK
 
 from ....core.unified_auth import get_current_user, get_optional_user
+from ....core.analysis_date import resolve_analysis_date_or_422
 from ....schemas.portfolio_analytics import (
     PortfolioOptimizationRequest, PortfolioOptimizationResult,
     PortfolioPerformanceAnalysisRequest, PortfolioPerformanceResult,
@@ -137,10 +138,8 @@ async def analyze_concentration_test(
         from ....core.database import get_db
         from ....services.concentration_test_integration_service import get_concentration_integration_service
         
-        # Get analysis date from request or use CLO system default
-        analysis_date = getattr(request, 'analysis_date', None)
-        if not analysis_date:
-            analysis_date = date(2016, 3, 23)  # Default CLO analysis date
+        # Analysis date from the request body, or the configured default
+        analysis_date = resolve_analysis_date_or_422(request.analysis_date)
         
         # Get database connection and run database-driven concentration tests
         db = next(get_db())
@@ -166,7 +165,7 @@ async def analyze_concentration_test(
     except Exception as e:
         return {
             "portfolio_id": portfolio_id,
-            "analysis_date": date(2016, 3, 23).isoformat(),
+            "analysis_date": resolve_analysis_date_or_422(request.analysis_date).isoformat(),
             "concentration_tests": [],
             "summary": {
                 "total_tests": 0,
@@ -202,10 +201,8 @@ async def analyze_concentration(
         db = next(get_db())
         integration_service = get_concentration_integration_service(db)
         
-        # Get analysis date from request or use CLO system default
-        analysis_date = getattr(request, 'analysis_date', None)
-        if not analysis_date:
-            analysis_date = date(2016, 3, 23)  # Default CLO analysis date
+        # Analysis date from the request body, or the configured default
+        analysis_date = resolve_analysis_date_or_422(request.analysis_date)
         
         # Run database-driven concentration tests
         result = integration_service.run_portfolio_concentration_tests(
@@ -230,7 +227,7 @@ async def analyze_concentration(
         # Return error response instead of falling back to mock data
         return {
             "portfolio_id": portfolio_id,
-            "analysis_date": date(2016, 3, 23).isoformat(),
+            "analysis_date": resolve_analysis_date_or_422(request.analysis_date).isoformat(),
             "concentration_tests": [],
             "summary": {
                 "total_tests": 0,

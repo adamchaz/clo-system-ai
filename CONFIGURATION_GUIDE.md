@@ -99,12 +99,25 @@ See the corresponding sections of `config.py` (`RATE_LIMIT_*`, `LOG_*`, `PROMETH
 `STORAGE_BACKEND`, `SMTP_*`, `BACKUP_*`, `FEATURE_*`). Every field there can be set by an
 environment variable of the same name.
 
+### Analysis date
+```bash
+DEFAULT_ANALYSIS_DATE=2016-03-23   # as-of date used when a request doesn't pass analysis_date
+```
+The single source for the default. Requests may pass any date from 2010-01-01 to 2035-12-31
+(`?analysis_date=YYYY-MM-DD`, or an `analysis_date` field in request bodies); invalid or
+out-of-range dates return 422. QuantLib's global evaluation date is initialised to this value
+(it used to be the real current date). Implementation: `backend/app/core/analysis_date.py`.
+
+Note: the portfolio data is a snapshot as of 2016-03-23 (the workbook's analysis date).
+Changing the analysis date moves time-based measures such as years-to-maturity, but does not
+roll holdings forward.
+
 ### Not configurable
-Older versions of this guide listed `DEFAULT_ANALYSIS_DATE`, `MAX_PORTFOLIO_SIZE`,
-`MAX_ASSET_COUNT`, `CALCULATION_PRECISION`, `ENABLE_PERFORMANCE_FEATURES`,
-`ENABLE_WATERFALL_CACHING`, `JWT_REFRESH_TOKEN_EXPIRE_DAYS`, `ALLOWED_HOSTS`,
-`CORS_CREDENTIALS`, `CORS_METHODS` and `CORS_HEADERS`. None of these are read by the code.
-The analysis date default (2016-03-23) is set in `backend/app/utils/date_utils.py`.
+Older versions of this guide listed `MAX_PORTFOLIO_SIZE`, `MAX_ASSET_COUNT`,
+`CALCULATION_PRECISION`, `ENABLE_PERFORMANCE_FEATURES`, `ENABLE_WATERFALL_CACHING`,
+`JWT_REFRESH_TOKEN_EXPIRE_DAYS`, `ALLOWED_HOSTS`, `CORS_CREDENTIALS`, `CORS_METHODS` and
+`CORS_HEADERS`. None of these are read by the code. `QUANTLIB_DATE_TODAY_AUTO` was removed on
+2026-11-08 (QuantLib now follows the analysis date).
 
 ---
 

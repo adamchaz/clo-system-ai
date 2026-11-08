@@ -6,6 +6,7 @@ Enhanced concentration test engine using database-driven thresholds
 from typing import List, Dict, Optional, Any, Tuple
 from decimal import Decimal
 from datetime import date
+from ..core.analysis_date import default_analysis_date
 from dataclasses import dataclass
 import logging
 
@@ -48,10 +49,10 @@ class DatabaseDrivenConcentrationTest:
         self.analysis_date: Optional[date] = None
         self.threshold_configs: Dict[int, ThresholdConfiguration] = {}
         
-    async def initialize_for_deal(self, deal_id: str, analysis_date: date = date(2016, 3, 23)):
-        """Initialize test engine for specific deal and analysis date"""
+    async def initialize_for_deal(self, deal_id: str, analysis_date: Optional[date] = None):
+        """Initialize test engine for specific deal and analysis date (default: system analysis date)"""
         self.deal_id = deal_id
-        self.analysis_date = analysis_date
+        self.analysis_date = analysis_date or default_analysis_date()
         
         # Load ONLY the threshold configurations that are actually configured for this deal
         # This ensures we only run tests that have been explicitly set up for the deal
@@ -628,7 +629,7 @@ class DatabaseDrivenConcentrationTest:
         total_weighted_life = Decimal('0')
         total_weight = Decimal('0')
         
-        analysis_date = self.analysis_date or date(2016, 3, 23)
+        analysis_date = self.analysis_date or default_analysis_date()
         
         for asset in assets_dict.values():
             if asset.maturity_date:
@@ -1749,7 +1750,8 @@ class DatabaseDrivenConcentrationTest:
                     else:
                         maturity_date = asset.maturity
                     
-                    analysis_date = date(2016, 3, 23)  # Default analysis date
+                    # Use the engine's analysis date (was hard-coded to 2016-03-23)
+                    analysis_date = self.analysis_date or default_analysis_date()
                     years_to_maturity = (maturity_date - analysis_date).days / 365.25
                     
                     if years_to_maturity > 6.0:

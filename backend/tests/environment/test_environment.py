@@ -22,7 +22,7 @@ def test_configuration():
     print(f"✅ Database URL: {settings.database_url}")
     print(f"✅ Redis URL: {settings.redis_url}")
     print(f"✅ Max Assets: {settings.max_assets}")
-    print(f"✅ QuantLib Auto Date: {settings.quantlib_date_today_auto}")
+    print(f"✅ Default Analysis Date: {settings.default_analysis_date}")
     return True
 
 

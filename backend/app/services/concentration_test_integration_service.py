@@ -6,6 +6,7 @@ Integrates the enhanced concentration test engine with real portfolio data
 from typing import Dict, List, Any, Optional
 from decimal import Decimal
 from datetime import date
+from ..core.analysis_date import default_analysis_date
 from sqlalchemy.orm import Session
 from sqlalchemy import text
 
@@ -35,13 +36,13 @@ class ConcentrationTestIntegrationService:
         Run actual concentration tests on a portfolio using real asset data
         """
         if not analysis_date:
-            analysis_date = date(2016, 3, 23)  # Default CLO analysis date
+            analysis_date = default_analysis_date()
         
         try:
             # Step 1: Load portfolio assets from database
-            assets_dict = self._load_portfolio_assets(portfolio_id)
+            assets_dict = self._load_portfolio_assets(portfolio_id, analysis_date)
             if not assets_dict:
-                return self._create_empty_result(portfolio_id, "No assets found for portfolio")
+                return self._create_empty_result(portfolio_id, "No assets found for portfolio", analysis_date)
             
             # Step 2: Initialize concentration engine with database-driven thresholds  
             import asyncio
@@ -59,7 +60,7 @@ class ConcentrationTestIntegrationService:
             print(f"Error running concentration tests for {portfolio_id}: {e}")
             import traceback
             traceback.print_exc()
-            return self._create_empty_result(portfolio_id, f"Error: {str(e)}")
+            return self._create_empty_result(portfolio_id, f"Error: {str(e)}", analysis_date)
     
     async def _run_async_tests(self, portfolio_id: str, analysis_date: date, assets_dict: Dict[str, Asset]) -> Dict[str, Any]:
         """Run the async concentration tests"""
@@ -127,7 +128,7 @@ class ConcentrationTestIntegrationService:
             "failed_tests": failed_tests
         }
     
-    def _load_portfolio_assets(self, portfolio_id: str) -> Dict[str, Asset]:
+    def _load_portfolio_assets(self, portfolio_id: str, analysis_date: date) -> Dict[str, Asset]:
         """Load all assets for a portfolio from database"""
         try:
             # Use the proper join with deal_assets table for all portfolios
@@ -167,7 +168,7 @@ class ConcentrationTestIntegrationService:
             
             result = self.db.execute(query, {
                 'portfolio_id': portfolio_id,
-                'analysis_date': date(2016, 3, 23)
+                'analysis_date': analysis_date
             })
             
             assets_dict = {}
@@ -220,11 +221,11 @@ class ConcentrationTestIntegrationService:
             traceback.print_exc()
             return {}
     
-    def _create_empty_result(self, portfolio_id: str, message: str) -> Dict[str, Any]:
+    def _create_empty_result(self, portfolio_id: str, message: str, analysis_date: date) -> Dict[str, Any]:
         """Create empty result when no data is available"""
         return {
             "portfolio_id": portfolio_id,
-            "analysis_date": date.today().isoformat(),
+            "analysis_date": analysis_date.isoformat(),
             "concentration_tests": [],
             "summary": {
                 "total_tests": 0,

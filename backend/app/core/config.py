@@ -4,6 +4,7 @@ Handles environment variables and application settings
 """
 
 import os
+from datetime import date
 from typing import List, Optional, Union
 from pydantic_settings import BaseSettings
 from pydantic import validator
@@ -74,10 +75,12 @@ class Settings(BaseSettings):
     rate_limit_auth: str = "5/minute"
     
     # QuantLib Configuration
-    quantlib_date_today_auto: bool = True
     quantlib_thread_safety: bool = True
     
     # CLO System Specific
+    # As-of date used when a request doesn't specify one. Every deal's holdings in
+    # TradeHypoPrelimv32.xlsm are a snapshot as of this date. See app/core/analysis_date.py.
+    default_analysis_date: date = date(2016, 3, 23)
     max_assets: int = 10000
     max_correlations: int = 1000000
     default_day_count: str = "Actual360"
@@ -237,10 +240,15 @@ class QuantLibConfig:
     
     @staticmethod
     def initialize():
-        """Initialize QuantLib settings"""
-        # Set evaluation date to today if auto-enabled
-        if settings.quantlib_date_today_auto:
-            ql.Settings.instance().evaluationDate = ql.Date.todaysDate()
+        """Initialize QuantLib settings.
+
+        QuantLib's evaluation date is process-global. It defaults to the analysis date
+        (not the real current date - the portfolio data is a 2016 snapshot). Calculations
+        for a specific as-of date must wrap their QuantLib work in
+        app.core.analysis_date.ql_evaluation_date(...).
+        """
+        d = settings.default_analysis_date
+        ql.Settings.instance().evaluationDate = ql.Date(d.day, d.month, d.year)
     
     @staticmethod
     def get_day_count(day_count_name: str = None):

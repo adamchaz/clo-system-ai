@@ -5,6 +5,7 @@ Business logic layer for concentration test threshold management with caching
 
 from typing import Optional, List, Dict, Tuple, Any
 from datetime import date, datetime, timedelta
+from ..core.analysis_date import default_analysis_date
 from decimal import Decimal
 import json
 import redis
@@ -143,7 +144,7 @@ class ConcentrationThresholdService:
                  cache: Optional[ConcentrationThresholdCache] = None):
         self.repository = repository
         self.cache = cache
-        self.default_analysis_date = date(2016, 3, 23)
+        self.default_analysis_date = default_analysis_date()
     
     # ========================================
     # Threshold Resolution

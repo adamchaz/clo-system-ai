@@ -405,6 +405,13 @@ GET /api/v1/portfolios/{id}/summary        # Uses March 23, 2016 default
 GET /api/v1/portfolios/{id}/summary?analysis_date=2016-06-30  # Custom date
 ```
 
+**Implementation** (`backend/app/core/analysis_date.py`, since 2026-11-08):
+- Default comes only from `settings.default_analysis_date` (env `DEFAULT_ANALYSIS_DATE`); no other code hard-codes 2016-03-23.
+- Query parameters: `analysis_date: date = Depends(analysis_date_param)`. Request bodies: `resolve_analysis_date_or_422(body.analysis_date)`. Plain code: `resolve_analysis_date(value)`. Valid range 2010-01-01 to 2035-12-31; invalid input returns 422.
+- Pass the resolved date down explicitly; never substitute `date.today()` for a missing analysis date (wall-clock time is only for timestamps/expiry).
+- QuantLib's evaluation date defaults to the analysis date; wrap QuantLib work for a specific date in `with ql_evaluation_date(d):` (sets/restores under a lock, since QuantLib's setting is process-global).
+- Still to do (steps 3-5 of the plan): make the date a required argument through services/engines and remove remaining business uses of `date.today()` (with a Ruff `banned-api` rule); one global frontend date mirrored to `?asOf=` and served by a config endpoint; store each deal's data-snapshot date and warn when the analysis date differs.
+
 **Frontend Interface**: Interactive date picker with 2016-relevant quick actions
 - Default baseline: March 23, 2016
 - Quick actions: 2016 Q1-Q3 ends, 2015 year end, current date

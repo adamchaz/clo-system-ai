@@ -12,6 +12,7 @@ from pydantic import BaseModel, validator
 
 from ....core.database import get_db
 from ....core.unified_auth import get_current_user
+from ....core.analysis_date import analysis_date_param
 from ....models.auth import User
 from ....repositories.concentration_threshold_repository import ConcentrationThresholdRepository
 from ....services.concentration_threshold_service import (
@@ -220,7 +221,7 @@ async def get_test_definition(
 @router.get("/deals/{deal_id}/thresholds", response_model=List[ThresholdResponse])
 async def get_deal_thresholds(
     deal_id: str = Path(..., description="CLO Deal ID"),
-    analysis_date: Optional[date] = Query(default=date(2016, 3, 23), description="Analysis date for threshold resolution"),
+    analysis_date: date = Depends(analysis_date_param),
     threshold_service: ConcentrationThresholdService = Depends(get_threshold_service)
 ):
     """Get all concentration test thresholds for a deal"""
@@ -321,7 +322,7 @@ async def get_threshold_history(
 @router.get("/deals/{deal_id}/concentration-tests", response_model=ConcentrationTestSummaryResponse)
 async def get_concentration_tests_with_thresholds(
     deal_id: str = Path(..., description="CLO Deal ID"),
-    analysis_date: Optional[date] = Query(default=date(2016, 3, 23), description="Analysis date for test execution"),
+    analysis_date: date = Depends(analysis_date_param),
     include_threshold_details: bool = Query(default=True, description="Include detailed threshold information"),
     threshold_service: ConcentrationThresholdService = Depends(get_threshold_service)
 ):

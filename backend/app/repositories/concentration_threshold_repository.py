@@ -5,6 +5,7 @@ Data access layer for concentration test threshold management
 
 from typing import Optional, List, Dict, Tuple
 from datetime import date, datetime
+from ..core.analysis_date import default_analysis_date
 from decimal import Decimal
 from sqlalchemy.orm import Session
 from sqlalchemy import and_, or_, desc, func
@@ -88,7 +89,7 @@ class ConcentrationThresholdRepository:
         Get all thresholds for a deal, combining test definitions with deal-specific overrides
         Returns list of (test_definition, deal_threshold_or_none) tuples
         """
-        analysis_date = analysis_date or date(2016, 3, 23)
+        analysis_date = analysis_date or default_analysis_date()
         
         # Get all active test definitions
         test_definitions = await self.get_all_test_definitions()
@@ -130,7 +131,7 @@ class ConcentrationThresholdRepository:
         Get ONLY the thresholds that are explicitly configured for a specific deal
         Returns list of (test_definition, deal_threshold) tuples only for configured tests
         """
-        analysis_date = analysis_date or date(2016, 3, 23)
+        analysis_date = analysis_date or default_analysis_date()
         
         # Get only the deal-specific thresholds that exist in the database
         deal_thresholds = self.db.query(DealConcentrationThreshold).filter(

@@ -187,6 +187,10 @@ class PortfolioRiskAnalysisResult(BaseModel):
 class ConcentrationAnalysisRequest(BaseModel):
     """Schema for concentration analysis requests"""
     portfolio_id: Optional[str] = None
+    analysis_date: Optional[date] = Field(
+        default=None,
+        description="As-of date (YYYY-MM-DD); defaults to the system analysis date"
+    )
     analysis_dimensions: List[str] = Field(
         default=["sector", "industry", "rating", "geography", "issuer"],
         description="Dimensions to analyze concentration"

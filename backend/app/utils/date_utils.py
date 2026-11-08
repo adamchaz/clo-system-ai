@@ -401,38 +401,20 @@ def add_tenor(start_date: date, tenor: str) -> date:
 
 def get_analysis_date(analysis_date_str: Optional[str] = None) -> date:
     """
-    Get analysis date - either from parameter or default to March 23, 2016
-    
-    Args:
-        analysis_date_str: Optional date string in YYYY-MM-DD format
-        
-    Returns:
-        Date object for analysis
+    Resolve an optional YYYY-MM-DD string to the analysis date.
+    Delegates to app.core.analysis_date (default: settings.default_analysis_date).
+
+    Raises:
+        ValueError: unparseable string or date outside the supported range
     """
-    if analysis_date_str:
-        try:
-            return datetime.strptime(analysis_date_str, "%Y-%m-%d").date()
-        except ValueError:
-            raise ValueError(f"Invalid date format. Expected YYYY-MM-DD, got: {analysis_date_str}")
-    return date(2016, 3, 23)  # Default analysis date: March 23, 2016
+    from ..core.analysis_date import resolve_analysis_date
+    return resolve_analysis_date(analysis_date_str)
 
 def validate_analysis_date(analysis_date_str: str) -> bool:
-    """
-    Validate analysis date string format and reasonable bounds
-    
-    Args:
-        analysis_date_str: Date string in YYYY-MM-DD format
-        
-    Returns:
-        True if valid, False otherwise
-    """
+    """True if the string is a valid analysis date within the supported range."""
+    from ..core.analysis_date import resolve_analysis_date
     try:
-        parsed_date = datetime.strptime(analysis_date_str, "%Y-%m-%d").date()
-        
-        # Check reasonable bounds (not too far in past/future)
-        min_date = date(2010, 1, 1)  # Allow dates back to 2010
-        max_date = date.today() + timedelta(days=365)  # Allow 1 year in future
-        
-        return min_date <= parsed_date <= max_date
+        resolve_analysis_date(analysis_date_str)
+        return True
     except ValueError:
         return False
