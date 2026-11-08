@@ -32,7 +32,10 @@ class CLODeal(Base):
     maturity_date = Column(Date)
     reinvestment_end_date = Column(Date)
     no_call_date = Column(Date)
-    
+    # Date the deal's holdings data is a snapshot of (Excel "Mag N Inputs" C3); analysis dates
+    # other than this shift time-based measures but do not roll holdings forward.
+    data_as_of = Column(Date)
+
     # Deal Parameters
     target_par_amount = Column(Numeric(18,2))
     ramp_up_period = Column(Integer)  # months

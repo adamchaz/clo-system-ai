@@ -56,6 +56,7 @@ import {
   Portfolio,
 } from '../../store/api/cloApi';
 import { useAnalysisDate } from '../../hooks/useAnalysisDate';
+import DataSnapshotNotice from '../common/UI/DataSnapshotNotice';
 
 interface PortfolioListProps {
   onPortfolioSelect?: (portfolio: Portfolio) => void;
@@ -303,6 +304,12 @@ const PortfolioList: React.FC<PortfolioListProps> = ({
             </Button>
           </Box>
         </Box>
+
+        {/* Warn when the analysis date isn't the holdings snapshot date */}
+        <DataSnapshotNotice
+          dataAsOf={(portfoliosData?.data ?? []).map((p) => p.data_as_of)}
+          analysisDate={analysisDate}
+        />
 
         {/* Filters */}
         <Box sx={{ display: 'flex', gap: 2, mb: 3, flexWrap: 'wrap' }}>

@@ -78,6 +78,8 @@ export interface Portfolio {
   current_asset_count: number;
   current_portfolio_balance: number;
   days_to_maturity: number;
+  /** Date the deal's holdings are a snapshot of (YYYY-MM-DD). */
+  data_as_of?: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -92,6 +94,10 @@ export interface AppConfig {
 }
 
 export interface PortfolioSummary {
+  /** Analysis date the summary was computed for (YYYY-MM-DD). */
+  analysis_date?: string;
+  /** Date the deal's holdings are a snapshot of (YYYY-MM-DD). */
+  data_as_of?: string | null;
   portfolio: Portfolio;
   assets: Asset[];
   waterfall_summary: WaterfallSummary;

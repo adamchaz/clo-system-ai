@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { useAnalysisDate } from '../../hooks/useAnalysisDate';
+import DataSnapshotNotice from '../common/UI/DataSnapshotNotice';
 import {
   Box,
   Grid,
@@ -276,7 +277,7 @@ const PortfolioDetail: React.FC<PortfolioDetailProps> = ({
   const [currentTab, setCurrentTab] = useState(0);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [concentrationData, setConcentrationData] = useState<any>(null);
-  const { analysisDateParam } = useAnalysisDate();
+  const { analysisDate, analysisDateParam } = useAnalysisDate();
   
   // Asset list state
   const [assetSearch, setAssetSearch] = useState('');
@@ -995,6 +996,13 @@ const PortfolioDetail: React.FC<PortfolioDetailProps> = ({
           </Card>
         </Grid>
       </Grid>
+
+      {/* Warn when the analysis date isn't the date the holdings are a snapshot of */}
+      <DataSnapshotNotice
+        dataAsOf={summary?.data_as_of ?? portfolio?.data_as_of}
+        analysisDate={analysisDate}
+        subject={portfolioId}
+      />
 
       {/* Tabs */}
       <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>

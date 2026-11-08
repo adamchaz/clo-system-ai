@@ -46,8 +46,8 @@ async def list_clo_deals(
         base_query = """
         SELECT deal_id, deal_name, manager_name, trustee_name, pricing_date, closing_date, 
                effective_date, maturity_date, reinvestment_end_date, target_par_amount, 
-               deal_status, created_at, updated_at
-        FROM clo_deals 
+               deal_status, data_as_of, created_at, updated_at
+        FROM clo_deals  
         WHERE 1=1
         """
         
@@ -125,6 +125,8 @@ async def list_clo_deals(
                 "updated_at": deal_dict.get('updated_at'),
                 "is_active": True,
                 "days_to_maturity": days_to_maturity,
+                # Holdings snapshot date; differs from analysis_date -> time shift only
+                "data_as_of": deal_dict.get('data_as_of'),
                 "current_asset_count": asset_count,
                 "current_portfolio_balance": portfolio_balance
             }
@@ -336,6 +338,12 @@ async def get_portfolio_summary(
                 asset_count = pool_result.total_assets or 0
                 portfolio_balance = float(pool_result.total_par_amount or 0)
         
+        # Holdings snapshot date for this deal (see migrations/011_clo_deals_data_as_of.sql)
+        from sqlalchemy import text as _text
+        data_as_of = db.execute(
+            _text("SELECT data_as_of FROM clo_deals WHERE deal_id = :deal_id"), {"deal_id": deal_id}
+        ).scalar()
+
         # This will aggregate data from migrated assets and operational database as of the analysis date
         summary = {
             "deal_id": deal_id,
@@ -347,6 +355,7 @@ async def get_portfolio_summary(
             "maturity_profile": {},
             "top_holdings": [],
             "analysis_date": target_date.isoformat(),  # Include analysis date in response
+            "data_as_of": data_as_of.isoformat() if data_as_of else None,
             "risk_metrics": {
                 "portfolio_value": portfolio_balance,
                 "weighted_average_life": 3.7,

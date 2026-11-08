@@ -56,12 +56,11 @@ const AnalysisDateControl: React.FC = () => {
             maxDate={maxDate}
             helperText="Applies to all pages"
           />
-          {defaultDate && (
-            <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1.5 }}>
-              Portfolio holdings are a snapshot as of {display(defaultDate, 'MMMM d, yyyy')}. Other dates
-              shift time-based measures (e.g. years to maturity) but do not roll holdings forward.
-            </Typography>
-          )}
+          <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1.5 }}>
+            Each deal's holdings are a snapshot of its source data. Choosing a different date shifts
+            time-based measures (e.g. years to maturity) but does not roll holdings forward; pages show
+            a notice when the analysis date differs from the snapshot date.
+          </Typography>
         </Box>
       </Popover>
     </>

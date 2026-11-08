@@ -44,7 +44,7 @@ everything loads or nothing changes.
 |---|---|---|
 | (missing tables) | - | Created from the SQLAlchemy models (`create_all`); existing tables are untouched |
 | `users` | 4 | Dev accounts (admin/manager/analyst/demo), bcrypt hashes; upserted by email |
-| `clo_deals` | 10 | Each "Mag N Inputs" tab: **Date Inputs** block (cols AD/AE) and **CLO Inputs** block (target par) |
+| `clo_deals` | 10 | Each "Mag N Inputs" tab: **Date Inputs** block (cols AD/AE), **CLO Inputs** block (target par), and cell C3 "Analysis date" -> `data_as_of` (holdings snapshot date, 2016-03-23 for all deals) |
 | `assets` | 384 | **"All Assets"** tab, 70 columns incl. the `flags` JSON (DIP, Cov-Lite, ...) |
 | `deal_assets` | 2,726 | Each Inputs tab, **Deal Collateral** block (col D BLKRockID, col E Par Amount) |
 | `clo_tranches` | 71 | Each Inputs tab, **CLO Liabilities** block (col AJ onward) |

@@ -121,6 +121,9 @@ class PortfolioSummaryResponse(BaseModel):
     average_rating: str
     weighted_average_life: Optional[Decimal] = None
     analysis_date: Optional[str] = None  # Date the analysis was performed
+    # Date the deal's holdings are a snapshot of; when it differs from analysis_date, only
+    # time-based measures shift - holdings are not rolled forward.
+    data_as_of: Optional[str] = None
     
     # Diversification metrics
     sector_diversification: Dict[str, Decimal]

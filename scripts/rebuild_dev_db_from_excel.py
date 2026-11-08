@@ -145,6 +145,8 @@ def read_deal(wb, n):
     dates = block_lookup(rows, "Date Inputs")
     inputs = block_lookup(rows, "CLO Inputs")
     months = to_int(dates.get("months between payments"))
+    # Snapshot date of the tab's holdings: C3 "Analysis date" (repeated in CLO Inputs)
+    data_as_of = to_date(rows[2][2]) or to_date(inputs.get("analysis date"))
     return {
         "deal_id": f"MAG{n}",
         "deal_name": f"Magnetar MAG{n} CLO",
@@ -158,6 +160,7 @@ def read_deal(wb, n):
         "maturity_date": to_date(dates.get("stated maturity date")),
         "payment_frequency": 12 // months if months else None,
         "target_par_amount": to_dec(inputs.get("target par amount"), 2),
+        "data_as_of": data_as_of,
         "deal_status": "Revolving",
     }
 
