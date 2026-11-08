@@ -61,7 +61,21 @@ async def list_clo_deals(
         
         result = db.execute(text(base_query), params)
         db_deals = result.fetchall()
-        
+
+        # Position counts and par per deal from deal_assets, excluding positions sold on or
+        # before the analysis date (same rule as the concentration tests). One query for the page.
+        deal_ids = [d._mapping['deal_id'] for d in db_deals]
+        position_totals = {}
+        if deal_ids:
+            position_rows = db.execute(text("""
+                SELECT deal_id, COUNT(*) AS asset_count, COALESCE(SUM(par_amount), 0) AS total_par
+                FROM deal_assets
+                WHERE deal_id = ANY(:deal_ids)
+                  AND (sale_date IS NULL OR sale_date > :analysis_date)
+                GROUP BY deal_id
+            """), {'deal_ids': deal_ids, 'analysis_date': target_analysis_date}).fetchall()
+            position_totals = {r.deal_id: (r.asset_count, float(r.total_par)) for r in position_rows}
+
         # Convert database results to API format
         deals = []
         for deal in db_deals:
@@ -73,42 +87,9 @@ async def list_clo_deals(
             if deal_dict.get('maturity_date'):
                 days_to_maturity = (deal_dict['maturity_date'] - target_analysis_date).days
             
-            # Get actual asset data for this deal
-            asset_count = 197  # Default fallback
-            portfolio_balance = float(deal_dict.get('target_par_amount', 0)) * 0.85  # Default fallback
-            
-            # For MAG17, get actual data from our migrated assets
-            if deal_id == 'MAG17':
-                try:
-                    # Count assets with par_amount > 0 for MAG17
-                    asset_result = db.execute(text("""
-                        SELECT COUNT(*) as count, COALESCE(SUM(par_amount), 0) as total_par
-                        FROM assets 
-                        WHERE par_amount > 0
-                    """))
-                    asset_data = asset_result.fetchone()
-                    if asset_data:
-                        asset_count = asset_data.count
-                        portfolio_balance = float(asset_data.total_par)
-                except Exception as e:
-                    print(f"Warning: Could not get MAG17 asset data: {e}")
-            
-            # For other MAG deals, try to get data from collateral_pools
-            elif deal_id.startswith('MAG'):
-                try:
-                    pool_result = db.execute(text("""
-                        SELECT total_assets, total_par_amount 
-                        FROM collateral_pools 
-                        WHERE deal_id = :deal_id
-                        ORDER BY pool_id DESC LIMIT 1
-                    """), {'deal_id': deal_id})
-                    pool_data = pool_result.fetchone()
-                    if pool_data and pool_data.total_assets:
-                        asset_count = pool_data.total_assets
-                        portfolio_balance = float(pool_data.total_par_amount or 0)
-                except Exception as e:
-                    print(f"Warning: Could not get {deal_id} pool data: {e}")
-            
+            # Actual positions held (0 if the deal has none - no estimated fallbacks)
+            asset_count, portfolio_balance = position_totals.get(deal_id, (0, 0.0))
+
             formatted_deal = {
                 "id": deal_id,
                 "deal_name": deal_dict.get('deal_name', ''),

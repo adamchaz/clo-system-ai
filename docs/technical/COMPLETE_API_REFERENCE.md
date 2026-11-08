@@ -116,8 +116,8 @@ GET /api/v1/portfolios/
       "status": "revolving",
       "days_to_maturity": 4411,
       "data_as_of": "2016-03-23",
-      "current_asset_count": 0,
-      "current_portfolio_balance": 0.0
+      "current_asset_count": 195,
+      "current_portfolio_balance": 431157604.9
     }
   ],
   "message": "Retrieved 10 portfolios successfully"
@@ -127,9 +127,12 @@ GET /api/v1/portfolios/
 `data_as_of` is the date the deal's holdings are a snapshot of; choosing a different analysis
 date shifts time-based measures but does not roll holdings forward.
 
-> **Known issue:** `current_asset_count` and `current_portfolio_balance` are read from the
-> `collateral_pools` table, which is empty, so they are 0 for every deal. The positions are in
-> `deal_assets` (MAG17: 195 positions, $431.16M par).
+`current_asset_count` and `current_portfolio_balance` are the deal's positions in `deal_assets`,
+excluding any sold on or before the analysis date.
+
+> **Known issue:** `GET /portfolios/{deal_id}/summary` still reports `total_assets` and
+> `total_balance` as 0 (it reads the empty `collateral_pools` table, or for MAG17 the asset
+> master, which carries no par amounts).
 
 ### **Portfolio Summary**
 
