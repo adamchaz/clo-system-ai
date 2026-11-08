@@ -9,7 +9,7 @@ from typing import Dict, Any
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect, Depends, Query, HTTPException
 from fastapi.responses import HTMLResponse
 
-from ....core.security import get_current_user
+from ....core.unified_auth import get_current_user
 from ....services.websocket_service import ws_manager, websocket_service, MessageType
 from ....core.exceptions import CLOBusinessError, CLOValidationError
 

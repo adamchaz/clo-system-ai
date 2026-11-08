@@ -31,6 +31,7 @@ class Settings(BaseSettings):
     db_max_overflow: int = 30
     db_pool_timeout: int = 30
     db_pool_recycle: int = 3600
+    db_echo: bool = False  # log every SQL statement (very noisy)
     
     # Redis Configuration  
     redis_url: str = "redis://127.0.0.1:6379"
@@ -180,7 +181,7 @@ class Settings(BaseSettings):
         # Construct from components with password if provided
         auth = f":{self.redis_password}@" if self.redis_password else ""
         protocol = "rediss" if self.redis_ssl else "redis"
-        return f"{protocol}//{auth}{self.redis_host}:{self.redis_port}"
+        return f"{protocol}://{auth}{self.redis_host}:{self.redis_port}"
     
     def validate_production_safety(self) -> None:
         """Refuse to start in production with insecure development defaults.

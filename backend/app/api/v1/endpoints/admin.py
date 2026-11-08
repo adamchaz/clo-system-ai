@@ -9,7 +9,7 @@ from datetime import datetime, timedelta
 from decimal import Decimal
 
 # Import unified authentication dependencies
-from app.core.unified_auth import require_admin_role, get_current_user
+from ....core.unified_auth import require_admin_role, get_current_user
 
 router = APIRouter()
 

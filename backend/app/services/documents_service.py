@@ -14,7 +14,7 @@ from pathlib import Path
 from sqlalchemy.orm import Session
 from sqlalchemy import and_, or_, desc, func
 
-from ..core.database_config import get_db_session
+from ..core.database import session_scope
 from ..core.exceptions import CLOBusinessError, CLOValidationError
 from ..models.documents import (
     Document, DocumentAccess, DocumentShare, DocumentFolder, DocumentFolderItem,
@@ -124,7 +124,7 @@ class DocumentService:
     ) -> DocumentResponse:
         """Upload a new document"""
         try:
-            with get_db_session() as session:
+            with session_scope() as session:
                 # Generate document ID
                 document_id = f"DOC_{uuid.uuid4().hex[:12].upper()}"
                 
@@ -183,7 +183,7 @@ class DocumentService:
     def get_document(self, document_id: str, user_id: str) -> DocumentResponse:
         """Get document metadata"""
         try:
-            with get_db_session() as session:
+            with session_scope() as session:
                 document = session.query(Document).filter(
                     Document.document_id == document_id,
                     Document.status != DocumentStatus.DELETED
@@ -210,7 +210,7 @@ class DocumentService:
     def download_document(self, document_id: str, user_id: str) -> Tuple[BinaryIO, str, str]:
         """Download document file"""
         try:
-            with get_db_session() as session:
+            with session_scope() as session:
                 document = session.query(Document).filter(
                     Document.document_id == document_id,
                     Document.status == DocumentStatus.ACTIVE
@@ -245,7 +245,7 @@ class DocumentService:
     ) -> DocumentResponse:
         """Update document metadata"""
         try:
-            with get_db_session() as session:
+            with session_scope() as session:
                 document = session.query(Document).filter(
                     Document.document_id == document_id,
                     Document.status != DocumentStatus.DELETED
@@ -285,7 +285,7 @@ class DocumentService:
     def delete_document(self, document_id: str, user_id: str) -> bool:
         """Delete document (soft delete)"""
         try:
-            with get_db_session() as session:
+            with session_scope() as session:
                 document = session.query(Document).filter(
                     Document.document_id == document_id,
                     Document.status != DocumentStatus.DELETED
@@ -317,7 +317,7 @@ class DocumentService:
     ) -> List[DocumentResponse]:
         """Search documents with filters"""
         try:
-            with get_db_session() as session:
+            with session_scope() as session:
                 query = session.query(Document).filter(
                     Document.status != DocumentStatus.DELETED
                 )
@@ -375,7 +375,7 @@ class DocumentService:
     def get_document_statistics(self, user_id: str) -> DocumentStatsResponse:
         """Get document statistics"""
         try:
-            with get_db_session() as session:
+            with session_scope() as session:
                 # Basic counts
                 total_docs = session.query(Document).filter(
                     Document.status != DocumentStatus.DELETED

@@ -12,7 +12,7 @@ from sqlalchemy.orm import Session
 import numpy as np
 import pandas as pd
 
-from ..core.database_config import get_db_session
+from ..core.database import session_scope
 from ..core.exceptions import CLOBusinessError, CLOValidationError
 from ..models.clo_deal import CLODeal
 from ..models.asset import Asset
@@ -48,7 +48,7 @@ class PortfolioAnalyticsService:
         Perform portfolio optimization based on specified criteria
         """
         try:
-            with get_db_session() as session:
+            with session_scope() as session:
                 # Get portfolio data
                 portfolio = self._get_portfolio(session, request.portfolio_id)
                 assets = self._get_portfolio_assets(session, request.portfolio_id)
@@ -136,7 +136,7 @@ class PortfolioAnalyticsService:
         Analyze portfolio performance over specified period
         """
         try:
-            with get_db_session() as session:
+            with session_scope() as session:
                 # Get portfolio and historical data
                 portfolio = self._get_portfolio(session, request.portfolio_id)
                 
@@ -219,7 +219,7 @@ class PortfolioAnalyticsService:
         Comprehensive portfolio risk analysis including VaR and stress testing
         """
         try:
-            with get_db_session() as session:
+            with session_scope() as session:
                 # Get portfolio assets
                 portfolio = self._get_portfolio(session, request.portfolio_id)
                 assets = self._get_portfolio_assets(session, request.portfolio_id)

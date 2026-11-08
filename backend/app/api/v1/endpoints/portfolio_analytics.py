@@ -7,8 +7,7 @@ from typing import List, Dict, Any, Optional
 from fastapi import APIRouter, Depends, HTTPException, Query
 from starlette.status import HTTP_200_OK
 
-from ....core.security import get_current_user
-from ....core.unified_auth import get_optional_user
+from ....core.unified_auth import get_current_user, get_optional_user
 from ....schemas.portfolio_analytics import (
     PortfolioOptimizationRequest, PortfolioOptimizationResult,
     PortfolioPerformanceAnalysisRequest, PortfolioPerformanceResult,

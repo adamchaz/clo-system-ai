@@ -10,7 +10,7 @@ from sqlalchemy.exc import IntegrityError
 from datetime import date
 import logging
 
-from app.core.database_config import db_config
+from app.core.database import get_db
 from app.models.yield_curve import YieldCurve, YieldCurveService, YieldCurveModel, YieldCurveRateModel, ForwardRateModel
 from app.schemas.yield_curves import (
     YieldCurveCreate,
@@ -28,10 +28,6 @@ router = APIRouter()
 logger = logging.getLogger(__name__)
 
 
-def get_db():
-    """Database dependency"""
-    with db_config.get_db_session('postgresql') as session:
-        yield session
 
 
 def get_yield_curve_service(db: Session = Depends(get_db)):

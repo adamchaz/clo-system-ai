@@ -11,7 +11,7 @@ import platform
 import json
 
 from sqlalchemy.orm import Session
-from ..core.database_config import db_config
+from ..core.database import DatabaseManager, get_redis
 
 logger = logging.getLogger(__name__)
 
@@ -428,7 +428,7 @@ class MonitoringService:
         logger.debug("Collecting cache statistics")
         
         try:
-            redis_client = db_config.get_redis_client()
+            redis_client = get_redis()
             
             if not redis_client:
                 return {'status': 'unavailable', 'error': 'Redis not configured'}
@@ -480,7 +480,7 @@ class MonitoringService:
         logger.info(f"Clearing cache - pattern: {pattern or 'all'}")
         
         try:
-            redis_client = db_config.get_redis_client()
+            redis_client = get_redis()
             
             if not redis_client:
                 raise ValueError("Redis not available")
@@ -550,8 +550,8 @@ class MonitoringService:
             uptime_seconds = (datetime.now() - self.start_time).total_seconds()
             
             # Check critical services
-            db_status = 'healthy' if db_config.health_check().get('postgresql', False) else 'unhealthy'
-            cache_status = 'healthy' if db_config.health_check().get('redis', False) else 'degraded'
+            db_status = 'healthy' if DatabaseManager.health_check().get('postgresql', False) else 'unhealthy'
+            cache_status = 'healthy' if DatabaseManager.health_check().get('redis', False) else 'degraded'
             
             # Overall status logic
             if db_status == 'healthy' and cache_status in ['healthy', 'degraded']:
@@ -578,7 +578,7 @@ class MonitoringService:
         services = []
         
         # Database service
-        db_health = db_config.health_check()
+        db_health = DatabaseManager.health_check()
         services.append({
             'service_name': 'PostgreSQL',
             'status': 'healthy' if db_health.get('postgresql', False) else 'unhealthy',
@@ -611,17 +611,17 @@ class MonitoringService:
     
     def _get_postgresql_status(self) -> str:
         """Get PostgreSQL status"""
-        health = db_config.health_check()
+        health = DatabaseManager.health_check()
         return 'healthy' if health.get('postgresql', False) else 'unhealthy'
     
     def _get_redis_status(self) -> str:
         """Get Redis status"""
-        health = db_config.health_check()
+        health = DatabaseManager.health_check()
         return 'healthy' if health.get('redis', False) else 'degraded'
     
     def _get_migration_db_status(self) -> Dict[str, bool]:
         """Get migration database status"""
-        health = db_config.health_check()
+        health = DatabaseManager.health_check()
         return health.get('migration_databases', {})
     
     def _format_uptime(self, seconds: float) -> str:

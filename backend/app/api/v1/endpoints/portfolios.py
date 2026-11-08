@@ -9,7 +9,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import text
 from datetime import date
 
-from ....core.database_config import db_config
+from ....core.database import get_db
 from ....services.data_integration import DataIntegrationService
 from ....utils.date_utils import get_analysis_date, validate_analysis_date
 from ....schemas.portfolios import (
@@ -22,10 +22,6 @@ from ....schemas.portfolios import (
 
 router = APIRouter()
 
-def get_db():
-    """Database dependency"""
-    with db_config.get_db_session('postgresql') as session:
-        yield session
 
 def get_integration_service():
     """Data integration service dependency"""

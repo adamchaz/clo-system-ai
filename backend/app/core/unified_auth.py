@@ -13,12 +13,14 @@ from ..schemas.auth import UserRole
 
 logger = logging.getLogger(__name__)
 
-# Initialize security scheme and auth service
-security = HTTPBearer()
+# Initialize security scheme and auth service.
+# auto_error=False so a missing token yields 401 (like an invalid one) instead
+# of HTTPBearer's default 403, letting clients treat every auth failure the same.
+security = HTTPBearer(auto_error=False)
 auth_service = AuthService()
 
 async def get_current_user(
-    credentials: HTTPAuthorizationCredentials = Depends(security)
+    credentials: Optional[HTTPAuthorizationCredentials] = Depends(security)
 ) -> Dict[str, Any]:
     """
     Get current authenticated user from JWT token
@@ -32,10 +34,17 @@ async def get_current_user(
     Raises:
         HTTPException: If authentication fails
     """
+    if credentials is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Not authenticated",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
     try:
         token = credentials.credentials
         user = auth_service.get_current_user(token)
-        
+
         if user is None:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
@@ -76,7 +85,13 @@ async def get_current_active_user(
     """
     return current_user
 
-async def require_role(required_role: UserRole):
+async def get_current_user_id(
+    current_user: Dict[str, Any] = Depends(get_current_user)
+) -> str:
+    """Return just the authenticated user's id (for code that records who acted)."""
+    return current_user["id"]
+
+def require_role(required_role: UserRole):
     """
     Create a dependency that requires a specific user role
     
@@ -304,9 +319,14 @@ def get_auth_service() -> AuthService:
     """
     return auth_service
 
+# Alias kept for existing callers (user_management)
+require_admin = require_admin_role
+
 # Export commonly used dependencies for easy import
 __all__ = [
     'get_current_user',
+    'get_current_user_id',
+    'require_admin',
     'get_current_active_user', 
     'require_admin_role',
     'require_manager_role',

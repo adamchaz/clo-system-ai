@@ -11,7 +11,7 @@ from sqlalchemy.orm import Session
 from pydantic import BaseModel, validator
 
 from ....core.database import get_db
-from ....core.security import get_current_user
+from ....core.unified_auth import get_current_user
 from ....models.auth import User
 from ....repositories.concentration_threshold_repository import ConcentrationThresholdRepository
 from ....services.concentration_threshold_service import (

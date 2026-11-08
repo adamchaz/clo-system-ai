@@ -8,7 +8,7 @@ from datetime import datetime, timedelta
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from sqlalchemy.orm import Session
 
-from ....core.database_config import db_config
+from ....core.database import DatabaseManager, get_db, get_redis
 from ....core.monitoring import health_checker, StructuredLogger
 from ....core.security import rate_limit_moderate, rate_limit_lenient
 from ....services.monitoring_service import MonitoringService
@@ -19,7 +19,7 @@ from ....schemas.monitoring import (
     AlertResponse,
     AlertCreate
 )
-from ..endpoints.auth import get_current_active_user
+from ....core.unified_auth import get_current_active_user
 from ....schemas.auth import User
 
 # Initialize structured logger
@@ -27,10 +27,6 @@ logger = StructuredLogger("monitoring_api")
 
 router = APIRouter()
 
-def get_db():
-    """Database dependency"""
-    with db_config.get_db_session('postgresql') as session:
-        yield session
 
 def get_monitoring_service():
     """Monitoring service dependency"""
@@ -53,7 +49,7 @@ async def get_system_health(
 async def get_database_health():
     """Get database connection health status"""
     try:
-        health_status = db_config.health_check()
+        health_status = DatabaseManager.health_check()
         
         overall_status = "healthy"
         if not health_status.get('postgresql', False):
@@ -403,7 +399,7 @@ async def get_cache_statistics(
 ):
     """Get Redis cache statistics"""
     try:
-        redis_client = db_config.get_redis_client()
+        redis_client = get_redis()
         
         if not redis_client:
             return {"status": "unavailable", "message": "Redis not configured"}

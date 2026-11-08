@@ -4,13 +4,14 @@ Handles user authentication, authorization, and session management
 """
 
 from datetime import timedelta
-from typing import Optional
+from typing import Any, Dict, Optional
 from fastapi import APIRouter, Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
 from ....core.database import get_db
 from ....core.config import settings
+from ....core.unified_auth import get_auth_service, get_current_active_user, get_current_user
 from ....services.auth_service import AuthService
 from ....schemas.auth import (
     Token,
@@ -25,47 +26,6 @@ from ....schemas.auth import (
 )
 
 router = APIRouter()
-
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/v1/auth/token")
-
-def get_db_session():
-    """Database dependency"""
-    db = get_db()
-    try:
-        yield next(db)
-    finally:
-        next(db, None)
-
-def get_auth_service():
-    """Authentication service dependency"""
-    return AuthService()
-
-async def get_current_user(
-    token: str = Depends(oauth2_scheme),
-    auth_service: AuthService = Depends(get_auth_service)
-) -> User:
-    """Get current authenticated user"""
-    credentials_exception = HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Could not validate credentials",
-        headers={"WWW-Authenticate": "Bearer"},
-    )
-    
-    try:
-        user = auth_service.get_current_user(token)
-        if user is None:
-            raise credentials_exception
-        return user
-    except Exception:
-        raise credentials_exception
-
-async def get_current_active_user(
-    current_user: User = Depends(get_current_user)
-) -> User:
-    """Get current active user"""
-    if not current_user.get("is_active", False):
-        raise HTTPException(status_code=400, detail="Inactive user")
-    return current_user
 
 @router.post("/register", response_model=UserResponse)
 async def register_user(
@@ -145,7 +105,7 @@ async def login_for_access_token(
 
 @router.get("/me", response_model=UserResponse)
 async def read_users_me(
-    current_user: User = Depends(get_current_active_user)
+    current_user: Dict[str, Any] = Depends(get_current_active_user)
 ):
     """Get current user profile"""
     return UserResponse(
@@ -161,18 +121,18 @@ async def read_users_me(
 @router.put("/me", response_model=UserResponse)
 async def update_user_profile(
     user_update: UserUpdate,
-    current_user: User = Depends(get_current_active_user),
+    current_user: Dict[str, Any] = Depends(get_current_active_user),
     auth_service: AuthService = Depends(get_auth_service),
     db: Session = Depends(get_db)
 ):
     """Update current user profile"""
     try:
         updated_user = auth_service.update_user(
-            user_id=current_user.id,
-            updates=user_update.dict(exclude_unset=True)
+            user_id=current_user["id"],
+            updates=user_update.dict(exclude_unset=True, include={"full_name"})
         )
         
-        return UserResponse(**updated_user.dict())
+        return UserResponse(**updated_user)
         
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Profile update failed: {str(e)}")
@@ -181,20 +141,20 @@ async def update_user_profile(
 async def change_password(
     current_password: str,
     new_password: str,
-    current_user: User = Depends(get_current_active_user),
+    current_user: Dict[str, Any] = Depends(get_current_active_user),
     auth_service: AuthService = Depends(get_auth_service)
 ):
     """Change user password"""
     try:
         # Verify current password
-        if not auth_service.verify_password(current_password, current_user.hashed_password):
+        if not auth_service.verify_password(current_password, current_user["hashed_password"]):
             raise HTTPException(
                 status_code=400,
                 detail="Current password is incorrect"
             )
         
         # Update password
-        auth_service.update_password(current_user.id, new_password)
+        auth_service.update_password(current_user["id"], new_password)
         
         return {"message": "Password updated successfully"}
         
@@ -254,7 +214,7 @@ async def reset_password(
 
 @router.post("/refresh")
 async def refresh_token(
-    current_user: User = Depends(get_current_user),
+    current_user: Dict[str, Any] = Depends(get_current_user),
     auth_service: AuthService = Depends(get_auth_service)
 ):
     """Refresh access token"""
@@ -275,14 +235,14 @@ async def refresh_token(
 
 @router.post("/logout")
 async def logout(
-    current_user: User = Depends(get_current_active_user),
+    current_user: Dict[str, Any] = Depends(get_current_active_user),
     auth_service: AuthService = Depends(get_auth_service)
 ):
     """Logout user (invalidate token)"""
     try:
         # In a more sophisticated system, we would blacklist the token
         # For now, just return success
-        auth_service.record_logout(current_user.id)
+        auth_service.record_logout(current_user["id"])
         
         return {"message": "Logged out successfully"}
         
@@ -291,16 +251,16 @@ async def logout(
 
 @router.get("/permissions")
 async def get_user_permissions(
-    current_user: User = Depends(get_current_active_user),
+    current_user: Dict[str, Any] = Depends(get_current_active_user),
     auth_service: AuthService = Depends(get_auth_service)
 ):
     """Get user permissions and role-based access"""
     try:
-        permissions = auth_service.get_user_permissions(current_user.id)
+        permissions = auth_service.get_user_permissions(current_user["id"])
         
         return {
-            "user_id": current_user.id,
-            "role": current_user.role,
+            "user_id": current_user["id"],
+            "role": current_user["role"],
             "permissions": permissions,
             "can_manage_deals": "deal_management" in permissions,
             "can_view_risk_reports": "risk_analytics" in permissions,
@@ -312,15 +272,15 @@ async def get_user_permissions(
 
 @router.get("/sessions")
 async def get_active_sessions(
-    current_user: User = Depends(get_current_active_user),
+    current_user: Dict[str, Any] = Depends(get_current_active_user),
     auth_service: AuthService = Depends(get_auth_service)
 ):
     """Get user's active sessions"""
     try:
-        sessions = auth_service.get_user_sessions(current_user.id)
+        sessions = auth_service.get_user_sessions(current_user["id"])
         
         return {
-            "user_id": current_user.id,
+            "user_id": current_user["id"],
             "active_sessions": sessions,
             "session_count": len(sessions)
         }

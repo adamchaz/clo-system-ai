@@ -11,7 +11,7 @@ from typing import List, Optional, Dict, Any
 from sqlalchemy.orm import Session
 from sqlalchemy import and_, or_, desc, func
 
-from ..core.database_config import get_db_session
+from ..core.database import session_scope
 from ..core.exceptions import CLOBusinessError, CLOValidationError
 from ..core.security import hash_password, verify_password, create_access_token
 from ..models.auth import User, UserRole  # Assuming these exist
@@ -36,7 +36,7 @@ class UserManagementService:
     def create_user(self, request: UserCreateRequest, created_by: str) -> UserResponse:
         """Create a new user account"""
         try:
-            with get_db_session() as session:
+            with session_scope() as session:
                 # Check if username or email already exists
                 existing_user = session.query(User).filter(
                     or_(User.username == request.username, User.email == request.email)
@@ -99,7 +99,7 @@ class UserManagementService:
     def get_user(self, user_id: str, requesting_user: str) -> UserResponse:
         """Get user by ID"""
         try:
-            with get_db_session() as session:
+            with session_scope() as session:
                 user = self._get_user_by_id(session, user_id)
                 return self._build_user_response(user)
                 
@@ -112,7 +112,7 @@ class UserManagementService:
     def update_user(self, user_id: str, request: UserUpdateRequest, updated_by: str) -> UserResponse:
         """Update user information"""
         try:
-            with get_db_session() as session:
+            with session_scope() as session:
                 user = self._get_user_by_id(session, user_id)
                 
                 # Update fields
@@ -174,7 +174,7 @@ class UserManagementService:
     def delete_user(self, user_id: str, deleted_by: str) -> bool:
         """Delete user (soft delete)"""
         try:
-            with get_db_session() as session:
+            with session_scope() as session:
                 user = self._get_user_by_id(session, user_id)
                 
                 # Soft delete
@@ -201,7 +201,7 @@ class UserManagementService:
     def search_users(self, request: UserSearchRequest, requesting_user: str) -> UserListResponse:
         """Search users with filters"""
         try:
-            with get_db_session() as session:
+            with session_scope() as session:
                 # Mock search implementation
                 users = self._perform_user_search(session, request)
                 
@@ -229,7 +229,7 @@ class UserManagementService:
             if request.new_password != request.confirm_password:
                 raise CLOValidationError("New password and confirmation do not match")
             
-            with get_db_session() as session:
+            with session_scope() as session:
                 user = self._get_user_by_id(session, user_id)
                 
                 # Verify current password
@@ -260,7 +260,7 @@ class UserManagementService:
     def reset_password(self, request: PasswordResetRequest) -> bool:
         """Reset user password"""
         try:
-            with get_db_session() as session:
+            with session_scope() as session:
                 # Find user by email
                 user = self._get_user_by_email(session, request.email)
                 
@@ -291,7 +291,7 @@ class UserManagementService:
     def get_user_permissions(self, user_id: str, requesting_user: str) -> UserPermissionResponse:
         """Get user's effective permissions"""
         try:
-            with get_db_session() as session:
+            with session_scope() as session:
                 user = self._get_user_by_id(session, user_id)
                 
                 # Get role permissions
@@ -328,7 +328,7 @@ class UserManagementService:
     def get_user_statistics(self, requesting_user: str) -> UserStatsResponse:
         """Get user management statistics"""
         try:
-            with get_db_session() as session:
+            with session_scope() as session:
                 # Mock statistics implementation
                 stats = {
                     "total_users": 156,

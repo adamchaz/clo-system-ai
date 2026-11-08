@@ -167,7 +167,7 @@ class SystemMonitor:
         # Test Redis  
         try:
             start_time = time.time()
-            redis_healthy = DatabaseManager.test_redis_connection()
+            redis_healthy = DatabaseManager.test_redis()
             redis_time = time.time() - start_time
             
             results["redis"] = {
@@ -262,7 +262,7 @@ class HealthChecker:
                 "ready": postgres_ready
             }
             
-            redis_ready = DatabaseManager.test_redis_connection()  
+            redis_ready = DatabaseManager.test_redis()  
             readiness["checks"]["redis"] = {
                 "status": "pass" if redis_ready else "fail",
                 "ready": redis_ready

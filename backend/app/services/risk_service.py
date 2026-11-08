@@ -13,7 +13,6 @@ from scipy.linalg import eigvals
 import pandas as pd
 
 from sqlalchemy.orm import Session
-from ..core.database_config import db_config
 from ..services.data_integration import DataIntegrationService
 
 logger = logging.getLogger(__name__)

@@ -11,7 +11,7 @@ import json
 from sqlalchemy import text, and_, or_
 from sqlalchemy.exc import IntegrityError
 
-from ..core.database_config import get_db_session, get_redis
+from ..core.database import get_redis, session_scope
 from ..models.asset import Asset
 from ..models.clo_deal import CLODeal, DealAsset
 from ..models.cash_flow import AssetCashFlow
@@ -46,7 +46,7 @@ class DataIntegrationService:
         
         try:
             # Read from migrated assets database
-            with get_db_session('assets') as source_session:
+            with session_scope() as source_session:
                 # Query all migrated assets
                 migrated_assets = source_session.execute(text("""
                     SELECT * FROM assets
@@ -56,7 +56,7 @@ class DataIntegrationService:
                 stats['assets_processed'] = len(migrated_assets)
             
             # Write to operational database
-            with get_db_session('postgresql') as target_session:
+            with session_scope() as target_session:
                 for asset_row in migrated_assets:
                     try:
                         # Convert row to dict (adjust based on actual column names)
@@ -164,7 +164,7 @@ class DataIntegrationService:
         
         try:
             # Read correlation matrix from migrated database
-            with get_db_session('correlations') as session:
+            with session_scope() as session:
                 correlations = session.execute(text("""
                     SELECT asset1_id, asset2_id, correlation_value 
                     FROM asset_correlations 
@@ -216,7 +216,7 @@ class DataIntegrationService:
         
         # Fallback to database
         try:
-            with get_db_session('correlations') as session:
+            with session_scope() as session:
                 result = session.execute(text("""
                     SELECT correlation_value 
                     FROM asset_correlations 
@@ -236,7 +236,7 @@ class DataIntegrationService:
         try:
             # Cache scenario parameters in Redis for fast access
             if self.redis_client:
-                with get_db_session('scenarios') as session:
+                with session_scope() as session:
                     scenarios = session.execute(text("""
                         SELECT scenario_name, parameter_name, parameter_value, parameter_type
                         FROM scenario_inputs
@@ -286,7 +286,7 @@ class DataIntegrationService:
         
         # Fallback to database
         try:
-            with get_db_session('scenarios') as session:
+            with session_scope() as session:
                 params = session.execute(text("""
                     SELECT parameter_name, parameter_value, parameter_type
                     FROM scenario_inputs
@@ -355,7 +355,7 @@ class DataIntegrationService:
     def get_assets_paginated(self, skip: int = 0, limit: int = 100, asset_type: Optional[str] = None, rating: Optional[str] = None) -> List[Dict[str, Any]]:
         """Get paginated list of assets from PostgreSQL database"""
         try:
-            with get_db_session('postgresql') as session:
+            with session_scope() as session:
                 query = "SELECT * FROM assets"
                 params = {}
                 where_conditions = []
@@ -518,7 +518,7 @@ class DataIntegrationService:
     def get_assets_count(self, asset_type: Optional[str] = None, rating: Optional[str] = None) -> int:
         """Get total count of assets with optional filtering"""
         try:
-            with get_db_session('postgresql') as session:
+            with session_scope() as session:
                 query = "SELECT COUNT(*) FROM assets"
                 params = {}
                 where_conditions = []
@@ -544,7 +544,7 @@ class DataIntegrationService:
     def get_asset_by_id(self, asset_id: str) -> Optional[Dict[str, Any]]:
         """Get a specific asset by ID from PostgreSQL database"""
         try:
-            with get_db_session('postgresql') as session:
+            with session_scope() as session:
                 result = session.execute(text("""
                     SELECT * FROM assets 
                     WHERE blkrock_id = :asset_id
@@ -692,7 +692,7 @@ class DataIntegrationService:
     def get_asset_correlations(self, asset_id: str, limit: int = 50, threshold: Optional[float] = None) -> List[Dict[str, Any]]:
         """Get correlations for a specific asset"""
         try:
-            with get_db_session('correlations') as session:
+            with session_scope() as session:
                 query = """
                     SELECT asset1_id, asset2_id, correlation_value 
                     FROM asset_correlations 
@@ -729,7 +729,7 @@ class DataIntegrationService:
             stats = {'total_count': 0, 'by_type': {}, 'by_rating': {}, 'correlation_count': 0}
             
             # Get asset counts from PostgreSQL
-            with get_db_session('postgresql') as session:
+            with session_scope() as session:
                 # Total count
                 total_result = session.execute(text("SELECT COUNT(*) FROM assets")).fetchone()
                 stats['total_count'] = total_result[0] if total_result else 0
@@ -754,7 +754,7 @@ class DataIntegrationService:
             
             # Get correlation count (keep this from SQLite correlations DB for now)
             try:
-                with get_db_session('correlations') as session:
+                with session_scope() as session:
                     corr_result = session.execute(text("SELECT COUNT(*) FROM asset_correlations")).fetchone()
                     stats['correlation_count'] = corr_result[0] if corr_result else 0
             except Exception:

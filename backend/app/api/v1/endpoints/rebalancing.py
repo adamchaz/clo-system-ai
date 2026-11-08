@@ -18,16 +18,12 @@ from pydantic import BaseModel, Field, validator
 import tempfile
 import os
 
-from ....core.database_config import db_config
+from ....core.database import get_db
 from ....services.rebalancing_service import RebalancingService
-from .auth import get_current_user
+from ....core.unified_auth import get_current_user
 
 router = APIRouter()
 
-def get_db():
-    """Database dependency"""
-    with db_config.get_db_session('postgresql') as session:
-        yield session
 
 
 class RebalancingRequest(BaseModel):

@@ -9,7 +9,8 @@ from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
 from io import BytesIO
 
-from ....core.database_config import db_config
+from ....core.database import get_db
+from ....core.unified_auth import get_current_user_id
 from ....services.reports_service import reports_service
 from ....schemas.reports import (
     ReportGenerateRequest,
@@ -29,16 +30,8 @@ from ....core.exceptions import CLOBusinessError, CLOValidationError
 
 router = APIRouter()
 
-def get_db():
-    """Database dependency"""
-    with db_config.get_db_session('postgresql') as session:
-        yield session
 
 
-def get_current_user() -> Optional[str]:
-    """Get current user (placeholder for authentication)"""
-    # This would typically extract user from JWT token
-    return "demo_user"
 
 
 def get_user_organization() -> Optional[str]:
@@ -51,7 +44,7 @@ def get_user_organization() -> Optional[str]:
 @router.post("/generate", response_model=ReportResponse)
 async def generate_report(
     request: ReportGenerateRequest,
-    current_user: str = Depends(get_current_user),
+    current_user: str = Depends(get_current_user_id),
     organization: str = Depends(get_user_organization),
     db: Session = Depends(get_db)
 ):
@@ -83,7 +76,7 @@ async def generate_report(
 @router.post("/generate/portfolio", response_model=ReportResponse)
 async def generate_portfolio_report(
     request: PortfolioReportRequest,
-    current_user: str = Depends(get_current_user),
+    current_user: str = Depends(get_current_user_id),
     organization: str = Depends(get_user_organization),
     db: Session = Depends(get_db)
 ):
@@ -109,7 +102,7 @@ async def generate_portfolio_report(
 @router.post("/generate/waterfall", response_model=ReportResponse)
 async def generate_waterfall_report(
     request: WaterfallReportRequest,
-    current_user: str = Depends(get_current_user),
+    current_user: str = Depends(get_current_user_id),
     organization: str = Depends(get_user_organization),
     db: Session = Depends(get_db)
 ):
@@ -135,7 +128,7 @@ async def generate_waterfall_report(
 @router.post("/generate/risk", response_model=ReportResponse)
 async def generate_risk_report(
     request: RiskReportRequest,
-    current_user: str = Depends(get_current_user),
+    current_user: str = Depends(get_current_user_id),
     organization: str = Depends(get_user_organization),
     db: Session = Depends(get_db)
 ):
@@ -165,7 +158,7 @@ async def list_reports(
     status: Optional[ReportStatus] = Query(None, description="Filter by report status"),
     page: int = Query(1, ge=1, description="Page number"),
     page_size: int = Query(50, ge=1, le=200, description="Items per page"),
-    current_user: str = Depends(get_current_user),
+    current_user: str = Depends(get_current_user_id),
     organization: str = Depends(get_user_organization),
     db: Session = Depends(get_db)
 ):
@@ -195,7 +188,7 @@ async def list_reports(
 @router.get("/{report_id}", response_model=ReportResponse)
 async def get_report(
     report_id: str = Path(..., description="Report ID"),
-    current_user: str = Depends(get_current_user),
+    current_user: str = Depends(get_current_user_id),
     db: Session = Depends(get_db)
 ):
     """
@@ -222,7 +215,7 @@ async def get_report(
 @router.get("/{report_id}/download")
 async def download_report(
     report_id: str = Path(..., description="Report ID"),
-    current_user: str = Depends(get_current_user),
+    current_user: str = Depends(get_current_user_id),
     db: Session = Depends(get_db)
 ):
     """
@@ -261,7 +254,7 @@ async def download_report(
 @router.delete("/{report_id}")
 async def delete_report(
     report_id: str = Path(..., description="Report ID"),
-    current_user: str = Depends(get_current_user),
+    current_user: str = Depends(get_current_user_id),
     db: Session = Depends(get_db)
 ):
     """
@@ -305,7 +298,7 @@ async def list_templates(
 @router.post("/templates/", response_model=ReportTemplateResponse)
 async def create_template(
     template: ReportTemplateCreate,
-    current_user: str = Depends(get_current_user),
+    current_user: str = Depends(get_current_user_id),
     db: Session = Depends(get_db)
 ):
     """
@@ -327,7 +320,7 @@ async def create_template(
 @router.get("/analytics/summary", response_model=ReportAnalytics)
 async def get_report_analytics(
     days: int = Query(30, ge=1, le=365, description="Number of days to analyze"),
-    current_user: str = Depends(get_current_user),
+    current_user: str = Depends(get_current_user_id),
     organization: str = Depends(get_user_organization),
     db: Session = Depends(get_db)
 ):
@@ -397,7 +390,7 @@ async def list_report_formats():
 @router.get("/status/{report_id}", response_model=ReportResponse)
 async def check_report_status(
     report_id: str = Path(..., description="Report ID"),
-    current_user: str = Depends(get_current_user),
+    current_user: str = Depends(get_current_user_id),
     db: Session = Depends(get_db)
 ):
     """

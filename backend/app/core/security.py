@@ -25,21 +25,12 @@ logger = logging.getLogger(__name__)
 limiter = Limiter(key_func=get_remote_address)
 
 
-# Import unified authentication dependencies
-# Authentication logic moved to unified_auth.py for consistency.
-# This import is deliberately NOT wrapped in try/except: a failed import must stop
-# the app from starting rather than silently falling back to a mock admin user.
-from .unified_auth import (
-    get_current_user,
-    get_current_active_user,
-    require_admin_role,
-    require_manager_role,
-    require_analyst_role,
-    require_permissions,
-    get_optional_user,
-    validate_token,
-    get_auth_service
-)
+# Authentication dependencies (get_current_user, require_admin_role, ...) live in
+# app.core.unified_auth - import them from there. This module only provides the
+# security middleware and the legacy password/token helpers below.
+# Imported without try/except on purpose: if unified_auth fails to import, the app
+# must fail to start rather than run without authentication.
+from .unified_auth import get_auth_service
 
 # Legacy password utilities (kept so existing imports keep working).
 # They delegate to AuthService so there is exactly one hashing scheme (bcrypt)
@@ -71,11 +62,7 @@ def decode_token(token: str) -> Dict[str, Any]:
         raise ValueError("Invalid token")
 
 
-# Legacy authentication functions removed - now using unified_auth.py
-# Authentication functions are imported above from unified_auth module
 
-# Alias for backward compatibility
-require_admin = require_admin_role
 
 
 # ==== PRODUCTION SECURITY MIDDLEWARE ====

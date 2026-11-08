@@ -10,7 +10,7 @@ from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, Q
 from fastapi.responses import StreamingResponse
 from starlette.status import HTTP_201_CREATED, HTTP_204_NO_CONTENT
 
-from ....core.security import get_current_user, require_permissions
+from ....core.unified_auth import get_current_user, require_permissions
 from ....schemas.documents import (
     DocumentUploadRequest, DocumentUpdateRequest, DocumentResponse,
     DocumentListResponse, DocumentSearchRequest, DocumentStatsResponse,

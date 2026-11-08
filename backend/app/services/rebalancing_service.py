@@ -22,7 +22,7 @@ from ..models.rebalancing import (
     TransactionType,
     create_rebalance_inputs_from_config
 )
-from ..core.database_config import get_db_session
+from ..core.database import session_scope
 from ..models.collateral_pool import CollateralPool as Portfolio
 from ..models.asset import Asset
 from ..core.exceptions import CLOBusinessError, CLOValidationError
@@ -35,7 +35,7 @@ class RebalancingService:
     
     def __init__(self, db_session: Optional[Session] = None):
         """Initialize rebalancing service"""
-        self.db = db_session or get_db_session()
+        self.db = db_session or session_scope()
         self.rebalancer = PortfolioRebalancer()
         self.current_operation_id: Optional[str] = None
     

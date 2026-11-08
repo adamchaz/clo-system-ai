@@ -7,7 +7,7 @@ from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
-from ....core.database_config import db_config
+from ....core.database import get_db
 from ....services.data_integration import DataIntegrationService
 from ....services.risk_service import RiskAnalyticsService
 from ....schemas.risk import (
@@ -22,10 +22,6 @@ from ....schemas.risk import (
 
 router = APIRouter()
 
-def get_db():
-    """Database dependency"""
-    with db_config.get_db_session('postgresql') as session:
-        yield session
 
 def get_integration_service():
     """Data integration service dependency"""

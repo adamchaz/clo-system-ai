@@ -17,7 +17,7 @@ import pandas as pd
 from sqlalchemy.orm import Session
 
 from ..models.credit_migration import CreditMigration
-from ..core.database_config import get_db_session
+from ..core.database import session_scope
 from ..models.asset import Asset
 from ..models.clo_deal import CLODeal
 from ..utils.math_utils import MathUtils
@@ -31,7 +31,7 @@ class CreditMigrationService:
     
     def __init__(self, db_session: Optional[Session] = None):
         """Initialize credit migration service"""
-        self.db = db_session or get_db_session()
+        self.db = db_session or session_scope()
         self.credit_migration = CreditMigration()
         self.math_utils = MathUtils()
     

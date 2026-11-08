@@ -7,7 +7,7 @@ from typing import List, Dict, Any, Optional
 from fastapi import APIRouter, Depends, HTTPException, Query, Response
 from starlette.status import HTTP_201_CREATED, HTTP_204_NO_CONTENT
 
-from ....core.security import get_current_user, require_permissions, require_admin
+from ....core.unified_auth import get_current_user, require_permissions, require_admin
 from ....schemas.user_management import (
     UserCreateRequest, UserUpdateRequest, UserResponse, UserListResponse,
     UserSearchRequest, PasswordResetRequest, PasswordChangeRequest,
@@ -591,7 +591,7 @@ async def impersonate_user(
         logger.info(f"Admin {current_user['user_id']} impersonating user {user_id}")
         
         # Create temporary token (mock implementation)
-        from ..core.security import create_access_token
+        from ....core.security import create_access_token
         
         impersonation_token = create_access_token({
             "user_id": user_id,
