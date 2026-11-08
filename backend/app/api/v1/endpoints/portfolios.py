@@ -273,52 +273,17 @@ async def get_portfolio_summary(
     try:
         target_date = analysis_date  # validated by analysis_date_param (422 if invalid)
         
-        # Get actual data from database for MAG17 and other deals 
-        # Fixed: Now pulling real data instead of hardcoded zeros
-        asset_count = 0
-        portfolio_balance = 0.0
-        
-        if deal_id == 'MAG17':
-            # Get MAG17 specific data
-            from sqlalchemy import text
-            print(f"DEBUG: MATCHED MAG17! Querying database...")
-            try:
-                print(f"DEBUG: About to execute database query")
-                asset_result = db.execute(text("""
-                    SELECT COUNT(*) as count, COALESCE(SUM(par_amount), 0) as total_par
-                    FROM assets 
-                    WHERE par_amount > 0
-                """)).fetchone()
-                print(f"DEBUG: Query executed, result: {asset_result}")
-                
-                if asset_result:
-                    asset_count = asset_result.count
-                    portfolio_balance = float(asset_result.total_par)
-                    print(f"DEBUG: SUCCESS! Found {asset_count} assets with total par {portfolio_balance}")
-                else:
-                    print("DEBUG: ERROR: No asset_result returned")
-                    asset_count = 0
-                    portfolio_balance = 0.0
-            except Exception as e:
-                print(f"DEBUG: EXCEPTION in database query: {e}")
-                import traceback
-                traceback.print_exc()
-                asset_count = 0
-                portfolio_balance = 0.0
-        else:
-            # For other deals, try to get from collateral_pools
-            from sqlalchemy import text
-            pool_result = db.execute(text("""
-                SELECT total_assets, total_par_amount 
-                FROM collateral_pools 
-                WHERE deal_id = :deal_id 
-                ORDER BY analysis_date DESC LIMIT 1
-            """), {"deal_id": deal_id}).fetchone()
-            
-            if pool_result:
-                asset_count = pool_result.total_assets or 0
-                portfolio_balance = float(pool_result.total_par_amount or 0)
-        
+        # Positions held as of the analysis date (positions sold on or before it are excluded,
+        # same rule as the portfolio list and the concentration tests)
+        position_row = db.execute(text("""
+            SELECT COUNT(*) AS asset_count, COALESCE(SUM(par_amount), 0) AS total_par
+            FROM deal_assets
+            WHERE deal_id = :deal_id
+              AND (sale_date IS NULL OR sale_date > :analysis_date)
+        """), {"deal_id": deal_id, "analysis_date": target_date}).fetchone()
+        asset_count = position_row.asset_count
+        portfolio_balance = float(position_row.total_par)
+
         # Holdings snapshot date for this deal (see migrations/011_clo_deals_data_as_of.sql)
         from sqlalchemy import text as _text
         data_as_of = db.execute(

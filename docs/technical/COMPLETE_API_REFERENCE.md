@@ -130,17 +130,16 @@ date shifts time-based measures but does not roll holdings forward.
 `current_asset_count` and `current_portfolio_balance` are the deal's positions in `deal_assets`,
 excluding any sold on or before the analysis date.
 
-> **Known issue:** `GET /portfolios/{deal_id}/summary` still reports `total_assets` and
-> `total_balance` as 0 (it reads the empty `collateral_pools` table, or for MAG17 the asset
-> master, which carries no par amounts).
+
 
 ### **Portfolio Summary**
 
 ```http
 GET /api/v1/portfolios/{deal_id}/summary?analysis_date=2018-06-30
 ```
-Returns summary figures plus `"analysis_date"` (the date used) and `"data_as_of"` (the
-holdings snapshot date).
+Returns `total_assets` and `total_balance` (the deal's positions in `deal_assets`, excluding
+any sold on or before the analysis date), `"analysis_date"` (the date used) and `"data_as_of"`
+(the holdings snapshot date). The `risk_metrics` block is still placeholder data.
 
 ### **Get Portfolio Details**
 
