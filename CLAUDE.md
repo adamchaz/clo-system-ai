@@ -1,10 +1,40 @@
 # CLO Management System
 
-## 🎯 **PROJECT STATUS: PRODUCTION READY - FULLY OPERATIONAL** 
+## 🎯 **PROJECT STATUS: OPERATIONAL IN DEVELOPMENT - SEE KNOWN ISSUES BEFORE PRODUCTION**
 
 A comprehensive Collateralized Loan Obligation (CLO) Portfolio Management System successfully converted from Excel/VBA to a modern Python web application.
 
-**Current Phase**: System fully operational with 100% Excel-verified concentration tests across all 10 CLO deals
+**Current Phase**: Core data, authentication, and concentration tests are operational on all 10 CLO deals. Several analytics services still return mock data and the test suite is not yet isolated from the dev database (see the November 8, 2026 update).
+
+---
+
+## ⚠️ **NOVEMBER 8, 2026 UPDATE: SECURITY HARDENING, DATABASE REBUILD, CORE CONSOLIDATION**
+
+### **Security fixes** (commit `63241a0`)
+- **Authentication enforced on the API**: assets, portfolios, waterfall, risk, scenarios, reports, portfolio-analytics, admin, yield-curves and concentration-thresholds routers now require a bearer token (router-level dependency in `backend/app/api/v1/api.py`). Previously these were reachable without logging in.
+- **Hard-coded login bypass removed**: `/auth/token` and `/auth/login` no longer accept built-in `admin123`/`demo12345` credentials; every login is checked against the `users` table.
+- **Fail-closed auth**: removed the mock-admin fallback in `core/security.py`; legacy `hash_password`/`verify_password`/`create_access_token` now delegate to bcrypt/JWT in `AuthService` (the old `verify_password` accepted any 8+ character password).
+- **Registration**: `/auth/register` always creates a `viewer`; `PUT /auth/me` can only change `full_name`.
+- **Production safety check**: with `ENVIRONMENT=production` the app refuses to start if `SECRET_KEY` is weak/placeholder, `DEBUG` is on, or the dev DB password is configured. `DEBUG` now defaults to `false`.
+- **Note**: only `SECRET_KEY` signs JWTs - `JWT_SECRET_KEY` in env files is ignored.
+
+### **Dev database wiped and rebuilt from Excel**
+- Running the backend test suite dropped all model tables in `clo_dev`: five test files call `Base.metadata.drop_all()` on the real engine. **Do not run `pytest tests` against `clo_dev`** - see `backend/tests/README.md`.
+- Rebuilt with the new `scripts/rebuild_dev_db_from_excel.py --confirm` (reads `TradeHypoPrelimv32.xlsm` directly) plus `backend/scripts/migrate_yield_curves.py`. Procedure, sources and expected counts: `docs/technical/DATA_MIGRATION_GUIDE.md`.
+- Current data: 10 deals, 384 assets, **2,726** positions, **71** tranches, 54 test definitions, 374 deal thresholds, 4 users, 5 yield curves (3,600 rates).
+- **Differences from before**: thresholds are now each deal's actual Excel values (previously generic defaults plus hand tweaks); 42 vintage-guessed positions removed (was 2,768); MAG7 and MAG17 have 8 tranches (Excel includes a Class X note); MAG15-17 effective dates are blank because they are blank in Excel.
+- Backups (git-ignored): `data/db_backups/clo_dev_rebuilt_2026-11-08.dump`.
+
+### **Core consolidation**
+- **One database module**: `backend/app/core/database.py` owns the only engine/pool, the only `Base`, `get_db()` (FastAPI) and `session_scope()` (services/scripts) - both commit on success and roll back on error - plus `get_redis()`. The 11 per-module `get_db()` copies and the second engine were removed. `core/database_config.py` is a deprecated shim for old scripts only; `core/config_manager.py` was deleted (unused). SQL statement logging is off unless `DB_ECHO=true`.
+- **One auth source**: every auth dependency is imported from `backend/app/core/unified_auth.py`. Missing or invalid tokens return **401** everywhere (some routes returned 403 before).
+- **Bugs fixed on the way**: `/auth/logout`, `/auth/permissions`, `/auth/sessions` returned 500; the DB health check always reported PostgreSQL down (SQLAlchemy 2.0 `text()`); detailed health/readiness always reported Redis down (call to a non-existent method); admin impersonation import error; Redis URL missing `://` when a password is set.
+
+### **Known issues (not yet fixed)**
+- **Mock data**: waterfall, risk, rebalancing and portfolio-analytics services return hard-coded values; the waterfall API uses the same fake tranche structure for every deal. `CLODealEngine` (the converted VBA engine) is not reachable from any endpoint. `/users/` returns generated fake users.
+- **AuthService stubs**: `_get_user_by_id()` returns `None` and `_store_user()` persists nothing, so change-password/profile updates fail and `require_permissions` rejects every user (documents and parts of user management).
+- **Models vs schema drift**: the concentration-test models still declare 8 CHECK constraints the real schema never had; live tables `asset_correlations`, `scenario_inputs`, `model_parameters`, `reference_data`, `clo_static_parameters`, `clo_time_series_parameters` have no models; Alembic is not in use.
+- **Other**: concentration endpoint returns HTTP 200 with an empty result on failure; ~255 handlers put `str(e)` in HTTP error details; frontend `cloApi.ts` falls back to port 8001 while everything else uses 8000; `@types/d3-dispatch` 3.0.7 breaks `tsc` on TypeScript 4.9 (pin 3.0.6); dev credentials and `.env*` files are tracked in git (rotate the DB password).
 
 ---
 
@@ -342,6 +372,16 @@ uvicorn app.main:app --reload      # Development server
 python test_environment.py        # Test environment
 ```
 
+**⛔ Do not run `pytest tests` against the dev database.** Several tests call `drop_all()` on the real engine and will delete all data in `clo_dev`. See `backend/tests/README.md` for which files are safe and how to point tests at a disposable database. Back up first: `docker exec clo-postgres pg_dump -U postgres -d clo_dev -Fc > data/db_backups/clo_dev_<date>.dump`
+
+### Rebuilding the Dev Database
+```bash
+# from the repo root
+backend\venv\Scripts\python.exe scripts\rebuild_dev_db_from_excel.py --confirm
+backend\venv\Scripts\python.exe backend\scripts\migrate_yield_curves.py
+```
+Details: `docs/technical/DATA_MIGRATION_GUIDE.md`.
+
 ### Docker Services
 ```bash
 cd infrastructure/docker
@@ -433,8 +473,9 @@ GET /api/v1/portfolios/{id}/summary?analysis_date=2016-06-30  # Custom date
 ## Security Notes
 
 This system handles sensitive financial data:
-- All Excel files, databases, and credentials are excluded from Git
-- Use environment variables for sensitive configuration
+- Excel source data, database files, and `data/db_backups/` are excluded from Git
+- **Exception to fix**: `.env.development`, `.env.production` (root and `backend/`) and `frontend/.env.development` are tracked, and the dev database password appears in them and in several scripts. Treat it as compromised: rotate it and untrack the files.
+- Use environment variables for sensitive configuration; in production `SECRET_KEY` must be a strong random value (the app refuses to start otherwise)
 - Follow secure coding practices for financial data
 
 ## Test Credentials
@@ -448,7 +489,7 @@ This system handles sensitive financial data:
 | **ANALYST** | analyst@clo-system.com | analyst123 | Risk Analyst | Risk analysis, calculations, scenarios |
 | **VIEWER** | demo@clo-system.com | demo12345 | Demo User | Read-only access, basic analytics |
 
-**⚠️ Important**: These are test credentials for development only. Production systems should use secure authentication with proper password policies.
+**⚠️ Important**: These are test credentials for development only. They are rows in the `users` table (bcrypt hashes), seeded by `scripts/rebuild_dev_db_from_excel.py` - they are no longer hard-coded in the login endpoint. Production systems should use secure authentication with proper password policies.
 
 ## Current Status
 
@@ -539,7 +580,7 @@ This system handles sensitive financial data:
 
 ### Testing Summary
 
-**1,100+ Comprehensive Tests** with 100% pass rate on critical systems:
+**Status as of 2026-11-08**: the last full run collected 667 tests - 478 passed, 81 failed, 108 errors - and that run wiped the dev database part-way through, so the numbers are unreliable until the suite runs against an isolated database (no `conftest.py` exists yet). Earlier claims of "1,100+ tests with 100% pass rate" are not current. Areas covered:
 - **VBA Parity Testing**: All converted classes match original VBA behavior
 - **Concentration Tests**: 54 test types validated against VBA logic
 - **Integration Testing**: End-to-end deal lifecycle validation  
@@ -718,6 +759,12 @@ This system handles sensitive financial data:
 - This project is being developed on Windows
 - To start CLO system: `./scripts/start-dev.bat`
 - This is a Windows development environment
+
+## Code Conventions (since 2026-11-08)
+- Database access: import `get_db` / `session_scope` / `get_redis` / `Base` / `engine` from `app.core.database`. Do not create engines, `declarative_base()`, or per-module `get_db()` helpers. Do not use `app.core.database_config` in app code.
+- Authentication: import dependencies from `app.core.unified_auth` only. New data routers should be included in `api/v1/api.py` with `dependencies=require_auth`.
+- Configuration: read settings from `app.core.config.settings` only.
+- Never run tests or scripts that call `drop_all()` / `create_all()` against `clo_dev`; back up with `pg_dump` before any database-touching operation.
 
 ## Important Instruction Reminders
 - Do what has been asked; nothing more, nothing less

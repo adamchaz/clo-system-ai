@@ -108,12 +108,17 @@ src/
 backend/app/
 ├── main.py                 # Application entry point
 ├── core/                   # Core configuration
-│   ├── config.py          # Settings management
-│   ├── database_config.py # Database connections
-│   └── security.py        # Security utilities
+│   ├── config.py          # Settings (single config source) + production safety check
+│   ├── database.py        # The only engine/pool, Base, get_db, session_scope, get_redis
+│   ├── database_config.py # DEPRECATED shim for old scripts - not used by app code
+│   ├── unified_auth.py    # All auth dependencies (get_current_user, require_*_role, ...)
+│   ├── security.py        # Security middleware (CORS, rate limits, headers), bcrypt helpers
+│   ├── monitoring.py      # Health/readiness checks, system metrics
+│   └── exceptions.py      # Domain exceptions
 ├── api/v1/                # API routes
-│   ├── endpoints/         # Route handlers
-│   └── dependencies.py    # Dependency injection
+│   ├── api.py             # Router wiring; applies router-level authentication
+│   └── endpoints/         # Route handlers
+├── repositories/          # Data-access classes (concentration thresholds only, so far)
 ├── models/                # Database models
 ├── schemas/               # Pydantic models
 ├── services/              # Business logic services
@@ -349,21 +354,23 @@ Scheduled Job → Data Integration → Bulk Processing → Cache Invalidation �
 
 #### Dependency Injection
 ```python
-# FastAPI dependency system
+# FastAPI dependency system - shared dependencies come from app.core
 from fastapi import Depends
+from sqlalchemy.orm import Session
+from app.core.database import get_db
+from app.core.unified_auth import get_current_user, require_manager_role
 
-def get_auth_service() -> AuthService:
-    return AuthService()
-
-def get_portfolio_service() -> PortfolioService:
-    return PortfolioService()
-
-@app.get("/api/v1/portfolios")
-async def list_portfolios(
-    current_user: User = Depends(get_current_user),
-    portfolio_service: PortfolioService = Depends(get_portfolio_service)
+@router.get("/{deal_id}/thresholds")
+async def get_thresholds(
+    deal_id: str,
+    db: Session = Depends(get_db),                       # commits on success, rolls back on error
+    current_user: dict = Depends(get_current_user),      # user dict; 401 if no/invalid token
 ):
-    return await portfolio_service.list_portfolios(current_user)
+    ...
+
+@router.put("/{deal_id}/thresholds/{test_id}")
+async def update_threshold(..., current_user: dict = Depends(require_manager_role)):
+    ...
 ```
 
 #### Repository Pattern
@@ -454,25 +461,43 @@ async def list_portfolios():
 ### Database Integration
 
 #### Connection Management
+All database and cache access goes through `app/core/database.py` (consolidated 2026-11-08;
+previously two engines/pools in `database.py` and `database_config.py` plus 11 per-module
+`get_db()` copies):
+
 ```python
-# Database configuration
-class DatabaseConfig:
-    def __init__(self):
-        self.postgresql_url = settings.database_url
-        self.sqlite_paths = self._get_sqlite_paths()
-        self.redis_url = settings.redis_url
-    
-    @contextmanager
-    def get_db_session(self):
-        session = SessionLocal()
-        try:
-            yield session
-        finally:
-            session.close()
-    
-    def get_sqlite_connection(self, db_name: str):
-        return sqlite3.connect(self.sqlite_paths[db_name])
+# app/core/database.py (abridged)
+engine = create_engine(settings.database_url,
+                       pool_size=settings.db_pool_size, max_overflow=settings.db_max_overflow,
+                       pool_timeout=settings.db_pool_timeout, pool_recycle=settings.db_pool_recycle,
+                       pool_pre_ping=True, echo=settings.db_echo)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+Base = declarative_base()            # the only Base; every model inherits from it
+
+def get_db():                        # FastAPI dependency
+    db = SessionLocal()
+    try:
+        yield db
+        db.commit()                  # commit when the request succeeded
+    except Exception:
+        db.rollback()
+        raise
+    finally:
+        db.close()
+
+@contextmanager
+def session_scope(): ...             # same semantics, for services and scripts
+
+def get_redis(): ...                 # shared client (bytes), or None if Redis is unreachable
+
+class DatabaseManager:               # test_connection(), test_redis(), health_check(), create_tables()
+    ...
 ```
+
+Rules: no other module creates an engine, a `declarative_base()`, or its own `get_db()`.
+`app/core/database_config.py` (`db_config`) survives only as a deprecated shim for standalone
+migration scripts. All data is in PostgreSQL; the SQLite databases from the original migration
+are no longer used.
 
 #### Data Synchronization
 ```python
@@ -517,21 +542,30 @@ class MarketDataAdapter:
 ### Authentication & Authorization
 
 #### JWT-Based Authentication
-```python
-# Token-based authentication flow
-class AuthService:
-    def create_access_token(self, user_data: dict) -> str:
-        expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-        to_encode = {"sub": user_data["email"], "exp": expire}
-        return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-    
-    def verify_token(self, token: str) -> Optional[User]:
-        try:
-            payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-            return self.get_user_by_email(payload.get("sub"))
-        except JWTError:
-            return None
-```
+How it works today (updated 2026-11-08):
+
+- **Login**: `POST /api/v1/auth/token` (form) or `POST /api/v1/auth/login` (JSON) verifies the
+  bcrypt hash in the `users` table and returns an HS256 JWT signed with `settings.secret_key`
+  (`sub` = email). There are no hard-coded/demo credentials in the code.
+- **Validation**: `AuthService.get_current_user(token)` decodes the JWT (PyJWT) and loads the
+  user from `users` by email. Expired or invalid tokens return `None`.
+- **Dependencies**: `app/core/unified_auth.py` is the single source of auth dependencies -
+  `get_current_user`, `get_current_active_user`, `get_current_user_id`, `require_admin_role`,
+  `require_manager_role`, `require_analyst_role`, `require_permissions`, `get_optional_user`.
+  A missing **or** invalid token returns **401**; insufficient role returns 403.
+- **Router-level enforcement**: `app/api/v1/api.py` adds `Depends(get_current_active_user)` to
+  the assets, portfolios, waterfall, risk, scenarios, reports, portfolio-analytics, admin,
+  yield-curves and concentration-thresholds routers. Intentionally public: auth endpoints,
+  `/health`, `/api/v1/monitoring/health/*` probes, `/monitoring/status/summary`, and the
+  rebalancing/credit-migration `/health` endpoints. The WebSocket validates its `?token=`
+  query parameter itself.
+- **Registration**: `POST /auth/register` always creates a `viewer`; `PUT /auth/me` can only
+  change `full_name`.
+
+Known gaps: several `AuthService` helpers are stubs (`_get_user_by_id` returns `None`,
+`_store_user` persists nothing). As a result change-password and profile updates fail, and
+`get_user_permissions()` returns an empty list, so endpoints guarded by `require_permissions`
+currently reject every user.
 
 #### Role-Based Access Control
 ```python
@@ -690,17 +724,11 @@ services:
 ### Infrastructure as Code
 
 #### Environment Configuration
-```python
-# Environment-specific settings
-class Settings:
-    def __init__(self):
-        self.app_name = os.getenv("APP_NAME", "CLO Management System")
-        self.debug = os.getenv("DEBUG", "False").lower() == "true"
-        self.database_url = os.getenv("DATABASE_URL")
-        self.redis_url = os.getenv("REDIS_URL")
-        self.secret_key = os.getenv("SECRET_KEY")
-        self.log_level = os.getenv("LOG_LEVEL", "INFO")
-```
+Settings come from `app/core/config.py` (`Settings`, pydantic `BaseSettings`): environment
+variables first, then `.env.development` in the working directory, then code defaults. With
+`ENVIRONMENT=production` the app refuses to start if `SECRET_KEY` is weak or a placeholder,
+`DEBUG` is on, or the development database password is still configured. See
+`CONFIGURATION_GUIDE.md` for the full reference.
 
 ### High Availability Design
 

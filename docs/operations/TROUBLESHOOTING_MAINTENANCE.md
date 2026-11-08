@@ -182,8 +182,8 @@ docker exec -it clo-app-container env | grep DATABASE_URL
 
 # 4. Clear connection pool if needed
 docker exec -it clo-app-container python -c "
-from backend.app.core.database_config import db_config
-db_config.engine.dispose()
+from app.core.database import engine
+engine.dispose()
 print('Connection pool cleared')
 "
 ```
@@ -204,14 +204,16 @@ curl -X POST "http://localhost:8000/api/v1/auth/login" \
   -H "Content-Type: application/json" \
   -d '{"email":"test@example.com","password":"password123"}'
 
-# Check JWT configuration
-docker exec -it clo-app-container env | grep JWT
+# Check token-signing configuration (tokens are signed with SECRET_KEY)
+docker exec -it clo-app-container env | grep -E 'SECRET_KEY|ENVIRONMENT'
 ```
 
 **Solutions:**
 ```bash
-# 1. Verify JWT secret key configuration
-echo $JWT_SECRET_KEY | wc -c  # Should be > 32 characters
+# 1. Verify the signing key. Only SECRET_KEY is used (JWT_SECRET_KEY is ignored).
+#    If SECRET_KEY changed since tokens were issued, all existing tokens become invalid
+#    and users must log in again.
+echo $SECRET_KEY | wc -c  # Should be > 32 characters; production refuses to start otherwise
 
 # 2. Check user database
 psql -h db-host -U clo_user -d clo_management -c "

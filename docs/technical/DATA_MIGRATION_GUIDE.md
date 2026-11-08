@@ -2,6 +2,7 @@
 
 ## Table of Contents
 
+0. [Rebuilding the Dev Database from Excel (current procedure)](#rebuilding-the-dev-database-from-excel-current-procedure)
 1. [Migration Overview](#migration-overview)
 2. [Migration Architecture](#migration-architecture)
 3. [Migration Components](#migration-components)
@@ -9,6 +10,86 @@
 5. [Execution Guide](#execution-guide)
 6. [Troubleshooting](#troubleshooting)
 7. [Post-Migration Verification](#post-migration-verification)
+
+## Rebuilding the Dev Database from Excel (current procedure)
+
+*Added 2026-11-08.* The historical migration described in the rest of this guide was done
+with many one-off, order-dependent scripts, some of which were never committed, so it cannot
+be replayed. The core tables are now built by a single script that reads
+`TradeHypoPrelimv32.xlsm` directly.
+
+### When to use it
+- The dev database lost data (this happened on 2026-11-08 when the backend test suite ran
+  `drop_all` against `clo_dev` - see `backend/tests/README.md`)
+- Setting up a new development database
+
+### Steps
+```bash
+# 0. Back up whatever is there now (backups folder is git-ignored)
+docker exec clo-postgres pg_dump -U postgres -d clo_dev -Fc > data/db_backups/clo_dev_<date>.dump
+
+# 1. Core tables from Excel (run from the repo root)
+backend\venv\Scripts\python.exe scripts\rebuild_dev_db_from_excel.py --confirm
+
+# 2. Yield curves (not in the workbook; the script generates the 5 standard 2016-Q1 curves)
+backend\venv\Scripts\python.exe backend\scripts\migrate_yield_curves.py
+```
+
+The rebuild script refuses to run unless `DATABASE_URL` points at `clo_dev` on
+localhost/127.0.0.1, and does nothing without `--confirm`. It runs in one transaction: either
+everything loads or nothing changes.
+
+### What it builds
+| Table | Rows | Excel source |
+|---|---|---|
+| (missing tables) | - | Created from the SQLAlchemy models (`create_all`); existing tables are untouched |
+| `users` | 4 | Dev accounts (admin/manager/analyst/demo), bcrypt hashes; upserted by email |
+| `clo_deals` | 10 | Each "Mag N Inputs" tab: **Date Inputs** block (cols AD/AE) and **CLO Inputs** block (target par) |
+| `assets` | 384 | **"All Assets"** tab, 70 columns incl. the `flags` JSON (DIP, Cov-Lite, ...) |
+| `deal_assets` | 2,726 | Each Inputs tab, **Deal Collateral** block (col D BLKRockID, col E Par Amount) |
+| `clo_tranches` | 71 | Each Inputs tab, **CLO Liabilities** block (col AJ onward) |
+| `concentration_test_definitions` | 54 | Definitions INSERT from `backend/migrations/005_vba_enum_realignment.sql` |
+| `deal_concentration_thresholds` | 374 | Each Inputs tab, **Concentration Limits** block (cols L-O); "N/A" thresholds fall back to the definition default |
+
+The script replaces the contents of `clo_deals`, `assets`, `deal_assets`, `clo_tranches`,
+`concentration_test_definitions` and `deal_concentration_thresholds`. It does not touch the
+correlation, scenario, parameter or reference tables (`asset_correlations`,
+`scenario_inputs`, `model_parameters`, `reference_data`, ...), which have no SQLAlchemy models.
+
+It also drops 8 CHECK constraints that the concentration models declare but the original
+schema (migration 001) never had (e.g. `valid_mag_version` allowed only MAG6/MAG14/MAG17), and
+restores the `DEFAULT CURRENT_TIMESTAMP` columns migration 001 created.
+
+### Expected results
+| Deal | Positions | Par ($M) | Tranches | Tests |
+|---|---|---|---|---|
+| MAG6 | 313 | 403.06 | 7 | 36 |
+| MAG7 | 320 | 596.69 | 8 | 41 |
+| MAG8 | 312 | 591.87 | 7 | 38 |
+| MAG9 | 295 | 392.84 | 7 | 37 |
+| MAG11 | 270 | 536.15 | 6 | 37 |
+| MAG12 | 279 | 599.58 | 7 | 37 |
+| MAG14 | 269 | 520.52 | 7 | 37 |
+| MAG15 | 239 | 607.24 | 7 | 37 |
+| MAG16 | 234 | 495.04 | 7 | 37 |
+| MAG17 | 195 | 431.16 | 8 | 37 |
+
+Spot checks that matched the pre-wipe system: MAG16 DIP = ENERGY FUTURE ($6.25M) + TEXAS
+COMPETITIVE ($3.25M); 89 Cov-Lite assets, MAG16 Cov-Lite exposure $117.1M (23.65%); MAG16
+tranches total $506.5M; MAG17 Test 19 (Netherlands) 3.04%, Test 20 (Germany) 0.14%.
+
+### Differences from the pre-2026-11-08 database
+- **Thresholds are Excel's per-deal values.** Migrations 006-010 used each deal's Excel test
+  *numbers* but generic default *thresholds* plus a few hand-picked adjustments. Example: MAG17
+  DIP obligor limit is now 2.0% (was 2.5%), Caa limit 7.5% (was 2.0%).
+- **2,726 positions, not 2,768.** The extra 42 came from an early script that assigned assets
+  to deals by vintage date; deal membership now comes only from each Inputs tab.
+- **MAG7 and MAG17 have 8 tranches** - the Excel liabilities block includes a Class X note
+  that the earlier hard-coded tranche lists omitted.
+- **Effective date is blank for MAG15, MAG16 and MAG17** because those cells are empty in Excel.
+- **Excel data quirks kept as-is:** MAG6 pricing date (2013-10-20) is after its closing date
+  (2012-09-13); MAG7 maturity is 2025-01-15 in the Date Inputs block (2025-01-25 elsewhere on
+  the tab) - the Date Inputs value is used.
 
 ---
 
@@ -308,26 +389,15 @@ def validate_consistency(data_frame):
 
 #### Transaction Integrity
 ```python
-# Atomic migration with rollback
-def migrate_with_validation(source_data, target_db):
-    try:
-        session = get_db_session()
-        session.begin()
-        
-        # Execute migration
+# Atomic migration with rollback.
+# session_scope() commits when the block exits normally and rolls back on any exception.
+from app.core.database import session_scope
+
+def migrate_with_validation(source_data):
+    with session_scope() as session:
         migrate_data(source_data, session)
-        
-        # Validate results
-        validate_migration_results(session)
-        
-        # Commit if validation passes
-        session.commit()
-        logger.info("Migration completed successfully")
-        
-    except Exception as e:
-        session.rollback()
-        logger.error(f"Migration failed, rolled back: {e}")
-        raise
+        validate_migration_results(session)   # raise to roll everything back
+    logger.info("Migration completed successfully")
 ```
 
 #### Data Integrity Checks

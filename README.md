@@ -194,9 +194,11 @@ CLO-System-AI/                 # 🏢 ENTERPRISE CLO MANAGEMENT PLATFORM
 │   │   │   ├── mag_waterfall.py      # Magnetar waterfalls (634 lines)
 │   │   │   └── [20 more models]      # Complete financial modeling
 │   │   ├── core/            # 🔨 Core configuration & database
-│   │   │   ├── database_config.py    # Multi-database configuration
-│   │   │   ├── config.py            # Application settings
-│   │   │   └── database.py          # Database management
+│   │   │   ├── config.py            # Application settings (single config source)
+│   │   │   ├── database.py          # Only DB engine/pool, Base, get_db, session_scope, Redis
+│   │   │   ├── unified_auth.py      # All authentication dependencies
+│   │   │   ├── security.py          # Security middleware, bcrypt helpers
+│   │   │   └── database_config.py   # Deprecated shim for old scripts (not used by the app)
 │   ├── tests/               # 🧪 500+ COMPREHENSIVE TESTS (15,396 lines)
 │   │   ├── test_asset_model.py       # Asset testing
 │   │   ├── test_concentration_test_enhanced.py # Concentration testing

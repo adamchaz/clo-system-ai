@@ -1,391 +1,216 @@
 # 🔧 CLO System Configuration Guide
 
-## 📋 **Configuration Management Overview**
+**Last updated**: November 8, 2026
+**Source of truth**: `backend/app/core/config.py` (`Settings`, a pydantic `BaseSettings` class)
 
-The CLO System uses a sophisticated environment-aware configuration management system that supports multiple deployment environments with secure credential handling.
-
-**Date**: August 17, 2025  
-**Status**: Production-Ready Configuration System  
-
----
-
-## 🎯 **Configuration Architecture**
-
-### **Multi-Environment Support**
-```
-Environment Files:
-├── .env.template        # Template with all configuration options
-├── .env.development     # Development environment (committed)
-├── .env.production      # Production template (secure values needed)
-├── .env.testing         # Testing environment (not committed)
-└── .env.staging         # Staging environment (not committed)
-```
-
-### **Configuration Sections**
-1. **Environment Settings** - Basic environment configuration
-2. **Database Configuration** - PostgreSQL connection and pooling
-3. **Redis Configuration** - Cache and session storage
-4. **Security Configuration** - JWT, secrets, and access control
-5. **CORS Configuration** - Cross-origin resource sharing
-6. **Business Logic Configuration** - CLO-specific settings
-7. **Monitoring Configuration** - Logging, metrics, and alerting
+All backend configuration lives in one class, `Settings`, exposed as the module-level
+`settings` object. There is no other configuration module (`config_manager.py` was removed
+on 2026-11-08 because nothing used it).
 
 ---
 
-## 🚀 **Quick Setup**
+## 🎯 How configuration is loaded
 
-### **1. Development Environment**
-```bash
-# Copy development configuration
-cp .env.development .env
+`Settings` reads values in this order (first match wins):
 
-# Or start with template
-cp .env.template .env
-# Edit .env with your values
-```
+1. **Process environment variables** (e.g. `export SECRET_KEY=...`, Docker `environment:`)
+2. **`.env.development` in the current working directory** - always this file name,
+   whatever `ENVIRONMENT` is set to. When the backend is started from `backend/`, this is
+   `backend/.env.development`.
+3. **Defaults in `config.py`** - development-only values (local database, dev secret).
 
-### **2. Production Environment**
-```bash
-# Copy production template
-cp .env.production .env
+Variable names are case-insensitive and match the field names in `config.py`
+(`secret_key` ↔ `SECRET_KEY`). Variables that don't match a field are silently ignored.
 
-# Fill in secure production values
-nano .env
-```
+> ⚠️ Because step 2 always reads `.env.development`, a production host must provide its real
+> values as environment variables (step 1). The production safety check below stops the app
+> from starting if development values leak through.
 
-### **3. Environment Variables**
-```bash
-# Set environment type
-export ENVIRONMENT=development  # or production, testing, staging
-```
+### Production safety check
+
+On import, `config.py` calls `settings.validate_production_safety()`. When
+`ENVIRONMENT=production` the app **refuses to start** if any of these hold:
+
+| Check | Fails when |
+|---|---|
+| `SECRET_KEY` | missing, shorter than 32 characters, or a placeholder/dev value (`dev-…`, `CHANGE_THIS…`, `your_secret…`, unresolved `${…}`) |
+| `DEBUG` | true |
+| Database credentials | `DATABASE_URL` or `POSTGRES_PASSWORD` still contains the development password |
+
+All failures are reported together in one `RuntimeError`. Outside production the check is a no-op.
 
 ---
 
-## ⚙️ **Configuration Sections**
+## ⚙️ Settings reference (most used)
 
-### **Environment Settings**
+### Environment
 ```bash
-ENVIRONMENT=development          # development, testing, staging, production
-DEBUG=true                      # Enable debug mode
-LOG_LEVEL=INFO                  # DEBUG, INFO, WARNING, ERROR
+ENVIRONMENT=development   # development | production (only "production" changes behaviour)
+DEBUG=false               # default false; .env.development sets true
+LOG_LEVEL=INFO
 ```
 
-### **Database Configuration**
+### Database
 ```bash
-# PostgreSQL Database
-POSTGRES_HOST=127.0.0.1
-POSTGRES_PORT=5433
-POSTGRES_USER=postgres
-POSTGRES_PASSWORD=your_password
-POSTGRES_DB=clo_dev
-POSTGRES_SSL_MODE=disable       # disable, prefer, require
+# The engine connects with DATABASE_URL. The POSTGRES_* fields exist but are NOT used to
+# build the connection while DATABASE_URL is set (it always is - it has a default).
+DATABASE_URL=postgresql://postgres:<password>@127.0.0.1:5433/clo_dev
 
-# Connection Pooling
+# Connection pool (one pool for the whole app - see "Database access in code")
 DB_POOL_SIZE=20
 DB_MAX_OVERFLOW=30
 DB_POOL_TIMEOUT=30
 DB_POOL_RECYCLE=3600
+DB_ECHO=false             # true logs every SQL statement (very noisy)
 ```
 
-### **Redis Configuration**
+### Redis
 ```bash
-REDIS_HOST=127.0.0.1
-REDIS_PORT=6379
-REDIS_PASSWORD=                 # Optional
-REDIS_SSL=false
+REDIS_URL=redis://127.0.0.1:6379
+# REDIS_HOST / REDIS_PORT / REDIS_SSL are only used when REDIS_PASSWORD is set,
+# in which case the URL is built from them.
+REDIS_PASSWORD=
 ```
+If Redis is unreachable the app still runs; caching is simply disabled.
 
-### **Security Configuration**
+### Security
 ```bash
-SECRET_KEY=your_secret_key_here
-JWT_SECRET_KEY=your_jwt_secret
+SECRET_KEY=<random, 32+ chars>   # signs JWT access tokens - the ONLY signing key
+ACCESS_TOKEN_EXPIRE_MINUTES=30
 JWT_ALGORITHM=HS256
-JWT_ACCESS_TOKEN_EXPIRE_MINUTES=30
-JWT_REFRESH_TOKEN_EXPIRE_DAYS=7
-ALLOWED_HOSTS=localhost,127.0.0.1,yourdomain.com
 ```
+> `JWT_SECRET_KEY` appears in some older env files and docs but **is not read by the code**.
+> Set `SECRET_KEY`.
 
-### **CORS Configuration**
+Generate a key:
 ```bash
-CORS_ORIGINS=http://localhost:3000,http://localhost:3004
-CORS_CREDENTIALS=true
-CORS_METHODS=GET,POST,PUT,DELETE,OPTIONS
-CORS_HEADERS=*
+python -c "import secrets; print(secrets.token_urlsafe(48))"
 ```
 
-### **Business Logic Configuration**
+### CORS
 ```bash
-DEFAULT_ANALYSIS_DATE=2016-03-23
-MAX_PORTFOLIO_SIZE=10000
-MAX_ASSET_COUNT=5000
-CALCULATION_PRECISION=8
-ENABLE_PERFORMANCE_FEATURES=true
-ENABLE_WATERFALL_CACHING=true
+CORS_ORIGINS=http://localhost:3000,http://localhost:3002   # JSON list or comma-separated
+CORS_ALLOW_CREDENTIALS=true
+CORS_MAX_AGE=3600
 ```
+
+### Rate limiting, logging, monitoring, storage, email, backups, feature flags
+See the corresponding sections of `config.py` (`RATE_LIMIT_*`, `LOG_*`, `PROMETHEUS_*`,
+`STORAGE_BACKEND`, `SMTP_*`, `BACKUP_*`, `FEATURE_*`). Every field there can be set by an
+environment variable of the same name.
+
+### Not configurable
+Older versions of this guide listed `DEFAULT_ANALYSIS_DATE`, `MAX_PORTFOLIO_SIZE`,
+`MAX_ASSET_COUNT`, `CALCULATION_PRECISION`, `ENABLE_PERFORMANCE_FEATURES`,
+`ENABLE_WATERFALL_CACHING`, `JWT_REFRESH_TOKEN_EXPIRE_DAYS`, `ALLOWED_HOSTS`,
+`CORS_CREDENTIALS`, `CORS_METHODS` and `CORS_HEADERS`. None of these are read by the code.
+The analysis date default (2016-03-23) is set in `backend/app/utils/date_utils.py`.
 
 ---
 
-## 🔒 **Security Best Practices**
+## 📊 Usage in code
 
-### **Development Environment**
-- ✅ Use default development credentials
-- ✅ Enable debug mode for troubleshooting
-- ✅ Extended token expiration for convenience
-- ✅ Permissive CORS for local development
-
-### **Production Environment**
-- ⚠️ **NEVER use default credentials**
-- ⚠️ **Generate secure random secrets (64+ characters)**
-- ⚠️ **Disable debug mode**
-- ⚠️ **Use SSL/TLS for database connections**
-- ⚠️ **Restrict CORS origins to your domain**
-- ⚠️ **Use environment variables, not hardcoded values**
-
-### **Secret Generation**
 ```python
-# Generate secure secrets
-import secrets
-secret_key = secrets.token_urlsafe(64)
-jwt_secret = secrets.token_urlsafe(64)
+from app.core.config import settings
+
+settings.database_url
+settings.secret_key
+settings.is_production()      # methods, not properties
+settings.is_development()
+settings.get_redis_url()
 ```
+
+### Database access in code
+
+`backend/app/core/database.py` is the single owner of database and cache connections:
+
+```python
+from app.core.database import get_db, session_scope, get_redis, Base, engine
+
+# FastAPI endpoints
+@router.get("/things")
+async def list_things(db: Session = Depends(get_db)):
+    ...
+
+# Services, scripts, background code
+with session_scope() as session:
+    session.execute(text("SELECT 1"))
+
+redis_client = get_redis()    # shared client, or None if Redis is down; returns bytes
+```
+
+- `get_db()` and `session_scope()` **commit when the block finishes without an exception and
+  roll back otherwise**. Explicit `commit()` calls are harmless.
+- There is one engine/connection pool. Do not create engines or `declarative_base()`
+  elsewhere, and do not define per-module `get_db()` helpers.
+- `app/core/database_config.py` (`db_config`) is a **deprecated shim** kept only for old
+  standalone scripts. Application code must not import it.
+
+### Authentication dependencies in code
+
+All auth dependencies come from `backend/app/core/unified_auth.py`:
+
+```python
+from app.core.unified_auth import (
+    get_current_user,         # user dict; 401 if token missing/invalid
+    get_current_active_user,
+    get_current_user_id,      # just the user's id (str)
+    require_admin_role, require_manager_role, require_analyst_role,
+    require_permissions, get_optional_user,
+)
+```
+
+Do not import these from `app.core.security` or `app.api.v1.endpoints.auth` (those
+re-exports/duplicates were removed). Most routers already get authentication at router level
+in `app/api/v1/api.py`; add role/permission dependencies on individual endpoints as needed.
 
 ---
 
-## 🏗️ **Configuration Loading**
-
-### **Environment File Priority**
-1. Environment-specific file (`.env.production`)
-2. Generic `.env` file
-3. System environment variables
-4. Default values in code
-
-### **Configuration Validation**
-```python
-from backend.app.core.config_manager import get_config_manager
-
-# Validate configuration
-config_manager = get_config_manager()
-validation_report = config_manager.validate_configuration()
-
-if validation_report['errors']:
-    print("Configuration errors:", validation_report['errors'])
-if validation_report['security_issues']:
-    print("Security issues:", validation_report['security_issues'])
-```
-
----
-
-## 📊 **Usage in Code**
-
-### **Basic Usage**
-```python
-from backend.app.core.config_manager import get_settings
-
-settings = get_settings()
-
-# Access configuration sections
-db_url = settings.database.database_url
-redis_url = settings.redis.redis_url
-secret = settings.security.secret_key
-```
-
-### **Environment-Specific Logic**
-```python
-if settings.is_development:
-    # Development-specific code
-    enable_debug_endpoints()
-
-if settings.is_production:
-    # Production-specific code
-    setup_error_reporting()
-```
-
-### **Subsection Access**
-```python
-# Database settings
-db_config = settings.database
-connection_url = db_config.database_url
-pool_size = db_config.db_pool_size
-
-# Security settings
-security_config = settings.security
-jwt_secret = security_config.jwt_secret_key
-token_expiry = security_config.jwt_access_token_expire_minutes
-
-# Business logic settings
-business_config = settings.business
-default_date = business_config.default_analysis_date
-max_portfolio = business_config.max_portfolio_size
-```
-
----
-
-## 🔧 **Advanced Configuration**
-
-### **Custom Configuration Loading**
-```python
-from backend.app.core.config_manager import ConfigManager
-
-# Load specific environment file
-config_manager = ConfigManager(env_file=".env.custom")
-settings = config_manager.settings
-```
-
-### **Runtime Configuration Changes**
-```python
-# Reload configuration (useful for testing)
-config_manager.reload_settings()
-```
-
-### **Configuration Validation in CI/CD**
-```python
-#!/usr/bin/env python3
-"""Configuration validation script for CI/CD"""
-
-from backend.app.core.config_manager import get_config_manager
-
-def validate_config():
-    config_manager = get_config_manager()
-    report = config_manager.validate_configuration()
-    
-    if report['errors']:
-        print(f"❌ Configuration errors: {report['errors']}")
-        exit(1)
-    
-    if report['security_issues']:
-        print(f"⚠️  Security issues: {report['security_issues']}")
-        exit(1)
-    
-    print("✅ Configuration validation passed")
-
-if __name__ == "__main__":
-    validate_config()
-```
-
----
-
-## 🚀 **Deployment Configurations**
-
-### **Docker Environment**
-```dockerfile
-# Dockerfile
-ENV ENVIRONMENT=production
-ENV POSTGRES_HOST=db
-ENV REDIS_HOST=redis
-```
+## 🚀 Deployment
 
 ```yaml
-# docker-compose.yml
-version: '3.8'
+# docker-compose (example)
 services:
-  app:
+  backend:
     environment:
       - ENVIRONMENT=production
-      - POSTGRES_HOST=db
-      - REDIS_HOST=redis
-    env_file:
-      - .env.production
+      - DEBUG=false
+      - SECRET_KEY=${PRODUCTION_SECRET_KEY}
+      - DATABASE_URL=postgresql://clo_app:${DB_PASSWORD}@db:5432/clo_prod
+      - REDIS_URL=redis://redis:6379
 ```
 
-### **Kubernetes ConfigMap**
-```yaml
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: clo-system-config
-data:
-  ENVIRONMENT: "production"
-  POSTGRES_HOST: "postgresql-service"
-  REDIS_HOST: "redis-service"
-  API_HOST: "0.0.0.0"
-  API_PORT: "8000"
-```
+Provide secrets through the orchestrator's secret store, not committed files.
 
 ---
 
-## 🔍 **Troubleshooting**
+## 🔍 Troubleshooting
 
-### **Common Issues**
-
-#### **Configuration Not Loading**
 ```bash
-# Check environment file exists
-ls -la .env*
+cd backend && venv\Scripts\activate
 
-# Validate environment variables
-python -c "import os; print(os.environ.get('ENVIRONMENT', 'not set'))"
+# What did Settings resolve?
+python -c "from app.core.config import settings as s; print(s.environment, s.debug, s.database_url)"
 
-# Test configuration loading
-python -c "from backend.app.core.config_manager import get_settings; print(get_settings().environment)"
-```
+# Would production start with the current environment?
+set ENVIRONMENT=production
+python -c "import app.core.config"     # raises RuntimeError listing every problem
 
-#### **Database Connection Issues**
-```python
-# Test database configuration
-from backend.app.core.config_manager import get_settings
-
-settings = get_settings()
-print(f"Database URL: {settings.database.database_url}")
-print(f"Pool size: {settings.database.db_pool_size}")
-```
-
-#### **Security Warnings**
-```python
-# Validate production security
-from backend.app.core.config_manager import get_config_manager
-
-config_manager = get_config_manager()
-report = config_manager.validate_configuration()
-
-for issue in report['security_issues']:
-    print(f"Security Issue: {issue}")
-```
-
-### **Configuration Debug Mode**
-```python
-# Enable detailed configuration logging
-import logging
-logging.getLogger('backend.app.core.config_manager').setLevel(logging.DEBUG)
+# Database / Redis reachable?
+python -c "from app.core.database import DatabaseManager as d; print(d.health_check())"
 ```
 
 ---
 
-## 📚 **Configuration Files Reference**
+## 📚 Environment files
 
-| **File** | **Purpose** | **Committed** | **Usage** |
-|----------|-------------|---------------|-----------|
-| `.env.template` | Configuration template with all options | ✅ Yes | Reference and setup guide |
-| `.env.development` | Development environment defaults | ✅ Yes | Local development |
-| `.env.production` | Production configuration template | ✅ Yes | Production deployment template |
-| `.env.testing` | Testing environment | ❌ No | CI/CD testing |
-| `.env.staging` | Staging environment | ❌ No | Pre-production staging |
-| `.env` | Active environment file | ❌ No | Runtime configuration |
+| File | Purpose | Committed |
+|---|---|---|
+| `.env.template` | Reference of available variables | Yes |
+| `.env.development`, `backend/.env.development` | Local development values (read automatically) | Yes (contain dev credentials - see note) |
+| `.env.production`, `backend/.env.production` | Production template with placeholders | Yes |
+| `frontend/.env.development` | `REACT_APP_API_URL` for the React app | Yes |
 
----
-
-## 🎯 **Best Practices**
-
-### **Development**
-1. Use `.env.development` as starting point
-2. Override specific values in local `.env`
-3. Never commit `.env` with personal credentials
-4. Use permissive settings for easier debugging
-
-### **Production**
-1. Start with `.env.production` template
-2. Generate secure random secrets
-3. Use environment variables in container orchestration
-4. Validate configuration in deployment pipeline
-5. Monitor configuration drift
-
-### **Security**
-1. Rotate secrets regularly
-2. Use least-privilege database accounts
-3. Restrict CORS origins in production
-4. Enable SSL/TLS for all connections
-5. Monitor for configuration exposure
-
----
-
-**Status**: 🔧 **CONFIGURATION SYSTEM COMPLETE - PRODUCTION READY**  
-**Features**: Multi-environment support, security validation, structured configuration management
+> **Note:** The development env files currently contain the local database password and are
+> tracked in git. Treat that password as compromised: rotate it, untrack the files, and keep
+> only `.env.template` in git.

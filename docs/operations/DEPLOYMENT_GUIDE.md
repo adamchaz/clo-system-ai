@@ -380,8 +380,14 @@ DATABASE_URL=postgresql://clo_user:your_secure_db_password@localhost:5432/clo_ma
 # Redis Configuration
 REDIS_URL=redis://:your_redis_password@localhost:6379/0
 
-# Security Configuration  
-JWT_SECRET_KEY=your_jwt_secret_key_change_in_production
+# Security Configuration
+# SECRET_KEY signs JWTs and is the only key the code reads (JWT_SECRET_KEY is ignored).
+# With ENVIRONMENT=production the app refuses to start if SECRET_KEY is shorter than
+# 32 characters or a placeholder, if DEBUG=true, or if the dev DB password is configured.
+ENVIRONMENT=production
+DEBUG=false
+# Generate with: python -c "import secrets; print(secrets.token_urlsafe(48))"
+SECRET_KEY=replace_with_generated_value
 ENCRYPTION_KEY=your_32_character_encryption_key_here
 
 # API Configuration
@@ -444,7 +450,7 @@ from typing import List
 
 class ProductionSettings:
     # Security
-    SECRET_KEY = os.getenv("JWT_SECRET_KEY")
+    SECRET_KEY = os.getenv("SECRET_KEY")   # the real Settings field; JWT_SECRET_KEY is not read
     ACCESS_TOKEN_EXPIRE_MINUTES = 30
     
     # Database
@@ -735,8 +741,16 @@ echo "your_jwt_secret" | docker secret create jwt_secret -
 ```
 
 #### **2. API Security Configuration**
+
+> The class below is an illustrative summary of the security settings. In the actual code:
+> `backend/app/core/security.py` holds the middleware (CORS, rate limiting via slowapi,
+> security headers) and bcrypt helpers; **all authentication dependencies live in
+> `backend/app/core/unified_auth.py`**; tokens are HS256 JWTs created with PyJWT and signed
+> with `settings.secret_key`; and every data router requires a bearer token (configured in
+> `backend/app/api/v1/api.py`). Values are set through `backend/app/core/config.py`.
+
 ```python
-# backend/app/core/security.py
+# Illustrative - see note above
 from passlib.context import CryptContext
 from jose import JWTError, jwt
 from datetime import datetime, timedelta

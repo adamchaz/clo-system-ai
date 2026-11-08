@@ -14,38 +14,47 @@ The CLO Management System provides a comprehensive REST API for programmatic acc
 ### **Getting an Access Token**
 
 ```http
-POST /auth/login
+POST /api/v1/auth/login
 Content-Type: application/json
 
 {
-  "username": "your-username",
+  "email": "analyst@clo-system.com",
   "password": "your-password"
 }
 ```
+(`"username"` is accepted in place of `"email"`. The OAuth2 form endpoint
+`POST /api/v1/auth/token` with `username`/`password` fields returns the same response.)
 
 **Response:**
 ```json
 {
   "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
   "token_type": "bearer",
-  "expires_in": 3600,
-  "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "expires_in": 1800,
   "user": {
-    "id": "user123",
-    "username": "your-username",
-    "role": "analyst",
-    "permissions": ["read", "write"]
+    "id": "fe0b1890-04b0-481e-80b4-3ca27f1bd5c7",
+    "email": "analyst@clo-system.com",
+    "full_name": "Risk Analyst",
+    "role": "analyst"
   }
 }
 ```
+Tokens last `ACCESS_TOKEN_EXPIRE_MINUTES` (default 30). There is no refresh token;
+`POST /api/v1/auth/refresh` with a still-valid token returns a new one.
 
 ### **Using the Access Token**
 
-Include the access token in the Authorization header for all API requests:
+Every endpoint requires the token except: `/api/v1/auth/login`, `/auth/token`,
+`/auth/register`, `/auth/forgot-password`, `/auth/reset-password`, `/auth/validate-token`,
+`/health`, `/api/v1/monitoring/health/*`, `/api/v1/monitoring/status/summary`, and the
+rebalancing/credit-migration `/health` endpoints. Send it in the Authorization header:
 
 ```http
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 ```
+
+A missing, invalid, or expired token returns `401`. The WebSocket endpoint takes the token as
+a query parameter instead: `/api/v1/websocket/ws?token=<access_token>`.
 
 ## 📊 **Portfolio Management API**
 
@@ -285,8 +294,8 @@ GET /monitoring/health/ready
 - `200`: Success
 - `201`: Created
 - `400`: Bad Request  
-- `401`: Unauthorized
-- `403`: Forbidden
+- `401`: Unauthorized - bearer token missing, invalid, or expired (same code for all three)
+- `403`: Forbidden - authenticated, but the user's role/permissions don't allow the action
 - `404`: Not Found
 - `422`: Unprocessable Entity
 - `429`: Too Many Requests

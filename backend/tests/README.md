@@ -1,5 +1,29 @@
 # 🧪 Backend Test Suite Organization
 
+> ## ⛔ DO NOT RUN THE FULL SUITE AGAINST YOUR DEV DATABASE
+>
+> These files import the application's real `engine` / `SessionLocal` from
+> `app.core.database`, which connects to whatever `DATABASE_URL` points at (by default the
+> local dev database `clo_dev`):
+>
+> - `test_fee_service.py`, `test_fee_waterfall_integration.py`, `test_ic_trigger.py`,
+>   `test_oc_trigger.py`, `test_trigger_integration.py` - these run
+>   **`Base.metadata.drop_all()`** in teardown, which **drops every model table**
+>   (users, deals, assets, positions, tranches, thresholds, ...)
+> - `test_fee_calculator.py` - writes to the same database
+>
+> On 2026-11-08 a full `pytest tests` run wiped `clo_dev` this way. It was rebuilt from Excel
+> with `scripts/rebuild_dev_db_from_excel.py` (see `docs/technical/DATA_MIGRATION_GUIDE.md`).
+>
+> There is **no `conftest.py`** isolating the database yet. Until one exists:
+> - only run tests that don't touch the database (e.g. `pytest tests/test_utils`), or
+> - point `DATABASE_URL` at a disposable database first, e.g.
+>   `set DATABASE_URL=postgresql://postgres:<pw>@127.0.0.1:5433/clo_test`, and
+> - take a backup before any database-touching run:
+>   `docker exec clo-postgres pg_dump -U postgres -d clo_dev -Fc > data/db_backups/clo_dev_<date>.dump`
+>
+> The other ~21 database-using test files create their own in-memory SQLite engines and are safe.
+
 ## 📂 **Test Directory Structure**
 
 ```
@@ -97,25 +121,24 @@ python -m pytest tests/test_mag_waterfall.py::test_mag17_waterfall -v
 
 ## 📊 **Test Coverage**
 
-| **Category** | **Files** | **Tests** | **Coverage** | **Status** |
-|--------------|-----------|-----------|--------------|------------|
-| Environment | 5 | ~50 | 95% | ✅ Complete |
-| Integration | 2 | ~25 | 90% | ✅ Complete |
-| Business Logic | 25+ | 1000+ | 96% | ✅ Complete |
-| Utility Functions | 5 | ~100 | 98% | ✅ Complete |
+**Last full run (2026-11-08):** 667 tests collected - **478 passed, 81 failed, 108 errors**.
+Treat these numbers as approximate: that run dropped the dev database tables part-way
+through (see the warning at the top), which likely caused some of the failures. Re-measure
+once the suite runs against an isolated database. Coverage has not been measured.
 
 ## 🔧 **Test Configuration**
 
 ### **pytest Configuration**
 - Configuration file: `pytest.ini` (if present)
 - Test discovery: Automatic for `test_*.py` files
-- Fixtures: Shared test fixtures in `conftest.py`
+- Fixtures: there is currently **no** `conftest.py`; each file sets up its own fixtures
 
 ### **Environment Variables**
-Tests may require environment variables:
+Tests that use the application engine connect to `DATABASE_URL`. Always set it to a
+disposable database before running them:
 ```bash
-export DATABASE_URL="postgresql://user:pass@localhost/test_db"
-export REDIS_URL="redis://localhost:6379"
+set DATABASE_URL=postgresql://postgres:<password>@127.0.0.1:5433/clo_test
+set REDIS_URL=redis://127.0.0.1:6379
 ```
 
 ## 📝 **Adding New Tests**
