@@ -541,7 +541,7 @@ class YieldCurveService:
                                discount_curve_name: str, analysis_date: date = None) -> Decimal:
         """Calculate present value using yield curve discounting"""
         if not analysis_date:
-            analysis_date = default_analysis_date()
+            analysis_date = self.analysis_date  # the curve's own as-of date
         
         curve = self.load_yield_curve(discount_curve_name, analysis_date)
         if not curve:

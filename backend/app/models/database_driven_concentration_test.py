@@ -49,10 +49,10 @@ class DatabaseDrivenConcentrationTest:
         self.analysis_date: Optional[date] = None
         self.threshold_configs: Dict[int, ThresholdConfiguration] = {}
         
-    async def initialize_for_deal(self, deal_id: str, analysis_date: Optional[date] = None):
-        """Initialize test engine for specific deal and analysis date (default: system analysis date)"""
+    async def initialize_for_deal(self, deal_id: str, analysis_date: date):
+        """Initialize test engine for specific deal and analysis date"""
         self.deal_id = deal_id
-        self.analysis_date = analysis_date or default_analysis_date()
+        self.analysis_date = analysis_date
         
         # Load ONLY the threshold configurations that are actually configured for this deal
         # This ensures we only run tests that have been explicitly set up for the deal

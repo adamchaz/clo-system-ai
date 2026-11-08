@@ -39,8 +39,8 @@ class CreditMigrationService:
     def run_portfolio_simulation(
         self,
         portfolio_id: str,
+        analysis_date: date,
         num_simulations: int = 1000,
-        analysis_date: Optional[date] = None,
         period_type: str = "QUARTERLY",
         debug_mode: bool = False
     ) -> Dict[str, Any]:
@@ -71,8 +71,6 @@ class CreditMigrationService:
             portfolio = self._get_portfolio(portfolio_id)
             collateral_pool = self._create_collateral_pool(portfolio)
             
-            if analysis_date is None:
-                analysis_date = default_analysis_date()
             
             # Setup simulation
             self.credit_migration.setup(
@@ -126,8 +124,8 @@ class CreditMigrationService:
         self,
         portfolio_id: str,
         asset_allocations: Dict[str, float],
+        analysis_date: date,
         num_simulations: int = 1000,
-        analysis_date: Optional[date] = None,
         period_type: str = "QUARTERLY"
     ) -> Dict[str, Any]:
         """
@@ -158,8 +156,6 @@ class CreditMigrationService:
             portfolio = self._get_portfolio(portfolio_id)
             collateral_pool = self._create_collateral_pool(portfolio)
             
-            if analysis_date is None:
-                analysis_date = default_analysis_date()
             
             # Setup and run simulation
             self.credit_migration.setup(

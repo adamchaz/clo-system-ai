@@ -3,10 +3,12 @@ Risk Analytics API Endpoints
 Handles risk calculations, correlation analysis, and portfolio risk metrics
 """
 
+from datetime import date
 from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
+from ....core.analysis_date import analysis_date_param, resolve_analysis_date_or_422
 from ....core.database import get_db
 from ....services.data_integration import DataIntegrationService
 from ....services.risk_service import RiskAnalyticsService
@@ -39,10 +41,11 @@ async def get_risk_metrics(
     db: Session = Depends(get_db)
 ):
     """Get comprehensive risk metrics for a CLO deal"""
+    as_of = resolve_analysis_date_or_422(as_of_date)  # before try: keep 422 for bad dates
     try:
         metrics = risk_service.calculate_portfolio_risk_metrics(
             deal_id=deal_id,
-            as_of_date=as_of_date
+            as_of_date=as_of
         )
         
         return RiskMetricsResponse(**metrics)
@@ -79,6 +82,7 @@ async def get_correlation_matrix(
 async def analyze_concentration(
     deal_id: str,
     dimension: str = Query("sector", regex="^(sector|industry|rating|geography)$"),
+    analysis_date: date = Depends(analysis_date_param),
     risk_service: RiskAnalyticsService = Depends(get_risk_service),
     db: Session = Depends(get_db)
 ):
@@ -86,6 +90,7 @@ async def analyze_concentration(
     try:
         analysis = risk_service.analyze_concentration(
             deal_id=deal_id,
+            analysis_date=analysis_date,
             dimension=dimension
         )
         
@@ -176,6 +181,7 @@ async def get_risk_attribution(
 async def compare_portfolio_risk(
     deal_ids: List[str],
     metrics: List[str] = Query(["volatility", "var", "concentration"]),
+    analysis_date: date = Depends(analysis_date_param),
     risk_service: RiskAnalyticsService = Depends(get_risk_service),
     db: Session = Depends(get_db)
 ):
@@ -186,7 +192,8 @@ async def compare_portfolio_risk(
             
         comparison = risk_service.compare_portfolios(
             deal_ids=deal_ids,
-            metrics=metrics
+            metrics=metrics,
+            analysis_date=analysis_date
         )
         
         return {
@@ -205,6 +212,7 @@ async def compare_portfolio_risk(
 async def generate_risk_report(
     deal_id: str,
     request: RiskReportRequest,
+    analysis_date: date = Depends(analysis_date_param),
     risk_service: RiskAnalyticsService = Depends(get_risk_service),
     db: Session = Depends(get_db)
 ):
@@ -212,6 +220,7 @@ async def generate_risk_report(
     try:
         report = risk_service.generate_comprehensive_report(
             deal_id=deal_id,
+            analysis_date=analysis_date,
             report_type=request.report_type,
             include_sections=request.include_sections,
             custom_parameters=request.custom_parameters

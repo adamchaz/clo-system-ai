@@ -14,7 +14,6 @@ import pandas as pd
 
 from sqlalchemy.orm import Session
 from ..services.data_integration import DataIntegrationService
-from ..core.analysis_date import default_analysis_date, resolve_analysis_date
 
 logger = logging.getLogger(__name__)
 
@@ -27,7 +26,7 @@ class RiskAnalyticsService:
     def calculate_portfolio_risk_metrics(
         self,
         deal_id: str,
-        as_of_date: Optional[str] = None
+        as_of_date: date
     ) -> Dict[str, Any]:
         """
         Calculate comprehensive risk metrics for a portfolio
@@ -70,7 +69,7 @@ class RiskAnalyticsService:
             
             return {
                 'deal_id': deal_id,
-                'as_of_date': resolve_analysis_date(as_of_date),
+                'as_of_date': as_of_date,
                 'calculation_timestamp': datetime.now(),
                 **volatility_metrics,
                 **concentration_metrics,
@@ -145,6 +144,7 @@ class RiskAnalyticsService:
     def analyze_concentration(
         self,
         deal_id: str,
+        analysis_date: date,
         dimension: str = "sector"
     ) -> Dict[str, Any]:
         """
@@ -188,7 +188,7 @@ class RiskAnalyticsService:
             return {
                 'deal_id': deal_id,
                 'dimension': dimension,
-                'analysis_date': default_analysis_date(),
+                'analysis_date': analysis_date,
                 'concentrations': {k: float(v) for k, v in concentrations.items()},
                 'concentration_ratio_top5': float(concentration_ratio_top5),
                 'concentration_ratio_top10': float(concentration_ratio_top10),
@@ -391,7 +391,8 @@ class RiskAnalyticsService:
     def compare_portfolios(
         self,
         deal_ids: List[str],
-        metrics: List[str]
+        metrics: List[str],
+        analysis_date: date
     ) -> Dict[str, Any]:
         """
         Compare risk metrics across multiple portfolios
@@ -418,7 +419,7 @@ class RiskAnalyticsService:
                         var_result = self.calculate_var(deal_id)
                         deal_metrics[metric] = var_result['var_percentage']
                     elif metric == "concentration":
-                        conc_result = self.analyze_concentration(deal_id)
+                        conc_result = self.analyze_concentration(deal_id, analysis_date)
                         deal_metrics[metric] = conc_result['concentration_risk_score']
                     else:
                         deal_metrics[metric] = 0  # Default for unknown metrics
@@ -445,6 +446,7 @@ class RiskAnalyticsService:
     def generate_comprehensive_report(
         self,
         deal_id: str,
+        analysis_date: date,
         report_type: str = "detailed",
         include_sections: List[str] = None,
         custom_parameters: Optional[Dict[str, Any]] = None
@@ -470,7 +472,7 @@ class RiskAnalyticsService:
                 'deal_id': deal_id,
                 'report_type': report_type,
                 'generation_date': datetime.now(),
-                'data_as_of_date': default_analysis_date(),
+                'data_as_of_date': analysis_date,
                 'report_version': "1.0"
             }
             
@@ -487,10 +489,10 @@ class RiskAnalyticsService:
             
             # Include requested sections
             if "metrics" in report_sections:
-                report_data['risk_metrics'] = self.calculate_portfolio_risk_metrics(deal_id)
+                report_data['risk_metrics'] = self.calculate_portfolio_risk_metrics(deal_id, analysis_date)
             
             if "concentration" in report_sections:
-                report_data['concentration_analysis'] = self.analyze_concentration(deal_id)
+                report_data['concentration_analysis'] = self.analyze_concentration(deal_id, analysis_date)
             
             if "stress_test" in report_sections:
                 mock_scenarios = [

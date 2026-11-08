@@ -82,14 +82,13 @@ class ConcentrationThresholdRepository:
     
     async def get_all_deal_thresholds(
         self, 
-        deal_id: str, 
-        analysis_date: Optional[date] = None
+        deal_id: str,
+        analysis_date: date
     ) -> List[Tuple[ConcentrationTestDefinition, Optional[DealConcentrationThreshold]]]:
         """
         Get all thresholds for a deal, combining test definitions with deal-specific overrides
         Returns list of (test_definition, deal_threshold_or_none) tuples
         """
-        analysis_date = analysis_date or default_analysis_date()
         
         # Get all active test definitions
         test_definitions = await self.get_all_test_definitions()
@@ -124,14 +123,13 @@ class ConcentrationThresholdRepository:
     
     async def get_deal_specific_thresholds_only(
         self, 
-        deal_id: str, 
-        analysis_date: Optional[date] = None
+        deal_id: str,
+        analysis_date: date
     ) -> List[Tuple[ConcentrationTestDefinition, Optional[DealConcentrationThreshold]]]:
         """
         Get ONLY the thresholds that are explicitly configured for a specific deal
         Returns list of (test_definition, deal_threshold) tuples only for configured tests
         """
-        analysis_date = analysis_date or default_analysis_date()
         
         # Get only the deal-specific thresholds that exist in the database
         deal_thresholds = self.db.query(DealConcentrationThreshold).filter(

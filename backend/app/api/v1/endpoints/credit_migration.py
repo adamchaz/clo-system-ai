@@ -21,6 +21,7 @@ import os
 from ....core.database import get_db
 from ....services.credit_migration_service import CreditMigrationService
 from ....core.unified_auth import get_current_user
+from ....core.analysis_date import resolve_analysis_date_or_422
 
 router = APIRouter()
 
@@ -30,7 +31,7 @@ class SimulationRequest(BaseModel):
     """Request model for credit migration simulation"""
     portfolio_id: str = Field(..., description="Portfolio identifier")
     num_simulations: int = Field(1000, ge=100, le=10000, description="Number of Monte Carlo simulations")
-    analysis_date: Optional[date] = Field(None, description="Analysis start date (defaults to today)")
+    analysis_date: Optional[date] = Field(None, description="Analysis start date (defaults to the system analysis date)")
     period_type: str = Field("QUARTERLY", description="Period frequency")
     debug_mode: bool = Field(False, description="Use deterministic seed for reproducible results")
     
@@ -111,14 +112,15 @@ async def run_portfolio_simulation(
     - Stress testing scenarios
     - Investment decision support
     """
+    analysis_date = resolve_analysis_date_or_422(request.analysis_date)
     try:
         service = CreditMigrationService(db)
-        
+
         # Run simulation
         results = service.run_portfolio_simulation(
             portfolio_id=request.portfolio_id,
             num_simulations=request.num_simulations,
-            analysis_date=request.analysis_date,
+            analysis_date=analysis_date,
             period_type=request.period_type,
             debug_mode=request.debug_mode
         )
@@ -159,14 +161,15 @@ async def run_deal_simulation(
     - Concentration analysis
     - Performance attribution
     """
+    analysis_date = resolve_analysis_date_or_422(request.analysis_date)
     try:
         service = CreditMigrationService(db)
-        
+
         results = service.run_deal_specific_simulation(
             portfolio_id=request.portfolio_id,
             asset_allocations=request.asset_allocations,
             num_simulations=request.num_simulations,
-            analysis_date=request.analysis_date,
+            analysis_date=analysis_date,
             period_type=request.period_type
         )
         

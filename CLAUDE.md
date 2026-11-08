@@ -34,6 +34,7 @@ A comprehensive Collateralized Loan Obligation (CLO) Portfolio Management System
 - **Mock data**: waterfall, risk, rebalancing and portfolio-analytics services return hard-coded values; the waterfall API uses the same fake tranche structure for every deal. `CLODealEngine` (the converted VBA engine) is not reachable from any endpoint. `/users/` returns generated fake users.
 - **AuthService stubs**: `_get_user_by_id()` returns `None` and `_store_user()` persists nothing, so change-password/profile updates fail and `require_permissions` rejects every user (documents and parts of user management).
 - **Models vs schema drift**: the concentration-test models still declare 8 CHECK constraints the real schema never had; live tables `asset_correlations`, `scenario_inputs`, `model_parameters`, `reference_data`, `clo_static_parameters`, `clo_time_series_parameters` have no models; Alembic is not in use.
+- **Broken endpoints found 2026-11-08 (pre-existing)**: `POST /risk/{deal_id}/risk-report` returns 500 (mock stress scenarios lack the `description` field `RiskReportResponse` requires); `POST /credit-migration/simulate/portfolio` and `/simulate/deal` fail (`'DealAsset' object has no attribute 'id'` in the service, then a response-validation error).
 - **Other**: concentration endpoint returns HTTP 200 with an empty result on failure; ~255 handlers put `str(e)` in HTTP error details; frontend `cloApi.ts` falls back to port 8001 while everything else uses 8000; `@types/d3-dispatch` 3.0.7 breaks `tsc` on TypeScript 4.9 (pin 3.0.6); dev credentials and `.env*` files are tracked in git (rotate the DB password).
 
 ---
@@ -411,7 +412,8 @@ GET /api/v1/portfolios/{id}/summary?analysis_date=2016-06-30  # Custom date
 - Pass the resolved date down explicitly; never substitute `date.today()` for a missing analysis date (wall-clock time is only for timestamps/expiry).
 - QuantLib's evaluation date defaults to the analysis date; wrap QuantLib work for a specific date in `with ql_evaluation_date(d):` (sets/restores under a lock, since QuantLib's setting is process-global).
 - Business logic (services/models/repositories) contains no `date.today()`/`datetime.today()`; enforced by Ruff rule TID251 (`cd backend && ruff check app`, config in `backend/ruff.toml`). Genuine wall-clock uses carry `# noqa: TID251` with a reason. `datetime.now()` stays allowed for timestamps.
-- Still to do: step 3 pass 2 (make `analysis_date` a required argument in the 12 service/engine/repository functions that still default it); step 4 (one global frontend date mirrored to `?asOf=`, served by a config endpoint); step 5 (store each deal's data-snapshot date and warn when the analysis date differs).
+- Entry points require the date (no default): concentration integration/threshold services, threshold repository, `initialize_for_deal`, credit-migration simulations, and risk metrics/concentration/comparison/report. Endpoints resolve it (`analysis_date_param` / `resolve_analysis_date_or_422`) and pass it down; a missing date is a `TypeError`. VBA-style model objects (`YieldCurve`, `IncentiveFee`, credit-migration model, engine constructor) still default at construction and receive the date through their setup calls.
+- Still to do: step 4 (one global frontend date mirrored to `?asOf=`, served by a config endpoint); step 5 (store each deal's data-snapshot date and warn when the analysis date differs).
 
 **Frontend Interface**: Interactive date picker with 2016-relevant quick actions
 - Default baseline: March 23, 2016

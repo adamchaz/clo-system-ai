@@ -144,7 +144,6 @@ class ConcentrationThresholdService:
                  cache: Optional[ConcentrationThresholdCache] = None):
         self.repository = repository
         self.cache = cache
-        self.default_analysis_date = default_analysis_date()
     
     # ========================================
     # Threshold Resolution
@@ -179,11 +178,10 @@ class ConcentrationThresholdService:
         
         return threshold_value, source
     
-    async def get_deal_thresholds(self, 
-                                deal_id: str, 
-                                analysis_date: Optional[date] = None) -> List[ThresholdConfiguration]:
+    async def get_deal_thresholds(self,
+                                deal_id: str,
+                                analysis_date: date) -> List[ThresholdConfiguration]:
         """Get all threshold configurations for a deal with caching"""
-        analysis_date = analysis_date or self.default_analysis_date
         analysis_date_str = analysis_date.isoformat()
         
         # Try cache first
@@ -238,11 +236,10 @@ class ConcentrationThresholdService:
         
         return threshold_configs
     
-    async def get_deal_specific_thresholds(self, 
-                                deal_id: str, 
-                                analysis_date: Optional[date] = None) -> List[ThresholdConfiguration]:
+    async def get_deal_specific_thresholds(self,
+                                deal_id: str,
+                                analysis_date: date) -> List[ThresholdConfiguration]:
         """Get ONLY the threshold configurations that are explicitly configured for this deal"""
-        analysis_date = analysis_date or self.default_analysis_date
         
         # Get ONLY deal-specific configurations from database (not all test definitions)
         deal_specific = await self.repository.get_deal_specific_thresholds_only(deal_id, analysis_date)

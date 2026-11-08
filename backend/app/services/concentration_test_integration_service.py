@@ -29,14 +29,12 @@ class ConcentrationTestIntegrationService:
     
     def run_portfolio_concentration_tests(
         self, 
-        portfolio_id: str, 
-        analysis_date: Optional[date] = None
+        portfolio_id: str,
+        analysis_date: date
     ) -> Dict[str, Any]:
         """
         Run actual concentration tests on a portfolio using real asset data
         """
-        if not analysis_date:
-            analysis_date = default_analysis_date()
         
         try:
             # Step 1: Load portfolio assets from database
