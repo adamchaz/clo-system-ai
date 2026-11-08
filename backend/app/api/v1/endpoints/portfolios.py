@@ -11,8 +11,7 @@ from datetime import date
 
 from ....core.database import get_db
 from ....services.data_integration import DataIntegrationService
-from ....utils.date_utils import get_analysis_date, validate_analysis_date
-from ....core.analysis_date import resolve_analysis_date_or_422
+from ....core.analysis_date import analysis_date_param, resolve_analysis_date_or_422
 from ....schemas.portfolios import (
     CLODealResponse,
     CLODealCreate,
@@ -33,7 +32,7 @@ async def list_clo_deals(
     skip: int = Query(0, ge=0),
     limit: int = Query(100, ge=1, le=2000),
     status: Optional[str] = Query(None),
-    analysis_date: Optional[str] = Query(None, description="Analysis date (YYYY-MM-DD), defaults to March 23, 2016"),
+    analysis_date: date = Depends(analysis_date_param),
     db: Session = Depends(get_db)
 ):
     """List all CLO deals with pagination"""
@@ -41,7 +40,7 @@ async def list_clo_deals(
         from decimal import Decimal
         
         # Calculate days to maturity from the analysis date
-        target_analysis_date = get_analysis_date(analysis_date)
+        target_analysis_date = analysis_date
         
         # Query actual CLO deals from the database using raw SQL
         base_query = """
@@ -280,7 +279,7 @@ async def update_clo_deal(
 @router.get("/{deal_id}/summary")
 async def get_portfolio_summary(
     deal_id: str,
-    analysis_date: Optional[str] = Query(None, description="Analysis date (YYYY-MM-DD), defaults to today"),
+    analysis_date: date = Depends(analysis_date_param),
     db: Session = Depends(get_db),
     integration_service: DataIntegrationService = Depends(get_integration_service)
 ):
@@ -289,11 +288,7 @@ async def get_portfolio_summary(
     print(f"DEBUG: PORTFOLIO SUMMARY ENDPOINT HIT - deal_id: {deal_id}")
     print(f"DEBUG: Current working directory: {__file__}")
     try:
-        # Validate and parse analysis date
-        if analysis_date and not validate_analysis_date(analysis_date):
-            raise HTTPException(status_code=400, detail="Invalid analysis date format. Use YYYY-MM-DD")
-        
-        target_date = get_analysis_date(analysis_date)
+        target_date = analysis_date  # validated by analysis_date_param (422 if invalid)
         
         # Get actual data from database for MAG17 and other deals 
         # Fixed: Now pulling real data instead of hardcoded zeros
@@ -391,7 +386,7 @@ async def get_deal_assets(
     deal_id: str,
     skip: int = Query(0, ge=0),
     limit: int = Query(100, ge=1, le=2000),
-    analysis_date: Optional[str] = Query(None, description="Analysis date (YYYY-MM-DD), defaults to today"),
+    analysis_date: date = Depends(analysis_date_param),
     db: Session = Depends(get_db)
 ):
     """Get assets in a specific CLO deal"""
@@ -500,7 +495,7 @@ async def get_deal_tranches(
 @router.get("/{deal_id}/triggers")
 async def get_deal_triggers(
     deal_id: str,
-    analysis_date: Optional[str] = Query(None, description="Analysis date (YYYY-MM-DD), defaults to today"),
+    analysis_date: date = Depends(analysis_date_param),
     db: Session = Depends(get_db)
 ):
     """Get OC/IC trigger status for a CLO deal"""

@@ -53,6 +53,7 @@ import {
 } from '@mui/icons-material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { format, parseISO } from 'date-fns';
+import { useAnalysisDate } from '../../hooks/useAnalysisDate';
 
 // Types
 interface ConcentrationThreshold {
@@ -111,8 +112,11 @@ function TabPanel(props: TabPanelProps) {
 
 const ConcentrationThresholdManager: React.FC<ConcentrationThresholdManagerProps> = ({
   dealId,
-  analysisDate = '2016-03-23'
+  analysisDate: analysisDateProp
 }) => {
+  // Explicit prop wins; otherwise the global analysis date (server default until one is chosen)
+  const { analysisDate: globalAnalysisDate } = useAnalysisDate();
+  const analysisDate = analysisDateProp ?? globalAnalysisDate ?? '';
   // State
   const [thresholds, setThresholds] = useState<ConcentrationThreshold[]>([]);
   const [loading, setLoading] = useState(false);
@@ -350,7 +354,7 @@ const ConcentrationThresholdManager: React.FC<ConcentrationThresholdManagerProps
       <Card>
         <CardHeader
           title="Concentration Test Thresholds"
-          subheader={`Deal: ${dealId} • Analysis Date: ${format(parseISO(analysisDate), 'MMM dd, yyyy')}`}
+          subheader={`Deal: ${dealId} • Analysis Date: ${analysisDate ? format(parseISO(analysisDate), 'MMM dd, yyyy') : '…'}`}
           action={
             <Button
               variant="outlined"

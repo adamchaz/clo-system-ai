@@ -55,6 +55,7 @@ import {
   YieldCurve,
 } from '../store/api/cloApi';
 import { useAuth } from '../hooks/useAuth';
+import { useAnalysisDate } from '../hooks/useAnalysisDate';
 
 interface YieldCurveFormProps {
   mode?: 'create' | 'edit' | 'view';
@@ -74,12 +75,15 @@ const YieldCurveForm: React.FC<YieldCurveFormProps> = ({ mode = 'create' }) => {
   const isCreate = mode === 'create';
   const curveId = id ? parseInt(id, 10) : undefined;
 
+  // New curves default to the global analysis date (falls back to today until it is known)
+  const { analysisDate: globalAnalysisDate } = useAnalysisDate();
+
   // Form state
   const [formData, setFormData] = useState({
     curve_name: '',
     curve_type: 'TREASURY',
     currency: 'USD',
-    analysis_date: format(new Date(), 'yyyy-MM-dd'),
+    analysis_date: globalAnalysisDate ?? format(new Date(), 'yyyy-MM-dd'),
     description: '',
   });
   const [rates, setRates] = useState<YieldCurveRateData[]>([]);

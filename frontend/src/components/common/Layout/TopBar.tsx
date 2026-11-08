@@ -44,6 +44,7 @@ import { useAuth } from '../../../hooks/useAuth';
 import { useAppSelector, useAppDispatch } from '../../../hooks/reduxHooks';
 import { toggleTheme } from '../../../store/slices/uiSlice';
 import { getBreadcrumbs } from '../../../constants/navigation';
+import AnalysisDateControl from '../UI/AnalysisDateControl';
 import { 
   ConnectionStatusIndicator,
   RealTimeNotifications,
@@ -173,6 +174,9 @@ const TopBar: React.FC<TopBarProps> = ({ onMenuClick, sidebarOpen }) => {
             </Box>
           )}
         </Box>
+
+        {/* Global analysis date */}
+        <AnalysisDateControl />
 
         {/* Theme Toggle */}
         <Tooltip title="Toggle theme">

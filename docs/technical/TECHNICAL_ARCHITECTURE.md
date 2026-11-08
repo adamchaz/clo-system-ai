@@ -555,7 +555,7 @@ How it works today (updated 2026-11-08):
   A missing **or** invalid token returns **401**; insufficient role returns 403.
 - **Router-level enforcement**: `app/api/v1/api.py` adds `Depends(get_current_active_user)` to
   the assets, portfolios, waterfall, risk, scenarios, reports, portfolio-analytics, admin,
-  yield-curves and concentration-thresholds routers. Intentionally public: auth endpoints,
+  yield-curves and concentration-thresholds routers. Intentionally public: `/api/v1/config` (non-sensitive server defaults), auth endpoints,
   `/health`, `/api/v1/monitoring/health/*` probes, `/monitoring/status/summary`, and the
   rebalancing/credit-migration `/health` endpoints. The WebSocket validates its `?token=`
   query parameter itself.

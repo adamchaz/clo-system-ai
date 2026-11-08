@@ -1,5 +1,7 @@
-import { createApi, fetchBaseQuery, retry } from '@reduxjs/toolkit/query/react';
+import { createApi, fetchBaseQuery, retry, skipToken } from '@reduxjs/toolkit/query/react';
+import { useSelector } from 'react-redux';
 import type { RootState } from '../index';
+import { selectAnalysisDateParam } from '../slices/analysisDateSlice';
 import { authService } from '../../services/auth';
 
 // Import new API types
@@ -78,6 +80,15 @@ export interface Portfolio {
   days_to_maturity: number;
   created_at: string;
   updated_at: string;
+}
+
+/** GET /api/v1/config - server defaults the UI needs. Dates are YYYY-MM-DD. */
+export interface AppConfig {
+  analysis_date: {
+    default: string;
+    min: string;
+    max: string;
+  };
 }
 
 export interface PortfolioSummary {
@@ -691,9 +702,21 @@ export const cloApi = createApi({
       providesTags: ['User'],
     }),
 
+    // Server defaults (analysis date and its allowed range) - public endpoint
+    getAppConfig: builder.query<AppConfig, void>({
+      query: () => 'config',
+      keepUnusedDataFor: 3600,
+    }),
+
     // Portfolio endpoints
-    getPortfolios: builder.query<ApiResponse<Portfolio[]>, void>({
-      query: () => 'portfolios',
+    // The analysis date is part of the query arg, so it is part of the cache key: changing
+    // the global date refetches. Use the exported useGetPortfoliosQuery wrapper, which
+    // supplies the global date automatically.
+    getPortfolios: builder.query<ApiResponse<Portfolio[]>, { analysisDate?: string } | void>({
+      query: (arg) => ({
+        url: 'portfolios',
+        params: arg && arg.analysisDate ? { analysis_date: arg.analysisDate } : undefined,
+      }),
       providesTags: ['Portfolio'],
     }),
 
@@ -813,9 +836,21 @@ export const cloApi = createApi({
     }),
 
     // Portfolio endpoints
-    getPortfolioSummary: builder.query<PortfolioSummary, string>({
-      query: (dealId) => `portfolios/${dealId}/summary`,
-      providesTags: (result, error, id) => [{ type: 'Portfolio', id }, 'Asset', 'Analytics'],
+    // Arg is the bare deal id (server-default date - the key optimistic updates and prefetch
+    // use) or { dealId, analysisDate } when a non-default date is selected.
+    getPortfolioSummary: builder.query<PortfolioSummary, string | { dealId: string; analysisDate?: string }>({
+      query: (arg) => {
+        const { dealId, analysisDate } = typeof arg === 'string' ? { dealId: arg, analysisDate: undefined } : arg;
+        return {
+          url: `portfolios/${dealId}/summary`,
+          params: analysisDate ? { analysis_date: analysisDate } : undefined,
+        };
+      },
+      providesTags: (result, error, arg) => [
+        { type: 'Portfolio', id: typeof arg === 'string' ? arg : arg.dealId },
+        'Asset',
+        'Analytics',
+      ],
     }),
 
     // Waterfall calculation endpoints
@@ -2025,10 +2060,14 @@ export const {
   useLogoutMutation,
   useGetCurrentUserQuery,
   
-  // Portfolio hooks
-  useGetPortfoliosQuery,
+  // Server config
+  useGetAppConfigQuery,
+
+  // Portfolio hooks. The list and summary hooks are wrapped below (same names) so they
+  // automatically use the global analysis date.
+  useGetPortfoliosQuery: useGetPortfoliosQueryRaw,
   useGetPortfolioQuery,
-  useGetPortfolioSummaryQuery,
+  useGetPortfolioSummaryQuery: useGetPortfolioSummaryQueryRaw,
   
   // Asset hooks
   useGetAssetsQuery,
@@ -2234,3 +2273,27 @@ export const invalidateCalculationCache = (dispatch: any) => {
 
 // Re-export types for use in components
 export type { ConcentrationTestRequest, ConcentrationTestResult };
+
+// ---------------------------------------------------------------------------
+// Date-aware hooks: apply the global analysis date (store/slices/analysisDateSlice).
+// With no date selected they pass exactly the arguments used before, so default-date
+// cache entries (used by optimistic updates and prefetching) are unchanged.
+// ---------------------------------------------------------------------------
+type PortfoliosQueryOptions = Parameters<typeof useGetPortfoliosQueryRaw>[1];
+type PortfolioSummaryQueryOptions = Parameters<typeof useGetPortfolioSummaryQueryRaw>[1];
+
+/** Portfolio list as of the global analysis date. */
+export const useGetPortfoliosQuery = (_arg?: void, options?: PortfoliosQueryOptions) => {
+  const analysisDate = useSelector(selectAnalysisDateParam);
+  return useGetPortfoliosQueryRaw(analysisDate ? { analysisDate } : undefined, options);
+};
+
+/** Portfolio summary as of the global analysis date. */
+export const useGetPortfolioSummaryQuery = (
+  dealId: string | typeof skipToken,
+  options?: PortfolioSummaryQueryOptions
+) => {
+  const analysisDate = useSelector(selectAnalysisDateParam);
+  const arg = dealId === skipToken ? skipToken : analysisDate ? { dealId, analysisDate } : dealId;
+  return useGetPortfolioSummaryQueryRaw(arg, options);
+};

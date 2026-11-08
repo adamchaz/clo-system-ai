@@ -1,4 +1,5 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
+import { useAnalysisDate } from '../../hooks/useAnalysisDate';
 import {
   Box,
   Grid,
@@ -275,6 +276,7 @@ const PortfolioDetail: React.FC<PortfolioDetailProps> = ({
   const [currentTab, setCurrentTab] = useState(0);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [concentrationData, setConcentrationData] = useState<any>(null);
+  const { analysisDateParam } = useAnalysisDate();
   
   // Asset list state
   const [assetSearch, setAssetSearch] = useState('');
@@ -344,10 +346,12 @@ const PortfolioDetail: React.FC<PortfolioDetailProps> = ({
   // Run real concentration tests using the new backend integration service
   const runConcentrationAnalysis = useCallback(async () => {
     if (!portfolio) return;
-    
-    
+
+    // Global analysis date; omitted when the server default is in use
+    const dateField = analysisDateParam ? { analysis_date: analysisDateParam } : {};
     const request = {
       portfolio_id: portfolioId,
+      ...dateField,
       analysis_dimensions: ["sector", "industry", "rating", "geography", "issuer"],
       single_asset_limit: 0.05,
       sector_limit: 0.25
@@ -362,6 +366,7 @@ const PortfolioDetail: React.FC<PortfolioDetailProps> = ({
       try {
         const fallbackRequest = {
           portfolio_id: portfolioId,
+          ...dateField,
           analysis_dimensions: ["sector", "industry", "rating", "geography", "issuer"],
           single_asset_limit: 0.05,
           sector_limit: 0.25
@@ -372,7 +377,17 @@ const PortfolioDetail: React.FC<PortfolioDetailProps> = ({
         console.error('❌ Fallback concentration analysis also failed:', fallbackError);
       }
     }
-  }, [portfolio, portfolioId, runConcentrationTests, analyzeConcentration, concentrationTestsLoading]);
+  }, [portfolio, portfolioId, analysisDateParam, runConcentrationTests, analyzeConcentration, concentrationTestsLoading]);
+
+  // Results belong to one analysis date: when the global date changes, drop them and
+  // re-run straight away if the Compliance tab (index 5) is open.
+  const previousAnalysisDate = useRef(analysisDateParam);
+  useEffect(() => {
+    if (previousAnalysisDate.current === analysisDateParam) return;
+    previousAnalysisDate.current = analysisDateParam;
+    setConcentrationData(null);
+    if (currentTab === 5) runConcentrationAnalysis();
+  }, [analysisDateParam, currentTab, runConcentrationAnalysis]);
 
   const handleTabChange = useCallback((event: React.SyntheticEvent, newValue: number) => {
     setCurrentTab(newValue);

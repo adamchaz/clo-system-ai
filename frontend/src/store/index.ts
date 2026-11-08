@@ -3,6 +3,7 @@ import { setupListeners } from '@reduxjs/toolkit/query';
 import { cloApi } from './api/cloApi';
 import authReducer from './slices/authSlice';
 import uiReducer from './slices/uiSlice';
+import analysisDateReducer from './slices/analysisDateSlice';
 import { optimisticUpdatesMiddleware } from './middleware/optimisticUpdates';
 
 export const store = configureStore({
@@ -13,6 +14,7 @@ export const store = configureStore({
     // Feature slices
     auth: authReducer,
     ui: uiReducer,
+    analysisDate: analysisDateReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

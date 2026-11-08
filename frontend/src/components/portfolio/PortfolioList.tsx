@@ -33,7 +33,6 @@ import {
   ListItemText,
   Avatar,
   LinearProgress,
-  Collapse,
 } from '@mui/material';
 import {
   Search,
@@ -49,8 +48,6 @@ import {
   TrendingUp,
   TrendingDown,
   AccountBalance,
-  DateRange,
-  ExpandLess,
   ExpandMore,
 } from '@mui/icons-material';
 import { format, parseISO } from 'date-fns';
@@ -58,7 +55,7 @@ import {
   useGetPortfoliosQuery,
   Portfolio,
 } from '../../store/api/cloApi';
-import { AnalysisDatePicker } from '../common/UI';
+import { useAnalysisDate } from '../../hooks/useAnalysisDate';
 
 interface PortfolioListProps {
   onPortfolioSelect?: (portfolio: Portfolio) => void;
@@ -95,8 +92,8 @@ const PortfolioList: React.FC<PortfolioListProps> = ({
   const [selectedPortfolio, setSelectedPortfolio] = useState<Portfolio | null>(null);
   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
   const [menuPortfolio, setMenuPortfolio] = useState<Portfolio | null>(null);
-  const [analysisDate, setAnalysisDate] = useState<string>('2016-03-23');
-  const [showDatePicker, setShowDatePicker] = useState(false);
+  // Global analysis date (top-bar control); the portfolio query applies it automatically.
+  const { analysisDate, isDefault: isDefaultAnalysisDate } = useAnalysisDate();
 
   // API hooks
   const {
@@ -285,17 +282,13 @@ const PortfolioList: React.FC<PortfolioListProps> = ({
             </Typography>
             <Typography variant="body2" color="text.secondary">
               Manage and monitor your CLO portfolios
+              {analysisDate && (
+                <> · {isDefaultAnalysisDate ? 'default analysis date' : 'analysis as of'}{' '}
+                  {format(parseISO(analysisDate), 'MMMM d, yyyy')}</>
+              )}
             </Typography>
           </Box>
           <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-            <Tooltip title="Analysis Date">
-              <IconButton 
-                onClick={() => setShowDatePicker(!showDatePicker)}
-                color={analysisDate !== '2016-03-23' ? 'primary' : 'default'}
-              >
-                <DateRange />
-              </IconButton>
-            </Tooltip>
             <Tooltip title="Refresh">
               <IconButton onClick={() => refetch()}>
                 <Refresh />
@@ -310,47 +303,6 @@ const PortfolioList: React.FC<PortfolioListProps> = ({
             </Button>
           </Box>
         </Box>
-
-        {/* Analysis Date Picker */}
-        <Collapse in={showDatePicker}>
-          <Box sx={{ mb: 3, p: 3, bgcolor: 'background.default', borderRadius: 2, border: '1px solid', borderColor: 'divider' }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-              <DateRange sx={{ mr: 1, color: 'primary.main' }} />
-              <Typography variant="h6" color="primary">
-                Analysis Date Settings
-              </Typography>
-              <Box sx={{ ml: 'auto' }}>
-                <IconButton size="small" onClick={() => setShowDatePicker(false)}>
-                  <ExpandLess />
-                </IconButton>
-              </Box>
-            </Box>
-            <Box sx={{ maxWidth: 400 }}>
-              <AnalysisDatePicker
-                analysisDate={analysisDate}
-                onDateChange={setAnalysisDate}
-                helperText="Select the date for portfolio analysis and calculations"
-                showQuickActions={true}
-              />
-            </Box>
-            <Box sx={{ mt: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
-              <Typography variant="body2" color="text.secondary">
-                {analysisDate === '2016-03-23' 
-                  ? 'Using default analysis date: March 23, 2016'
-                  : `Analysis as of ${format(new Date(analysisDate), 'MMMM do, yyyy')}`
-                }
-              </Typography>
-              {analysisDate !== '2016-03-23' && (
-                <Chip 
-                  label="Historical" 
-                  size="small" 
-                  color="info" 
-                  variant="outlined"
-                />
-              )}
-            </Box>
-          </Box>
-        </Collapse>
 
         {/* Filters */}
         <Box sx={{ display: 'flex', gap: 2, mb: 3, flexWrap: 'wrap' }}>

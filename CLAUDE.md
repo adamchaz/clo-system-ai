@@ -413,12 +413,14 @@ GET /api/v1/portfolios/{id}/summary?analysis_date=2016-06-30  # Custom date
 - QuantLib's evaluation date defaults to the analysis date; wrap QuantLib work for a specific date in `with ql_evaluation_date(d):` (sets/restores under a lock, since QuantLib's setting is process-global).
 - Business logic (services/models/repositories) contains no `date.today()`/`datetime.today()`; enforced by Ruff rule TID251 (`cd backend && ruff check app`, config in `backend/ruff.toml`). Genuine wall-clock uses carry `# noqa: TID251` with a reason. `datetime.now()` stays allowed for timestamps.
 - Entry points require the date (no default): concentration integration/threshold services, threshold repository, `initialize_for_deal`, credit-migration simulations, and risk metrics/concentration/comparison/report. Endpoints resolve it (`analysis_date_param` / `resolve_analysis_date_or_422`) and pass it down; a missing date is a `TypeError`. VBA-style model objects (`YieldCurve`, `IncentiveFee`, credit-migration model, engine constructor) still default at construction and receive the date through their setup calls.
-- Still to do: step 4 (one global frontend date mirrored to `?asOf=`, served by a config endpoint); step 5 (store each deal's data-snapshot date and warn when the analysis date differs).
+- Still to do: step 5 (store each deal's data-snapshot date and warn when the analysis date differs).
 
-**Frontend Interface**: Interactive date picker with 2016-relevant quick actions
-- Default baseline: March 23, 2016
-- Quick actions: 2016 Q1-Q3 ends, 2015 year end, current date
-- Visual indicators: Default/Historical/Future status
+**Frontend Interface** (global analysis date, since 2026-11-08):
+- One date for the whole app: "As of …" control in the top bar (`components/common/UI/AnalysisDateControl.tsx`, wraps `AnalysisDatePicker`).
+- State: Redux slice `store/slices/analysisDateSlice.ts` (`selected` = user choice or null for the server default). Read/change it with `hooks/useAnalysisDate.ts`.
+- Default and allowed range come from the public `GET /api/v1/config`; the frontend hard-codes no date. `components/common/Layout/AnalysisDateSync.tsx` (mounted in `AppLayout`) loads it and mirrors the selection to the URL as `?asOf=YYYY-MM-DD` (kept across navigation, removed for the default, shared links/back button supported).
+- `useGetPortfoliosQuery` / `useGetPortfolioSummaryQuery` are wrappers that pass the global date as part of the query arg (so it is in the RTK Query cache key); with the default date they pass exactly the old args. Concentration tests in `PortfolioDetail` send `analysis_date` and re-run when it changes.
+- Frontend tests: `src/__mocks__/react-router-dom.js` stubs the router globally; tests that need real routing load the CommonJS build explicitly (see `AnalysisDateSync.test.tsx`), because Jest 27 cannot resolve react-router-dom v7 by name.
 - Sample portfolio data reflects 2013-2015 vintage CLO deals appropriate for 2016 analysis
 
 **Sample Portfolio Data** (as of March 23, 2016):

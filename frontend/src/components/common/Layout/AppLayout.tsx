@@ -4,6 +4,7 @@ import { useAuth } from '../../../hooks/useAuth';
 import { useAppSelector, useAppDispatch } from '../../../hooks/reduxHooks';
 import { setSidebarOpen } from '../../../store/slices/uiSlice';
 import TopBar from './TopBar';
+import AnalysisDateSync from './AnalysisDateSync';
 import Sidebar from './Sidebar';
 
 interface AppLayoutProps {
@@ -46,7 +47,10 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh' }}>
       <CssBaseline />
-      
+
+      {/* Global analysis date: server config + ?asOf= URL sync (renders nothing) */}
+      <AnalysisDateSync />
+
       {/* Top Navigation Bar */}
       <TopBar 
         onMenuClick={handleDrawerToggle}

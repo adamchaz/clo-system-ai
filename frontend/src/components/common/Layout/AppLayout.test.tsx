@@ -8,6 +8,10 @@ import { lightTheme } from '../../../theme';
 import AppLayout from './AppLayout';
 import authReducer, { AuthState } from '../../../store/slices/authSlice';
 import uiReducer, { UIState } from '../../../store/slices/uiSlice';
+import analysisDateReducer from '../../../store/slices/analysisDateSlice';
+
+// Layout tests don't exercise config loading / URL syncing (see AnalysisDateSync.test.tsx)
+jest.mock('./AnalysisDateSync', () => () => null);
 import { AuthUser } from '../../../types/auth';
 
 // Mock the auth service
@@ -31,6 +35,7 @@ const createMockStore = (initialState: Partial<AuthState> = {}) => {
     reducer: {
       auth: authReducer,
       ui: uiReducer,
+      analysisDate: analysisDateReducer,
     },
     preloadedState: {
       auth: {

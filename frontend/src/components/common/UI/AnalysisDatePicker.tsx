@@ -9,27 +9,61 @@ import {
   Paper,
   Chip,
 } from '@mui/material';
-import {
-  CalendarToday,
-  Today,
-  RestoreFromTrash,
-} from '@mui/icons-material';
-import { format, isValid } from 'date-fns';
+import { CalendarToday, RestoreFromTrash } from '@mui/icons-material';
+import { format, isValid, parseISO } from 'date-fns';
 
 interface AnalysisDatePickerProps {
+  /** Selected date, YYYY-MM-DD. */
   analysisDate: string;
   onDateChange: (date: string) => void;
+  /** Server default analysis date (YYYY-MM-DD), from GET /api/v1/config. */
+  defaultDate?: string | null;
   label?: string;
   disabled?: boolean;
   helperText?: string;
   showQuickActions?: boolean;
-  minDate?: string;
-  maxDate?: string;
+  minDate?: string | null;
+  maxDate?: string | null;
 }
+
+// parseISO treats YYYY-MM-DD as a local date; new Date('YYYY-MM-DD') would be UTC midnight
+// and display as the previous day west of Greenwich.
+const toDate = (value?: string | null): Date | null => {
+  if (!value) return null;
+  const d = parseISO(value);
+  return isValid(d) ? d : null;
+};
+
+const fmt = (value: string | null | undefined, pattern: string): string => {
+  const d = toDate(value);
+  return d ? format(d, pattern) : 'Invalid date';
+};
+
+/** Quarter-ends of the default date's year plus the prior year-end, within the allowed range. */
+const buildQuickDates = (defaultDate?: string | null, minDate?: string | null, maxDate?: string | null) => {
+  const base = toDate(defaultDate);
+  if (!base || !defaultDate) return [];
+  const y = base.getFullYear();
+  const candidates = [
+    { label: 'Default', date: defaultDate, description: `Default analysis date (${fmt(defaultDate, 'MMM d, yyyy')})` },
+    { label: `${y - 1} Year End`, date: `${y - 1}-12-31`, description: `December 31, ${y - 1}` },
+    { label: `${y} Q1 End`, date: `${y}-03-31`, description: `March 31, ${y}` },
+    { label: `${y} Q2 End`, date: `${y}-06-30`, description: `June 30, ${y}` },
+    { label: `${y} Q3 End`, date: `${y}-09-30`, description: `September 30, ${y}` },
+    { label: `${y} Year End`, date: `${y}-12-31`, description: `December 31, ${y}` },
+  ];
+  const seen = new Set<string>();
+  return candidates.filter((q) => {
+    if (seen.has(q.date)) return false;
+    seen.add(q.date);
+    return (!minDate || q.date >= minDate) && (!maxDate || q.date <= maxDate);
+  });
+};
 
 const AnalysisDatePicker: React.FC<AnalysisDatePickerProps> = ({
   analysisDate,
   onDateChange,
+  defaultDate,
   label = 'Analysis Date',
   disabled = false,
   helperText = 'Select date for portfolio analysis',
@@ -37,98 +71,29 @@ const AnalysisDatePicker: React.FC<AnalysisDatePickerProps> = ({
   minDate,
   maxDate,
 }) => {
-  const today = format(new Date(), 'yyyy-MM-dd');
-  const defaultDate = '2016-03-23';
-  const isDefaultDate = analysisDate === defaultDate;
-  const isToday = analysisDate === today;
+  const isDefaultDate = !!defaultDate && analysisDate === defaultDate;
+  const quickDates = buildQuickDates(defaultDate, minDate, maxDate);
 
   const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newDate = event.target.value;
-    onDateChange(newDate);
-  };
-
-  const handleTodayClick = () => {
-    onDateChange(today);
+    onDateChange(event.target.value);
   };
 
   const handleResetClick = () => {
-    onDateChange(defaultDate);
-  };
-
-  const getQuickActionDates = () => {
-    const baseDate = new Date(2016, 2, 23); // March 23, 2016 (month is 0-indexed)
-    const quickDates = [
-      {
-        label: 'Default',
-        date: '2016-03-23',
-        description: 'Default analysis date',
-      },
-      {
-        label: 'Today',
-        date: format(new Date(), 'yyyy-MM-dd'),
-        description: 'Current date',
-      },
-      {
-        label: '2016 Q1 End',
-        date: '2016-03-31',
-        description: 'March 31, 2016',
-      },
-      {
-        label: '2016 Q2 End',
-        date: '2016-06-30',
-        description: 'June 30, 2016',
-      },
-      {
-        label: '2016 Q3 End',
-        date: '2016-09-30',
-        description: 'September 30, 2016',
-      },
-      {
-        label: '2015 Year End',
-        date: '2015-12-31',
-        description: 'December 31, 2015',
-      },
-    ];
-
-    return quickDates;
-  };
-
-  const getLastQuarterEnd = (date: Date): Date => {
-    const year = date.getFullYear();
-    const month = date.getMonth();
-    
-    if (month >= 9) return new Date(year, 8, 30); // Q3 end: Sep 30
-    if (month >= 6) return new Date(year, 5, 30); // Q2 end: Jun 30
-    if (month >= 3) return new Date(year, 2, 31); // Q1 end: Mar 31
-    return new Date(year - 1, 11, 31); // Previous year end: Dec 31
-  };
-
-  const isValidDate = (dateString: string): boolean => {
-    if (!dateString) return false;
-    const date = new Date(dateString);
-    return isValid(date);
+    if (defaultDate) onDateChange(defaultDate);
   };
 
   const getDateStatus = () => {
-    if (!isValidDate(analysisDate)) {
-      return { color: 'error' as const, text: 'Invalid date' };
-    }
-    
-    const selectedDate = new Date(analysisDate);
-    const todayDate = new Date(today);
-    
-    if (analysisDate === defaultDate) {
-      return { color: 'primary' as const, text: 'Default' };
-    } else if (selectedDate.toDateString() === todayDate.toDateString()) {
-      return { color: 'success' as const, text: 'Current' };
-    } else if (selectedDate < todayDate) {
-      return { color: 'info' as const, text: 'Historical' };
-    } else {
-      return { color: 'warning' as const, text: 'Future' };
-    }
+    const selected = toDate(analysisDate);
+    if (!selected) return { color: 'error' as const, text: 'Invalid date' };
+    if (isDefaultDate) return { color: 'primary' as const, text: 'Default' };
+    const base = toDate(defaultDate);
+    if (base && selected < base) return { color: 'info' as const, text: 'Earlier' };
+    if (base && selected > base) return { color: 'warning' as const, text: 'Later' };
+    return { color: 'default' as const, text: 'Custom' };
   };
 
   const status = getDateStatus();
+  const resetTooltip = defaultDate ? `Reset to default (${fmt(defaultDate, 'MMMM d, yyyy')})` : 'Reset to default';
 
   return (
     <Box>
@@ -141,8 +106,8 @@ const AnalysisDatePicker: React.FC<AnalysisDatePickerProps> = ({
         disabled={disabled}
         helperText={helperText}
         inputProps={{
-          min: minDate,
-          max: maxDate || today,
+          min: minDate ?? undefined,
+          max: maxDate ?? undefined,
         }}
         InputProps={{
           startAdornment: (
@@ -153,19 +118,10 @@ const AnalysisDatePicker: React.FC<AnalysisDatePickerProps> = ({
           endAdornment: (
             <InputAdornment position="end">
               <Box sx={{ display: 'flex', gap: 0.5, alignItems: 'center' }}>
-                <Chip 
-                  label={status.text}
-                  color={status.color}
-                  size="small"
-                  variant="outlined"
-                />
-                {!isDefaultDate && (
-                  <Tooltip title="Reset to default (March 23, 2016)">
-                    <IconButton
-                      size="small"
-                      onClick={handleResetClick}
-                      disabled={disabled}
-                    >
+                <Chip label={status.text} color={status.color} size="small" variant="outlined" />
+                {!isDefaultDate && defaultDate && (
+                  <Tooltip title={resetTooltip}>
+                    <IconButton size="small" onClick={handleResetClick} disabled={disabled}>
                       <RestoreFromTrash fontSize="small" />
                     </IconButton>
                   </Tooltip>
@@ -176,58 +132,38 @@ const AnalysisDatePicker: React.FC<AnalysisDatePickerProps> = ({
         }}
         sx={{
           '& .MuiOutlinedInput-root': {
-            backgroundColor: isDefaultDate ? 'background.paper' : isToday ? 'success.light' : 'action.hover',
+            backgroundColor: isDefaultDate ? 'background.paper' : 'action.hover',
           },
         }}
       />
 
-      {showQuickActions && !disabled && (
-        <Paper 
-          variant="outlined" 
-          sx={{ 
-            mt: 2, 
-            p: 2,
-            backgroundColor: 'background.default',
-            borderRadius: 2,
-          }}
+      {showQuickActions && !disabled && quickDates.length > 0 && (
+        <Paper
+          variant="outlined"
+          sx={{ mt: 2, p: 2, backgroundColor: 'background.default', borderRadius: 2 }}
         >
           <Typography variant="subtitle2" gutterBottom color="text.secondary">
             Quick Actions
           </Typography>
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-            {getQuickActionDates().map((quickDate) => (
-              <Tooltip key={quickDate.label} title={quickDate.description}>
+            {quickDates.map((quickDate) => (
+              <Tooltip key={quickDate.date} title={quickDate.description}>
                 <Chip
                   label={quickDate.label}
                   variant={analysisDate === quickDate.date ? 'filled' : 'outlined'}
                   color={analysisDate === quickDate.date ? 'primary' : 'default'}
                   size="small"
                   onClick={() => onDateChange(quickDate.date)}
-                  sx={{ 
-                    cursor: 'pointer',
-                    '&:hover': {
-                      backgroundColor: 'action.hover',
-                    },
-                  }}
+                  sx={{ cursor: 'pointer', '&:hover': { backgroundColor: 'action.hover' } }}
                 />
               </Tooltip>
             ))}
           </Box>
-          
+
           <Box sx={{ mt: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
             <Typography variant="caption" color="text.secondary">
-              Selected: {isValidDate(analysisDate) 
-                ? format(new Date(analysisDate), 'EEEE, MMMM do, yyyy')
-                : 'Invalid date'
-              }
+              Selected: {fmt(analysisDate, 'EEEE, MMMM do, yyyy')}
             </Typography>
-            {!isDefaultDate && (
-              <Tooltip title="Reset to default (March 23, 2016)">
-                <IconButton size="small" onClick={handleResetClick}>
-                  <RestoreFromTrash fontSize="small" />
-                </IconButton>
-              </Tooltip>
-            )}
           </Box>
         </Paper>
       )}

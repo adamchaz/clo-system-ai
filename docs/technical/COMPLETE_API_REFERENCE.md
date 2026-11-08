@@ -44,7 +44,7 @@ Tokens last `ACCESS_TOKEN_EXPIRE_MINUTES` (default 30). There is no refresh toke
 
 ### **Using the Access Token**
 
-Every endpoint requires the token except: `/api/v1/auth/login`, `/auth/token`,
+Every endpoint requires the token except: `/api/v1/config` (server defaults such as the analysis-date range), `/api/v1/auth/login`, `/auth/token`,
 `/auth/register`, `/auth/forgot-password`, `/auth/reset-password`, `/auth/validate-token`,
 `/health`, `/api/v1/monitoring/health/*`, `/api/v1/monitoring/status/summary`, and the
 rebalancing/credit-migration `/health` endpoints. Send it in the Authorization header:

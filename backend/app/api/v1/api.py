@@ -23,7 +23,8 @@ from .endpoints import (
     websocket,
     admin,
     yield_curves,
-    concentration_thresholds
+    concentration_thresholds,
+    app_config
 )
 
 api_router = APIRouter()
@@ -38,8 +39,15 @@ api_router = APIRouter()
 require_auth = [Depends(get_current_active_user)]
 
 # Include all endpoint routers
+# Public, non-sensitive server defaults for the frontend (analysis date range)
 api_router.include_router(
-    auth.router,
+    app_config.router,
+    prefix="/config",
+    tags=["Configuration"]
+)
+
+api_router.include_router(
+    auth.router, 
     prefix="/auth",
     tags=["Authentication"]
 )

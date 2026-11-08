@@ -209,6 +209,7 @@ export interface PortfolioRiskAnalysisResult {
 
 export interface ConcentrationAnalysisRequest {
   portfolio_id: string;
+  analysis_date?: string; // YYYY-MM-DD; omitted = server default
   analysis_dimensions: string[];
   single_asset_limit: number;
   sector_limit: number;
@@ -230,6 +231,7 @@ export interface ConcentrationAnalysisResult {
 // Real Concentration Test Types (matching backend implementation)
 export interface ConcentrationTestRequest {
   portfolio_id: string;
+  analysis_date?: string; // YYYY-MM-DD; omitted = server default
   analysis_dimensions: string[];
   single_asset_limit: number;
   sector_limit: number;
