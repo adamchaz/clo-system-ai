@@ -1,28 +1,33 @@
 # 🧪 Backend Test Suite Organization
 
-> ## ⛔ DO NOT RUN THE FULL SUITE AGAINST YOUR DEV DATABASE
+> ## 🛡️ Database isolation (`tests/conftest.py`)
 >
-> These files import the application's real `engine` / `SessionLocal` from
-> `app.core.database`, which connects to whatever `DATABASE_URL` points at (by default the
-> local dev database `clo_dev`):
+> The suite always runs against a **separate test database**, never the dev database:
 >
-> - `test_fee_service.py`, `test_fee_waterfall_integration.py`, `test_ic_trigger.py`,
->   `test_oc_trigger.py`, `test_trigger_integration.py` - these run
->   **`Base.metadata.drop_all()`** in teardown, which **drops every model table**
->   (users, deals, assets, positions, tranches, thresholds, ...)
-> - `test_fee_calculator.py` - writes to the same database
+> - `tests/conftest.py` runs before any test module is imported. It takes the dev
+>   `DATABASE_URL` (environment or `backend/.env.development`), swaps the database name to
+>   `<name>_test` (`clo_dev` -> **`clo_dev_test`**), exports that as `DATABASE_URL`, creates the
+>   database if needed, and verifies the application engine points at it.
+> - Override with `TEST_DATABASE_URL=postgresql://...`. A test database name must contain
+>   `test` and differ from the dev database; otherwise pytest exits before running anything.
+> - The report header shows which database is used:
+>   `database isolation: tests use 'clo_dev_test' ... (development database 'clo_dev' is not touched)`
+> - `backend/pytest.ini` limits collection to `tests/`, so a bare `pytest` won't pick up the
+>   scripts in `backend/debug/` or loose `test_*.py` files in `backend/`.
 >
-> On 2026-11-08 a full `pytest tests` run wiped `clo_dev` this way. It was rebuilt from Excel
-> with `scripts/rebuild_dev_db_from_excel.py` (see `docs/technical/DATA_MIGRATION_GUIDE.md`).
+> Run from `backend/` with the venv active: `pytest` (or `pytest tests/test_utils` etc.).
+> Docker's PostgreSQL must be running for the database tests.
 >
-> There is **no `conftest.py`** isolating the database yet. Until one exists:
-> - only run tests that don't touch the database (e.g. `pytest tests/test_utils`), or
-> - point `DATABASE_URL` at a disposable database first, e.g.
->   `set DATABASE_URL=postgresql://postgres:<pw>@127.0.0.1:5433/clo_test`, and
-> - take a backup before any database-touching run:
->   `docker exec clo-postgres pg_dump -U postgres -d clo_dev -Fc > data/db_backups/clo_dev_<date>.dump`
+> **Why:** six files use the application's real engine, and five of them
+> (`test_fee_service.py`, `test_fee_waterfall_integration.py`, `test_ic_trigger.py`,
+> `test_oc_trigger.py`, `test_trigger_integration.py`) run `Base.metadata.drop_all()` in
+> teardown. Before this conftest existed, a full run on 2026-11-08 dropped every model table in
+> `clo_dev`, which then had to be rebuilt from Excel (`docs/technical/DATA_MIGRATION_GUIDE.md`).
+> Verified after adding it: a full run left every `clo_dev` row count unchanged.
 >
-> The other ~21 database-using test files create their own in-memory SQLite engines and are safe.
+> `clo_dev_test` starts empty and tests create/drop their own tables, so tests that expect the
+> real portfolio data (`tests/integration/`) find nothing there. Those are script-style tests
+> that return True/False instead of asserting, so pytest reports them as passing anyway.
 
 ## 📂 **Test Directory Structure**
 
@@ -121,24 +126,31 @@ python -m pytest tests/test_mag_waterfall.py::test_mag17_waterfall -v
 
 ## 📊 **Test Coverage**
 
-**Last full run (2026-11-08):** 667 tests collected - **478 passed, 81 failed, 108 errors**.
-Treat these numbers as approximate: that run dropped the dev database tables part-way
-through (see the warning at the top), which likely caused some of the failures. Re-measure
-once the suite runs against an isolated database. Coverage has not been measured.
+**Last full run (2026-11-08, isolated database):** 667 tests collected - **478 passed,
+81 failed, 108 errors**. These are genuine failures in the test code, not side effects of
+the database: an identical result was produced before isolation existed. Main causes:
+- integration tests pass arguments the models no longer accept (e.g. `analysis_date` to
+  `CLODeal`) - most of the errors in `test_reinvestment_integration.py`,
+  `test_incentive_fee_integration.py`, `test_rating_system_integration.py`
+- SQLite-based tests that create only part of the schema (`no such table: clo_deals`) -
+  `test_liability_model.py`
+- waterfall configuration tests passing strings where lists are expected - `test_waterfall.py`,
+  `test_waterfall_implementations.py`
+
+Coverage has not been measured.
 
 ## 🔧 **Test Configuration**
 
 ### **pytest Configuration**
 - Configuration file: `pytest.ini` (if present)
 - Test discovery: Automatic for `test_*.py` files
-- Fixtures: there is currently **no** `conftest.py`; each file sets up its own fixtures
+- `tests/conftest.py` provides database isolation only (see top); each file sets up its own fixtures
 
 ### **Environment Variables**
-Tests that use the application engine connect to `DATABASE_URL`. Always set it to a
-disposable database before running them:
+No setup is needed: `tests/conftest.py` points the application at `clo_dev_test`
+automatically. To use a different test database:
 ```bash
-set DATABASE_URL=postgresql://postgres:<password>@127.0.0.1:5433/clo_test
-set REDIS_URL=redis://127.0.0.1:6379
+set TEST_DATABASE_URL=postgresql://postgres:<password>@127.0.0.1:5433/my_test_db
 ```
 
 ## 📝 **Adding New Tests**

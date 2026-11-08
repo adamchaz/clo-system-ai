@@ -4,7 +4,7 @@
 
 A comprehensive Collateralized Loan Obligation (CLO) Portfolio Management System successfully converted from Excel/VBA to a modern Python web application.
 
-**Current Phase**: Core data, authentication, and concentration tests are operational on all 10 CLO deals. Several analytics services still return mock data and the test suite is not yet isolated from the dev database (see the November 8, 2026 update).
+**Current Phase**: Core data, authentication, and concentration tests are operational on all 10 CLO deals. Several analytics services still return mock data and 189 backend tests fail or error in the test code itself (see the November 8, 2026 update).
 
 ---
 
@@ -19,7 +19,7 @@ A comprehensive Collateralized Loan Obligation (CLO) Portfolio Management System
 - **Note**: only `SECRET_KEY` signs JWTs - `JWT_SECRET_KEY` in env files is ignored.
 
 ### **Dev database wiped and rebuilt from Excel**
-- Running the backend test suite dropped all model tables in `clo_dev`: five test files call `Base.metadata.drop_all()` on the real engine. **Do not run `pytest tests` against `clo_dev`** - see `backend/tests/README.md`.
+- Running the backend test suite dropped all model tables in `clo_dev`: five test files call `Base.metadata.drop_all()` on the real engine. **Fixed**: `backend/tests/conftest.py` now redirects the whole suite to a separate `clo_dev_test` database and refuses to run against a non-test database (verified: a full run leaves `clo_dev` unchanged) - see `backend/tests/README.md`.
 - Rebuilt with the new `scripts/rebuild_dev_db_from_excel.py --confirm` (reads `TradeHypoPrelimv32.xlsm` directly) plus `backend/scripts/migrate_yield_curves.py`. Procedure, sources and expected counts: `docs/technical/DATA_MIGRATION_GUIDE.md`.
 - Current data: 10 deals, 384 assets, **2,726** positions, **71** tranches, 54 test definitions, 374 deal thresholds, 4 users, 5 yield curves (3,600 rates).
 - **Differences from before**: thresholds are now each deal's actual Excel values (previously generic defaults plus hand tweaks); 42 vintage-guessed positions removed (was 2,768); MAG7 and MAG17 have 8 tranches (Excel includes a Class X note); MAG15-17 effective dates are blank because they are blank in Excel.
@@ -372,7 +372,7 @@ uvicorn app.main:app --reload      # Development server
 python test_environment.py        # Test environment
 ```
 
-**⛔ Do not run `pytest tests` against the dev database.** Several tests call `drop_all()` on the real engine and will delete all data in `clo_dev`. See `backend/tests/README.md` for which files are safe and how to point tests at a disposable database. Back up first: `docker exec clo-postgres pg_dump -U postgres -d clo_dev -Fc > data/db_backups/clo_dev_<date>.dump`
+**Running backend tests**: from `backend/`, run `pytest`. `tests/conftest.py` points the suite at a separate `clo_dev_test` database (created automatically) and exits if the test database isn't clearly a test database; the report header shows which database is used. `pytest.ini` limits collection to `tests/`. Override with `TEST_DATABASE_URL`. Never bypass this by running test files with your own engine against `clo_dev`. Before any other database-touching operation, back up: `docker exec clo-postgres pg_dump -U postgres -d clo_dev -Fc > data/db_backups/clo_dev_<date>.dump`
 
 ### Rebuilding the Dev Database
 ```bash
@@ -580,7 +580,7 @@ This system handles sensitive financial data:
 
 ### Testing Summary
 
-**Status as of 2026-11-08**: the last full run collected 667 tests - 478 passed, 81 failed, 108 errors - and that run wiped the dev database part-way through, so the numbers are unreliable until the suite runs against an isolated database (no `conftest.py` exists yet). Earlier claims of "1,100+ tests with 100% pass rate" are not current. Areas covered:
+**Status as of 2026-11-08** (isolated test database): 667 tests collected - 478 passed, 81 failed, 108 errors. The failures are in the test code (stale model arguments such as `analysis_date` for `CLODeal`, SQLite tests that build only part of the schema, waterfall config type mismatches) - details in `backend/tests/README.md`. Earlier claims of "1,100+ tests with 100% pass rate" are not current. Areas covered:
 - **VBA Parity Testing**: All converted classes match original VBA behavior
 - **Concentration Tests**: 54 test types validated against VBA logic
 - **Integration Testing**: End-to-end deal lifecycle validation  
@@ -764,7 +764,7 @@ This system handles sensitive financial data:
 - Database access: import `get_db` / `session_scope` / `get_redis` / `Base` / `engine` from `app.core.database`. Do not create engines, `declarative_base()`, or per-module `get_db()` helpers. Do not use `app.core.database_config` in app code.
 - Authentication: import dependencies from `app.core.unified_auth` only. New data routers should be included in `api/v1/api.py` with `dependencies=require_auth`.
 - Configuration: read settings from `app.core.config.settings` only.
-- Never run tests or scripts that call `drop_all()` / `create_all()` against `clo_dev`; back up with `pg_dump` before any database-touching operation.
+- Tests run against `clo_dev_test` via `backend/tests/conftest.py` - keep it that way: new DB tests must use the app engine (redirected by conftest) or their own SQLite engine, never a hard-coded `clo_dev` URL. Never run scripts that call `drop_all()` / `create_all()` against `clo_dev`; back up with `pg_dump` before any database-touching operation.
 
 ## Important Instruction Reminders
 - Do what has been asked; nothing more, nothing less

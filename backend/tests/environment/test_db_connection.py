@@ -3,22 +3,30 @@
 Test database connections for CLO system
 """
 
+import os
+
 import psycopg2
 import redis
 import time
+from sqlalchemy.engine.url import make_url
+
+
+def _database_url() -> str:
+    # Under pytest, tests/conftest.py sets DATABASE_URL to the isolated test database.
+    return os.environ["DATABASE_URL"]
 
 def test_postgresql():
     """Test PostgreSQL connection"""
     print("Testing PostgreSQL Connection...")
     
     try:
-        # Connection parameters - try with adamchaz password to CLO database on port 5433
+        url = make_url(_database_url())
         conn = psycopg2.connect(
-            host='127.0.0.1',
-            port=5433,
-            database='clo_dev', 
-            user='postgres',
-            password='adamchaz'
+            host=url.host,
+            port=url.port,
+            database=url.database,
+            user=url.username,
+            password=url.password,
         )
         
         cursor = conn.cursor()
@@ -102,9 +110,7 @@ def test_sqlalchemy():
         from sqlalchemy import create_engine, text
         from sqlalchemy.orm import sessionmaker
         
-        # Create engine with adamchaz password for CLO database on port 5433
-        DATABASE_URL = "postgresql://postgres:adamchaz@127.0.0.1:5433/clo_dev"
-        engine = create_engine(DATABASE_URL)
+        engine = create_engine(_database_url())
         
         # Test connection
         with engine.connect() as connection:
