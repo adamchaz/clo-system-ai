@@ -3,8 +3,9 @@ Main API Router for CLO Management System v1
 Aggregates all API endpoints into a single router
 """
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 
+from ...core.unified_auth import get_current_active_user
 from .endpoints import (
     assets,
     portfolios,
@@ -27,41 +28,55 @@ from .endpoints import (
 
 api_router = APIRouter()
 
+# Routers below require a valid bearer token for every endpoint. Role/permission
+# checks (admin, manager, ...) are layered on top inside the individual endpoints.
+# Not covered here on purpose:
+#   - auth: login/register must be reachable without a token
+#   - websocket: browsers cannot send headers, so it validates ?token= itself
+#   - monitoring: /health/live and /health/ready are probe endpoints; its sensitive
+#     endpoints declare their own auth dependency
+require_auth = [Depends(get_current_active_user)]
+
 # Include all endpoint routers
 api_router.include_router(
-    auth.router, 
-    prefix="/auth", 
+    auth.router,
+    prefix="/auth",
     tags=["Authentication"]
 )
 
 api_router.include_router(
-    assets.router, 
-    prefix="/assets", 
-    tags=["Asset Management"]
+    assets.router,
+    prefix="/assets",
+    tags=["Asset Management"],
+    dependencies=require_auth
 )
 
 api_router.include_router(
-    portfolios.router, 
-    prefix="/portfolios", 
-    tags=["Portfolio Management"]
+    portfolios.router,
+    prefix="/portfolios",
+    tags=["Portfolio Management"],
+    dependencies=require_auth
 )
 
 api_router.include_router(
-    waterfall.router, 
-    prefix="/waterfall", 
-    tags=["Waterfall Calculations"]
+    waterfall.router,
+    prefix="/waterfall",
+    tags=["Waterfall Calculations"],
+    dependencies=require_auth
 )
 
 api_router.include_router(
-    risk_analytics.router, 
-    prefix="/risk", 
-    tags=["Risk Analytics"]
+    risk_analytics.router,
+    prefix="/risk",
+    tags=["Risk Analytics"],
+    dependencies=require_auth
 )
 
 api_router.include_router(
-    scenarios.router, 
-    prefix="/scenarios", 
-    tags=["Scenario Analysis"]
+    scenarios.router,
+    prefix="/scenarios",
+    tags=["Scenario Analysis"],
+    dependencies=require_auth
 )
 
 api_router.include_router(
@@ -83,9 +98,10 @@ api_router.include_router(
 )
 
 api_router.include_router(
-    reports.router, 
-    prefix="/reports", 
-    tags=["Reports"]
+    reports.router,
+    prefix="/reports",
+    tags=["Reports"],
+    dependencies=require_auth  # reports.py only has a placeholder get_current_user
 )
 
 api_router.include_router(
@@ -97,7 +113,8 @@ api_router.include_router(
 api_router.include_router(
     portfolio_analytics.router, 
     prefix="/portfolio-analytics", 
-    tags=["Portfolio Analytics"]
+    tags=["Portfolio Analytics"],
+    dependencies=require_auth
 )
 
 api_router.include_router(
@@ -121,17 +138,20 @@ async def test_endpoint():
 api_router.include_router(
     admin.router, 
     prefix="/admin", 
-    tags=["Administration"]
+    tags=["Administration"],
+    dependencies=require_auth
 )
 
 api_router.include_router(
-    yield_curves.router, 
-    prefix="/yield-curves", 
-    tags=["Yield Curves"]
+    yield_curves.router,
+    prefix="/yield-curves",
+    tags=["Yield Curves"],
+    dependencies=require_auth
 )
 
 api_router.include_router(
     concentration_thresholds.router, 
     prefix="/concentration-thresholds", 
-    tags=["Concentration Test Thresholds"]
+    tags=["Concentration Test Thresholds"],
+    dependencies=require_auth
 )

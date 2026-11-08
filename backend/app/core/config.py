@@ -15,7 +15,7 @@ class Settings(BaseSettings):
     
     # Environment Configuration
     environment: str = "development"
-    debug: bool = True
+    debug: bool = False  # development env files opt in with DEBUG=true
     
     # Database Configuration
     database_url: str = "postgresql://postgres:adamchaz@127.0.0.1:5433/clo_dev"
@@ -182,6 +182,36 @@ class Settings(BaseSettings):
         protocol = "rediss" if self.redis_ssl else "redis"
         return f"{protocol}//{auth}{self.redis_host}:{self.redis_port}"
     
+    def validate_production_safety(self) -> None:
+        """Refuse to start in production with insecure development defaults.
+
+        Raises RuntimeError listing every problem so they can all be fixed at once.
+        No-op outside production.
+        """
+        if not self.is_production():
+            return
+
+        problems = []
+
+        key = self.secret_key or ""
+        placeholder_markers = ("dev-", "change_this", "change-this", "your_secret", "${")
+        if len(key) < 32 or any(m in key.lower() for m in placeholder_markers):
+            problems.append(
+                "SECRET_KEY is missing, shorter than 32 characters, or still a placeholder/dev value"
+            )
+
+        if self.debug:
+            problems.append("DEBUG must be false")
+
+        if "adamchaz" in (self.postgres_password or "") or "adamchaz" in (self.database_url or ""):
+            problems.append("database credentials are still the development default")
+
+        if problems:
+            raise RuntimeError(
+                "Refusing to start in production with insecure configuration: "
+                + "; ".join(problems)
+            )
+
     def is_production(self) -> bool:
         """Check if running in production environment"""
         return self.environment.lower() == "production"
@@ -240,6 +270,7 @@ class QuantLibConfig:
 
 # Global settings instance
 settings = Settings()
+settings.validate_production_safety()
 
 # Initialize QuantLib on import
 QuantLibConfig.initialize()

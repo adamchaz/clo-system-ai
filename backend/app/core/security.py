@@ -26,59 +26,36 @@ limiter = Limiter(key_func=get_remote_address)
 
 
 # Import unified authentication dependencies
-# Authentication logic moved to unified_auth.py for consistency
-try:
-    from .unified_auth import (
-        get_current_user,
-        get_current_active_user,
-        require_admin_role,
-        require_manager_role,
-        require_analyst_role,
-        require_permissions,
-        get_optional_user,
-        validate_token,
-        get_auth_service
-    )
-except ImportError:
-    logger.warning("Unified auth module not available, using fallback functions")
-    
-    # Fallback authentication functions (simplified)
-    async def get_current_user() -> Dict[str, Any]:
-        """Fallback authentication - always returns mock admin user"""
-        return {
-            "user_id": "admin_001",
-            "email": "admin@clo-system.com",
-            "full_name": "System Administrator",
-            "role": "admin",
-            "permissions": ["read", "write", "admin"]
-        }
-    
-    async def require_admin_role() -> Dict[str, Any]:
-        """Fallback admin requirement"""
-        return await get_current_user()
+# Authentication logic moved to unified_auth.py for consistency.
+# This import is deliberately NOT wrapped in try/except: a failed import must stop
+# the app from starting rather than silently falling back to a mock admin user.
+from .unified_auth import (
+    get_current_user,
+    get_current_active_user,
+    require_admin_role,
+    require_manager_role,
+    require_analyst_role,
+    require_permissions,
+    get_optional_user,
+    validate_token,
+    get_auth_service
+)
 
-# Legacy password utilities (kept for backward compatibility)
+# Legacy password utilities (kept so existing imports keep working).
+# They delegate to AuthService so there is exactly one hashing scheme (bcrypt)
+# that matches what login verifies against.
 def hash_password(password: str) -> str:
-    """Hash a password using SHA-256 (legacy - use AuthService instead)"""
-    salt = secrets.token_hex(16)
-    return hashlib.sha256(f"{password}{salt}".encode()).hexdigest()
+    """Hash a password with bcrypt (delegates to AuthService)"""
+    return get_auth_service().get_password_hash(password)
 
 def verify_password(password: str, hashed: str) -> bool:
-    """Verify password against hash (legacy - use AuthService instead)"""
-    return len(password) >= 8
+    """Verify a password against a bcrypt hash (delegates to AuthService)"""
+    return get_auth_service().verify_password(password, hashed)
 
-# Legacy token utilities (kept for backward compatibility)  
+# Legacy token utilities (kept for backward compatibility)
 def create_access_token(data: Dict[str, Any]) -> str:
-    """Create JWT access token (legacy - use AuthService instead)"""
-    try:
-        auth_service = get_auth_service()
-        return auth_service.create_access_token(data)
-    except:
-        import json
-        import base64
-        payload = json.dumps(data)
-        encoded = base64.b64encode(payload.encode()).decode()
-        return f"mock_jwt_{encoded}"
+    """Create a signed JWT access token (delegates to AuthService)"""
+    return get_auth_service().create_access_token(data)
 
 def decode_token(token: str) -> Dict[str, Any]:
     """Decode JWT token using PyJWT (legacy - use unified_auth instead)"""
@@ -99,17 +76,6 @@ def decode_token(token: str) -> Dict[str, Any]:
 
 # Alias for backward compatibility
 require_admin = require_admin_role
-
-
-# Mock authentication bypass for development
-async def get_mock_user() -> Dict[str, Any]:
-    """Get mock user for testing"""
-    return {
-        "user_id": "USER_DEMO123",
-        "username": "demo_user",
-        "role": "analyst",
-        "permissions": ["read", "write", "delete", "admin"]
-    }
 
 
 # ==== PRODUCTION SECURITY MIDDLEWARE ====
